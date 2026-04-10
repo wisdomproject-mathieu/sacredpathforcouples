@@ -503,8 +503,6 @@ const translations: Record<string, Record<Language, string>> = {
   "weather.erotic": { en: "Erotic", fr: "Érotique", cs: "Erotický" },
   "weather.tired": { en: "Tired", fr: "Fatigué", cs: "Unavený" },
   "weather.reassurance": { en: "Need Care", fr: "Besoin de soin", cs: "Potřebuji péči" },
-  "weather.you": { en: "YOU", fr: "VOUS", cs: "VY" },
-  "weather.partner": { en: "PARTNER", fr: "PARTENAIRE", cs: "PARTNER" },
   "weather.waiting": { en: "Waiting…", fr: "En attente…", cs: "Čeká…" },
   "weather.share": { en: "Share My Weather", fr: "Partager ma météo", cs: "Sdílet moje počasí" },
   "weather.shared": { en: "Shared ✦ Your partner will see your state", fr: "Partagé ✦ Votre partenaire verra votre état", cs: "Sdíleno ✦ Váš partner uvidí váš stav" },
