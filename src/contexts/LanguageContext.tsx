@@ -484,6 +484,116 @@ const translations: Record<string, Record<Language, string>> = {
   "space.teaser_4": { en: "I want to trace every line of your body slowly tonight…", fr: "Je veux tracer chaque ligne de ton corps lentement ce soir…", cs: "Dnes v noci chci pomalu projít každou linii tvého těla…" },
   "space.teaser_5": { en: "Let's do something sacred tonight. Just us. 🕯", fr: "Faisons quelque chose de sacré ce soir. Juste nous. 🕯", cs: "Pojďme dnes večer udělat něco posvátného. Jen my dva. 🕯" },
   "space.teaser_6": { en: "I want to feel you close. Really close. ✨", fr: "Je veux te sentir près. Vraiment près. ✨", cs: "Chci tě cítit blízko. Opravdu blízko. ✨" },
+
+  // Temple tabs
+  "temple.title": { en: "The Temple", fr: "Le Temple", cs: "Chrám" },
+  "temple.subtitle": { en: "Your private sacred space — reconnect, play, and deepen together.", fr: "Votre espace sacré privé — reconnectez-vous, jouez et approfondissez ensemble.", cs: "Váš soukromý posvátný prostor — znovu se spojte, hrajte si a prohlubujte společně." },
+  "temple.tab.weather": { en: "Weather", fr: "Météo", cs: "Počasí" },
+  "temple.tab.rituals": { en: "Ritual Cards", fr: "Cartes Rituelles", cs: "Rituální karty" },
+  "temple.tab.messages": { en: "Messages", fr: "Messages", cs: "Zprávy" },
+
+  // Intimacy Weather
+  "weather.title": { en: "Intimacy Weather", fr: "Météo de l'intimité", cs: "Počasí intimity" },
+  "weather.subtitle": { en: "How are you feeling today? Share your inner climate with your partner.", fr: "Comment vous sentez-vous aujourd'hui ? Partagez votre climat intérieur.", cs: "Jak se dnes cítíte? Sdílejte svůj vnitřní stav s partnerem." },
+  "weather.open": { en: "Open", fr: "Ouvert", cs: "Otevřený" },
+  "weather.tender": { en: "Tender", fr: "Tendre", cs: "Něžný" },
+  "weather.playful": { en: "Playful", fr: "Joueur", cs: "Hravý" },
+  "weather.stressed": { en: "Stressed", fr: "Stressé", cs: "Stresovaný" },
+  "weather.longing": { en: "Longing", fr: "Nostalgie", cs: "Toužící" },
+  "weather.erotic": { en: "Erotic", fr: "Érotique", cs: "Erotický" },
+  "weather.tired": { en: "Tired", fr: "Fatigué", cs: "Unavený" },
+  "weather.reassurance": { en: "Need Care", fr: "Besoin de soin", cs: "Potřebuji péči" },
+  "weather.you": { en: "YOU", fr: "VOUS", cs: "VY" },
+  "weather.partner": { en: "PARTNER", fr: "PARTENAIRE", cs: "PARTNER" },
+  "weather.waiting": { en: "Waiting…", fr: "En attente…", cs: "Čeká…" },
+  "weather.share": { en: "Share My Weather", fr: "Partager ma météo", cs: "Sdílet moje počasí" },
+  "weather.shared": { en: "Shared ✦ Your partner will see your state", fr: "Partagé ✦ Votre partenaire verra votre état", cs: "Sdíleno ✦ Váš partner uvidí váš stav" },
+
+  // Ritual Cards
+  "ritual_cards.title": { en: "Ritual Cards", fr: "Cartes Rituelles", cs: "Rituální karty" },
+  "ritual_cards.subtitle": { en: "Swipe through sacred practices — from breath to bedtime.", fr: "Parcourez les pratiques sacrées — du souffle au coucher.", cs: "Procházejte posvátné praktiky — od dechu po spaní." },
+  "ritual_cards.tap": { en: "Tap to reveal", fr: "Toucher pour révéler", cs: "Klepněte pro odhalení" },
+  "ritual_cards.unlock_all": { en: "Unlock All Ritual Cards", fr: "Débloquer toutes les cartes", cs: "Odemknout všechny karty" },
+  "ritual_cards.cat.breath": { en: "Breath", fr: "Souffle", cs: "Dech" },
+  "ritual_cards.cat.touch": { en: "Touch", fr: "Toucher", cs: "Dotek" },
+  "ritual_cards.cat.eye_contact": { en: "Eye Contact", fr: "Regard", cs: "Oční kontakt" },
+  "ritual_cards.cat.gratitude": { en: "Gratitude", fr: "Gratitude", cs: "Vděčnost" },
+  "ritual_cards.cat.repair": { en: "Repair", fr: "Réparer", cs: "Oprava" },
+  "ritual_cards.cat.polarity": { en: "Polarity", fr: "Polarité", cs: "Polarita" },
+  "ritual_cards.cat.bedtime": { en: "Bedtime", fr: "Coucher", cs: "Před spaním" },
+  "ritual_cards.cat.morning": { en: "Morning", fr: "Matin", cs: "Ráno" },
+  "ritual_cards.cat.distance": { en: "Distance", fr: "Distance", cs: "Na dálku" },
+  "ritual_cards.cat.date_night": { en: "Date Night", fr: "Soirée", cs: "Rande" },
+
+  // Ritual card content
+  "ritual_card.breath.1.title": { en: "Synchronized Breath", fr: "Souffle synchronisé", cs: "Synchronizovaný dech" },
+  "ritual_card.breath.1.desc": { en: "Sit facing each other. Breathe in together for 4 counts, hold for 4, exhale for 6. Repeat 10 times with eyes closed.", fr: "Asseyez-vous face à face. Inspirez ensemble 4 temps, retenez 4, expirez 6. Répétez 10 fois les yeux fermés.", cs: "Sedněte si čelem k sobě. Nadechněte se společně na 4 doby, zadržte na 4, vydechněte na 6. Opakujte 10×." },
+  "ritual_card.breath.2.title": { en: "Back-to-Back Breathing", fr: "Dos à dos respirant", cs: "Dýchání zády k sobě" },
+  "ritual_card.breath.2.desc": { en: "Sit back-to-back. Feel your partner's breath through your spine. Slowly match their rhythm without speaking. 5 minutes.", fr: "Asseyez-vous dos à dos. Sentez le souffle de votre partenaire. Synchronisez lentement. 5 minutes.", cs: "Sedněte si zády k sobě. Cítíte dech partnera přes páteř. Pomalu se slaďte. 5 minut." },
+  "ritual_card.breath.3.title": { en: "Tantric Breath Circle", fr: "Cercle de souffle tantrique", cs: "Tantrický dechový kruh" },
+  "ritual_card.breath.3.desc": { en: "One breathes in while the other breathes out. Visualize energy flowing in a circle between you. 10 minutes.", fr: "L'un inspire tandis que l'autre expire. Visualisez l'énergie circulant entre vous. 10 minutes.", cs: "Jeden se nadechuje, druhý vydechuje. Vizualizujte energii proudící v kruhu mezi vámi. 10 minut." },
+
+  "ritual_card.touch.1.title": { en: "Hand-on-Heart Stillness", fr: "Main sur le cœur", cs: "Ruka na srdci" },
+  "ritual_card.touch.1.desc": { en: "Place your hand on your partner's heart. Feel their heartbeat. Stay still for 3 minutes. No words needed.", fr: "Posez votre main sur le cœur de votre partenaire. Sentez ses battements. 3 minutes en silence.", cs: "Položte ruku na srdce partnera. Cítíte jeho tlukot. Zůstaňte 3 minuty v tichu." },
+  "ritual_card.touch.2.title": { en: "Slow Touch Circles", fr: "Cercles de toucher lent", cs: "Pomalé dotekové kruhy" },
+  "ritual_card.touch.2.desc": { en: "With fingertips, draw slow circles on your partner's forearm. Focus entirely on the sensation. Switch after 3 minutes.", fr: "Du bout des doigts, tracez des cercles lents sur l'avant-bras. Concentrez-vous sur la sensation. Alternez après 3 minutes.", cs: "Konečky prstů kreslete pomalé kruhy na předloktí partnera. Soustřeďte se na pocit. Po 3 minutách se vyměňte." },
+  "ritual_card.touch.3.title": { en: "Sacred Body Mapping", fr: "Cartographie sacrée du corps", cs: "Posvátné mapování těla" },
+  "ritual_card.touch.3.desc": { en: "Explore your partner's body with intention. Each touch is a question: 'What do you feel here?' Move slowly from head to feet.", fr: "Explorez le corps avec intention. Chaque toucher est une question. Avancez lentement de la tête aux pieds.", cs: "Prozkoumejte tělo partnera se záměrem. Každý dotek je otázka. Pomalu od hlavy k patě." },
+
+  "ritual_card.eye.1.title": { en: "Soul Gazing", fr: "Regard dans l'âme", cs: "Pohled do duše" },
+  "ritual_card.eye.1.desc": { en: "Sit close, look into each other's left eye. Hold the gaze for 5 minutes. Let whatever arises be welcome.", fr: "Asseyez-vous, regardez l'œil gauche. Tenez le regard 5 minutes. Laissez tout surgir.", cs: "Sedněte si blízko, dívejte se do levého oka partnera. Držte pohled 5 minut." },
+  "ritual_card.eye.2.title": { en: "Candlelit Eye Connection", fr: "Connexion par le regard à la bougie", cs: "Spojení pohledem při svíčkách" },
+  "ritual_card.eye.2.desc": { en: "Light a candle between you. Gaze through the flame into each other. Let the fire hold what words cannot.", fr: "Allumez une bougie entre vous. Regardez-vous à travers la flamme.", cs: "Zapalte svíčku mezi sebou. Dívejte se přes plamen na sebe." },
+
+  "ritual_card.gratitude.1.title": { en: "Three Things I Love", fr: "Trois choses que j'aime", cs: "Tři věci, které miluji" },
+  "ritual_card.gratitude.1.desc": { en: "Take turns sharing three things you love about your partner right now. Be specific. Let them receive it fully.", fr: "Partagez trois choses que vous aimez chez l'autre en ce moment. Soyez précis.", cs: "Střídejte se ve sdílení tří věcí, které právě teď na partnerovi milujete." },
+  "ritual_card.gratitude.2.title": { en: "Gratitude Letter", fr: "Lettre de gratitude", cs: "Dopis vděčnosti" },
+  "ritual_card.gratitude.2.desc": { en: "Write a short letter to your partner expressing what they bring to your life. Read it aloud together.", fr: "Écrivez une courte lettre exprimant ce que l'autre apporte à votre vie. Lisez-la ensemble.", cs: "Napište krátký dopis partnerovi o tom, co přináší do vašeho života. Přečtěte si ho společně." },
+
+  "ritual_card.repair.1.title": { en: "Regulate & Return", fr: "Réguler et revenir", cs: "Regulovat a vrátit se" },
+  "ritual_card.repair.1.desc": { en: "After tension: 4 breaths together → name one feeling each → own one impact → ask for one need → close with a touch.", fr: "Après une tension : 4 souffles → nommez un sentiment → reconnaissez un impact → demandez un besoin → toucher.", cs: "Po napětí: 4 dechy → pojmenujte pocit → přiznejte dopad → požádejte o potřebu → zakončete dotykem." },
+  "ritual_card.repair.2.title": { en: "After-Arguing Ceremony", fr: "Cérémonie après dispute", cs: "Ceremonie po hádce" },
+  "ritual_card.repair.2.desc": { en: "4-minute flow: regulate breath, name the feeling, own impact, ask for one need, close with touch or gratitude.", fr: "4 minutes : régulez le souffle, nommez le sentiment, reconnaissez l'impact, demandez un besoin, terminez par un toucher.", cs: "4minutový rituál: regulujte dech, pojmenujte pocit, přiznejte dopad, požádejte, zakončete dotykem." },
+
+  "ritual_card.polarity.1.title": { en: "Yin-Yang Embrace", fr: "Étreinte Yin-Yang", cs: "Objetí Jin-Jang" },
+  "ritual_card.polarity.1.desc": { en: "One leads, one surrenders. Hold for 3 minutes, then switch roles. Feel the energy shift between giving and receiving.", fr: "L'un guide, l'autre s'abandonne. 3 minutes, puis inversez. Sentez le changement d'énergie.", cs: "Jeden vede, druhý se odevzdá. 3 minuty, pak si vyměňte role." },
+  "ritual_card.polarity.2.title": { en: "Magnetic Presence", fr: "Présence magnétique", cs: "Magnetická přítomnost" },
+  "ritual_card.polarity.2.desc": { en: "Stand apart. Walk toward each other slowly, feeling the pull. Stop when the energy peaks. Stay there.", fr: "Tenez-vous éloignés. Approchez-vous lentement, sentez l'attraction.", cs: "Postavte se daleko od sebe. Pomalu k sobě přicházejte." },
+
+  "ritual_card.bedtime.1.title": { en: "Goodnight Gratitude", fr: "Gratitude du soir", cs: "Večerní vděčnost" },
+  "ritual_card.bedtime.1.desc": { en: "Before sleep, share one thing from today that made you grateful for your partner. Touch foreheads. Breathe together.", fr: "Avant de dormir, partagez une chose qui vous rend reconnaissant. Front contre front.", cs: "Před spaním sdílejte jednu věc, za kterou jste dnes partnerovi vděční." },
+  "ritual_card.bedtime.2.title": { en: "Midnight Whisper Ritual", fr: "Rituel du murmure de minuit", cs: "Rituál půlnočního šepotu" },
+  "ritual_card.bedtime.2.desc": { en: "In the dark, whisper something you've never said. Let the darkness hold your vulnerability.", fr: "Dans le noir, murmurez quelque chose que vous n'avez jamais dit.", cs: "Ve tmě pošeptejte něco, co jste nikdy neřekli." },
+
+  "ritual_card.morning.1.title": { en: "Morning Connection", fr: "Connexion matinale", cs: "Ranní spojení" },
+  "ritual_card.morning.1.desc": { en: "Before reaching for your phone: 30 seconds of eye contact, one breath together, one intention for the day.", fr: "Avant de prendre votre téléphone : 30 secondes de contact visuel, un souffle, une intention.", cs: "Než sáhnete po telefonu: 30 vteřin očního kontaktu, jeden společný nádech, jeden záměr." },
+  "ritual_card.morning.2.title": { en: "Sunrise Intention Setting", fr: "Intention au lever du soleil", cs: "Ranní nastavení záměru" },
+  "ritual_card.morning.2.desc": { en: "Face a window together. Set a shared intention for the day. Seal it with a kiss on the forehead.", fr: "Face à une fenêtre, fixez une intention commune. Scellez avec un baiser sur le front.", cs: "Postavte se spolu k oknu. Nastavte si společný záměr. Zapečeťte polibkem na čelo." },
+
+  "ritual_card.distance.1.title": { en: "Parallel Breathing", fr: "Respiration parallèle", cs: "Paralelní dýchání" },
+  "ritual_card.distance.1.desc": { en: "At an agreed time, both close your eyes and breathe together for 3 minutes. Feel the invisible connection.", fr: "À une heure convenue, fermez les yeux et respirez ensemble 3 minutes.", cs: "V dohodnutý čas zavřete oči a dýchejte spolu 3 minuty." },
+  "ritual_card.distance.2.title": { en: "Voice Card Exchange", fr: "Échange de cartes vocales", cs: "Výměna hlasových karet" },
+  "ritual_card.distance.2.desc": { en: "Record a 60-second voice message: what you see, what you feel, what you wish you could touch right now.", fr: "Enregistrez 60 secondes : ce que vous voyez, ressentez, aimeriez toucher.", cs: "Nahrajte 60vteřinovou zprávu: co vidíte, co cítíte, čeho byste se chtěli dotknout." },
+
+  "ritual_card.date.1.title": { en: "Temple Date Night", fr: "Soirée temple", cs: "Chrámový večer" },
+  "ritual_card.date.1.desc": { en: "Create sacred space: candles, music, no phones. Begin with eye contact, share a question, end with a ritual.", fr: "Créez un espace sacré : bougies, musique, sans téléphones. Commencez par le regard.", cs: "Vytvořte posvátný prostor: svíčky, hudba, žádné telefony. Začněte očním kontaktem." },
+  "ritual_card.date.2.title": { en: "Sensual Discovery Evening", fr: "Soirée de découverte sensuelle", cs: "Večer smyslového objevování" },
+  "ritual_card.date.2.desc": { en: "Blindfold one partner. Guide them through textures, scents, tastes. Awaken all senses before revealing.", fr: "Bandez les yeux d'un partenaire. Guidez-le à travers textures, odeurs, goûts.", cs: "Zavažte partnerovi oči. Proveďte ho texturami, vůněmi, chutěmi." },
+
+  // Temple Messages
+  "temple_msg.empty": { en: "Your temple awaits its first message…", fr: "Votre temple attend son premier message…", cs: "Váš chrám čeká na první zprávu…" },
+  "temple_msg.empty_hint": { en: "Send gratitude, a whisper, or a blessing to your partner.", fr: "Envoyez de la gratitude, un murmure ou une bénédiction.", cs: "Pošlete vděčnost, šepot nebo požehnání partnerovi." },
+  "temple_msg.placeholder": { en: "Write something sacred…", fr: "Écrivez quelque chose de sacré…", cs: "Napište něco posvátného…" },
+  "temple_msg.type.gratitude": { en: "Gratitude", fr: "Gratitude", cs: "Vděčnost" },
+  "temple_msg.type.appreciation": { en: "Appreciation", fr: "Appréciation", cs: "Ocenění" },
+  "temple_msg.type.longing": { en: "Longing", fr: "Nostalgie", cs: "Touha" },
+  "temple_msg.type.invitation": { en: "Invitation", fr: "Invitation", cs: "Pozvání" },
+  "temple_msg.type.blessing": { en: "Blessing", fr: "Bénédiction", cs: "Požehnání" },
+  "temple_msg.type.whisper": { en: "Whisper", fr: "Murmure", cs: "Šepot" },
+  "temple_msg.type.tonight": { en: "Tonight", fr: "Ce soir", cs: "Dnes večer" },
+  "temple_msg.type.fantasy": { en: "Fantasy", fr: "Fantaisie", cs: "Fantazie" },
+
+  "premium.unlock": { en: "Premium", fr: "Premium", cs: "Premium" },
 };
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
