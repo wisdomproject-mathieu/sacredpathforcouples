@@ -446,7 +446,7 @@ const translations: Record<string, Record<Language, string>> = {
   "pricing.feat_early": { en: "Early access to new features", fr: "Accès anticipé", cs: "Předčasný přístup" },
 
   // Nav space
-  "nav.space": { en: "Space", fr: "Espace", cs: "Prostor" },
+  "nav.space": { en: "Temple", fr: "Temple", cs: "Chrám" },
 
   // Temple Entry
   "temple.slide1_label": { en: "ANCIENT WISDOM", fr: "SAGESSE ANCIENNE", cs: "PRADÁVNÁ MOUDROST" },
