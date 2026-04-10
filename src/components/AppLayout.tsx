@@ -3,7 +3,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
-import { LogOut, Home, Users, Heart, BookOpen } from "lucide-react";
+import { LogOut, Home, Users, Compass, Feather } from "lucide-react";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const AppLayout = () => {
@@ -14,8 +14,8 @@ const AppLayout = () => {
   const navItems = [
     { to: "/app", icon: Home, label: t("nav.home") },
     { to: "/app/connect", icon: Users, label: t("nav.connect") },
-    { to: "/app/reconnect", icon: Heart, label: t("nav.reconnect") },
-    { to: "/app/teachings", icon: BookOpen, label: t("nav.teachings") },
+    { to: "/app/paths", icon: Compass, label: t("nav.paths") },
+    { to: "/app/authors", icon: Feather, label: t("nav.authors") },
   ];
 
   return (
