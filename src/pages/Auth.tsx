@@ -3,11 +3,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/sonner";
 import { Eye, EyeOff, Mail } from "lucide-react";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -17,6 +19,7 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useLanguage();
 
   if (user) {
     navigate("/app");
@@ -26,11 +29,10 @@ const Auth = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim() || !password.trim()) {
-      toast.error("Please fill in all fields");
+      toast.error(t("auth.fill_fields"));
       return;
     }
     setLoading(true);
-
     try {
       if (isLogin) {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -39,12 +41,11 @@ const Auth = () => {
         navigate("/app");
       } else {
         const { error } = await supabase.auth.signUp({
-          email,
-          password,
+          email, password,
           options: { emailRedirectTo: window.location.origin },
         });
         if (error) throw error;
-        toast.success("Check your email to confirm your account!");
+        toast.success(t("auth.check_email"));
       }
     } catch (error: any) {
       toast.error(error.message);
@@ -64,33 +65,30 @@ const Auth = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
+      <div className="absolute top-4 right-4">
+        <LanguageSwitcher />
+      </div>
       <div className="w-full max-w-md space-y-8">
-        {/* Logo */}
         <div className="flex flex-col items-center space-y-4">
           <img src={shivaShaktiIcon} alt="Sacred Path" className="h-20 w-20 animate-float" />
-          <h1 className="font-heading text-3xl font-semibold text-foreground sacred-glow">
-            Sacred Path
-          </h1>
+          <h1 className="font-heading text-3xl font-semibold text-foreground sacred-glow">Sacred Path</h1>
           <p className="text-sm text-muted-foreground font-body">
-            {isLogin ? "Welcome back, beloved" : "Begin your sacred journey"}
+            {isLogin ? t("auth.welcome_back") : t("auth.begin_journey")}
           </p>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="bg-card border-border text-foreground placeholder:text-muted-foreground"
-            />
-          </div>
-          <div className="relative space-y-2">
+          <Input
+            type="email"
+            placeholder={t("auth.email")}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="bg-card border-border text-foreground placeholder:text-muted-foreground"
+          />
+          <div className="relative">
             <Input
               type={showPassword ? "text" : "password"}
-              placeholder="Password"
+              placeholder={t("auth.password")}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="bg-card border-border text-foreground placeholder:text-muted-foreground pr-10"
@@ -103,37 +101,26 @@ const Auth = () => {
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
-
           <Button type="submit" className="w-full font-body" disabled={loading}>
-            {loading ? "Please wait..." : isLogin ? "Enter the Temple" : "Create Account"}
+            {loading ? t("auth.please_wait") : isLogin ? t("auth.enter_temple") : t("auth.create_account")}
           </Button>
         </form>
 
-        {/* Divider */}
         <div className="flex items-center gap-4">
           <div className="h-px flex-1 bg-border" />
-          <span className="text-xs text-muted-foreground">or</span>
+          <span className="text-xs text-muted-foreground">{t("auth.or")}</span>
           <div className="h-px flex-1 bg-border" />
         </div>
 
-        {/* Google */}
-        <Button
-          variant="outline"
-          className="w-full font-body"
-          onClick={handleGoogleLogin}
-        >
+        <Button variant="outline" className="w-full font-body" onClick={handleGoogleLogin}>
           <Mail className="mr-2 h-4 w-4" />
-          Continue with Google
+          {t("auth.google")}
         </Button>
 
-        {/* Toggle */}
         <p className="text-center text-sm text-muted-foreground">
-          {isLogin ? "New to the path? " : "Already have an account? "}
-          <button
-            onClick={() => setIsLogin(!isLogin)}
-            className="text-primary hover:underline font-medium"
-          >
-            {isLogin ? "Sign up" : "Log in"}
+          {isLogin ? t("auth.new_path") : t("auth.have_account")}
+          <button onClick={() => setIsLogin(!isLogin)} className="text-primary hover:underline font-medium">
+            {isLogin ? t("auth.signup") : t("auth.login")}
           </button>
         </p>
       </div>
