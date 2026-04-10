@@ -7,54 +7,14 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const quotes = [
-  {
-    authorKey: "Osho",
-    bookKey: "home.q0_book",
-    quoteKey: "home.q0",
-    tagKey: "Tantra",
-  },
-  {
-    authorKey: "Mantak Chia",
-    bookKey: "home.q1_book",
-    quoteKey: "home.q1",
-    tagKey: "Tao",
-  },
-  {
-    authorKey: "David Deida",
-    bookKey: "home.q2_book",
-    quoteKey: "home.q2",
-    tagKey: "Deida",
-  },
-  {
-    authorKey: "Diana Richardson",
-    bookKey: "home.q3_book",
-    quoteKey: "home.q3",
-    tagKey: "Richardson",
-  },
-  {
-    authorKey: "Vijnanabhairava Tantra",
-    bookKey: "",
-    quoteKey: "home.q4",
-    tagKey: "Tantra",
-  },
-  {
-    authorKey: "Lao Tzu",
-    bookKey: "home.q5_book",
-    quoteKey: "home.q5",
-    tagKey: "Tao",
-  },
-  {
-    authorKey: "David Deida",
-    bookKey: "home.q6_book",
-    quoteKey: "home.q6",
-    tagKey: "Deida",
-  },
-  {
-    authorKey: "Diana Richardson",
-    bookKey: "home.q7_book",
-    quoteKey: "home.q7",
-    tagKey: "Richardson",
-  },
+  { authorKey: "Osho", bookKey: "home.q0_book", quoteKey: "home.q0", tagKey: "Tantra" },
+  { authorKey: "Mantak Chia", bookKey: "home.q1_book", quoteKey: "home.q1", tagKey: "Tao" },
+  { authorKey: "David Deida", bookKey: "home.q2_book", quoteKey: "home.q2", tagKey: "Deida" },
+  { authorKey: "Diana Richardson", bookKey: "home.q3_book", quoteKey: "home.q3", tagKey: "Richardson" },
+  { authorKey: "Vijnanabhairava Tantra", bookKey: "", quoteKey: "home.q4", tagKey: "Tantra" },
+  { authorKey: "Lao Tzu", bookKey: "home.q5_book", quoteKey: "home.q5", tagKey: "Tao" },
+  { authorKey: "David Deida", bookKey: "home.q6_book", quoteKey: "home.q6", tagKey: "Deida" },
+  { authorKey: "Diana Richardson", bookKey: "home.q7_book", quoteKey: "home.q7", tagKey: "Richardson" },
 ];
 
 const practices = [
@@ -121,19 +81,14 @@ const AppHome = () => {
           </button>
         </div>
 
-        {/* Today's Practice */}
+        {/* Today's Practice — self-contained, no link */}
         <div className="rounded-xl border border-border bg-card p-6">
           <div className="flex items-center justify-between mb-2">
             <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-body">{t("home.todays_practice")}</p>
             <span className="text-[10px] text-muted-foreground font-body bg-secondary px-2 py-0.5 rounded-full">{practice.tag}</span>
           </div>
           <h3 className="font-heading text-xl font-semibold text-foreground mb-2">{t(practice.titleKey)}</h3>
-          <p className="text-sm text-muted-foreground font-body leading-relaxed mb-4">{t(practice.descKey)}</p>
-          <Link to="/app/reconnect">
-            <Button variant="outline" size="sm" className="font-body text-xs">
-              {t("home.open_practice")} →
-            </Button>
-          </Link>
+          <p className="text-sm text-muted-foreground font-body leading-relaxed">{t(practice.descKey)}</p>
         </div>
       </div>
     </div>

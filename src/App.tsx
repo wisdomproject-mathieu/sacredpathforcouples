@@ -12,7 +12,8 @@ import Auth from "./pages/Auth";
 import AppHome from "./pages/AppHome";
 import Connect from "./pages/Connect";
 import Reconnect from "./pages/Reconnect";
-import Teachings from "./pages/Teachings";
+import Paths from "./pages/Paths";
+import Authors from "./pages/Authors";
 import Pricing from "./pages/Pricing";
 import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
@@ -43,7 +44,8 @@ const App = () => (
                 <Route index element={<AppHome />} />
                 <Route path="connect" element={<Connect />} />
                 <Route path="reconnect" element={<Reconnect />} />
-                <Route path="teachings" element={<Teachings />} />
+                <Route path="paths" element={<Paths />} />
+                <Route path="authors" element={<Authors />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
