@@ -11,7 +11,7 @@ const teachings = [
     title: "Umění být přítomný v lásce",
     free: true,
     content:
-      "Láska je stav bytí. Nemůžete ji "dělat" — můžete ji pouze být. Když jste plně přítomní se svým partnerem, bez myšlenek na minulost nebo budoucnost, otevíráte dveře do prostoru, kde láska přirozeně proudí. Praxe: Sedněte si dnes s partnerem na 5 minut v tichu. Žádné telefony, žádná slova. Jen buďte spolu.",
+      "Láska je stav bytí. Nemůžete ji 'dělat' — můžete ji pouze být. Když jste plně přítomní se svým partnerem, bez myšlenek na minulost nebo budoucnost, otevíráte dveře do prostoru, kde láska přirozeně proudí. Praxe: Sedněte si dnes s partnerem na 5 minut v tichu. Žádné telefony, žádná slova. Jen buďte spolu.",
   },
   {
     teacher: "David Deida",
