@@ -17,6 +17,8 @@ import Paths from "./pages/Paths";
 import Authors from "./pages/Authors";
 import Pricing from "./pages/Pricing";
 import Privacy from "./pages/Privacy";
+import TempleEntry from "./pages/TempleEntry";
+import PartnerSpace from "./pages/PartnerSpace";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -48,6 +50,8 @@ const App = () => (
                 <Route path="rituals" element={<Rituals />} />
                 <Route path="paths" element={<Paths />} />
                 <Route path="authors" element={<Authors />} />
+                <Route path="temple" element={<TempleEntry />} />
+                <Route path="space" element={<PartnerSpace />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>

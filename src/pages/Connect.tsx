@@ -90,7 +90,7 @@ const Connect = () => {
         <img src={shivaShaktiIcon} alt="Connected" className="h-20 w-20 mb-6 animate-float" />
         <h2 className="font-heading text-3xl font-semibold text-foreground mb-2">{t("connect.connected_title")}</h2>
         <p className="text-muted-foreground font-body mb-8">{t("connect.connected_desc")}</p>
-        <Button onClick={() => navigate("/app")} className="font-body">
+        <Button onClick={() => navigate("/app/temple")} className="font-body">
           {t("connect.enter_temple")} <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </div>

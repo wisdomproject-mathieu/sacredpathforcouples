@@ -419,6 +419,46 @@ const translations: Record<string, Record<Language, string>> = {
   "pricing.feat_save": { en: "Save 44%", fr: "Économisez 44%", cs: "Ušetřete 44%" },
   "pricing.feat_exclusive": { en: "Exclusive annual-only teachings", fr: "Enseignements exclusifs annuels", cs: "Exkluzivní roční učení" },
   "pricing.feat_early": { en: "Early access to new features", fr: "Accès anticipé", cs: "Předčasný přístup" },
+
+  // Nav space
+  "nav.space": { en: "Space", fr: "Espace", cs: "Prostor" },
+
+  // Temple Entry
+  "temple.slide1_label": { en: "ANCIENT WISDOM", fr: "SAGESSE ANCIENNE", cs: "PRADÁVNÁ MOUDROST" },
+  "temple.slide1_title": { en: "Thousands of years of sacred teaching — for the two of you.", fr: "Des milliers d'années d'enseignement sacré — pour vous deux.", cs: "Tisíce let posvátného učení — pro vás dva." },
+  "temple.slide1_desc": { en: "Tantra, Tao, and the world's most honest teachers on love. All distilled into one daily practice that brings you genuinely closer.", fr: "Tantra, Tao et les enseignants les plus honnêtes du monde sur l'amour. Le tout distillé en une pratique quotidienne qui vous rapproche sincèrement.", cs: "Tantra, Tao a nejupřímnější učitelé lásky na světě. Vše destilováno do jedné denní praxe, která vás opravdu sblíží." },
+  "temple.slide1_btn": { en: "Continue", fr: "Continuer", cs: "Pokračovat" },
+
+  "temple.slide2_label": { en: "FEEL EACH OTHER AGAIN", fr: "SE SENTIR À NOUVEAU", cs: "ZNOVU SE CÍTIT" },
+  "temple.slide2_title": { en: "Most couples stop really touching. Sacred Path brings you back.", fr: "La plupart des couples arrêtent de vraiment se toucher. Sacred Path vous ramène.", cs: "Většina párů se přestane opravdu dotýkat. Sacred Path vás vrátí zpět." },
+  "temple.slide2_desc": { en: "Diana Richardson's Slow Sex. David Deida's polarity work. Taoist intimacy practices. Real teachings. Real presence. Real change.", fr: "Le Slow Sex de Diana Richardson. Le travail de polarité de David Deida. Les pratiques d'intimité taoïstes. De vrais enseignements. Une vraie présence. Un vrai changement.", cs: "Pomalý sex Diany Richardson. Práce s polaritou Davida Deidy. Taoistické intimní praktiky. Skutečné učení. Skutečná přítomnost. Skutečná změna." },
+  "temple.slide2_btn": { en: "I want this", fr: "Je veux ça", cs: "Chci to" },
+
+  "temple.slide3_label": { en: "YOUR DAILY PRACTICE", fr: "VOTRE PRATIQUE QUOTIDIENNE", cs: "VAŠE DENNÍ PRAXE" },
+  "temple.slide3_title": { en: "One ritual a day. A relationship that deepens over time.", fr: "Un rituel par jour. Une relation qui s'approfondit avec le temps.", cs: "Jeden rituál denně. Vztah, který se postupně prohlubuje." },
+  "temple.slide3_desc": { en: "Daily wisdom, intimacy weather, shared gratitude, and the unsaid — the thread that connects two people who have chosen each other.", fr: "Sagesse quotidienne, météo de l'intimité, gratitude partagée et le non-dit — le fil qui relie deux personnes qui se sont choisies.", cs: "Denní moudrost, počasí intimity, sdílená vděčnost a nevyřčené — nit, která spojuje dva lidi, kteří si vybrali jeden druhého." },
+  "temple.slide3_btn": { en: "Begin Our Path", fr: "Commencer notre chemin", cs: "Začít naši cestu" },
+
+  // Partner Space
+  "space.title": { en: "Your Sacred Space", fr: "Votre Espace Sacré", cs: "Váš Posvátný Prostor" },
+  "space.subtitle": { en: "A private place for you and your partner", fr: "Un lieu privé pour vous et votre partenaire", cs: "Soukromé místo pro vás a vašeho partnera" },
+  "space.whisper": { en: "Whisper", fr: "Murmure", cs: "Šepot" },
+  "space.teaser": { en: "Teaser", fr: "Taquinerie", cs: "Škádlení" },
+  "space.thread": { en: "Thread", fr: "Fil", cs: "Nit" },
+  "space.ritual_invite": { en: "Ritual", fr: "Rituel", cs: "Rituál" },
+  "space.send_teaser": { en: "Send Teaser 🔥", fr: "Envoyer Taquinerie 🔥", cs: "Poslat škádlení 🔥" },
+  "space.invite_ritual": { en: "Invite to Ritual ✦", fr: "Inviter au rituel ✦", cs: "Pozvat k rituálu ✦" },
+  "space.ritual_invite_msg": { en: "I'd love to do a ritual together tonight… ✦", fr: "J'aimerais faire un rituel ensemble ce soir… ✦", cs: "Chtěl/a bych dnes večer udělat rituál společně… ✦" },
+  "space.placeholder": { en: "Write something sacred...", fr: "Écrivez quelque chose de sacré...", cs: "Napište něco posvátného..." },
+  "space.empty": { en: "Your sacred space awaits its first whisper...", fr: "Votre espace sacré attend son premier murmure...", cs: "Váš posvátný prostor čeká na první šepot..." },
+  "space.not_connected": { en: "No Partner Connected", fr: "Pas de partenaire connecté", cs: "Žádný partner nepřipojen" },
+  "space.connect_first": { en: "Connect with your partner first to unlock your sacred space.", fr: "Connectez-vous d'abord avec votre partenaire.", cs: "Nejprve se spojte se svým partnerem." },
+  "space.teaser_1": { en: "I can't stop thinking about you right now… 🔥", fr: "Je ne peux pas arrêter de penser à toi…🔥", cs: "Nemůžu přestat na tebe myslet… 🔥" },
+  "space.teaser_2": { en: "Tonight, I want to look into your eyes and just breathe together.", fr: "Ce soir, je veux te regarder dans les yeux et juste respirer ensemble.", cs: "Dnes v noci se ti chci dívat do očí a jen spolu dýchat." },
+  "space.teaser_3": { en: "You have no idea what you do to me…", fr: "Tu n'as aucune idée de ce que tu me fais…", cs: "Nemáš tušení, co se mnou děláš…" },
+  "space.teaser_4": { en: "I want to trace every line of your body slowly tonight…", fr: "Je veux tracer chaque ligne de ton corps lentement ce soir…", cs: "Dnes v noci chci pomalu projít každou linii tvého těla…" },
+  "space.teaser_5": { en: "Let's do something sacred tonight. Just us. 🕯", fr: "Faisons quelque chose de sacré ce soir. Juste nous. 🕯", cs: "Pojďme dnes večer udělat něco posvátného. Jen my dva. 🕯" },
+  "space.teaser_6": { en: "I want to feel you close. Really close. ✨", fr: "Je veux te sentir près. Vraiment près. ✨", cs: "Chci tě cítit blízko. Opravdu blízko. ✨" },
 };
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
