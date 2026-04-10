@@ -285,6 +285,13 @@ const translations: Record<string, Record<Language, string>> = {
   "reconnect.unlock": { en: "Unlock all 6 tools", fr: "Débloquer les 6 outils", cs: "Odemknout všech 6 nástrojů" },
   "reconnect.unlock_desc": { en: "Access all sacred reconnection tools with a Sacred subscription. 7 days free.", fr: "Accédez à tous les outils sacrés avec un abonnement Sacred. 7 jours gratuits.", cs: "Přístup ke všem posvátným nástrojům s předplatným Sacred. 7 dní zdarma." },
 
+  // Rituals page (behind Right Now)
+  "rituals.title": { en: "Connection Rituals", fr: "Rituels de Connexion", cs: "Rituály spojení" },
+  "rituals.desc": { en: "Sacred practices for deepening physical, emotional and spiritual bonds", fr: "Pratiques sacrées pour approfondir les liens physiques, émotionnels et spirituels", cs: "Posvátné praktiky pro prohloubení fyzického, emočního a duchovního pouta" },
+  "rituals.step_guide": { en: "Step-by-step Guide", fr: "Guide Étape par Étape", cs: "Průvodce krok za krokem" },
+  "rituals.unlock": { en: "Unlock all 6 rituals", fr: "Débloquer les 6 rituels", cs: "Odemknout všech 6 rituálů" },
+  "rituals.unlock_desc": { en: "Access all sacred connection rituals with a Sacred subscription. 7 days free.", fr: "Accédez à tous les rituels sacrés avec un abonnement Sacred. 7 jours gratuits.", cs: "Přístup ke všem posvátným rituálům s předplatným Sacred. 7 dní zdarma." },
+
   // Paths page
   "paths.lineage": { en: "Ancient Traditions", fr: "Traditions Anciennes", cs: "Starověké tradice" },
   "paths.title": { en: "Sacred Paths", fr: "Chemins Sacrés", cs: "Posvátné cesty" },

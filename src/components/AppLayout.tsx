@@ -3,7 +3,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
-import { LogOut, Home, Users, Compass, Feather } from "lucide-react";
+import { LogOut, Home, Users, Compass, Feather, Heart } from "lucide-react";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const AppLayout = () => {
@@ -16,6 +16,7 @@ const AppLayout = () => {
     { to: "/app/connect", icon: Users, label: t("nav.connect") },
     { to: "/app/paths", icon: Compass, label: t("nav.paths") },
     { to: "/app/authors", icon: Feather, label: t("nav.authors") },
+    { to: "/app/reconnect", icon: Heart, label: t("nav.reconnect") },
   ];
 
   return (

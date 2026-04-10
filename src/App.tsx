@@ -12,6 +12,7 @@ import Auth from "./pages/Auth";
 import AppHome from "./pages/AppHome";
 import Connect from "./pages/Connect";
 import Reconnect from "./pages/Reconnect";
+import Rituals from "./pages/Rituals";
 import Paths from "./pages/Paths";
 import Authors from "./pages/Authors";
 import Pricing from "./pages/Pricing";
@@ -44,6 +45,7 @@ const App = () => (
                 <Route index element={<AppHome />} />
                 <Route path="connect" element={<Connect />} />
                 <Route path="reconnect" element={<Reconnect />} />
+                <Route path="rituals" element={<Rituals />} />
                 <Route path="paths" element={<Paths />} />
                 <Route path="authors" element={<Authors />} />
               </Route>
