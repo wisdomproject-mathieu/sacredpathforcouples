@@ -489,8 +489,13 @@ const translations: Record<string, Record<Language, string>> = {
   "temple.title": { en: "The Temple", fr: "Le Temple", cs: "Chrám" },
   "temple.subtitle": { en: "Your private sacred space — reconnect, play, and deepen together.", fr: "Votre espace sacré privé — reconnectez-vous, jouez et approfondissez ensemble.", cs: "Váš soukromý posvátný prostor — znovu se spojte, hrajte si a prohlubujte společně." },
   "temple.tab.weather": { en: "Weather", fr: "Météo", cs: "Počasí" },
-  "temple.tab.rituals": { en: "Ritual Cards", fr: "Cartes Rituelles", cs: "Rituální karty" },
+  "temple.tab.rituals": { en: "Rituals", fr: "Rituels", cs: "Rituály" },
+  "temple.tab.positions": { en: "Positions", fr: "Positions", cs: "Pozice" },
   "temple.tab.messages": { en: "Messages", fr: "Messages", cs: "Zprávy" },
+  "temple.tab.pathways": { en: "Pathways", fr: "Chemins", cs: "Cesty" },
+  "temple.tab.altar": { en: "Altar", fr: "Autel", cs: "Oltář" },
+  "temple.tab.repair": { en: "Repair", fr: "Réparer", cs: "Oprava" },
+  "temple.tab.guide": { en: "Guide", fr: "Guide", cs: "Průvodce" },
 
   // Intimacy Weather
   "weather.title": { en: "Intimacy Weather", fr: "Météo de l'intimité", cs: "Počasí intimity" },
