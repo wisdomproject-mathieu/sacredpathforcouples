@@ -1,162 +1,171 @@
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Lock } from "lucide-react";
+import { Lock, ChevronDown, ChevronUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
-const tabs = [
-  { id: "osho", label: "Osho", symbol: "◉", free: true },
-  { id: "deida", label: "Deida", symbol: "✦", free: true },
-  { id: "anand", label: "Anand", symbol: "✧", free: true },
-  { id: "richardson", label: "Richardson", symbol: "✿", free: false },
-  { id: "chia", label: "Mantak Chia", symbol: "☯", free: false },
+const authors = [
+  {
+    id: "osho",
+    symbol: "◉",
+    free: true,
+    tags: ["Tantra", "Consciousness", "Acceptance", "Energy"],
+    books: "From Sex to Superconsciousness · Book of Secrets · Tantra",
+  },
+  {
+    id: "deida",
+    symbol: "✦",
+    free: true,
+    tags: ["Polarity", "Presence", "Edge", "Surrender"],
+    books: "Way of the Superior Man · Intimate Communion · Blue Truth",
+  },
+  {
+    id: "anand",
+    symbol: "✧",
+    free: true,
+    tags: ["SkyDancing", "Ecstasy", "Sexual Magic", "Awakening"],
+    books: "The Art of Sexual Ecstasy · The Art of Sexual Magic",
+  },
+  {
+    id: "richardson",
+    symbol: "✿",
+    free: false,
+    tags: ["Slow Sex", "Soft Entry", "Stillness", "Healing"],
+    books: "Heart of Tantric Sex · Slow Sex · Tantric Sex for Men",
+  },
+  {
+    id: "chia",
+    symbol: "☯",
+    free: false,
+    tags: ["Chi Flow", "Jing", "Orbit", "Longevity"],
+    books: "Taoist Secrets of Love · Multi-Orgasmic Couple · Healing Love",
+  },
 ];
-
-const authorData: Record<string, { quoteKey: string; ritualTitleKey: string; ritualDescKey: string; premiumQuotes: string[]; premiumRituals: string[] }> = {
-  osho: {
-    quoteKey: "author.osho.quote",
-    ritualTitleKey: "author.osho.ritual_title",
-    ritualDescKey: "author.osho.ritual_desc",
-    premiumQuotes: ["author.osho.pq1"],
-    premiumRituals: ["author.osho.pr1"],
-  },
-  deida: {
-    quoteKey: "author.deida.quote",
-    ritualTitleKey: "author.deida.ritual_title",
-    ritualDescKey: "author.deida.ritual_desc",
-    premiumQuotes: ["author.deida.pq1"],
-    premiumRituals: ["author.deida.pr1"],
-  },
-  anand: {
-    quoteKey: "author.anand.quote",
-    ritualTitleKey: "author.anand.ritual_title",
-    ritualDescKey: "author.anand.ritual_desc",
-    premiumQuotes: ["author.anand.pq1"],
-    premiumRituals: ["author.anand.pr1"],
-  },
-  richardson: {
-    quoteKey: "author.richardson.quote",
-    ritualTitleKey: "author.richardson.ritual_title",
-    ritualDescKey: "author.richardson.ritual_desc",
-    premiumQuotes: [],
-    premiumRituals: [],
-  },
-  chia: {
-    quoteKey: "author.chia.quote",
-    ritualTitleKey: "author.chia.ritual_title",
-    ritualDescKey: "author.chia.ritual_desc",
-    premiumQuotes: [],
-    premiumRituals: [],
-  },
-};
 
 const Authors = () => {
   const { t } = useLanguage();
-  const [activeTab, setActiveTab] = useState("osho");
-
-  const tab = tabs.find((tb) => tb.id === activeTab)!;
-  const data = authorData[activeTab];
-  const isLocked = !tab.free;
+  const [expandedAuthor, setExpandedAuthor] = useState<string | null>(null);
 
   return (
     <div className="px-4 py-8 pb-24">
       <div className="container max-w-3xl">
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-10">
           <p className="text-[10px] uppercase tracking-[0.3em] text-primary font-body mb-2">{t("authors.lineage")}</p>
-          <h1 className="font-heading text-3xl font-semibold text-foreground mb-2">{t("authors.title")}</h1>
-          <p className="text-muted-foreground font-body text-sm">{t("authors.subtitle")}</p>
+          <h1 className="font-heading text-3xl font-semibold text-foreground mb-3">{t("authors.title")}</h1>
+          <p className="text-muted-foreground font-body text-sm leading-relaxed max-w-lg mx-auto">{t("authors.subtitle")}</p>
         </div>
 
-        {/* Tab Bar */}
-        <div className="flex justify-center gap-1 mb-8 flex-wrap">
-          {tabs.map((tb) => (
-            <button
-              key={tb.id}
-              onClick={() => setActiveTab(tb.id)}
-              className={`px-4 py-2 rounded-full text-xs font-body transition-all flex items-center gap-1 ${
-                activeTab === tb.id
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-              }`}
-            >
-              {!tb.free && <Lock size={10} />}
-              {tb.label.toUpperCase()}
-            </button>
-          ))}
-        </div>
+        {/* Author Cards */}
+        <div className="space-y-4">
+          {authors.map((author) => {
+            const isLocked = !author.free;
+            const isExpanded = expandedAuthor === author.id;
+            const data = author.free ? {
+              quoteKey: `author.${author.id}.quote`,
+              ritualTitleKey: `author.${author.id}.ritual_title`,
+              ritualDescKey: `author.${author.id}.ritual_desc`,
+            } : null;
 
-        {/* Tab content */}
-        <div className="text-center mb-8">
-          <span className="text-4xl block mb-3">{tab.symbol}</span>
-          <h2 className="font-heading text-2xl font-semibold text-foreground mb-2">{t(`author.${activeTab}.name`)}</h2>
-          <p className="text-sm text-muted-foreground font-body max-w-lg mx-auto leading-relaxed">{t(`author.${activeTab}.desc`)}</p>
-        </div>
-
-        {isLocked ? (
-          <div className="rounded-xl border border-primary/30 bg-primary/5 p-8 text-center">
-            <Lock className="h-8 w-8 text-primary mx-auto mb-3" />
-            <h3 className="font-heading text-lg font-semibold text-foreground mb-2">{t("authors.unlock")}</h3>
-            <p className="text-xs text-muted-foreground font-body mb-4">{t("authors.unlock_desc")}</p>
-            <Link to="/pricing">
-              <Button className="font-body" size="sm">{t("teachings.view_plans")}</Button>
-            </Link>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {/* Free Quote */}
-            <div className="rounded-xl border border-border bg-card p-6">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-body mb-3">{t("paths.quote")} — {t(`author.${activeTab}.name`)}</p>
-              <p className="text-foreground font-heading italic text-lg leading-relaxed mb-2">
-                &ldquo;{t(data.quoteKey)}&rdquo;
-              </p>
-            </div>
-
-            {/* Free Ritual */}
-            <div className="rounded-xl border border-border bg-card p-6">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-body mb-3">{t("paths.ritual")}</p>
-              <h3 className="font-heading text-base font-semibold text-foreground mb-2">{t(data.ritualTitleKey)}</h3>
-              <p className="text-sm text-muted-foreground font-body leading-relaxed">{t(data.ritualDescKey)}</p>
-            </div>
-
-            {/* Premium content */}
-            {data.premiumQuotes.map((key, i) => (
-              <div key={i} className="rounded-xl border border-border/50 bg-card/50 p-6 relative">
-                <div className="absolute top-4 right-4 flex items-center gap-1 text-[10px] text-primary font-body bg-primary/10 px-2 py-0.5 rounded-full">
-                  <Lock size={10} /> {t("teachings.premium")}
+            return (
+              <div key={author.id} className="rounded-xl border border-border bg-card overflow-hidden">
+                {/* Card Header */}
+                <div
+                  className={`p-6 ${author.free ? "cursor-pointer" : ""}`}
+                  onClick={() => author.free && setExpandedAuthor(isExpanded ? null : author.id)}
+                >
+                  <div className="flex items-start gap-4">
+                    <span className="text-3xl text-primary flex-shrink-0 mt-1">{author.symbol}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h2 className="font-heading text-xl font-semibold text-foreground">
+                          {t(`author.${author.id}.name`)}
+                        </h2>
+                        {isLocked && (
+                          <span className="flex items-center gap-1 text-[10px] text-primary font-body bg-primary/10 px-2 py-0.5 rounded-full">
+                            <Lock size={10} /> {t("teachings.premium")}
+                          </span>
+                        )}
+                        {author.free && (
+                          <span className="ml-auto flex-shrink-0">
+                            {isExpanded ? (
+                              <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                            ) : (
+                              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                            )}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm text-muted-foreground font-body leading-relaxed mb-3">
+                        {t(`author.${author.id}.desc`)}
+                      </p>
+                      <div className="flex flex-wrap gap-1.5 mb-2">
+                        {author.tags.map((tag) => (
+                          <span key={tag} className="text-[10px] text-primary/80 font-body bg-primary/5 px-2 py-0.5 rounded-full">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                      <p className="text-[10px] text-muted-foreground/60 font-body">{author.books}</p>
+                    </div>
+                  </div>
                 </div>
-                <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-body mb-3">{t("paths.quote")}</p>
-                <p className="text-muted-foreground/50 font-heading italic text-lg leading-relaxed blur-[3px] select-none">
-                  {t(key)}
-                </p>
-                <p className="text-xs text-muted-foreground font-body italic mt-2">{t("teachings.unlock_hint")}</p>
-              </div>
-            ))}
 
-            {data.premiumRituals.map((key, i) => (
-              <div key={`r${i}`} className="rounded-xl border border-border/50 bg-card/50 p-6 relative">
-                <div className="absolute top-4 right-4 flex items-center gap-1 text-[10px] text-primary font-body bg-primary/10 px-2 py-0.5 rounded-full">
-                  <Lock size={10} /> {t("teachings.premium")}
-                </div>
-                <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-body mb-3">{t("paths.ritual")}</p>
-                <h3 className="font-heading text-base font-semibold text-muted-foreground/50 mb-2 blur-[2px] select-none">{t(key)}</h3>
-                <p className="text-xs text-muted-foreground font-body italic mt-2">{t("teachings.unlock_hint")}</p>
-              </div>
-            ))}
-          </div>
-        )}
+                {/* Expanded Content — Free authors only */}
+                {isExpanded && data && (
+                  <div className="border-t border-border px-6 pb-6 pt-4 space-y-4 animate-fade-in">
+                    {/* Free Quote */}
+                    <div className="rounded-lg bg-secondary/30 p-4">
+                      <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-body mb-2">
+                        {t(`author.${author.id}.name`)}
+                      </p>
+                      <p className="text-foreground font-heading italic text-base leading-relaxed">
+                        &ldquo;{t(data.quoteKey)}&rdquo;
+                      </p>
+                    </div>
 
-        {/* Unlock CTA */}
-        {!isLocked && (
-          <div className="mt-8 rounded-xl border border-primary/30 bg-primary/5 p-6 text-center">
-            <span className="text-2xl block mb-3">✦</span>
-            <h3 className="font-heading text-lg font-semibold text-foreground mb-2">{t("authors.unlock_all")}</h3>
-            <p className="text-xs text-muted-foreground font-body mb-4">{t("authors.unlock_all_desc")}</p>
-            <Link to="/pricing">
-              <Button className="font-body" size="sm">{t("teachings.view_plans")}</Button>
-            </Link>
-          </div>
-        )}
+                    {/* Free Ritual */}
+                    <div className="rounded-lg bg-secondary/30 p-4">
+                      <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-body mb-2">{t("paths.ritual")}</p>
+                      <h3 className="font-heading text-sm font-semibold text-foreground mb-1.5">{t(data.ritualTitleKey)}</h3>
+                      <p className="text-xs text-muted-foreground font-body leading-relaxed">{t(data.ritualDescKey)}</p>
+                    </div>
+
+                    {/* Premium teaser */}
+                    <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 text-center">
+                      <p className="text-xs text-muted-foreground font-body mb-2">{t("teachings.unlock_hint")}</p>
+                      <Link to="/pricing">
+                        <Button variant="outline" size="sm" className="font-body text-xs border-primary/30 text-primary hover:bg-primary/10">
+                          {t("teachings.view_plans")}
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                )}
+
+                {/* Locked overlay for premium authors */}
+                {isLocked && (
+                  <div className="border-t border-border/50 px-6 py-4 bg-card/50 text-center">
+                    <Link to="/pricing">
+                      <Button variant="outline" size="sm" className="font-body text-xs border-primary/30 text-primary hover:bg-primary/10">
+                        <Lock size={12} className="mr-1.5" /> {t("teachings.view_plans")}
+                      </Button>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Bottom CTA */}
+        <div className="mt-8 text-center">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-body mb-2">✦</p>
+          <p className="text-sm text-muted-foreground font-body mb-3">{t("authors.unlock_all_desc")}</p>
+          <Link to="/pricing">
+            <Button className="font-body" size="sm">{t("authors.unlock_all")}</Button>
+          </Link>
+        </div>
       </div>
     </div>
   );
