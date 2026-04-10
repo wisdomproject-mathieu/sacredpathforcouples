@@ -20,6 +20,8 @@ const translations: Record<string, Record<Language, string>> = {
   // Nav & Global
   "nav.home": { en: "Home", fr: "Accueil", cs: "Domů" },
   "nav.connect": { en: "Connect", fr: "Connexion", cs: "Propojit" },
+  "nav.paths": { en: "Paths", fr: "Chemins", cs: "Cesty" },
+  "nav.authors": { en: "Authors", fr: "Auteurs", cs: "Autoři" },
   "nav.reconnect": { en: "Reconnect", fr: "Reconnecter", cs: "Rituály" },
   "nav.teachings": { en: "Teachings", fr: "Enseignements", cs: "Učení" },
   "nav.pricing": { en: "Pricing", fr: "Tarifs", cs: "Ceník" },
@@ -213,15 +215,35 @@ const translations: Record<string, Record<Language, string>> = {
 
   // Intimacy weather
   "weather.stormy": { en: "Stormy", fr: "Orageux", cs: "Bouřkovo" },
-  "weather.stormy_desc": { en: "Tension in the air", fr: "Tension dans l'air", cs: "Napětí ve vzduchu" },
   "weather.cloudy": { en: "Cloudy", fr: "Nuageux", cs: "Oblačno" },
-  "weather.cloudy_desc": { en: "Slight distance", fr: "Légère distance", cs: "Lehký odstup" },
-  "weather.partly": { en: "Partly Sunny", fr: "Partiellement Ensoleillé", cs: "Polojasno" },
-  "weather.partly_desc": { en: "Close, but quiet", fr: "Proche, mais silencieux", cs: "Blízko, ale ticho" },
-  "weather.sunny": { en: "Sunny", fr: "Ensoleillé", cs: "Jasno" },
-  "weather.sunny_desc": { en: "Harmony and warmth", fr: "Harmonie et chaleur", cs: "Harmonie a teplo" },
-  "weather.hot": { en: "Hot", fr: "Brûlant", cs: "Žhavé" },
-  "weather.hot_desc": { en: "Passion and connection", fr: "Passion et connexion", cs: "Vášeň a spojení" },
+  "weather.warm": { en: "Warm", fr: "Chaleureux", cs: "Teplo" },
+  "weather.electric": { en: "Electric", fr: "Électrique", cs: "Elektrické" },
+  "weather.radiant": { en: "Radiant", fr: "Radieux", cs: "Zářivé" },
+  "weather.you": { en: "YOU", fr: "VOUS", cs: "TY" },
+  "weather.partner": { en: "PARTNER", fr: "PARTENAIRE", cs: "PARTNER" },
+  "weather.result_title": { en: "Your Intimacy Forecast", fr: "Votre Prévision d'Intimité", cs: "Vaše předpověď intimity" },
+  "weather.reset": { en: "Reset for tomorrow", fr: "Réinitialiser pour demain", cs: "Reset na zítra" },
+  "weather.pick_desc": { en: "Each of you picks your inner state today — privately. Then see each other's. One glance, no explanation needed.", fr: "Chacun choisit son état intérieur — en privé. Puis voyez celui de l'autre.", cs: "Každý si soukromě vybere svůj vnitřní stav. Pak se podívejte na ten druhého." },
+
+  // Weather combination messages
+  "weather.combo.stormy_stormy": { en: "Two storms meeting. Tonight isn't about fixing — it's about being honest that it's hard. Sit together in silence first.", fr: "Deux tempêtes. Ce soir, soyez honnêtes.", cs: "Dvě bouřky. Dnes večer buďte upřímní." },
+  "weather.combo.electric_warm": { en: "Warmth and charge — a beautifully creative pairing. Something intentional wants to emerge.", fr: "Chaleur et charge — quelque chose d'intentionnel veut émerger.", cs: "Teplo a náboj — něco záměrného chce vyjít najevo." },
+  "weather.combo.radiant_radiant": { en: "Both radiant — this is rare and beautiful. Let yourselves be seen fully tonight.", fr: "Tous deux radieux — rare et beau. Laissez-vous voir pleinement.", cs: "Oba záříte — vzácné a krásné. Nechte se dnes plně vidět." },
+  "weather.combo.default": { en: "Choose one practice together before you begin. Let the direction be mutual.", fr: "Choisissez une pratique ensemble. Que la direction soit mutuelle.", cs: "Vyberte si společně jednu praktiku. Ať je směr vzájemný." },
+
+  // Intimacy games prompts
+  "games.prompt.0": { en: "What is something you've never told your partner about what attracts you to them?", fr: "Qu'est-ce que vous n'avez jamais dit à votre partenaire sur ce qui vous attire?", cs: "Co jste partnerovi nikdy neřekli o tom, co vás k němu přitahuje?" },
+  "games.prompt.1": { en: "Describe a moment when you felt the deepest connection with your partner.", fr: "Décrivez un moment de connexion profonde avec votre partenaire.", cs: "Popište okamžik, kdy jste cítili nejhlubší spojení s partnerem." },
+  "games.prompt.2": { en: "If you could relive one intimate moment together, which would it be?", fr: "Si vous pouviez revivre un moment intime, lequel serait-ce?", cs: "Kdybyste mohli znovu prožít jeden intimní okamžik, který by to byl?" },
+  "games.prompt.3": { en: "What does your partner do that makes you feel most loved?", fr: "Que fait votre partenaire qui vous fait sentir le plus aimé(e)?", cs: "Co dělá váš partner, díky čemu se cítíte nejvíce milováni?" },
+  "games.prompt.4": { en: "Share a fantasy or dream you'd like to explore together.", fr: "Partagez un fantasme que vous aimeriez explorer ensemble.", cs: "Sdílejte fantazii, kterou byste chtěli prozkoumat společně." },
+  "games.prompt.5": { en: "What is one thing you'd like more of in your intimate life?", fr: "Qu'aimeriez-vous avoir plus dans votre vie intime?", cs: "Co byste si přáli více ve svém intimním životě?" },
+  "games.prompt.6": { en: "Tell your partner three things you find beautiful about their body.", fr: "Dites trois choses que vous trouvez belles chez votre partenaire.", cs: "Řekněte partnerovi tři věci, které na jeho těle považujete za krásné." },
+  "games.prompt.7": { en: "What was the first thing that attracted you to your partner?", fr: "Quelle a été la première chose qui vous a attiré(e)?", cs: "Co vás na partnerovi přitáhlo jako první?" },
+  "games.draw": { en: "Draw a Card", fr: "Tirer une Carte", cs: "Vytáhnout kartu" },
+  "games.next": { en: "Next Card", fr: "Carte Suivante", cs: "Další karta" },
+  "games.subscribe_banner": { en: "You've explored the free prompts! Unlock 50+ intimate conversation cards with a Sacred subscription.", fr: "Débloquez 50+ cartes avec un abonnement Sacred.", cs: "Odemkněte 50+ karet s předplatným Sacred." },
+  "games.back": { en: "← Back to all tools", fr: "← Retour aux outils", cs: "← Zpět na nástroje" },
 
   // Connect page
   "connect.find_person": { en: "Find Your Person", fr: "Trouvez Votre Personne", cs: "Najděte svou osobu" },
