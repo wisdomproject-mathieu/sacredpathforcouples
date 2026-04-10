@@ -310,39 +310,81 @@ const translations: Record<string, Record<Language, string>> = {
   "ritual.5.step.5": { en: "End with a hug and share your feelings", fr: "Terminez par une étreinte et partagez vos sentiments", cs: "Zakončete objetím a sdílením pocitů" },
 
   // Teachings
+  "teachings.lineage": { en: "Wisdom Lineage", fr: "Lignée de Sagesse", cs: "Linie moudrosti" },
   "teachings.title": { en: "Sacred Teachings", fr: "Enseignements Sacrés", cs: "Posvátná učení" },
-  "teachings.desc": { en: "Wisdom from great tantric masters", fr: "Sagesse des grands maîtres tantriques", cs: "Moudrost od velkých tantrických mistrů" },
+  "teachings.subtitle": { en: "Two ancient traditions and three modern guides for the sacred life of a couple", fr: "Deux traditions anciennes et trois guides modernes pour la vie sacrée d'un couple", cs: "Dvě starověké tradice a tři moderní průvodci pro posvátný život páru" },
   "teachings.premium": { en: "Premium", fr: "Premium", cs: "Premium" },
   "teachings.unlock_hint": { en: "Unlock this teaching with a Sacred subscription...", fr: "Débloquez cet enseignement avec un abonnement Sacred...", cs: "Odemkněte toto učení s předplatným Sacred..." },
   "teachings.unlock_all": { en: "Unlock all teachings", fr: "Débloquer tous les enseignements", cs: "Odemkněte všechna učení" },
   "teachings.lesson_count": { en: "50+ lessons from tantric masters. 7 days free.", fr: "50+ leçons de maîtres tantriques. 7 jours gratuits.", cs: "50+ lekcí od tantrických mistrů. 7 dní zdarma." },
   "teachings.view_plans": { en: "View plans", fr: "Voir les plans", cs: "Zobrazit plány" },
 
-  // Teaching titles
-  "teaching.0.title": { en: "The Art of Being Present in Love", fr: "L'Art d'Être Présent dans l'Amour", cs: "Umění být přítomný v lásce" },
-  "teaching.0.content": {
-    en: "Love is a state of being. You cannot 'do' it — you can only be it. When fully present with your partner, without thoughts of past or future, you open a door to a space where love naturally flows. Practice: Sit with your partner today for 5 minutes in silence. No phones, no words. Just be together.",
-    fr: "L'amour est un état d'être. Vous ne pouvez pas le 'faire' — vous pouvez seulement l'être. Quand vous êtes pleinement présent avec votre partenaire, sans pensées du passé ou du futur, vous ouvrez une porte vers un espace où l'amour coule naturellement. Pratique: Asseyez-vous aujourd'hui avec votre partenaire 5 minutes en silence.",
-    cs: "Láska je stav bytí. Nemůžete ji 'dělat' — můžete ji pouze být. Když jste plně přítomní se svým partnerem, bez myšlenek na minulost nebo budoucnost, otevíráte dveře do prostoru, kde láska přirozeně proudí. Praxe: Sedněte si dnes s partnerem na 5 minut v tichu. Žádné telefony, žádná slova. Jen buďte spolu.",
-  },
-  "teaching.1.title": { en: "The Way of the Superior Man — Polarity", fr: "La Voie de l'Homme Supérieur — Polarité", cs: "Cesta vyššího muže — Polarita" },
-  "teaching.1.content": {
-    en: "Sexual attraction is the flow between poles — masculine and feminine. The stronger the polarity, the deeper the attraction. Masculine energy is presence, direction, depth. Feminine energy is flow, radiance, luminosity. Both poles live in each of us. Practice: Notice today when you lead and when you follow. Explore both roles consciously.",
-    fr: "L'attraction sexuelle est le flux entre les pôles — masculin et féminin. Plus la polarité est forte, plus l'attraction est profonde. L'énergie masculine est présence, direction, profondeur. L'énergie féminine est flux, radiance, luminosité. Pratique: Remarquez aujourd'hui quand vous menez et quand vous suivez.",
-    cs: "Sexuální přitažlivost je proudění mezi póly — maskulinním a femininním. Čím silnější polarita, tím hlubší přitažlivost. Maskulinní energie je přítomnost, směr, hloubka. Femininní energie je tok, zářivost, radiance. Oba póly žijí v každém z nás. Praxe: Všimněte si dnes, kdy vedete a kdy následujete.",
-  },
-  "teaching.2.title": { en: "The Art of Sexual Ecstasy", fr: "L'Art de l'Extase Sexuelle", cs: "Umění sexuální extáze" },
-  "teaching.2.content": {
-    en: "Tantra teaches us that sexual energy is a sacred force — the same force that created the universe. When we learn to work with it consciously, it transforms from mere physical pleasure into a path to awakening. Practice: Begin every act of love with 5 minutes of synchronized breathing and eye contact.",
-    fr: "Le Tantra nous enseigne que l'énergie sexuelle est une force sacrée — la même force qui a créé l'univers. Quand nous apprenons à travailler avec elle consciemment, elle se transforme en un chemin vers l'éveil. Pratique: Commencez chaque acte d'amour par 5 minutes de respiration synchronisée et de contact visuel.",
-    cs: "Tantra nás učí, že sexuální energie je posvátná síla — ta samá síla, která stvořila vesmír. Když se naučíme s ní pracovat vědomě, transformuje se z pouhého fyzického potěšení na cestu k probuzení. Praxe: Začněte každý milostný akt 5 minutami synchronizovaného dechu a očního kontaktu.",
-  },
+  // Tab descriptions
+  "teach.tantra.name": { en: "Tantra", fr: "Tantra", cs: "Tantra" },
+  "teach.tantra.desc": { en: "The path of weaving. Body, breath, energy and consciousness united. The body is not an obstacle to awakening — it is the instrument of it.", fr: "Le chemin du tissage. Corps, souffle, énergie et conscience unis. Le corps n'est pas un obstacle à l'éveil — il en est l'instrument.", cs: "Cesta tkaní. Tělo, dech, energie a vědomí sjednocené. Tělo není překážkou probuzení — je jeho nástrojem." },
+  "teach.tao.name": { en: "Tao", fr: "Tao", cs: "Tao" },
+  "teach.tao.desc": { en: "The path of natural flow. Yin-yang harmony, chi cultivation, loving longevity. Energy conserved becomes vitality that nourishes life.", fr: "Le chemin du flux naturel. Harmonie yin-yang, cultivation du chi. L'énergie conservée devient vitalité.", cs: "Cesta přirozeného toku. Harmonie jin-jang, kultivace čchi. Uchovaná energie se stává vitalitou." },
+  "teach.deida.name": { en: "David Deida", fr: "David Deida", cs: "David Deida" },
+  "teach.deida.desc": { en: "The electricity between masculine and feminine. Depth, presence, polarity. The courage to love without holding back anything.", fr: "L'électricité entre masculin et féminin. Profondeur, présence, polarité. Le courage d'aimer sans retenue.", cs: "Elektřina mezi maskulinním a femininním. Hloubka, přítomnost, polarita. Odvaha milovat beze zbytku." },
+  "teach.richardson.name": { en: "Diana Richardson", fr: "Diana Richardson", cs: "Diana Richardson" },
+  "teach.richardson.desc": { en: "Slow love. Soft presence. Stillness as the deepest intimacy. The goal is not ecstasy — it is presence.", fr: "Amour lent. Présence douce. L'immobilité comme intimité la plus profonde. Le but n'est pas l'extase — c'est la présence.", cs: "Pomalá láska. Jemná přítomnost. Ticho jako nejhlubší intimita. Cílem není extáze — je to přítomnost." },
+  "teach.anand.name": { en: "Margot Anand", fr: "Margot Anand", cs: "Margot Anand" },
+  "teach.anand.desc": { en: "SkyDancing Tantra — where pleasure, love, and awakening become one. Ecstasy is not a distraction from the spiritual path. It is the path.", fr: "SkyDancing Tantra — où plaisir, amour et éveil ne font qu'un. L'extase n'est pas une distraction du chemin spirituel. C'est le chemin.", cs: "SkyDancing Tantra — kde se potěšení, láska a probuzení stávají jedním. Extáze není odvedení od duchovní cesty. Je tou cestou." },
 
-  "teaching.3.title": { en: "Cultivating Sexual Energy", fr: "Cultiver l'Énergie Sexuelle", cs: "Kultivace sexuální energie" },
-  "teaching.4.title": { en: "Slow Love: Key to Lasting Intimacy", fr: "Amour Lent: Clé de l'Intimité Durable", cs: "Pomalá láska: Klíč k trvalé intimitě" },
-  "teaching.5.title": { en: "Making Love Without Fear", fr: "Faire l'Amour Sans Peur", cs: "Milování bez strachu" },
-  "teaching.6.title": { en: "Tantra: The Supreme Understanding", fr: "Tantra: La Compréhension Suprême", cs: "Tantra: Nejvyšší porozumění" },
-  "teaching.7.title": { en: "Intimate Communion", fr: "Communion Intime", cs: "Intimní společenství" },
+  // Tantra teachings
+  "teach.tantra.0.title": { en: "Osho — Tantric Wisdom", fr: "Osho — Sagesse Tantrique", cs: "Osho — Tantrická moudrost" },
+  "teach.tantra.0.content": { en: "Tantra says: accept yourself as you are. Don't fight with yourself, don't be divided within. The moment you accept yourself totally, something relaxes, and in that relaxation energy starts moving upward. Tantra's radical departure is its insistence on total self-acceptance. Rather than transcending desire, you move through it consciously.", fr: "Le Tantra dit: acceptez-vous tel que vous êtes. Ne luttez pas contre vous-même. Au moment où vous vous acceptez totalement, quelque chose se détend et l'énergie commence à monter.", cs: "Tantra říká: přijmi sebe takového, jaký jsi. Nebojuj sám se sebou. V okamžiku, kdy se zcela přijmete, něco se uvolní a energie se začne pohybovat vzhůru." },
+  "teach.tantra.0.tags": { en: "acceptance · energy · consciousness", fr: "acceptation · énergie · conscience", cs: "přijetí · energie · vědomí" },
+  "teach.tantra.1.title": { en: "Vijnanabhairava Tantra — Sacred Union", fr: "Vijnanabhairava Tantra — Union Sacrée", cs: "Vijnanabhairava Tantra — Posvátné sjednocení" },
+  "teach.tantra.1.content": { en: "When two people merge in sacred embrace, the mind dissolves into the heart, the heart dissolves into breath, and breath dissolves into the infinite. This is samadhi dressed as lovemaking. The Vijnanabhairava Tantra describes 112 methods of entering expanded states — several involve conscious union as a direct doorway to transcendence.", fr: "Quand deux personnes fusionnent dans une étreinte sacrée, l'esprit se dissout dans le cœur, le cœur dans le souffle, et le souffle dans l'infini.", cs: "Když se dva lidé slijí v posvátném objetí, mysl se rozpustí v srdci, srdce v dechu a dech v nekonečnu. To je samádhi oblečené do milování." },
+  "teach.tantra.1.tags": { en: "sacred union · samadhi · dissolution", fr: "union sacrée · samadhi · dissolution", cs: "posvátné sjednocení · samádhi · rozpuštění" },
+  "teach.tantra.2.title": { en: "Osho — From Sex to Superconsciousness", fr: "Osho — Du Sexe à la Superconscience", cs: "Osho — Od sexu k supervědomí" },
+  "teach.tantra.2.content": { en: "", fr: "", cs: "" },
+  "teach.tantra.2.tags": { en: "love · ego-dissolution · presence", fr: "amour · dissolution de l'ego · présence", cs: "láska · rozpuštění ega · přítomnost" },
+  "teach.tantra.3.title": { en: "Shiva-Shakti — Feminine Power", fr: "Shiva-Shakti — Pouvoir Féminin", cs: "Šiva-Šakti — Femininní síla" },
+  "teach.tantra.3.content": { en: "", fr: "", cs: "" },
+  "teach.tantra.3.tags": { en: "shakti · shiva · feminine power", fr: "shakti · shiva · pouvoir féminin", cs: "šakti · šiva · femininní síla" },
+
+  // Tao teachings
+  "teach.tao.0.title": { en: "Mantak Chia — Cultivating Sexual Energy", fr: "Mantak Chia — Cultiver l'Énergie Sexuelle", cs: "Mantak Chia — Kultivace sexuální energie" },
+  "teach.tao.0.content": { en: "When you learn to conserve and circulate sexual energy rather than discharge it, you discover an inexhaustible source of vitality. The Taoist masters taught that jing (sexual essence) can be transformed into chi (life force) and then into shen (spiritual radiance).", fr: "Quand vous apprenez à conserver et faire circuler l'énergie sexuelle, vous découvrez une source inépuisable de vitalité.", cs: "Když se naučíte uchovávat a cirkulovat sexuální energii místo jejího vybití, objevíte nevyčerpatelný zdroj vitality." },
+  "teach.tao.0.tags": { en: "jing · chi · shen · vitality", fr: "jing · chi · shen · vitalité", cs: "ťing · čchi · šen · vitalita" },
+  "teach.tao.1.title": { en: "Lao Tzu — The Way of Stillness", fr: "Lao Tseu — La Voie de l'Immobilité", cs: "Lao-c' — Cesta ticha" },
+  "teach.tao.1.content": { en: "To the mind that is still, the whole universe surrenders. And to two bodies that are still together, the whole universe opens like a flower. The Tao teaches that the greatest power comes not from effort but from effortless alignment with natural flow.", fr: "À l'esprit immobile, tout l'univers se rend. Le Tao enseigne que le plus grand pouvoir vient non pas de l'effort mais de l'alignement sans effort.", cs: "Klidné mysli se celý vesmír poddá. Tao učí, že největší síla pochází nikoli z úsilí, ale z přirozeného souznění s tokem." },
+  "teach.tao.1.tags": { en: "stillness · wu wei · natural flow", fr: "immobilité · wu wei · flux naturel", cs: "ticho · wu wei · přirozený tok" },
+  "teach.tao.2.title": { en: "Valley Orgasm & Chi Cultivation", fr: "Orgasme de la Vallée & Culture du Chi", cs: "Údolní orgasmus a kultivace čchi" },
+  "teach.tao.2.content": { en: "", fr: "", cs: "" },
+  "teach.tao.2.tags": { en: "valley orgasm · chi flow · longevity", fr: "orgasme de la vallée · flux de chi · longévité", cs: "údolní orgasmus · tok čchi · dlouhověkost" },
+
+  // Deida teachings
+  "teach.deida.0.title": { en: "Way of the Superior Man — Polarity", fr: "La Voie de l'Homme Supérieur — Polarité", cs: "Cesta vyššího muže — Polarita" },
+  "teach.deida.0.content": { en: "Sexual attraction is the flow between poles — masculine and feminine. The stronger the polarity, the deeper the attraction. Masculine energy is presence, direction, depth. Feminine energy is flow, radiance, luminosity. Both poles live in each of us.", fr: "L'attraction sexuelle est le flux entre les pôles — masculin et féminin. Plus la polarité est forte, plus l'attraction est profonde.", cs: "Sexuální přitažlivost je proudění mezi póly — maskulinním a femininním. Čím silnější polarita, tím hlubší přitažlivost." },
+  "teach.deida.0.tags": { en: "polarity · presence · edge · surrender", fr: "polarité · présence · limite · abandon", cs: "polarita · přítomnost · hrana · odevzdání" },
+  "teach.deida.1.title": { en: "Intimate Communion — Opening Beyond Fear", fr: "Communion Intime — S'Ouvrir Au-delà de la Peur", cs: "Intimní společenství — Otevření za strach" },
+  "teach.deida.1.content": { en: "If you are waiting for your partner to change before you open your heart fully, you are living in a prison of your own making. Real love begins when you stop negotiating and start offering your deepest gift — regardless of what you receive in return.", fr: "Si vous attendez que votre partenaire change avant d'ouvrir pleinement votre cœur, vous vivez dans une prison de votre propre fabrication.", cs: "Pokud čekáte, až se váš partner změní, než otevřete srdce, žijete ve vězení vlastní výroby." },
+  "teach.deida.1.tags": { en: "openness · courage · devotion", fr: "ouverture · courage · dévotion", cs: "otevřenost · odvaha · oddanost" },
+  "teach.deida.2.title": { en: "Blue Truth — Living the Deepest Moment", fr: "Vérité Bleue — Vivre le Moment le Plus Profond", cs: "Modrá pravda — Žít nejhlubší okamžik" },
+  "teach.deida.2.content": { en: "", fr: "", cs: "" },
+  "teach.deida.2.tags": { en: "truth · depth · moment", fr: "vérité · profondeur · moment", cs: "pravda · hloubka · okamžik" },
+
+  // Richardson teachings
+  "teach.rich.0.title": { en: "Heart of Tantric Sex — Slow Presence", fr: "Cœur du Sexe Tantrique — Présence Lente", cs: "Srdce tantrického sexu — Pomalá přítomnost" },
+  "teach.rich.0.content": { en: "The goal is not ecstasy. It is presence. Ecstasy may arise, but it is never the target. When we slow down and bring full awareness to our bodies, something profound shifts. We move from doing to being, from performance to presence.", fr: "Le but n'est pas l'extase. C'est la présence. Quand nous ralentissons et apportons une pleine conscience à nos corps, quelque chose de profond change.", cs: "Cílem není extáze. Je to přítomnost. Když zpomalíme a přineseme plné uvědomění k našim tělům, něco hlubokého se změní." },
+  "teach.rich.0.tags": { en: "slow sex · soft entry · stillness · healing", fr: "slow sex · entrée douce · immobilité · guérison", cs: "pomalý sex · jemný vstup · ticho · uzdravení" },
+  "teach.rich.1.title": { en: "Slow Sex — Seeing Your Partner Again", fr: "Slow Sex — Revoir Votre Partenaire", cs: "Slow Sex — Opětovné vidění partnera" },
+  "teach.rich.1.content": { en: "After years of conventional sex, many couples have become strangers in bed. Slow sex is the practice of seeing your partner again, as if for the very first time. It requires dropping all expectations and approaching each other with fresh curiosity.", fr: "Après des années de sexe conventionnel, beaucoup de couples sont devenus des étrangers au lit. Le slow sex est la pratique de revoir son partenaire.", cs: "Po letech konvenčního sexu se mnoho párů stalo cizinci v posteli. Pomalý sex je praxí opětovného vidění partnera." },
+  "teach.rich.1.tags": { en: "presence · renewal · softness", fr: "présence · renouveau · douceur", cs: "přítomnost · obnova · jemnost" },
+  "teach.rich.2.title": { en: "Tantric Sex for Men — The Art of Receiving", fr: "Sexe Tantrique pour Hommes — L'Art de Recevoir", cs: "Tantrický sex pro muže — Umění přijímat" },
+  "teach.rich.2.content": { en: "", fr: "", cs: "" },
+  "teach.rich.2.tags": { en: "masculine · receiving · vulnerability", fr: "masculin · réception · vulnérabilité", cs: "maskulinní · přijímání · zranitelnost" },
+
+  // Anand teachings
+  "teach.anand.0.title": { en: "The Art of Sexual Ecstasy", fr: "L'Art de l'Extase Sexuelle", cs: "Umění sexuální extáze" },
+  "teach.anand.0.content": { en: "Sexual energy is the most powerful creative force available to human beings. In Tantra, instead of releasing this energy in a moment of pleasure, you learn to circulate it, amplify it, and direct it — transforming it into vitality, creativity, and love.", fr: "L'énergie sexuelle est la force créatrice la plus puissante. En Tantra, au lieu de la libérer, vous apprenez à la faire circuler, l'amplifier et la diriger.", cs: "Sexuální energie je nejmocnější tvůrčí síla dostupná lidem. V tantře se místo jejího uvolnění naučíte ji cirkulovat, zesilovat a směrovat." },
+  "teach.anand.0.tags": { en: "SkyDancing · ecstasy · sexual magic · awakening", fr: "SkyDancing · extase · magie sexuelle · éveil", cs: "SkyDancing · extáze · sexuální magie · probuzení" },
+  "teach.anand.1.title": { en: "The Art of Sexual Magic", fr: "L'Art de la Magie Sexuelle", cs: "Umění sexuální magie" },
+  "teach.anand.1.content": { en: "", fr: "", cs: "" },
+  "teach.anand.1.tags": { en: "ritual · manifestation · energy", fr: "rituel · manifestation · énergie", cs: "rituál · manifestace · energie" },
 
   // Pricing
   "pricing.title": { en: "Choose Your Path", fr: "Choisissez Votre Chemin", cs: "Vyberte si svou cestu" },
