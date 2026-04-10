@@ -41,6 +41,47 @@ export type Database = {
         }
         Relationships: []
       }
+      memory_altar: {
+        Row: {
+          author_id: string
+          content: string | null
+          couple_id: string
+          created_at: string
+          id: string
+          memory_type: string
+          pinned: boolean
+          title: string
+        }
+        Insert: {
+          author_id: string
+          content?: string | null
+          couple_id: string
+          created_at?: string
+          id?: string
+          memory_type?: string
+          pinned?: boolean
+          title: string
+        }
+        Update: {
+          author_id?: string
+          content?: string | null
+          couple_id?: string
+          created_at?: string
+          id?: string
+          memory_type?: string
+          pinned?: boolean
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "memory_altar_couple_id_fkey"
+            columns: ["couple_id"]
+            isOneToOne: false
+            referencedRelation: "couples"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       partner_messages: {
         Row: {
           content: string
