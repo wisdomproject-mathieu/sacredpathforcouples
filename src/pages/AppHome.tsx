@@ -2,98 +2,136 @@ import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
-import LotusIcon from "@/components/tantra-icons/LotusIcon";
-import FlameIcon from "@/components/tantra-icons/FlameIcon";
-import YinYangIcon from "@/components/tantra-icons/YinYangIcon";
-import ChakraIcon from "@/components/tantra-icons/ChakraIcon";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const weatherEmojis = ["🌧️", "⛅", "🌤️", "☀️", "🔥"];
-const weatherKeys = ["stormy", "cloudy", "partly", "sunny", "hot"] as const;
+const quotes = [
+  {
+    authorKey: "Osho",
+    bookKey: "home.q0_book",
+    quoteKey: "home.q0",
+    tagKey: "Tantra",
+  },
+  {
+    authorKey: "Mantak Chia",
+    bookKey: "home.q1_book",
+    quoteKey: "home.q1",
+    tagKey: "Tao",
+  },
+  {
+    authorKey: "David Deida",
+    bookKey: "home.q2_book",
+    quoteKey: "home.q2",
+    tagKey: "Deida",
+  },
+  {
+    authorKey: "Diana Richardson",
+    bookKey: "home.q3_book",
+    quoteKey: "home.q3",
+    tagKey: "Richardson",
+  },
+  {
+    authorKey: "Vijnanabhairava Tantra",
+    bookKey: "",
+    quoteKey: "home.q4",
+    tagKey: "Tantra",
+  },
+  {
+    authorKey: "Lao Tzu",
+    bookKey: "home.q5_book",
+    quoteKey: "home.q5",
+    tagKey: "Tao",
+  },
+  {
+    authorKey: "David Deida",
+    bookKey: "home.q6_book",
+    quoteKey: "home.q6",
+    tagKey: "Deida",
+  },
+  {
+    authorKey: "Diana Richardson",
+    bookKey: "home.q7_book",
+    quoteKey: "home.q7",
+    tagKey: "Richardson",
+  },
+];
+
+const practices = [
+  { titleKey: "home.prac0_title", descKey: "home.prac0_desc", tag: "Deida" },
+  { titleKey: "home.prac1_title", descKey: "home.prac1_desc", tag: "Tantra" },
+  { titleKey: "home.prac2_title", descKey: "home.prac2_desc", tag: "Richardson" },
+  { titleKey: "home.prac3_title", descKey: "home.prac3_desc", tag: "Tao" },
+  { titleKey: "home.prac4_title", descKey: "home.prac4_desc", tag: "Tantra" },
+  { titleKey: "home.prac5_title", descKey: "home.prac5_desc", tag: "Deida" },
+  { titleKey: "home.prac6_title", descKey: "home.prac6_desc", tag: "Richardson" },
+];
 
 const AppHome = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const today = new Date();
   const dayIndex = today.getDay();
-  const [selectedWeather, setSelectedWeather] = useState<number | null>(null);
+  const [quoteIndex, setQuoteIndex] = useState(0);
+
+  const practice = practices[dayIndex % practices.length];
+
+  const prevQuote = () => setQuoteIndex((quoteIndex - 1 + quotes.length) % quotes.length);
+  const nextQuote = () => setQuoteIndex((quoteIndex + 1) % quotes.length);
 
   return (
     <div className="px-4 py-8 pb-24">
-      <div className="w-full max-w-lg mx-auto space-y-6">
-        <div className="text-center space-y-3">
-          <img src={shivaShaktiIcon} alt="Sacred Path" className="mx-auto h-16 w-16 animate-float" />
-          <h1 className="font-heading text-2xl font-semibold text-foreground">
-            {t("home.welcome")}<span className="gold-gradient">{t("home.beloved_soul")}</span>
+      <div className="w-full max-w-2xl mx-auto space-y-8">
+        {/* Hero */}
+        <div className="text-center space-y-4">
+          <p className="text-[10px] uppercase tracking-[0.3em] text-primary font-body">{t("home.sanctuary")}</p>
+          <h1 className="font-heading text-4xl md:text-5xl font-semibold text-foreground leading-tight">
+            {t("home.our_sacred_path")}
           </h1>
+          <p className="text-muted-foreground font-body text-sm leading-relaxed max-w-lg mx-auto">
+            {t("home.hero_desc")}
+          </p>
+          <Link to="/app/reconnect">
+            <Button className="font-body mt-2 px-8 py-5 text-sm gap-2">
+              ▶ {t("home.right_now")}
+            </Button>
+          </Link>
         </div>
 
+        {/* Quote Carousel */}
         <div className="rounded-xl border border-border bg-card p-6">
-          <LotusIcon className="text-primary mx-auto mb-3" size={28} />
-          <h3 className="font-heading text-xs uppercase tracking-widest text-primary mb-3 text-center">{t("home.daily_whisper")}</h3>
-          <p className="text-foreground font-body italic leading-relaxed text-sm text-center">
-            &ldquo;{t(`wisdom.${dayIndex % 7}`)}&rdquo;
+          <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-body mb-3">
+            {quotes[quoteIndex].authorKey} — {quotes[quoteIndex].bookKey ? t(quotes[quoteIndex].bookKey) : ""}
+          </p>
+          <p className="text-foreground font-heading italic text-lg leading-relaxed mb-3">
+            &ldquo;{t(quotes[quoteIndex].quoteKey)}&rdquo;
+          </p>
+          <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-body">
+            {quotes[quoteIndex].tagKey}
           </p>
         </div>
 
-        <div className="rounded-xl border border-border bg-card p-6">
-          <YinYangIcon className="text-primary mx-auto mb-3" size={28} />
-          <h3 className="font-heading text-xs uppercase tracking-widest text-primary mb-3 text-center">{t("home.thread_of_day")}</h3>
-          <p className="text-foreground font-body leading-relaxed text-sm text-center mb-4">{t(`thread.${dayIndex % 7}`)}</p>
-          <p className="text-xs text-muted-foreground text-center font-body">{t("home.thread_hint")}</p>
+        <div className="flex items-center justify-center gap-4">
+          <button onClick={prevQuote} className="p-2 rounded-full border border-border hover:border-primary/40 transition-colors">
+            <ChevronLeft className="h-4 w-4 text-muted-foreground" />
+          </button>
+          <span className="text-xs text-muted-foreground font-body">{quoteIndex + 1} / {quotes.length}</span>
+          <button onClick={nextQuote} className="p-2 rounded-full border border-border hover:border-primary/40 transition-colors">
+            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+          </button>
         </div>
 
+        {/* Today's Practice */}
         <div className="rounded-xl border border-border bg-card p-6">
-          <FlameIcon className="text-primary mx-auto mb-3" size={28} />
-          <h3 className="font-heading text-xs uppercase tracking-widest text-primary mb-3 text-center">{t("home.intimacy_weather")}</h3>
-          <p className="text-xs text-muted-foreground text-center font-body mb-4">{t("home.how_feeling")}</p>
-          <div className="flex justify-center gap-2">
-            {weatherKeys.map((key, i) => (
-              <button
-                key={key}
-                onClick={() => setSelectedWeather(i)}
-                className={`flex flex-col items-center gap-1 rounded-lg p-2 transition-all ${
-                  selectedWeather === i
-                    ? "bg-primary/20 border border-primary/40 scale-110"
-                    : "hover:bg-card border border-transparent"
-                }`}
-              >
-                <span className="text-2xl">{weatherEmojis[i]}</span>
-                <span className="text-[10px] text-muted-foreground font-body">{t(`weather.${key}`)}</span>
-              </button>
-            ))}
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-body">{t("home.todays_practice")}</p>
+            <span className="text-[10px] text-muted-foreground font-body bg-secondary px-2 py-0.5 rounded-full">{practice.tag}</span>
           </div>
-          {selectedWeather !== null && (
-            <p className="text-xs text-primary text-center mt-3 font-body animate-fade-in">
-              {t(`weather.${weatherKeys[selectedWeather]}_desc`)}
-            </p>
-          )}
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          <Link to="/app/connect">
-            <Button variant="outline" className="w-full font-body h-auto py-4 flex-col gap-2">
-              <ChakraIcon className="text-primary" size={24} />
-              <span className="text-xs">{t("home.connect_partner")}</span>
-            </Button>
-          </Link>
+          <h3 className="font-heading text-xl font-semibold text-foreground mb-2">{t(practice.titleKey)}</h3>
+          <p className="text-sm text-muted-foreground font-body leading-relaxed mb-4">{t(practice.descKey)}</p>
           <Link to="/app/reconnect">
-            <Button variant="outline" className="w-full font-body h-auto py-4 flex-col gap-2">
-              <LotusIcon className="text-primary" size={24} />
-              <span className="text-xs">{t("home.rituals")}</span>
-            </Button>
-          </Link>
-          <Link to="/app/teachings">
-            <Button variant="outline" className="w-full font-body h-auto py-4 flex-col gap-2">
-              <FlameIcon className="text-primary" size={24} />
-              <span className="text-xs">{t("home.teachings")}</span>
-            </Button>
-          </Link>
-          <Link to="/app/reconnect">
-            <Button variant="outline" className="w-full font-body h-auto py-4 flex-col gap-2">
-              <YinYangIcon className="text-primary" size={24} />
-              <span className="text-xs">{t("home.polarity")}</span>
+            <Button variant="outline" size="sm" className="font-body text-xs">
+              {t("home.open_practice")} →
             </Button>
           </Link>
         </div>
