@@ -61,7 +61,7 @@ const AppHome = () => {
             Denní šepot
           </h3>
           <p className="text-foreground font-body italic leading-relaxed text-sm text-center">
-            „{todayWisdom}"
+            "{todayWisdom}"
           </p>
         </div>
 
