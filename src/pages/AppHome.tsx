@@ -51,7 +51,7 @@ const AppHome = () => {
           <p className="text-muted-foreground font-body text-sm leading-relaxed max-w-lg mx-auto">
             {t("home.hero_desc")}
           </p>
-          <Link to="/app/reconnect">
+          <Link to="/app/rituals">
             <Button className="font-body mt-2 px-8 py-5 text-sm gap-2">
               ▶ {t("home.right_now")}
             </Button>
