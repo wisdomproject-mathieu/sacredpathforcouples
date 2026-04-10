@@ -89,17 +89,81 @@ const translations: Record<string, Record<Language, string>> = {
   "auth.check_email": { en: "Check your email to confirm your account!", fr: "Vérifiez votre e-mail pour confirmer votre compte!", cs: "Zkontrolujte svůj e-mail pro potvrzení účtu!" },
 
   // App Home
-  "home.welcome": { en: "Welcome, ", fr: "Bienvenue, ", cs: "Vítej, " },
-  "home.beloved_soul": { en: "beloved soul", fr: "âme bien-aimée", cs: "milovaná duše" },
-  "home.daily_whisper": { en: "Daily Whisper", fr: "Murmure Quotidien", cs: "Denní šepot" },
-  "home.thread_of_day": { en: "Thread of the Day", fr: "Fil du Jour", cs: "Nit dne" },
-  "home.thread_hint": { en: "Ask each other this question tonight ✨", fr: "Posez-vous cette question ce soir ✨", cs: "Položte si tuto otázku navzájem dnes večer ✨" },
-  "home.intimacy_weather": { en: "Intimacy Weather", fr: "Météo d'Intimité", cs: "Počasí intimity" },
-  "home.how_feeling": { en: "How do you feel in your connection today?", fr: "Comment vous sentez-vous dans votre connexion aujourd'hui?", cs: "Jak se dnes cítíte ve vašem spojení?" },
-  "home.connect_partner": { en: "Connect partner", fr: "Connecter partenaire", cs: "Propojit partnera" },
-  "home.rituals": { en: "Rituals", fr: "Rituels", cs: "Rituály" },
-  "home.teachings": { en: "Teachings", fr: "Enseignements", cs: "Učení" },
-  "home.polarity": { en: "Polarity", fr: "Polarité", cs: "Polarita" },
+  "home.sanctuary": { en: "A Sanctuary for Two", fr: "Un Sanctuaire pour Deux", cs: "Útočiště pro dva" },
+  "home.our_sacred_path": { en: "Our Sacred Path", fr: "Notre Chemin Sacré", cs: "Naše Posvátná Cesta" },
+  "home.hero_desc": {
+    en: "The practices here have been reshaping couples for centuries. One ritual at a time. One breath. One moment of real presence. What begins quietly has a way of changing everything.",
+    fr: "Les pratiques ici transforment les couples depuis des siècles. Un rituel à la fois. Un souffle. Un moment de vraie présence. Ce qui commence doucement a le pouvoir de tout changer.",
+    cs: "Praktiky zde proměňují páry po staletí. Jeden rituál po druhém. Jeden nádech. Jeden okamžik skutečné přítomnosti. Co začíná tiše, má způsob, jak vše změnit.",
+  },
+  "home.right_now": { en: "Right Now", fr: "Maintenant", cs: "Právě teď" },
+  "home.todays_practice": { en: "Today's Practice", fr: "Pratique du Jour", cs: "Dnešní praktika" },
+  "home.open_practice": { en: "Open full practice", fr: "Ouvrir la pratique", cs: "Otevřít praktiku" },
+
+  // Quotes
+  "home.q0_book": { en: "Tantra", fr: "Tantra", cs: "Tantra" },
+  "home.q0": {
+    en: "The moment you accept yourself totally, something relaxes, and in that relaxation energy starts moving upward.",
+    fr: "Au moment où vous vous acceptez totalement, quelque chose se détend, et dans cette détente l'énergie commence à monter.",
+    cs: "V okamžiku, kdy se zcela přijmete, něco se uvolní a v tom uvolnění se energie začne pohybovat vzhůru.",
+  },
+  "home.q1_book": { en: "Taoist Secrets", fr: "Secrets Taoïstes", cs: "Taoistická tajemství" },
+  "home.q1": {
+    en: "When you learn to conserve and circulate sexual energy rather than discharge it, you discover an inexhaustible source of vitality.",
+    fr: "Quand vous apprenez à conserver et faire circuler l'énergie sexuelle plutôt qu'à la décharger, vous découvrez une source inépuisable de vitalité.",
+    cs: "Když se naučíte uchovávat a cirkulovat sexuální energii místo jejího vybití, objevíte nevyčerpatelný zdroj vitality.",
+  },
+  "home.q2_book": { en: "Way of the Superior Man", fr: "La Voie de l'Homme Supérieur", cs: "Cesta vyššího muže" },
+  "home.q2": {
+    en: "The most loving thing you can do for your partner is to be fully present — not managing the moment, but inhabiting it completely.",
+    fr: "La chose la plus aimante que vous puissiez faire est d'être pleinement présent — non pas gérer le moment, mais l'habiter complètement.",
+    cs: "To nejláskyplnější, co můžete pro partnera udělat, je být plně přítomni — nesnažit se řídit okamžik, ale plně ho prožívat.",
+  },
+  "home.q3_book": { en: "Heart of Tantric Sex", fr: "Cœur du Sexe Tantrique", cs: "Srdce tantrického sexu" },
+  "home.q3": {
+    en: "The goal is not ecstasy. It is presence. Ecstasy may arise, but it is never the target.",
+    fr: "Le but n'est pas l'extase. C'est la présence. L'extase peut surgir, mais elle n'est jamais la cible.",
+    cs: "Cílem není extáze. Je to přítomnost. Extáze může přijít, ale nikdy není cíl.",
+  },
+  "home.q4": {
+    en: "When two people merge in sacred embrace, the mind dissolves into the heart, and breath dissolves into the infinite. This is samadhi dressed as lovemaking.",
+    fr: "Quand deux personnes fusionnent dans une étreinte sacrée, l'esprit se dissout dans le cœur, et le souffle se dissout dans l'infini.",
+    cs: "Když se dva lidé slijí v posvátném objetí, mysl se rozpustí v srdci a dech se rozpustí v nekonečnu. To je samádhi oblečené do milování.",
+  },
+  "home.q5_book": { en: "Tao Te Ching", fr: "Tao Te King", cs: "Tao Te Ťing" },
+  "home.q5": {
+    en: "To the mind that is still, the whole universe surrenders. And to two bodies that are still together, the whole universe opens like a flower.",
+    fr: "À l'esprit qui est immobile, tout l'univers se rend. Et à deux corps immobiles ensemble, tout l'univers s'ouvre comme une fleur.",
+    cs: "Klidné mysli se celý vesmír poddá. A dvěma tělům, která jsou spolu v klidu, se celý vesmír otevře jako květ.",
+  },
+  "home.q6_book": { en: "Intimate Communion", fr: "Communion Intime", cs: "Intimní společenství" },
+  "home.q6": {
+    en: "If you are waiting for your partner to change before you open your heart fully, you are living in a prison of your own making.",
+    fr: "Si vous attendez que votre partenaire change avant d'ouvrir pleinement votre cœur, vous vivez dans une prison de votre propre fabrication.",
+    cs: "Pokud čekáte, až se váš partner změní, než plně otevřete své srdce, žijete ve vězení vlastní výroby.",
+  },
+  "home.q7_book": { en: "Slow Sex", fr: "Slow Sex", cs: "Slow Sex" },
+  "home.q7": {
+    en: "After years of conventional sex, many couples have become strangers in bed. Slow sex is the practice of seeing your partner again, as if for the very first time.",
+    fr: "Après des années de sexe conventionnel, beaucoup de couples sont devenus des étrangers au lit. Le slow sex est la pratique de revoir son partenaire, comme pour la toute première fois.",
+    cs: "Po letech konvenčního sexu se mnoho párů stalo cizinci v posteli. Pomalý sex je praxí opětovného vidění vašeho partnera, jako by to bylo poprvé.",
+  },
+
+  // Today's practices (day-indexed)
+  "home.prac0_title": { en: "Eye Gazing", fr: "Regard dans les Yeux", cs: "Hledění do očí" },
+  "home.prac0_desc": { en: "Sit facing each other. Maintain soft eye contact for 5 minutes without looking away. Let yourself be fully seen.", fr: "Asseyez-vous face à face. Maintenez un doux contact visuel pendant 5 minutes sans détourner le regard.", cs: "Sedněte si čelem k sobě. Udržujte jemný oční kontakt po dobu 5 minut, aniž byste se dívali jinam." },
+  "home.prac1_title": { en: "Synchronized Breath", fr: "Respiration Synchronisée", cs: "Synchronizovaný dech" },
+  "home.prac1_desc": { en: "Breathe together — inhale for 4 counts, hold for 4, exhale for 8. Let your energies merge through breath.", fr: "Respirez ensemble — inspirez 4 temps, retenez 4, expirez 8.", cs: "Dýchejte společně — nádech na 4 doby, zadržení na 4, výdech na 8." },
+  "home.prac2_title": { en: "Soft Touch Meditation", fr: "Méditation du Toucher Doux", cs: "Meditace jemným dotykem" },
+  "home.prac2_desc": { en: "One partner lies still while the other touches with full presence — not to arouse, but to truly feel.", fr: "Un partenaire reste immobile tandis que l'autre touche avec pleine présence — non pour exciter, mais pour vraiment ressentir.", cs: "Jeden partner leží a druhý se dotýká s plnou přítomností — ne aby vzrušoval, ale aby skutečně cítil." },
+  "home.prac3_title": { en: "Heart Connection", fr: "Connexion du Cœur", cs: "Spojení srdcí" },
+  "home.prac3_desc": { en: "Place your hand on your partner's heart, their hand on yours. Feel the rhythm of love flowing between you.", fr: "Placez votre main sur le cœur de votre partenaire, sa main sur le vôtre. Sentez le rythme de l'amour.", cs: "Položte ruku na srdce partnera, jeho ruku na vaše. Cítíte rytmus lásky proudící mezi vámi." },
+  "home.prac4_title": { en: "Yab-Yum Stillness", fr: "Immobilité Yab-Yum", cs: "Ticho Yab-Yum" },
+  "home.prac4_desc": { en: "Sit in the sacred Yab-Yum posture. Breathe together in complete stillness for 10 minutes.", fr: "Asseyez-vous dans la posture sacrée Yab-Yum. Respirez ensemble en immobilité complète pendant 10 minutes.", cs: "Sedněte si do posvátné pozice Yab-Yum. Dýchejte společně v naprostém tichu po dobu 10 minut." },
+  "home.prac5_title": { en: "Presence Without Words", fr: "Présence Sans Mots", cs: "Přítomnost beze slov" },
+  "home.prac5_desc": { en: "Spend 10 minutes together without speaking. No phones, no agenda. Just be with each other.", fr: "Passez 10 minutes ensemble sans parler. Pas de téléphones, pas d'agenda. Simplement être ensemble.", cs: "Strávte 10 minut spolu bez mluvení. Žádné telefony, žádná agenda. Prostě buďte spolu." },
+  "home.prac6_title": { en: "Gratitude Ritual", fr: "Rituel de Gratitude", cs: "Rituál vděčnosti" },
+  "home.prac6_desc": { en: "Each partner speaks three specific things they appreciate about the other. Receive each one in silence.", fr: "Chaque partenaire nomme trois choses spécifiques qu'il apprécie chez l'autre. Recevez chacune en silence.", cs: "Každý partner řekne tři konkrétní věci, které si na tom druhém cení. Každou přijměte v tichu." },
 
   // Wisdoms (day-indexed)
   "wisdom.0": {
