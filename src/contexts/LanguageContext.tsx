@@ -274,6 +274,12 @@ const translations: Record<string, Record<Language, string>> = {
     cs: "Tantra nás učí, že sexuální energie je posvátná síla — ta samá síla, která stvořila vesmír. Když se naučíme s ní pracovat vědomě, transformuje se z pouhého fyzického potěšení na cestu k probuzení. Praxe: Začněte každý milostný akt 5 minutami synchronizovaného dechu a očního kontaktu.",
   },
 
+  "teaching.3.title": { en: "Cultivating Sexual Energy", fr: "Cultiver l'Énergie Sexuelle", cs: "Kultivace sexuální energie" },
+  "teaching.4.title": { en: "Slow Love: Key to Lasting Intimacy", fr: "Amour Lent: Clé de l'Intimité Durable", cs: "Pomalá láska: Klíč k trvalé intimitě" },
+  "teaching.5.title": { en: "Making Love Without Fear", fr: "Faire l'Amour Sans Peur", cs: "Milování bez strachu" },
+  "teaching.6.title": { en: "Tantra: The Supreme Understanding", fr: "Tantra: La Compréhension Suprême", cs: "Tantra: Nejvyšší porozumění" },
+  "teaching.7.title": { en: "Intimate Communion", fr: "Communion Intime", cs: "Intimní společenství" },
+
   // Pricing
   "pricing.title": { en: "Choose Your Path", fr: "Choisissez Votre Chemin", cs: "Vyberte si svou cestu" },
   "pricing.desc": { en: "Begin with a free practice or unlock the full sacred library with a subscription", fr: "Commencez avec une pratique gratuite ou débloquez la bibliothèque sacrée complète", cs: "Začněte se zdarma nebo odemkněte celou posvátnou knihovnu s předplatným" },
