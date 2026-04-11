@@ -814,24 +814,3 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     </LanguageContext.Provider>
   );
 };
-export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  const [lang, setLang] = useState<Language>(() => {
-    const saved = localStorage.getItem("sacred-path-lang");
-    return (saved as Language) || "en";
-  });
-
-  const handleSetLang = (newLang: Language) => {
-    setLang(newLang);
-    localStorage.setItem("sacred-path-lang", newLang);
-  };
-
-  const t = (key: string): string => {
-    return translations[key]?.[lang] || translations[key]?.["en"] || key;
-  };
-
-  return (
-    <LanguageContext.Provider value={{ lang, setLang: handleSetLang, t }}>
-      {children}
-    </LanguageContext.Provider>
-  );
-};

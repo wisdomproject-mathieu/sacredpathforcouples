@@ -3,11 +3,9 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
-import { LogOut, Home, Users, Compass, Feather, Heart, MessageCircle } from "lucide-react";
+import { LogOut, Home, Users, Compass, Feather, Heart, MessageCircle, Settings } from "lucide-react";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-<Link to="/app/settings" className="text-sm font-body text-muted-foreground hover:text-foreground transition-colors">
-  {t("nav.settings")}
-</Link>
+
 const AppLayout = () => {
   const { signOut } = useAuth();
   const { t } = useLanguage();
@@ -43,6 +41,16 @@ const AppLayout = () => {
                 </Button>
               </Link>
             ))}
+            <Link to="/app/settings">
+              <Button
+                variant={location.pathname === "/app/settings" ? "secondary" : "ghost"}
+                size="sm"
+                className="font-body text-xs gap-1.5"
+              >
+                <Settings className="h-4 w-4" />
+                <span className="hidden sm:inline">{t("nav.settings")}</span>
+              </Button>
+            </Link>
             <LanguageSwitcher />
             <Button variant="ghost" size="icon" onClick={signOut} className="ml-1">
               <LogOut className="h-4 w-4" />
