@@ -40,6 +40,41 @@ const authors = [
     tags: ["Chi Flow", "Jing", "Orbit", "Longevity"],
     books: "Taoist Secrets of Love · Multi-Orgasmic Couple · Healing Love",
   },
+  {
+    id: "day",
+    symbol: "❋",
+    free: false,
+    tags: ["Tantra", "Embodiment", "Relationship", "Healing"],
+    books: "Living Tantra · Sex, Spirit & Relationship · Practical Tantra",
+  },
+  {
+    id: "bush",
+    symbol: "⬡",
+    free: false,
+    tags: ["Technique", "Positions", "Connection", "Pleasure"],
+    books: "Tantric Sex · Sex Positions · Guided Techniques",
+  },
+  {
+    id: "hollander",
+    symbol: "♠",
+    free: false,
+    tags: ["Erotic Honesty", "Play", "Pleasure", "Expression"],
+    books: "The Happy Hooker · Happy Hooker's Guide to Sex · Xaviera's Fantastic Sex",
+  },
+  {
+    id: "gold",
+    symbol: "⟡",
+    free: false,
+    tags: ["Erotic Spirituality", "Potency", "Healing", "Energy"],
+    books: "The Potency Principles · Long Time Coming · Sexual Energy Mastery",
+  },
+  {
+    id: "long",
+    symbol: "◈",
+    free: false,
+    tags: ["Truth", "Love", "Sexual Union", "Stillness"],
+    books: "Making Love · To Woman in Love · Living Love",
+  },
 ];
 
 const Authors = () => {
