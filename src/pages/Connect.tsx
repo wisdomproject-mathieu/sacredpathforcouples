@@ -1,148 +1,273 @@
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Copy, HeartHandshake, Link as LinkIcon, Sparkles, Users, Wand2 } from "lucide-react";
+
 import { useAuth } from "@/contexts/AuthContext";
-import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/sonner";
-import { Copy, Users, ArrowRight } from "lucide-react";
-import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
-import { useNavigate } from "react-router-dom";
-
-const generateCoupleCode = () => {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  let code = "";
-  for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
-  return code;
-};
-
-type Screen = "choose" | "invite" | "enter";
 
 const Connect = () => {
   const { user } = useAuth();
-  const { t } = useLanguage();
-  const navigate = useNavigate();
-  const [screen, setScreen] = useState<Screen>("choose");
-  const [coupleCode, setCoupleCode] = useState("");
-  const [partnerCode, setPartnerCode] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [code, setCode] = useState("");
+  const [inviteCode, setInviteCode] = useState<string | null>(null);
+  const [status, setStatus] = useState<"idle" | "copied" | "error">("idle");
+  const [message, setMessage] = useState("");
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    const checkConnection = async () => {
-      if (!user) return;
-      const { data } = await supabase
+    if (!user) return;
+
+    const load = async () => {
+      const { data: connected } = await supabase
         .from("couples")
-        .select("*")
+        .select("id, invite_code, partner_b")
         .or(`partner_a.eq.${user.id},partner_b.eq.${user.id}`)
+        .not("partner_b", "is", null)
         .maybeSingle();
-      if (data?.partner_a && data?.partner_b) setIsConnected(true);
+
+      if (connected) {
+        setIsConnected(true);
+        setInviteCode(connected.invite_code ?? null);
+        setLoading(false);
+        return;
+      }
+
+      const { data: pending } = await supabase
+        .from("couples")
+        .select("id, invite_code")
+        .eq("partner_a", user.id)
+        .is("partner_b", null)
+        .maybeSingle();
+
+      if (pending?.invite_code) setInviteCode(pending.invite_code);
+      setLoading(false);
     };
-    checkConnection();
+
+    load();
   }, [user]);
 
-  const handleInvite = async () => {
+  const inviteLink = useMemo(() => {
+    if (!inviteCode) return "";
+    return `${window.location.origin}/app/connect?invite=${inviteCode}`;
+  }, [inviteCode]);
+
+  const generateCode = () => Math.random().toString(36).slice(2, 8).toUpperCase();
+
+  const createInvite = async () => {
     if (!user) return;
-    setLoading(true);
-    const code = generateCoupleCode();
-    const { data: existing } = await supabase
-      .from("couples").select("*").eq("partner_a", user.id).is("partner_b", null).maybeSingle();
-    if (existing) {
-      setCoupleCode(existing.couple_code);
-    } else {
-      const { error } = await supabase.from("couples").insert({ partner_a: user.id, couple_code: code });
-      if (error) { toast.error(t("connect.failed_generate")); setLoading(false); return; }
-      setCoupleCode(code);
+
+    setStatus("idle");
+    setMessage("");
+
+    const newCode = generateCode();
+    const { error } = await supabase.from("couples").insert({
+      partner_a: user.id,
+      invite_code: newCode,
+    });
+
+    if (error) {
+      setStatus("error");
+      setMessage(error.message || "Could not create invite right now.");
+      return;
     }
-    setScreen("invite");
-    setLoading(false);
+
+    setInviteCode(newCode);
   };
 
-  useEffect(() => {
-    if (screen !== "invite" || !user) return;
-    const channel = supabase
-      .channel("couple-connect")
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "couples", filter: `partner_a=eq.${user.id}` },
-        (payload) => { if (payload.new.partner_b) { toast.success(t("connect.partner_connected")); setIsConnected(true); } }
-      ).subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, [screen, user, t]);
+  const joinWithCode = async () => {
+    if (!user || !code.trim()) return;
 
-  const handleEnterCode = async () => {
-    if (!user || !partnerCode.trim()) return;
-    setLoading(true);
-    const code = partnerCode.trim().toUpperCase();
-    const { data, error } = await supabase
-      .from("couples").select("*").eq("couple_code", code).is("partner_b", null).maybeSingle();
-    if (error || !data) { toast.error(t("connect.invalid_code")); setLoading(false); return; }
-    if (data.partner_a === user.id) { toast.error(t("connect.cant_self")); setLoading(false); return; }
-    const { error: updateError } = await supabase.from("couples").update({ partner_b: user.id }).eq("id", data.id);
-    if (updateError) { toast.error(t("connect.failed_connect")); }
-    else { toast.success(t("connect.partner_connected")); setIsConnected(true); }
-    setLoading(false);
+    setStatus("idle");
+    setMessage("");
+
+    const cleanCode = code.trim().toUpperCase();
+
+    const { data: target, error: fetchError } = await supabase
+      .from("couples")
+      .select("id, partner_a, partner_b")
+      .eq("invite_code", cleanCode)
+      .is("partner_b", null)
+      .maybeSingle();
+
+    if (fetchError || !target) {
+      setStatus("error");
+      setMessage("This invite code could not be found.");
+      return;
+    }
+
+    if (target.partner_a === user.id) {
+      setStatus("error");
+      setMessage("This is already your invite code.");
+      return;
+    }
+
+    const { error: updateError } = await supabase
+      .from("couples")
+      .update({ partner_b: user.id })
+      .eq("id", target.id);
+
+    if (updateError) {
+      setStatus("error");
+      setMessage(updateError.message || "Could not join this couple right now.");
+      return;
+    }
+
+    setIsConnected(true);
+    setInviteCode(cleanCode);
+    setMessage("You are now connected.");
   };
 
-  const copyCode = () => { navigator.clipboard.writeText(coupleCode); toast.success(t("connect.code_copied")); };
+  const copyInvite = async () => {
+    if (!inviteCode) return;
+    try {
+      await navigator.clipboard.writeText(inviteLink || inviteCode);
+      setStatus("copied");
+      setMessage("Invite copied.");
+      window.setTimeout(() => setStatus("idle"), 1800);
+    } catch {
+      setStatus("error");
+      setMessage("Copy failed. Please select and copy manually.");
+    }
+  };
 
-  if (isConnected) {
-    return (
-      <div className="flex min-h-[80vh] flex-col items-center justify-center px-4 text-center">
-        <img src={shivaShaktiIcon} alt="Connected" className="h-20 w-20 mb-6 animate-float" />
-        <h2 className="font-heading text-3xl font-semibold text-foreground mb-2">{t("connect.connected_title")}</h2>
-        <p className="text-muted-foreground font-body mb-8">{t("connect.connected_desc")}</p>
-        <Button onClick={() => navigate("/app/temple")} className="font-body">
-          {t("connect.enter_temple")} <ArrowRight className="ml-2 h-4 w-4" />
-        </Button>
-      </div>
-    );
-  }
+  if (loading) return <div className="min-h-screen bg-background" />;
 
   return (
-    <div className="flex min-h-[80vh] flex-col items-center justify-center px-4">
-      <div className="w-full max-w-md space-y-8 text-center">
-        <img src={shivaShaktiIcon} alt="Sacred Path" className="mx-auto h-16 w-16 animate-float" />
-        {screen === "choose" && (
-          <>
-            <h2 className="font-heading text-3xl font-semibold text-foreground">{t("connect.find_person")}</h2>
-            <p className="text-muted-foreground font-body">{t("connect.find_desc")}</p>
-            <div className="space-y-4 pt-4">
-              <Button onClick={handleInvite} className="w-full font-body" size="lg" disabled={loading}>
-                <Users className="mr-2 h-5 w-5" /> {t("connect.invite")}
-              </Button>
-              <Button variant="outline" onClick={() => setScreen("enter")} className="w-full font-body" size="lg">
-                {t("connect.have_code")}
-              </Button>
+    <div className="space-y-6">
+      <section className="rounded-[30px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-6 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] md:p-8">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.28em] text-primary/80">Connect</p>
+            <h1 className="mt-3 font-display text-4xl text-foreground md:text-5xl">Invite your partner into the temple</h1>
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">
+              Make Sacred Path shared, private, and alive. Connect once, then check in, send messages, walk pathways, and save memories together.
+            </p>
+          </div>
+          <div className="rounded-[22px] border border-border/30 bg-card/45 p-4">
+            <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Status</div>
+            <div className="mt-2 flex items-center gap-3">
+              <div className={`rounded-2xl border border-border/30 bg-background/45 p-3 ${isConnected ? "text-emerald-300" : "text-cyan-300"}`}>
+                <HeartHandshake className="h-5 w-5" />
+              </div>
+              <div>
+                <div className="font-display text-xl text-foreground">{isConnected ? "Connected" : "Waiting to connect"}</div>
+                <div className="text-sm text-muted-foreground">{isConnected ? "Your temple is shared." : "Create an invite or enter a code."}</div>
+              </div>
             </div>
-          </>
-        )}
-        {screen === "invite" && (
-          <>
-            <h2 className="font-heading text-3xl font-semibold text-foreground">{t("connect.your_code")}</h2>
-            <p className="text-muted-foreground font-body">{t("connect.share_code")}</p>
-            <div className="flex items-center justify-center gap-3 pt-4">
-              <div className="rounded-lg border-2 border-primary bg-card px-8 py-4 font-mono text-3xl tracking-[0.3em] text-primary sacred-glow">{coupleCode}</div>
-              <Button variant="outline" size="icon" onClick={copyCode}><Copy className="h-5 w-5" /></Button>
+          </div>
+        </div>
+      </section>
+
+      <section className="grid gap-4 lg:grid-cols-2">
+        <div className="rounded-[28px] border border-border/30 bg-card/45 p-6">
+          <div className="flex items-center gap-2 text-cyan-300">
+            <Wand2 className="h-5 w-5" />
+            <span className="text-xs uppercase tracking-[0.22em]">Create an invite</span>
+          </div>
+          <h2 className="mt-4 font-display text-2xl text-foreground">Open a shared doorway</h2>
+          <p className="mt-3 text-sm leading-7 text-muted-foreground">
+            Generate a private code and send it to your partner. Once they enter it, your couple temple becomes active.
+          </p>
+
+          {!inviteCode ? (
+            <button
+              type="button"
+              onClick={createInvite}
+              className="mt-6 rounded-2xl border border-primary/25 bg-primary/12 px-5 py-3 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
+            >
+              Create invite code
+            </button>
+          ) : (
+            <div className="mt-6 rounded-[24px] border border-border/30 bg-background/45 p-4">
+              <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Your invite code</div>
+              <div className="mt-2 font-display text-3xl tracking-[0.2em] text-foreground">{inviteCode}</div>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={copyInvite}
+                  className="inline-flex items-center gap-2 rounded-2xl border border-border/35 bg-card/45 px-4 py-3 text-sm text-foreground transition-all hover:border-border/55 hover:bg-card/60"
+                >
+                  <Copy className="h-4 w-4" />
+                  Copy invite
+                </button>
+                {inviteLink && (
+                  <div className="inline-flex items-center gap-2 rounded-2xl border border-border/30 bg-card/35 px-4 py-3 text-xs text-muted-foreground">
+                    <LinkIcon className="h-4 w-4" />
+                    Link ready
+                  </div>
+                )}
+              </div>
             </div>
-            <p className="text-xs text-muted-foreground font-body animate-pulse-glow">{t("connect.waiting")}</p>
-            <Button variant="ghost" onClick={() => setScreen("choose")} className="font-body">{t("connect.go_back")}</Button>
-          </>
-        )}
-        {screen === "enter" && (
-          <>
-            <h2 className="font-heading text-3xl font-semibold text-foreground">{t("connect.enter_code")}</h2>
-            <p className="text-muted-foreground font-body">{t("connect.enter_code_desc")}</p>
-            <div className="space-y-4 pt-4">
-              <Input value={partnerCode} onChange={(e) => setPartnerCode(e.target.value.toUpperCase())}
-                placeholder={t("connect.enter_placeholder")} maxLength={6}
-                className="text-center font-mono text-2xl tracking-[0.3em] bg-card border-border h-14" />
-              <Button onClick={handleEnterCode} className="w-full font-body" size="lg" disabled={loading || partnerCode.length !== 6}>
-                {loading ? t("connect.connecting") : t("connect.connect_btn")}
-              </Button>
-              <Button variant="ghost" onClick={() => setScreen("choose")} className="font-body">{t("connect.go_back")}</Button>
+          )}
+        </div>
+
+        <div className="rounded-[28px] border border-border/30 bg-card/45 p-6">
+          <div className="flex items-center gap-2 text-fuchsia-300">
+            <Users className="h-5 w-5" />
+            <span className="text-xs uppercase tracking-[0.22em]">Join with a code</span>
+          </div>
+          <h2 className="mt-4 font-display text-2xl text-foreground">Enter your partner’s invite</h2>
+          <p className="mt-3 text-sm leading-7 text-muted-foreground">
+            Paste the code you received and step into the same shared space.
+          </p>
+
+          <div className="mt-6 rounded-[24px] border border-border/30 bg-background/45 p-4">
+            <label className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Invite code</label>
+            <input
+              value={code}
+              onChange={(e) => setCode(e.target.value.toUpperCase())}
+              placeholder="ABC123"
+              className="mt-3 w-full rounded-2xl border border-border/35 bg-card/45 px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground focus:border-primary/35"
+            />
+            <button
+              type="button"
+              onClick={joinWithCode}
+              className="mt-4 rounded-2xl border border-primary/25 bg-primary/12 px-5 py-3 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
+            >
+              Join the temple
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section className="grid gap-4 md:grid-cols-3">
+        {[
+          {
+            icon: Sparkles,
+            iconClass: "text-amber-300",
+            title: "Check in daily",
+            desc: "Use Intimacy Weather to name the energy you bring tonight.",
+          },
+          {
+            icon: HeartHandshake,
+            iconClass: "text-rose-300",
+            title: "Reconnect faster",
+            desc: "Send a soft message, choose a ritual, or open a pathway together.",
+          },
+          {
+            icon: Users,
+            iconClass: "text-emerald-300",
+            title: "Build shared memory",
+            desc: "Save moments in your altar and let the app become your living couple space.",
+          },
+        ].map((item) => {
+          const Icon = item.icon;
+          return (
+            <div key={item.title} className="rounded-[26px] border border-border/30 bg-card/45 p-5">
+              <div className={`inline-flex rounded-2xl border border-border/30 bg-background/45 p-3 ${item.iconClass}`}>
+                <Icon className="h-5 w-5" />
+              </div>
+              <h3 className="mt-4 font-display text-xl text-foreground">{item.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.desc}</p>
             </div>
-          </>
-        )}
-      </div>
+          );
+        })}
+      </section>
+
+      {message && (
+        <div className={`rounded-[22px] border p-4 text-sm ${status === "error" ? "border-red-400/25 bg-red-500/8 text-red-200" : "border-emerald-400/20 bg-emerald-500/8 text-emerald-200"}`}>
+          {message}
+        </div>
+      )}
     </div>
   );
 };

@@ -1,168 +1,266 @@
-import { useState } from "react";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { Lock, ChevronDown, ChevronUp } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import {
+  ArrowRight,
+  BookOpen,
+  Compass,
+  Crown,
+  Feather,
+  Flame,
+  Heart,
+  MoonStar,
+  Sparkles,
+  Stars,
+  SunMedium,
+  Waves,
+} from "lucide-react";
 
-const paths = [
+const pathCards = [
   {
-    id: "tantra",
-    symbol: "◉",
-    free: true,
-    tags: ["Kundalini", "Chakras", "Sacred Union", "Energy Work"],
-    lineage: "Osho · Vijnanabhairava · Margot Anand · Kashmir Shaivism",
-    quoteAuthor: "Osho",
-    quoteSource: "Tantric Wisdom",
+    name: "Tantra",
+    icon: Sparkles,
+    iconClass: "text-fuchsia-300",
+    promise: "Body, breath, energy, and consciousness woven into one field of living intimacy.",
+    learn: "Presence before performance. Slowness before urgency. Sacred union before automatic habit.",
   },
   {
-    id: "tao",
-    symbol: "◯",
-    free: true,
-    tags: ["Jing", "Valley Orgasm", "Chi Flow", "Wu Wei"],
-    lineage: "Mantak Chia · Lao Tzu · Su Nu Ching · Chuang Tzu",
-    quoteAuthor: "Lao Tzu",
-    quoteSource: "Tao Te Ching",
+    name: "Tao",
+    icon: Waves,
+    iconClass: "text-cyan-300",
+    promise: "Natural flow, sensual longevity, and a calmer intelligence inside intimacy.",
+    learn: "Less force, more flow. Less strain, more rhythm. Let breath and pacing reshape the whole experience.",
   },
   {
-    id: "kamasutra",
-    symbol: "❋",
-    free: false,
-    tags: ["Positions", "Desire", "Art of Love", "Connection"],
-    lineage: "Vātsyāyana · Ancient Indian Tradition",
-    quoteAuthor: "",
-    quoteSource: "",
+    name: "Polarity",
+    icon: Flame,
+    iconClass: "text-amber-300",
+    promise: "Magnetic difference and conscious contrast brought back to life.",
+    learn: "Attraction can awaken when structure, surrender, edge, and devotion become conscious again.",
+  },
+];
+
+const authorCards = [
+  {
+    name: "David Deida",
+    icon: SunMedium,
+    iconClass: "text-amber-300",
+    line: "Polarity, devotion, presence, and the living edge of attraction.",
   },
   {
-    id: "sacred_sexuality",
-    symbol: "✧",
-    free: false,
-    tags: ["Healing", "Embodiment", "Wholeness", "Presence"],
-    lineage: "Modern Tantric Teachers · Somatic Traditions",
-    quoteAuthor: "",
-    quoteSource: "",
+    name: "Diana Richardson",
+    icon: Heart,
+    iconClass: "text-rose-300",
+    line: "Slow love, soft presence, stillness, and the healing intelligence of relaxed intimacy.",
+  },
+  {
+    name: "Margot Anand",
+    icon: Stars,
+    iconClass: "text-fuchsia-300",
+    line: "Ecstatic Tantra, sacred sensual celebration, and pleasure as a path of awakening.",
+  },
+  {
+    name: "Mantak Chia",
+    icon: Compass,
+    iconClass: "text-cyan-300",
+    line: "Taoist energy cultivation, breath, pacing, and sensual longevity.",
+  },
+  {
+    name: "Barry Long",
+    icon: MoonStar,
+    iconClass: "text-emerald-300",
+    line: "Truth, presence, and a less compulsive way of meeting desire.",
+  },
+];
+
+const premiumClusters = [
+  {
+    name: "Sacred Desire",
+    icon: Heart,
+    iconClass: "text-rose-300",
+    summary: "Erotic intelligence, anticipation, polarity, and deeper sensual charge.",
+  },
+  {
+    name: "Heart Devotion",
+    icon: MoonStar,
+    iconClass: "text-violet-300",
+    summary: "Tenderness, reassurance, gratitude, spiritual warmth, and devotional closeness.",
+  },
+  {
+    name: "Emotional Repair",
+    icon: Feather,
+    iconClass: "text-emerald-300",
+    summary: "Guided return after distance, stress, shutdown, resentment, or hurt.",
+  },
+  {
+    name: "Energy Mastery",
+    icon: Crown,
+    iconClass: "text-orange-300",
+    summary: "Advanced pacing, breath, energetic containment, and body-led mastery.",
   },
 ];
 
 const Paths = () => {
-  const { t } = useLanguage();
-  const [expandedPath, setExpandedPath] = useState<string | null>(null);
-
   return (
-    <div className="px-4 py-8 pb-24">
-      <div className="container max-w-3xl">
-        {/* Header */}
-        <div className="text-center mb-10">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-primary font-body mb-2">{t("paths.lineage")}</p>
-          <h1 className="font-heading text-3xl font-semibold text-foreground mb-3">{t("paths.title")}</h1>
-          <p className="text-muted-foreground font-body text-sm leading-relaxed max-w-lg mx-auto">{t("paths.subtitle")}</p>
+    <div className="space-y-6">
+      <section className="rounded-[30px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-6 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] md:p-8">
+        <div className="max-w-4xl">
+          <p className="text-xs uppercase tracking-[0.28em] text-primary/80">Sacred Library</p>
+          <h1 className="mt-3 font-display text-4xl text-foreground md:text-5xl">A living library for the sacred life of a couple</h1>
+          <p className="mt-4 text-sm leading-7 text-muted-foreground md:text-base">
+            This is where couples learn quickly, beautifully, and deeply. The Library should make the user feel: I understand this now, I know why it matters, and I know what we can practice tonight.
+          </p>
+        </div>
+      </section>
+
+      <section className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="rounded-[28px] border border-border/30 bg-card/45 p-6">
+          <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">How the world is organized</p>
+          <h2 className="mt-2 font-display text-3xl text-foreground">Learn here. Practice in the Temple.</h2>
+          <p className="mt-3 text-sm leading-7 text-muted-foreground">
+            Sacred Path should feel like two sacred worlds working together: the Temple for shared practice, and the Library for wisdom. The couple journey moves through both.
+          </p>
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            <div className="rounded-[22px] border border-border/30 bg-background/45 p-4">
+              <div className="text-xs uppercase tracking-[0.18em] text-primary/80">Learn</div>
+              <p className="mt-2 text-sm leading-6 text-foreground/90">Paths, teachers, practices, and later audio journeys and oracle guidance.</p>
+            </div>
+            <div className="rounded-[22px] border border-border/30 bg-background/45 p-4">
+              <div className="text-xs uppercase tracking-[0.18em] text-primary/80">Practice</div>
+              <p className="mt-2 text-sm leading-6 text-foreground/90">Weather, rituals, positions, messages, repair, altar, and journey-aware suggestions.</p>
+            </div>
+          </div>
         </div>
 
-        {/* Path Cards */}
-        <div className="space-y-4">
-          {paths.map((path) => {
-            const isLocked = !path.free;
-            const isExpanded = expandedPath === path.id;
+        <div className="rounded-[28px] border border-border/30 bg-card/45 p-6">
+          <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Quick learn</p>
+          <h2 className="mt-2 font-display text-3xl text-foreground">60-second entry points</h2>
+          <div className="mt-4 space-y-3">
+            {[
+              "Learn Tantra in 60 seconds",
+              "Learn Tao in 60 seconds",
+              "Learn Polarity in 60 seconds",
+              "Choose the right teaching for tonight",
+            ].map((item) => (
+              <div key={item} className="rounded-[20px] border border-border/30 bg-background/45 p-4 text-sm text-foreground/90">
+                {item}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
+      <section>
+        <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Paths</p>
+            <h2 className="mt-2 font-display text-3xl text-foreground">Foundational paths</h2>
+          </div>
+          <Link to="/app/space" className="inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-3 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16">
+            Open the Temple
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+
+        <div className="grid gap-4 xl:grid-cols-3">
+          {pathCards.map((path) => {
+            const Icon = path.icon;
             return (
-              <div key={path.id} className="rounded-xl border border-border bg-card overflow-hidden">
-                {/* Card Header */}
-                <div
-                  className={`p-6 ${path.free ? "cursor-pointer" : ""}`}
-                  onClick={() => path.free && setExpandedPath(isExpanded ? null : path.id)}
-                >
-                  <div className="flex items-start gap-4">
-                    <span className="text-3xl text-primary flex-shrink-0 mt-1">{path.symbol}</span>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h2 className="font-heading text-xl font-semibold text-foreground">
-                          {t(`path.${path.id}.name`)}
-                        </h2>
-                        {isLocked && (
-                          <span className="flex items-center gap-1 text-[10px] text-primary font-body bg-primary/10 px-2 py-0.5 rounded-full">
-                            <Lock size={10} /> {t("teachings.premium")}
-                          </span>
-                        )}
-                        {path.free && (
-                          <span className="ml-auto flex-shrink-0">
-                            {isExpanded ? (
-                              <ChevronUp className="h-4 w-4 text-muted-foreground" />
-                            ) : (
-                              <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                            )}
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-sm text-muted-foreground font-body leading-relaxed mb-3">
-                        {t(`path.${path.id}.desc`)}
-                      </p>
-                      <div className="flex flex-wrap gap-1.5 mb-2">
-                        {path.tags.map((tag) => (
-                          <span key={tag} className="text-[10px] text-primary/80 font-body bg-primary/5 px-2 py-0.5 rounded-full">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                      <p className="text-[10px] text-muted-foreground/60 font-body">{path.lineage}</p>
-                    </div>
-                  </div>
+              <div key={path.name} className="rounded-[28px] border border-border/30 bg-card/45 p-5 transition-all hover:border-primary/20 hover:bg-card/55">
+                <div className={`inline-flex rounded-2xl border border-border/30 bg-background/45 p-3 ${path.iconClass}`}>
+                  <Icon className="h-5 w-5" />
                 </div>
-
-                {/* Expanded Content — Free paths only */}
-                {isExpanded && path.free && (
-                  <div className="border-t border-border px-6 pb-6 pt-4 space-y-4 animate-fade-in">
-                    {/* Free Quote */}
-                    <div className="rounded-lg bg-secondary/30 p-4">
-                      <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-body mb-2">
-                        {path.quoteAuthor} — {path.quoteSource}
-                      </p>
-                      <p className="text-foreground font-heading italic text-base leading-relaxed">
-                        &ldquo;{t(`path.${path.id}.quote`)}&rdquo;
-                      </p>
-                    </div>
-
-                    {/* Free Ritual */}
-                    <div className="rounded-lg bg-secondary/30 p-4">
-                      <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-body mb-2">{t("paths.ritual")}</p>
-                      <h3 className="font-heading text-sm font-semibold text-foreground mb-1.5">{t(`path.${path.id}.ritual_title`)}</h3>
-                      <p className="text-xs text-muted-foreground font-body leading-relaxed">{t(`path.${path.id}.ritual_desc`)}</p>
-                    </div>
-
-                    {/* Premium teaser */}
-                    <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 text-center">
-                      <p className="text-xs text-muted-foreground font-body mb-2">{t("teachings.unlock_hint")}</p>
-                      <Link to="/pricing">
-                        <Button variant="outline" size="sm" className="font-body text-xs border-primary/30 text-primary hover:bg-primary/10">
-                          {t("teachings.view_plans")}
-                        </Button>
-                      </Link>
-                    </div>
-                  </div>
-                )}
-
-                {/* Locked overlay for premium paths */}
-                {isLocked && (
-                  <div className="border-t border-border/50 px-6 py-4 bg-card/50 text-center">
-                    <Link to="/pricing">
-                      <Button variant="outline" size="sm" className="font-body text-xs border-primary/30 text-primary hover:bg-primary/10">
-                        <Lock size={12} className="mr-1.5" /> {t("teachings.view_plans")}
-                      </Button>
-                    </Link>
-                  </div>
-                )}
+                <h3 className="mt-4 font-display text-2xl text-foreground">{path.name}</h3>
+                <p className="mt-3 text-sm leading-7 text-muted-foreground">{path.promise}</p>
+                <div className="mt-4 rounded-[20px] border border-border/30 bg-background/45 p-4 text-sm leading-6 text-foreground/90">
+                  {path.learn}
+                </div>
               </div>
             );
           })}
         </div>
+      </section>
 
-        {/* Bottom CTA */}
-        <div className="mt-8 text-center">
-          <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-body mb-2">✦</p>
-          <p className="text-sm text-muted-foreground font-body mb-3">{t("paths.unlock_all_desc")}</p>
-          <Link to="/pricing">
-            <Button className="font-body" size="sm">{t("paths.unlock_all")}</Button>
+      <section>
+        <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Teachers</p>
+            <h2 className="mt-2 font-display text-3xl text-foreground">Featured voices</h2>
+          </div>
+          <Link to="/app/authors" className="inline-flex items-center gap-2 rounded-2xl border border-border/35 bg-card/45 px-4 py-3 text-sm text-foreground transition-all hover:border-border/55 hover:bg-card/60">
+            Open author depth
+            <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
-      </div>
+
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {authorCards.map((author) => {
+            const Icon = author.icon;
+            return (
+              <div key={author.name} className="rounded-[26px] border border-border/30 bg-card/45 p-5 transition-all hover:border-primary/20 hover:bg-card/55">
+                <div className={`inline-flex rounded-2xl border border-border/30 bg-background/45 p-3 ${author.iconClass}`}>
+                  <Icon className="h-5 w-5" />
+                </div>
+                <h3 className="mt-4 font-display text-2xl text-foreground">{author.name}</h3>
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">{author.line}</p>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="rounded-[30px] border border-border/30 bg-card/45 p-6 md:p-7">
+        <div className="mb-5">
+          <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Premium depth</p>
+          <h2 className="mt-2 font-display text-3xl text-foreground">Go deeper without cluttering the experience</h2>
+          <p className="mt-3 text-sm leading-7 text-muted-foreground">
+            Premium should feel like a richer map of intimacy, not a wall of locked names.
+          </p>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {premiumClusters.map((cluster) => {
+            const Icon = cluster.icon;
+            return (
+              <div key={cluster.name} className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+                <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-3 ${cluster.iconClass}`}>
+                  <Icon className="h-5 w-5" />
+                </div>
+                <h3 className="mt-4 font-display text-2xl text-foreground">{cluster.name}</h3>
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">{cluster.summary}</p>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="grid gap-4 lg:grid-cols-[1fr_1fr]">
+        <div className="rounded-[28px] border border-border/30 bg-card/45 p-6">
+          <div className="flex items-center gap-2 text-violet-300">
+            <BookOpen className="h-5 w-5" />
+            <span className="text-xs uppercase tracking-[0.22em]">Soon inside the Library</span>
+          </div>
+          <div className="mt-4 space-y-3">
+            {[
+              "Wisdom Oracle — what do we need tonight?",
+              "Audio journeys",
+              "Learn by need — calm, spark, repair, devotion",
+              "Journey-aware recommendations",
+            ].map((item) => (
+              <div key={item} className="rounded-[20px] border border-border/30 bg-background/45 p-4 text-sm text-foreground/90">
+                {item}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-[28px] border border-primary/15 bg-primary/8 p-6">
+          <p className="text-xs uppercase tracking-[0.22em] text-primary/80">Couple Journey</p>
+          <h2 className="mt-2 font-display text-3xl text-foreground">The Journey should guide what the Library shows</h2>
+          <p className="mt-3 text-sm leading-7 text-foreground/90">
+            Arrival, Softening, Rekindling, Sacred Desire, Healing & Repair, Devotion, Mastery. The Library should surface different teachings depending on the couple’s current phase.
+          </p>
+        </div>
+      </section>
     </div>
   );
 };

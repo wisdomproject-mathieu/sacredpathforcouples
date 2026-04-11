@@ -1,170 +1,172 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Heart, MessageCircleHeart, Send, Sparkles, Star } from "lucide-react";
+
 import { useAuth } from "@/contexts/AuthContext";
-import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Input } from "@/components/ui/input";
-import { Send, Heart, Flame, MessageCircle, Sparkles, Gift, Moon, Feather } from "lucide-react";
-
-type MessageType = "gratitude" | "appreciation" | "longing" | "invitation" | "blessing" | "fantasy" | "tonight" | "whisper";
-
-const messageTypes: { key: MessageType; icon: typeof Heart; color: string }[] = [
-  { key: "gratitude", icon: Heart, color: "text-pink-400" },
-  { key: "appreciation", icon: Sparkles, color: "text-primary" },
-  { key: "longing", icon: Moon, color: "text-indigo-400" },
-  { key: "invitation", icon: Gift, color: "text-emerald-400" },
-  { key: "blessing", icon: Feather, color: "text-yellow-400" },
-  { key: "whisper", icon: MessageCircle, color: "text-blue-400" },
-  { key: "tonight", icon: Flame, color: "text-red-400" },
-];
-
-interface Message {
-  id: string;
-  sender_id: string;
-  message_type: string;
-  content: string;
-  created_at: string;
-}
 
 interface Props {
   coupleId: string;
 }
 
+const messageStarters = [
+  "Tonight I want to feel closer by…",
+  "One thing I’m grateful for in us is…",
+  "A kind touch I would love tonight is…",
+  "Something my heart needs from you is…",
+  "One small ritual I want with you this week is…",
+];
+
 const TempleMessages = ({ coupleId }: Props) => {
   const { user } = useAuth();
-  const { t } = useLanguage();
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [text, setText] = useState("");
-  const [msgType, setMsgType] = useState<MessageType>("gratitude");
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const [messages, setMessages] = useState<any[]>([]);
+  const [draft, setDraft] = useState("");
+  const [sending, setSending] = useState(false);
+
+  const featuredStarter = useMemo(
+    () => messageStarters[new Date().getDate() % messageStarters.length],
+    []
+  );
 
   useEffect(() => {
     if (!coupleId) return;
-    const load = async () => {
+
+    const loadMessages = async () => {
       const { data } = await supabase
         .from("partner_messages")
         .select("*")
         .eq("couple_id", coupleId)
-        .neq("message_type", "weather")
-        .order("created_at", { ascending: true })
-        .limit(100);
+        .order("created_at", { ascending: false })
+        .limit(20);
+
       if (data) setMessages(data);
     };
-    load();
-  }, [coupleId]);
 
-  useEffect(() => {
-    if (!coupleId) return;
+    loadMessages();
+
     const channel = supabase
-      .channel("temple-messages")
-      .on("postgres_changes", {
-        event: "INSERT",
-        schema: "public",
-        table: "partner_messages",
-        filter: `couple_id=eq.${coupleId}`,
-      }, (payload) => {
-        const msg = payload.new as Message;
-        if (msg.message_type !== "weather") {
-          setMessages((prev) => [...prev, msg]);
-        }
-      })
+      .channel(`partner_messages_${coupleId}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "partner_messages", filter: `couple_id=eq.${coupleId}` },
+        () => loadMessages()
+      )
       .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, [coupleId]);
 
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [coupleId]);
 
   const sendMessage = async () => {
-    if (!coupleId || !user || !text.trim()) return;
-    await supabase.from("partner_messages").insert({
+    if (!user || !draft.trim()) return;
+
+    setSending(true);
+    const { error } = await supabase.from("partner_messages").insert({
       couple_id: coupleId,
       sender_id: user.id,
-      message_type: msgType,
-      content: text.trim(),
+      content: draft.trim(),
     });
-    setText("");
+
+    if (!error) setDraft("");
+    setSending(false);
   };
 
-  const isMine = (msg: Message) => msg.sender_id === user?.id;
-  const getTypeConfig = (type: string) => messageTypes.find((m) => m.key === type) || messageTypes[0];
-
   return (
-    <div className="flex flex-col h-full">
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
-        {messages.length === 0 && (
-          <div className="text-center py-16">
-            <Sparkles className="h-10 w-10 text-primary/20 mx-auto mb-4" />
-            <p className="text-base text-muted-foreground font-body">{t("temple_msg.empty")}</p>
-            <p className="text-sm text-muted-foreground/60 font-body mt-1">{t("temple_msg.empty_hint")}</p>
+    <div className="space-y-6">
+      <section className="rounded-[28px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-6 shadow-[0_26px_90px_-50px_rgba(255,173,70,0.42)]">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.28em] text-primary/80">Temple Messages</p>
+            <h2 className="mt-3 font-display text-3xl text-foreground md:text-4xl">Send something that softens the distance</h2>
+            <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">
+              Small loving notes keep the temple alive. Keep it simple, true, and specific.
+            </p>
           </div>
-        )}
-        {messages.map((msg) => {
-          const config = getTypeConfig(msg.message_type);
-          const Icon = config.icon;
-          return (
-            <div key={msg.id} className={`flex ${isMine(msg) ? "justify-end" : "justify-start"}`}>
-              <div className={`max-w-[80%] rounded-2xl px-5 py-4 ${
-                isMine(msg)
-                  ? "bg-primary/10 border border-primary/20 rounded-br-sm"
-                  : "bg-card border border-border/50 rounded-bl-sm"
-              }`}>
-                <div className="flex items-center gap-2 mb-1.5">
-                  <Icon className={`h-3.5 w-3.5 ${config.color}`} />
-                  <span className={`text-xs uppercase tracking-wider ${config.color} font-body`}>
-                    {t(`temple_msg.type.${msg.message_type}`)}
-                  </span>
-                </div>
-                <p className="text-base text-foreground font-body leading-relaxed">{msg.content}</p>
-                <p className="text-xs text-muted-foreground/50 font-body mt-2">
-                  {new Date(msg.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                </p>
-              </div>
-            </div>
-          );
-        })}
-        <div ref={bottomRef} />
-      </div>
+          <div className="rounded-[22px] border border-border/30 bg-card/45 p-4">
+            <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Prompt for tonight</div>
+            <div className="mt-2 text-sm text-foreground">{featuredStarter}</div>
+          </div>
+        </div>
+      </section>
 
-      {/* Input */}
-      <div className="px-4 py-4 border-t border-border/50 bg-card/50">
-        <div className="flex gap-1.5 mb-3 overflow-x-auto pb-1 scrollbar-hide">
-          {messageTypes.map((type) => {
-            const Icon = type.icon;
-            return (
-              <button
-                key={type.key}
-                onClick={() => setMsgType(type.key)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-body whitespace-nowrap transition-all border ${
-                  msgType === type.key
-                    ? "bg-primary/15 text-primary border-primary/30"
-                    : "text-muted-foreground border-transparent hover:text-foreground"
-                }`}
-              >
-                <Icon className="h-3.5 w-3.5" />
-                {t(`temple_msg.type.${type.key}`)}
-              </button>
-            );
-          })}
-        </div>
-        <div className="flex gap-2">
-          <Input
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-            placeholder={t("temple_msg.placeholder")}
-            className="font-body text-base bg-background border-border/50"
+      <section className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
+        <div className="rounded-[28px] border border-border/30 bg-card/45 p-6">
+          <div className="flex items-center gap-2 text-violet-300">
+            <MessageCircleHeart className="h-5 w-5" />
+            <span className="text-xs uppercase tracking-[0.22em]">Write now</span>
+          </div>
+          <h3 className="mt-4 font-display text-2xl text-foreground">A note your partner can feel</h3>
+
+          <textarea
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            placeholder={featuredStarter}
+            rows={6}
+            className="mt-5 w-full rounded-[24px] border border-border/35 bg-background/45 px-4 py-4 text-foreground outline-none transition-all placeholder:text-muted-foreground focus:border-primary/35"
           />
-          <button
-            onClick={sendMessage}
-            disabled={!text.trim()}
-            className="h-10 w-10 rounded-xl bg-primary text-primary-foreground flex items-center justify-center disabled:opacity-40 hover:bg-primary/90 transition-colors shrink-0"
-          >
-            <Send className="h-4 w-4" />
-          </button>
+
+          <div className="mt-4 flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={() => setDraft(featuredStarter)}
+              className="inline-flex items-center gap-2 rounded-2xl border border-border/35 bg-card/45 px-4 py-3 text-sm text-foreground transition-all hover:border-border/55 hover:bg-card/60"
+            >
+              <Sparkles className="h-4 w-4" />
+              Use starter
+            </button>
+            <button
+              type="button"
+              disabled={sending || !draft.trim()}
+              onClick={sendMessage}
+              className="inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-3 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16 disabled:opacity-60"
+            >
+              <Send className="h-4 w-4" />
+              {sending ? "Sending..." : "Send message"}
+            </button>
+          </div>
         </div>
-      </div>
+
+        <div className="rounded-[28px] border border-border/30 bg-card/45 p-6">
+          <div className="flex items-center gap-2 text-rose-300">
+            <Heart className="h-5 w-5" />
+            <span className="text-xs uppercase tracking-[0.22em]">Shared notes</span>
+          </div>
+          <h3 className="mt-4 font-display text-2xl text-foreground">Recent messages</h3>
+
+          <div className="mt-5 space-y-3">
+            {messages.length === 0 ? (
+              <div className="rounded-[22px] border border-border/30 bg-background/45 p-5 text-sm leading-6 text-muted-foreground">
+                No messages yet. Start with one sentence, not a perfect speech.
+              </div>
+            ) : (
+              messages.map((message) => {
+                const mine = message.sender_id === user?.id;
+                return (
+                  <div
+                    key={message.id}
+                    className={`rounded-[22px] border p-4 ${
+                      mine
+                        ? "border-primary/20 bg-primary/8"
+                        : "border-border/30 bg-background/45"
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+                        {mine ? "You" : "Partner"}
+                      </div>
+                      <div className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
+                        <Star className="h-3 w-3" />
+                        {new Date(message.created_at).toLocaleDateString()}
+                      </div>
+                    </div>
+                    <p className="mt-3 text-sm leading-6 text-foreground/90">{message.content}</p>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

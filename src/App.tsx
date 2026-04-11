@@ -19,7 +19,6 @@ import Pricing from "./pages/Pricing";
 import Privacy from "./pages/Privacy";
 import TempleEntry from "./pages/TempleEntry";
 import PartnerSpace from "./pages/PartnerSpace";
-import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -53,7 +52,6 @@ const App = () => (
                 <Route path="authors" element={<Authors />} />
                 <Route path="temple" element={<TempleEntry />} />
                 <Route path="space" element={<PartnerSpace />} />
-		<Route path="settings" element={<Settings />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
