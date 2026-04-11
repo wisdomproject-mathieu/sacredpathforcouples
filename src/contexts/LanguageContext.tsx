@@ -709,6 +709,58 @@ const translations: Record<string, Record<Language, string>> = {
   "guide.rec.temple_date.desc": { en: "Create sacred space: candles, music, phones away. Begin with eye contact, then breath, then a shared question. End with gratitude.", fr: "Créez un espace sacré : bougies, musique, sans téléphones. Regard, souffle, question partagée, gratitude.", cs: "Vytvořte posvátný prostor: svíčky, hudba, telefony pryč. Začněte pohledem, pak dech, sdílená otázka. Zakončete vděčností." },
   "guide.rec.sacred_body": { en: "Sacred Body Exploration", fr: "Exploration sacrée du corps", cs: "Posvátné zkoumání těla" },
   "guide.rec.sacred_body.desc": { en: "Explore each other with slow, reverent touch. Each touch is a question: 'What do you feel here?' Move from head to feet. 12 minutes of presence.", fr: "Explorez-vous avec un toucher lent et révérencieux. Chaque toucher est une question. De la tête aux pieds.", cs: "Prozkoumejte se pomalým, uctivým dotekem. Každý dotek je otázka: 'Co zde cítíš?' Od hlavy k patě." },
+
+  // Temple Home
+  "temple.tab.home": { en: "Home", fr: "Accueil", cs: "Domů" },
+  "temple_home.greeting": { en: "Welcome back", fr: "Bon retour", cs: "Vítejte zpět" },
+  "temple_home.subtitle": { en: "Return to each other", fr: "Revenez l'un à l'autre", cs: "Vraťte se k sobě navzájem" },
+  "temple_home.weather_label": { en: "Your Inner Climate", fr: "Votre climat intérieur", cs: "Vaše vnitřní klima" },
+  "temple_home.check_in_prompt": { en: "Check in", fr: "S'enregistrer", cs: "Zapsat se" },
+  "temple_home.tonight": { en: "Tonight's Doorway", fr: "La porte de ce soir", cs: "Dnešní brána" },
+  "temple_home.action.check_in": { en: "Check In", fr: "S'enregistrer", cs: "Zapsat pocit" },
+  "temple_home.action.ritual": { en: "Start Ritual", fr: "Commencer un rituel", cs: "Začít rituál" },
+  "temple_home.action.message": { en: "Send Message", fr: "Envoyer un message", cs: "Poslat zprávu" },
+  "temple_home.action.pathway": { en: "Continue Path", fr: "Continuer le chemin", cs: "Pokračovat v cestě" },
+  "temple_home.recent_altar": { en: "Recent Altar Moment", fr: "Moment d'autel récent", cs: "Nedávný okamžik oltáře" },
+
+  // Weather recommendations
+  "weather.note_placeholder": { en: "Add a note (optional)...", fr: "Ajouter une note (optionnel)...", cs: "Přidat poznámku (volitelné)..." },
+  "weather.rec.label": { en: "A Gentle Suggestion", fr: "Une suggestion douce", cs: "Jemný návrh" },
+  "weather.rec.open": { en: "You are open and available. This is a beautiful moment to deepen your connection through a shared ritual.", fr: "Vous êtes ouvert et disponible. C'est un beau moment pour approfondir votre connexion.", cs: "Jste otevření a dostupní. Toto je krásný moment pro prohloubení vašeho spojení skrze sdílený rituál." },
+  "weather.rec.tender": { en: "Tenderness is flowing. Hold this softness — a gentle presence practice will nurture it beautifully.", fr: "La tendresse coule. Un rituel de présence douce la nourrira.", cs: "Něha proudí. Podržte tuto měkkost — jemná praktika přítomnosti ji krásně vyživí." },
+  "weather.rec.playful": { en: "Playful energy is alive! Channel it into a ritual that celebrates the joy between you.", fr: "L'énergie ludique est vivante ! Canalisez-la dans un rituel de joie.", cs: "Hravá energie žije! Proměňte ji v rituál, který slaví radost mezi vámi." },
+  "weather.rec.stressed": { en: "Stress needs softness, not force. Begin with a gentle repair practice to come back to safety.", fr: "Le stress a besoin de douceur. Commencez par une pratique de réparation.", cs: "Stres potřebuje měkkost, ne sílu. Začněte jemnou praktikou opravy pro návrat k bezpečí." },
+  "weather.rec.longing": { en: "Longing is a bridge — it means your heart is reaching. Send a message or begin a reconnection ritual.", fr: "Le désir est un pont — votre cœur cherche. Envoyez un message ou commencez un rituel.", cs: "Touha je most — znamená, že vaše srdce sahá. Pošlete zprávu nebo začněte rituál znovupropojení." },
+  "weather.rec.erotic": { en: "Sacred fire is present. Honor it with a polarity practice or energizing ritual.", fr: "Le feu sacré est présent. Honorez-le avec une pratique de polarité.", cs: "Posvátný oheň je přítomen. Uctěte ho praktikou polarity nebo energizujícím rituálem." },
+  "weather.rec.tired": { en: "Rest is sacred too. A soft goodnight ritual can bring closeness without effort.", fr: "Le repos est sacré aussi. Un doux rituel du soir peut rapprocher sans effort.", cs: "Odpočinek je také posvátný. Jemný rituál na dobrou noc může přinést blízkost bez námahy." },
+  "weather.rec.reassurance": { en: "You are asking for care. Let your partner know — begin with repair mode or send a gentle message.", fr: "Vous demandez du soin. Faites savoir à votre partenaire — commencez par le mode réparation.", cs: "Žádáte o péči. Dejte partnerovi vědět — začněte režimem opravy nebo pošlete jemnou zprávu." },
+  "weather.rec.go_repair": { en: "Open Repair Mode →", fr: "Ouvrir le mode réparation →", cs: "Otevřít režim opravy →" },
+  "weather.rec.go_ritual": { en: "Browse Rituals →", fr: "Parcourir les rituels →", cs: "Prohlédnout rituály →" },
+  "weather.rec.go_guide": { en: "Open Guide →", fr: "Ouvrir le guide →", cs: "Otevřít průvodce →" },
+
+  // Ritual actions
+  "ritual.step": { en: "Step", fr: "Étape", cs: "Krok" },
+  "ritual.prev": { en: "Back", fr: "Retour", cs: "Zpět" },
+  "ritual.next_step": { en: "Next Step", fr: "Étape suivante", cs: "Další krok" },
+  "ritual.complete": { en: "Complete ✦", fr: "Terminer ✦", cs: "Dokončit ✦" },
+  "ritual.save": { en: "Save to Altar", fr: "Sauver à l'autel", cs: "Uložit na oltář" },
+  "ritual.send": { en: "Send to Partner", fr: "Envoyer au partenaire", cs: "Poslat partnerovi" },
+  "ritual.saved_altar": { en: "Saved to your altar ✦", fr: "Sauvegardé à votre autel ✦", cs: "Uloženo na váš oltář ✦" },
+  "ritual.sent_partner": { en: "Sent to your partner ✦", fr: "Envoyé à votre partenaire ✦", cs: "Odesláno vašemu partnerovi ✦" },
+  "ritual_cards.all": { en: "All", fr: "Tous", cs: "Vše" },
+  "ritual_cards.type.rituals": { en: "Rituals", fr: "Rituels", cs: "Rituály" },
+  "ritual_cards.type.positions": { en: "Positions", fr: "Positions", cs: "Pozice" },
+  "ritual_cards.empty": { en: "No practices found in this category", fr: "Aucune pratique trouvée", cs: "V této kategorii nebyly nalezeny žádné praktiky" },
+  "ritual_cards.cat.presence": { en: "Presence", fr: "Présence", cs: "Přítomnost" },
+  "ritual_cards.cat.reconnect": { en: "Reconnect", fr: "Reconnecter", cs: "Znovupropojení" },
+
+  // Pathways
+  "pathways.day": { en: "Day", fr: "Jour", cs: "Den" },
+  "pathways.completed": { en: "completed", fr: "complétés", cs: "dokončeno" },
+  "pathways.started": { en: "Journey begun ✦", fr: "Voyage commencé ✦", cs: "Cesta začala ✦" },
+  "pathways.complete_day": { en: "Complete Day", fr: "Terminer le jour", cs: "Dokončit den" },
+  "pathways.day_complete": { en: "Day completed ✦", fr: "Jour complété ✦", cs: "Den dokončen ✦" },
+  "pathways.journey_complete": { en: "Journey complete — you walked this path together", fr: "Voyage terminé — vous avez marché ce chemin ensemble", cs: "Cesta dokončena — prošli jste ji společně" },
 };
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
