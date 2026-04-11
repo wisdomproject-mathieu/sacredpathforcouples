@@ -5,7 +5,9 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 import { LogOut, Home, Users, Compass, Feather, Heart, MessageCircle } from "lucide-react";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-
+<Link to="/app/settings" className="text-sm font-body text-muted-foreground hover:text-foreground transition-colors">
+  {t("nav.settings")}
+</Link>
 const AppLayout = () => {
   const { signOut } = useAuth();
   const { t } = useLanguage();

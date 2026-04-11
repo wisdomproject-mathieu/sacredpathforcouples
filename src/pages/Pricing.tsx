@@ -19,7 +19,7 @@ const Pricing = () => {
     },
     {
       name: t("pricing.sacred"),
-      price: "$2.99",
+      price: "$5.99",
       period: t("pricing.month"),
       features: [t("pricing.feat_everything_free"), t("pricing.feat_library"), t("pricing.feat_all_rituals"), t("pricing.feat_weather"), t("pricing.feat_thread"), t("pricing.feat_priority")],
       cta: t("pricing.start_trial"),
@@ -27,7 +27,7 @@ const Pricing = () => {
     },
     {
       name: t("pricing.sacred_yearly"),
-      price: "$19.99",
+      price: "$39.99",
       period: t("pricing.year"),
       features: [t("pricing.feat_everything_sacred"), t("pricing.feat_save"), t("pricing.feat_exclusive"), t("pricing.feat_early")],
       cta: t("pricing.start_trial"),
