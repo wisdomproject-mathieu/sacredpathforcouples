@@ -2,25 +2,25 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Heart, Cloud, Sparkles, MessageCircle, Layers, Route, Bookmark, Shield, Compass } from "lucide-react";
+import { Heart, Home, Cloud, Sparkles, MessageCircle, Route, Bookmark, Shield, Compass } from "lucide-react";
+import TempleHome from "@/components/space/TempleHome";
 import IntimacyWeather from "@/components/space/IntimacyWeather";
 import RitualCards from "@/components/space/RitualCards";
 import TempleMessages from "@/components/space/TempleMessages";
-import PositionDeck from "@/components/space/PositionDeck";
 import Pathways from "@/components/space/Pathways";
 import MemoryAltar from "@/components/space/MemoryAltar";
 import RepairMode from "@/components/space/RepairMode";
 import TempleGuide from "@/components/space/TempleGuide";
 
 const tabs = [
+  { key: "home", icon: Home, labelKey: "temple.tab.home" },
   { key: "weather", icon: Cloud, labelKey: "temple.tab.weather" },
   { key: "rituals", icon: Sparkles, labelKey: "temple.tab.rituals" },
-  { key: "positions", icon: Layers, labelKey: "temple.tab.positions" },
   { key: "messages", icon: MessageCircle, labelKey: "temple.tab.messages" },
+  { key: "guide", icon: Compass, labelKey: "temple.tab.guide" },
+  { key: "repair", icon: Shield, labelKey: "temple.tab.repair" },
   { key: "pathways", icon: Route, labelKey: "temple.tab.pathways" },
   { key: "altar", icon: Bookmark, labelKey: "temple.tab.altar" },
-  { key: "repair", icon: Shield, labelKey: "temple.tab.repair" },
-  { key: "guide", icon: Compass, labelKey: "temple.tab.guide" },
 ];
 
 const PartnerSpace = () => {
@@ -28,7 +28,7 @@ const PartnerSpace = () => {
   const { t } = useLanguage();
   const [coupleId, setCoupleId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("weather");
+  const [activeTab, setActiveTab] = useState("home");
 
   useEffect(() => {
     if (!user) return;
@@ -58,20 +58,22 @@ const PartnerSpace = () => {
       <div className="flex flex-col items-center justify-center min-h-[60vh] px-6 text-center">
         <Heart className="h-14 w-14 text-muted-foreground/20 mb-5" />
         <h2 className="font-heading text-3xl text-foreground mb-3">{t("space.not_connected")}</h2>
-        <p className="text-muted-foreground font-body text-base">{t("space.connect_first")}</p>
+        <p className="text-base text-muted-foreground font-body">{t("space.connect_first")}</p>
       </div>
     );
   }
+
+  const navigate = (tab: string) => setActiveTab(tab);
 
   return (
     <div className="flex flex-col h-[calc(100vh-3.5rem)]">
       {/* Header */}
       <div className="px-6 py-5 border-b border-border/50 bg-card/30">
         <h2 className="font-heading text-2xl md:text-3xl font-semibold text-foreground">{t("temple.title")}</h2>
-        <p className="text-sm md:text-base text-muted-foreground font-body mt-1">{t("temple.subtitle")}</p>
+        <p className="text-base md:text-lg text-muted-foreground font-body mt-1">{t("temple.subtitle")}</p>
       </div>
 
-      {/* Scrollable tab bar */}
+      {/* Tab bar */}
       <div className="px-3 py-2.5 border-b border-border/30 bg-card/20 overflow-x-auto scrollbar-hide">
         <div className="flex gap-1 min-w-max">
           {tabs.map((tab) => {
@@ -81,7 +83,7 @@ const PartnerSpace = () => {
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-body whitespace-nowrap transition-all ${
+                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-sm font-body whitespace-nowrap transition-all ${
                   active
                     ? "bg-primary/15 text-primary border border-primary/30"
                     : "text-muted-foreground hover:text-foreground border border-transparent"
@@ -97,18 +99,18 @@ const PartnerSpace = () => {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto">
-        {activeTab === "weather" && <IntimacyWeather coupleId={coupleId} />}
-        {activeTab === "rituals" && <RitualCards />}
-        {activeTab === "positions" && <PositionDeck />}
+        {activeTab === "home" && <TempleHome coupleId={coupleId} onNavigate={navigate} />}
+        {activeTab === "weather" && <IntimacyWeather coupleId={coupleId} onNavigate={navigate} />}
+        {activeTab === "rituals" && <RitualCards coupleId={coupleId} />}
         {activeTab === "messages" && (
           <div className="flex flex-col h-full">
             <TempleMessages coupleId={coupleId} />
           </div>
         )}
-        {activeTab === "pathways" && <Pathways />}
-        {activeTab === "altar" && <MemoryAltar coupleId={coupleId} />}
-        {activeTab === "repair" && <RepairMode />}
         {activeTab === "guide" && <TempleGuide />}
+        {activeTab === "repair" && <RepairMode />}
+        {activeTab === "pathways" && <Pathways coupleId={coupleId} />}
+        {activeTab === "altar" && <MemoryAltar coupleId={coupleId} />}
       </div>
     </div>
   );
