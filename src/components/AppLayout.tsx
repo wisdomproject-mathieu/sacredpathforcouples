@@ -1,13 +1,6 @@
 import { useMemo } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import {
-  BookOpen,
-  Heart,
-  Home,
-  LogOut,
-  MessageCircle,
-  Users,
-} from "lucide-react";
+import { BookOpen, Heart, Home, LogOut, MessageCircle } from "lucide-react";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -21,7 +14,6 @@ const AppLayout = () => {
   const navItems = useMemo(
     () => [
       { to: "/app", icon: Home, label: "Home", iconClass: "text-amber-300" },
-      { to: "/app/connect", icon: Users, label: "Connect", iconClass: "text-emerald-300" },
       { to: "/app/paths", icon: BookOpen, label: "Library", iconClass: "text-violet-300" },
       { to: "/app/reconnect", icon: Heart, label: "Reconnect", iconClass: "text-rose-300" },
       { to: "/app/space", icon: MessageCircle, label: "Temple", iconClass: "text-fuchsia-300" },
@@ -51,7 +43,7 @@ const AppLayout = () => {
               </div>
 
               <p className="mt-4 text-sm leading-6 text-muted-foreground">
-                A modern sanctuary for couples — Temple for practice, Library for wisdom.
+                Temple for practice. Library for wisdom. Journey as the living thread.
               </p>
             </div>
 

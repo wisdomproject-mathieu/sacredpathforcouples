@@ -10,7 +10,7 @@ import {
   MoonStar,
   Sparkles,
   Stars,
-  SunMedium,
+  Wand2,
   Waves,
 } from "lucide-react";
 
@@ -41,7 +41,7 @@ const pathCards = [
 const authorCards = [
   {
     name: "David Deida",
-    icon: SunMedium,
+    icon: Compass,
     iconClass: "text-amber-300",
     line: "Polarity, devotion, presence, and the living edge of attraction.",
   },
@@ -98,62 +98,85 @@ const premiumClusters = [
   },
 ];
 
+const innovationCards = [
+  {
+    name: "Wisdom Oracle",
+    icon: Wand2,
+    iconClass: "text-violet-300",
+    summary: "Ask what the couple needs tonight and receive one path, one teacher, one ritual, and one message prompt.",
+  },
+  {
+    name: "Path Prescription",
+    icon: Compass,
+    iconClass: "text-cyan-300",
+    summary: "The Library responds to the current Journey phase and Intimacy Weather.",
+  },
+  {
+    name: "Learn in 60 Seconds",
+    icon: BookOpen,
+    iconClass: "text-amber-300",
+    summary: "Mainstream-friendly fast learning with a deeper layer ready underneath.",
+  },
+  {
+    name: "Audio Journeys",
+    icon: Sparkles,
+    iconClass: "text-fuchsia-300",
+    summary: "Bring voices, atmosphere, and guided immersion into premium learning over time.",
+  },
+];
+
 const Paths = () => {
   return (
     <div className="space-y-6">
       <section className="rounded-[30px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-6 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] md:p-8">
         <div className="max-w-4xl">
           <p className="text-xs uppercase tracking-[0.28em] text-primary/80">Sacred Library</p>
-          <h1 className="mt-3 font-display text-4xl text-foreground md:text-5xl">A living library for the sacred life of a couple</h1>
+          <h1 className="mt-3 font-display text-4xl text-foreground md:text-5xl">Wisdom for the couple journey</h1>
           <p className="mt-4 text-sm leading-7 text-muted-foreground md:text-base">
-            This is where couples learn quickly, beautifully, and deeply. The Library should make the user feel: I understand this now, I know why it matters, and I know what we can practice tonight.
+            The Library should not feel like a shelf of labels. It should feel like a living sanctuary of understanding: quick to enter, deep to explore, and always connected to what the couple needs now.
           </p>
         </div>
       </section>
 
       <section className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
         <div className="rounded-[28px] border border-border/30 bg-card/45 p-6">
-          <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">How the world is organized</p>
-          <h2 className="mt-2 font-display text-3xl text-foreground">Learn here. Practice in the Temple.</h2>
+          <p className="text-xs uppercase tracking-[0.22em] text-violet-300">Couple Journey</p>
+          <h2 className="mt-2 font-display text-3xl text-foreground">The Library should move with the relationship</h2>
           <p className="mt-3 text-sm leading-7 text-muted-foreground">
-            Sacred Path should feel like two sacred worlds working together: the Temple for shared practice, and the Library for wisdom. The couple journey moves through both.
+            Arrival, Softening, Rekindling, Sacred Desire, Healing & Repair, Devotion, Mastery. The Library should eventually surface different paths, teachers, and prompts depending on where the couple is.
           </p>
 
-          <div className="mt-5 grid gap-3 sm:grid-cols-2">
-            <div className="rounded-[22px] border border-border/30 bg-background/45 p-4">
-              <div className="text-xs uppercase tracking-[0.18em] text-primary/80">Learn</div>
-              <p className="mt-2 text-sm leading-6 text-foreground/90">Paths, teachers, practices, and later audio journeys and oracle guidance.</p>
-            </div>
-            <div className="rounded-[22px] border border-border/30 bg-background/45 p-4">
-              <div className="text-xs uppercase tracking-[0.18em] text-primary/80">Practice</div>
-              <p className="mt-2 text-sm leading-6 text-foreground/90">Weather, rituals, positions, messages, repair, altar, and journey-aware suggestions.</p>
-            </div>
+          <div className="mt-5 flex flex-wrap gap-2">
+            {[
+              "Arrival",
+              "Softening",
+              "Rekindling",
+              "Sacred Desire",
+              "Healing & Repair",
+              "Devotion",
+              "Mastery",
+            ].map((phase) => (
+              <span key={phase} className="rounded-full border border-border/30 bg-background/45 px-3 py-1 text-xs text-muted-foreground">
+                {phase}
+              </span>
+            ))}
           </div>
         </div>
 
-        <div className="rounded-[28px] border border-border/30 bg-card/45 p-6">
-          <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Quick learn</p>
-          <h2 className="mt-2 font-display text-3xl text-foreground">60-second entry points</h2>
-          <div className="mt-4 space-y-3">
-            {[
-              "Learn Tantra in 60 seconds",
-              "Learn Tao in 60 seconds",
-              "Learn Polarity in 60 seconds",
-              "Choose the right teaching for tonight",
-            ].map((item) => (
-              <div key={item} className="rounded-[20px] border border-border/30 bg-background/45 p-4 text-sm text-foreground/90">
-                {item}
-              </div>
-            ))}
-          </div>
+        <div className="rounded-[28px] border border-primary/15 bg-primary/8 p-6">
+          <p className="text-xs uppercase tracking-[0.22em] text-primary/80">Go deeper with premium</p>
+          <h2 className="mt-2 font-display text-3xl text-foreground">Depth, not clutter</h2>
+          <p className="mt-3 text-sm leading-7 text-foreground/90">
+            Premium should feel like a richer map of intimacy: deeper teachings, stronger path clusters, audio journeys, author depth, guided practices, and more intelligent recommendations.
+          </p>
         </div>
       </section>
 
       <section>
         <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Paths</p>
-            <h2 className="mt-2 font-display text-3xl text-foreground">Foundational paths</h2>
+            <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Foundational paths</p>
+            <h2 className="mt-2 font-display text-3xl text-foreground">Learn the baseline traditions</h2>
           </div>
           <Link to="/app/space" className="inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-3 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16">
             Open the Temple
@@ -184,10 +207,10 @@ const Paths = () => {
         <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Teachers</p>
-            <h2 className="mt-2 font-display text-3xl text-foreground">Featured voices</h2>
+            <h2 className="mt-2 font-display text-3xl text-foreground">Featured author depth</h2>
           </div>
           <Link to="/app/authors" className="inline-flex items-center gap-2 rounded-2xl border border-border/35 bg-card/45 px-4 py-3 text-sm text-foreground transition-all hover:border-border/55 hover:bg-card/60">
-            Open author depth
+            Open author library
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
@@ -208,21 +231,18 @@ const Paths = () => {
         </div>
       </section>
 
-      <section className="rounded-[30px] border border-border/30 bg-card/45 p-6 md:p-7">
-        <div className="mb-5">
-          <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Premium depth</p>
-          <h2 className="mt-2 font-display text-3xl text-foreground">Go deeper without cluttering the experience</h2>
-          <p className="mt-3 text-sm leading-7 text-muted-foreground">
-            Premium should feel like a richer map of intimacy, not a wall of locked names.
-          </p>
+      <section>
+        <div className="mb-4">
+          <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Premium depth clusters</p>
+          <h2 className="mt-2 font-display text-3xl text-foreground">Go deeper without showing a wall of locked names</h2>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {premiumClusters.map((cluster) => {
             const Icon = cluster.icon;
             return (
-              <div key={cluster.name} className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-                <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-3 ${cluster.iconClass}`}>
+              <div key={cluster.name} className="rounded-[24px] border border-border/30 bg-card/45 p-5">
+                <div className={`inline-flex rounded-2xl border border-border/30 bg-background/45 p-3 ${cluster.iconClass}`}>
                   <Icon className="h-5 w-5" />
                 </div>
                 <h3 className="mt-4 font-display text-2xl text-foreground">{cluster.name}</h3>
@@ -233,32 +253,25 @@ const Paths = () => {
         </div>
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-[1fr_1fr]">
-        <div className="rounded-[28px] border border-border/30 bg-card/45 p-6">
-          <div className="flex items-center gap-2 text-violet-300">
-            <BookOpen className="h-5 w-5" />
-            <span className="text-xs uppercase tracking-[0.22em]">Soon inside the Library</span>
-          </div>
-          <div className="mt-4 space-y-3">
-            {[
-              "Wisdom Oracle — what do we need tonight?",
-              "Audio journeys",
-              "Learn by need — calm, spark, repair, devotion",
-              "Journey-aware recommendations",
-            ].map((item) => (
-              <div key={item} className="rounded-[20px] border border-border/30 bg-background/45 p-4 text-sm text-foreground/90">
-                {item}
-              </div>
-            ))}
-          </div>
+      <section>
+        <div className="mb-4">
+          <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Innovations</p>
+          <h2 className="mt-2 font-display text-3xl text-foreground">How Sacred Path can beat the category</h2>
         </div>
 
-        <div className="rounded-[28px] border border-primary/15 bg-primary/8 p-6">
-          <p className="text-xs uppercase tracking-[0.22em] text-primary/80">Couple Journey</p>
-          <h2 className="mt-2 font-display text-3xl text-foreground">The Journey should guide what the Library shows</h2>
-          <p className="mt-3 text-sm leading-7 text-foreground/90">
-            Arrival, Softening, Rekindling, Sacred Desire, Healing & Repair, Devotion, Mastery. The Library should surface different teachings depending on the couple’s current phase.
-          </p>
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {innovationCards.map((item) => {
+            const Icon = item.icon;
+            return (
+              <div key={item.name} className="rounded-[24px] border border-border/30 bg-card/45 p-5">
+                <div className={`inline-flex rounded-2xl border border-border/30 bg-background/45 p-3 ${item.iconClass}`}>
+                  <Icon className="h-5 w-5" />
+                </div>
+                <h3 className="mt-4 font-display text-2xl text-foreground">{item.name}</h3>
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">{item.summary}</p>
+              </div>
+            );
+          })}
         </div>
       </section>
     </div>
