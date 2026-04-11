@@ -382,7 +382,7 @@ const translations: Record<string, Record<Language, string>> = {
   "authors.unlock": { en: "Premium Author", fr: "Auteur Premium", cs: "Premium autor" },
   "authors.unlock_desc": { en: "Unlock this author's teachings with a Sacred subscription. 7 days free.", fr: "Débloquez avec un abonnement Sacred.", cs: "Odemkněte s předplatným Sacred." },
   "authors.unlock_all": { en: "Unlock all authors & teachings", fr: "Débloquer tous les auteurs", cs: "Odemknout všechny autory" },
-  "authors.unlock_all_desc": { en: "Access Richardson, Mantak Chia and many more. 7 days free.", fr: "Accédez à Richardson, Mantak Chia et plus.", cs: "Přístup k Richardson, Mantak Chia a dalším." },
+  "authors.unlock_all_desc": { en: "Access Richardson, Mantak Chia, Jan Day, Barry Long and more. 7 days free.", fr: "Accédez à Richardson, Mantak Chia, Jan Day, Barry Long et plus.", cs: "Přístup k Richardson, Mantak Chia, Jan Day, Barry Long a dalším." },
 
   "author.osho.name": { en: "Osho", fr: "Osho", cs: "Osho" },
   "author.osho.desc": { en: "The rebellious mystic who bridged ancient Tantra with modern seekers. His radical teachings on love and consciousness have transformed millions.", fr: "Le mystique rebelle qui a relié le Tantra ancien aux chercheurs modernes.", cs: "Rebelský mystik, který propojil tantru s moderními hledajícími." },
