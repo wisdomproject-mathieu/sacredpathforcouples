@@ -14,6 +14,47 @@ export type Database = {
   }
   public: {
     Tables: {
+      altar_items: {
+        Row: {
+          couple_id: string
+          created_at: string
+          id: string
+          item_type: string
+          note: string | null
+          source_id: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          couple_id: string
+          created_at?: string
+          id?: string
+          item_type?: string
+          note?: string | null
+          source_id?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          couple_id?: string
+          created_at?: string
+          id?: string
+          item_type?: string
+          note?: string | null
+          source_id?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "altar_items_couple_id_fkey"
+            columns: ["couple_id"]
+            isOneToOne: false
+            referencedRelation: "couples"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       couples: {
         Row: {
           couple_code: string
@@ -117,6 +158,78 @@ export type Database = {
           },
         ]
       }
+      pathway_progress: {
+        Row: {
+          completed_days: Json | null
+          couple_id: string
+          created_at: string
+          current_day: number
+          id: string
+          last_opened_at: string | null
+          pathway_id: string
+        }
+        Insert: {
+          completed_days?: Json | null
+          couple_id: string
+          created_at?: string
+          current_day?: number
+          id?: string
+          last_opened_at?: string | null
+          pathway_id: string
+        }
+        Update: {
+          completed_days?: Json | null
+          couple_id?: string
+          created_at?: string
+          current_day?: number
+          id?: string
+          last_opened_at?: string | null
+          pathway_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pathway_progress_couple_id_fkey"
+            columns: ["couple_id"]
+            isOneToOne: false
+            referencedRelation: "couples"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pathway_progress_pathway_id_fkey"
+            columns: ["pathway_id"]
+            isOneToOne: false
+            referencedRelation: "pathways"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pathways: {
+        Row: {
+          created_at: string
+          description: string | null
+          duration_days: number
+          id: string
+          premium_required: boolean
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          duration_days?: number
+          id?: string
+          premium_required?: boolean
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          duration_days?: number
+          id?: string
+          premium_required?: boolean
+          title?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -146,6 +259,83 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      ritual_items: {
+        Row: {
+          category: string
+          created_at: string
+          duration: string | null
+          hook: string | null
+          id: string
+          intensity: number | null
+          item_type: string
+          premium_required: boolean
+          steps: Json | null
+          title: string
+          tone: string | null
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          duration?: string | null
+          hook?: string | null
+          id?: string
+          intensity?: number | null
+          item_type?: string
+          premium_required?: boolean
+          steps?: Json | null
+          title: string
+          tone?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          duration?: string | null
+          hook?: string | null
+          id?: string
+          intensity?: number | null
+          item_type?: string
+          premium_required?: boolean
+          steps?: Json | null
+          title?: string
+          tone?: string | null
+        }
+        Relationships: []
+      }
+      weather_entries: {
+        Row: {
+          couple_id: string
+          created_at: string
+          id: string
+          note: string | null
+          state: string
+          user_id: string
+        }
+        Insert: {
+          couple_id: string
+          created_at?: string
+          id?: string
+          note?: string | null
+          state: string
+          user_id: string
+        }
+        Update: {
+          couple_id?: string
+          created_at?: string
+          id?: string
+          note?: string | null
+          state?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "weather_entries_couple_id_fkey"
+            columns: ["couple_id"]
+            isOneToOne: false
+            referencedRelation: "couples"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
