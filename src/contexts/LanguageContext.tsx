@@ -834,8 +834,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </LanguageContext.Provider>
   );
-};"nav.settings": {
-  en: "Settings",
+};
   fr: "Réglages",
   cs: "Nastavení"
 },
