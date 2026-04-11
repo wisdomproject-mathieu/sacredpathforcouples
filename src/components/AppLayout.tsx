@@ -15,8 +15,8 @@ const AppLayout = () => {
     () => [
       { to: "/app", icon: Home, label: "Home", iconClass: "text-amber-300" },
       { to: "/app/paths", icon: BookOpen, label: "Library", iconClass: "text-violet-300" },
-      { to: "/app/reconnect", icon: Heart, label: "Reconnect", iconClass: "text-rose-300" },
       { to: "/app/space", icon: MessageCircle, label: "Temple", iconClass: "text-fuchsia-300" },
+      { to: "/app/reconnect", icon: Heart, label: "Reconnect", iconClass: "text-rose-300" },
     ],
     []
   );
@@ -43,7 +43,7 @@ const AppLayout = () => {
               </div>
 
               <p className="mt-4 text-sm leading-6 text-muted-foreground">
-                Temple for practice. Library for wisdom. Journey as the living thread.
+                Temple for shared practice. Library for ancient wisdom. One living path for two.
               </p>
             </div>
 
