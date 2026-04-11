@@ -413,6 +413,21 @@ const translations: Record<string, Record<Language, string>> = {
   "author.chia.name": { en: "Mantak Chia", fr: "Mantak Chia", cs: "Mantak Chia" },
   "author.chia.desc": { en: "Taoist master of sexual alchemy. His teachings have helped millions discover vitality and deeper intimacy.", fr: "Maître taoïste de l'alchimie sexuelle.", cs: "Taoistický mistr sexuální alchymie." },
 
+  "author.day.name": { en: "Jan Day", fr: "Jan Day", cs: "Jan Day" },
+  "author.day.desc": { en: "A contemporary tantra teacher who brings sexuality, emotional truth, and spiritual growth into one embodied path for modern couples.", fr: "Une enseignante contemporaine de tantra qui unit sexualité, vérité émotionnelle et croissance spirituelle.", cs: "Současná učitelka tantry, která spojuje sexualitu, emoční pravdivost a duchovní růst do jedné ztělesněné cesty." },
+
+  "author.bush.name": { en: "Max Bush", fr: "Max Bush", cs: "Max Bush" },
+  "author.bush.desc": { en: "A practical modern sex-and-intimacy guide focused on connection, positions, and accessible techniques for couples exploring pleasure together.", fr: "Un guide pratique moderne du sexe et de l'intimité axé sur la connexion et les techniques accessibles.", cs: "Praktický moderní průvodce sexem a intimitou zaměřený na propojení, pozice a přístupné techniky." },
+
+  "author.hollander.name": { en: "Xaviera Hollander", fr: "Xaviera Hollander", cs: "Xaviera Hollander" },
+  "author.hollander.desc": { en: "An outspoken guide to erotic honesty and pleasure, known for bringing directness, curiosity, and unapologetic sexual candor into intimate life.", fr: "Une guide franche de l'honnêteté érotique et du plaisir, connue pour sa franchise et sa curiosité.", cs: "Otevřená průvodkyně erotickou upřímností a rozkoší, známá svou přímostí a neomlouvající se sexuální otevřeností." },
+
+  "author.gold.name": { en: "Victor Gold", fr: "Victor Gold", cs: "Victor Gold" },
+  "author.gold.desc": { en: "A teacher of erotic spirituality who blends sexual healing, potency work, and spiritual transformation through conscious sexual energy.", fr: "Un enseignant de la spiritualité érotique mêlant guérison sexuelle et transformation spirituelle.", cs: "Učitel erotické spirituality, který propojuje sexuální uzdravení, práci s potencí a duchovní transformaci." },
+
+  "author.long.name": { en: "Barry Long", fr: "Barry Long", cs: "Barry Long" },
+  "author.long.desc": { en: "A spiritual teacher whose work on sexual love focuses on truth, purity, and the rediscovery of deep union between man and woman.", fr: "Un enseignant spirituel dont l'œuvre sur l'amour sexuel se concentre sur la vérité et l'union profonde.", cs: "Duchovní učitel, jehož dílo o sexuální lásce se zaměřuje na pravdu, čistotu a znovuobjevení hlubokého spojení." },
+
   // Shared keys
   "teachings.premium": { en: "Premium", fr: "Premium", cs: "Premium" },
   "teachings.unlock_hint": { en: "Unlock with a Sacred subscription...", fr: "Débloquez avec un abonnement Sacred...", cs: "Odemkněte s předplatným Sacred..." },
