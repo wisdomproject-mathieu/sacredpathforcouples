@@ -776,8 +776,44 @@ const translations: Record<string, Record<Language, string>> = {
   "pathways.complete_day": { en: "Complete Day", fr: "Terminer le jour", cs: "Dokončit den" },
   "pathways.day_complete": { en: "Day completed ✦", fr: "Jour complété ✦", cs: "Den dokončen ✦" },
   "pathways.journey_complete": { en: "Journey complete — you walked this path together", fr: "Voyage terminé — vous avez marché ce chemin ensemble", cs: "Cesta dokončena — prošli jste ji společně" },
+
+  // Settings
+  "nav.settings": { en: "Settings", fr: "Réglages", cs: "Nastavení" },
+  "settings.title": { en: "Settings", fr: "Réglages", cs: "Nastavení" },
+  "settings.subtitle": { en: "Manage your Sacred Path experience.", fr: "Gérez votre expérience Sacred Path.", cs: "Spravujte svůj zážitek Sacred Path." },
+  "settings.language": { en: "Language", fr: "Langue", cs: "Jazyk" },
+  "settings.language_desc": { en: "Choose how Sacred Path speaks to you.", fr: "Choisissez la langue de Sacred Path.", cs: "Vyberte jazyk Sacred Path." },
+  "settings.membership": { en: "Membership", fr: "Abonnement", cs: "Členství" },
+  "settings.membership_desc": { en: "View your plan and unlock more intimacy tools.", fr: "Consultez votre plan et débloquez plus d'outils d'intimité.", cs: "Zobrazte svůj plán a odemkněte další nástroje intimity." },
+  "settings.view_plans": { en: "View plans", fr: "Voir les plans", cs: "Zobrazit plány" },
+  "settings.account": { en: "Account", fr: "Compte", cs: "Účet" },
+  "settings.account_desc": { en: "Sign out now. Account deletion flow will be finalized next.", fr: "Déconnectez-vous. La suppression du compte sera finalisée ensuite.", cs: "Odhlaste se. Smazání účtu dokončíme v další fázi." },
+  "settings.sign_out": { en: "Sign out", fr: "Déconnexion", cs: "Odhlásit se" },
+  "settings.delete_account": { en: "Delete account", fr: "Supprimer le compte", cs: "Smazat účet" },
+  "settings.delete_account_note": { en: "Next phase: wire this button to a secure account deletion flow.", fr: "Étape suivante : connecter ce bouton à un flux sécurisé de suppression du compte.", cs: "Další fáze: napojit toto tlačítko na bezpečné smazání účtu." },
 };
 
+export const LanguageProvider = ({ children }: { children: ReactNode }) => {
+  const [lang, setLang] = useState<Language>(() => {
+    const saved = localStorage.getItem("sacred-path-lang");
+    return (saved as Language) || "en";
+  });
+
+  const handleSetLang = (newLang: Language) => {
+    setLang(newLang);
+    localStorage.setItem("sacred-path-lang", newLang);
+  };
+
+  const t = (key: string): string => {
+    return translations[key]?.[lang] || translations[key]?.["en"] || key;
+  };
+
+  return (
+    <LanguageContext.Provider value={{ lang, setLang: handleSetLang, t }}>
+      {children}
+    </LanguageContext.Provider>
+  );
+};
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [lang, setLang] = useState<Language>(() => {
     const saved = localStorage.getItem("sacred-path-lang");
