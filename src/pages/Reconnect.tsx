@@ -105,7 +105,7 @@ const reconnectTools: ReconnectTool[] = [
       ],
       quote: {
         text: "When the body feels safer, love becomes easier to feel and easier to offer.",
-        source: "Sacred Path Reconnect summary",
+        source: "Sacred Path Reconnect editorial synthesis",
       },
       useWhen: [
         "After stressful days, travel, parenting load, or digital overload.",
@@ -190,7 +190,7 @@ const reconnectTools: ReconnectTool[] = [
       ],
       quote: {
         text: "Tenderness grows when appreciation becomes active rather than assumed.",
-        source: "Sacred Path Reconnect summary",
+        source: "Sacred Path Reconnect editorial synthesis",
       },
       useWhen: [
         "When the relationship feels flat but not fractured.",
@@ -275,7 +275,7 @@ const reconnectTools: ReconnectTool[] = [
       ],
       quote: {
         text: "A little play can reopen desire where analysis has exhausted it.",
-        source: "Sacred Path Reconnect summary",
+        source: "Sacred Path Reconnect editorial synthesis",
       },
       useWhen: [
         "When conversations feel responsible but lifeless.",
@@ -421,15 +421,95 @@ const reconnectTools: ReconnectTool[] = [
   },
 ];
 
-const reconnectUpgradeCopy = {
-  headline: "Stop losing each other in stressful weeks.",
-  benefit: "Use premium reconnect tracks to move from friction to closeness with clear, repeatable structure.",
-  bullets: [
-    "Guided scripts for emotional repair without blame or shutdown loops.",
-    "Stepwise body-first reset sequences for high-intensity moments.",
-    "Progressive reconnect tracks from tender contact to renewed attraction.",
-  ],
-  cta: "Unlock Reconnect Premium",
+const reconnectUpgradeCopy: Record<
+  string,
+  {
+    headline: string;
+    benefit: string;
+    bullets: string[];
+    cta: string;
+  }
+> = {
+  "soft-landing": {
+    headline: "Stop losing each other in stressful weeks.",
+    benefit: "Use guided co-regulation so difficult evenings end in contact, not distance.",
+    bullets: [
+      "Audio-led downshift sequences for overloaded nervous systems.",
+      "Partner pacing scripts for fast, gentle emotional arrival.",
+      "Progressive tracks from simple settling to deeper reconnect flow.",
+    ],
+    cta: "Unlock Soft Landing Premium",
+  },
+  "heart-opening": {
+    headline: "Bring warmth back before resentment grows.",
+    benefit: "Use structured reassurance and appreciation rituals that rebuild emotional trust quickly.",
+    bullets: [
+      "Guided gratitude and reassurance rounds for daily connection.",
+      "Repair-safe language prompts that reduce defensiveness.",
+      "Progressive tenderness modules for long-term emotional nourishment.",
+    ],
+    cta: "Unlock Heart Opening Premium",
+  },
+  "playful-spark": {
+    headline: "Bring chemistry back without pressure.",
+    benefit: "Use playful scripts to restore curiosity, flirtation, and lightness in long-term love.",
+    bullets: [
+      "Anticipation games and playful tension-building sequences.",
+      "Low-pressure flirtation prompts for different personality styles.",
+      "Bridge scripts from laughter into warm sensual closeness.",
+    ],
+    cta: "Unlock Playful Spark Premium",
+  },
+  "sacred-desire": {
+    headline: "Turn reconnection into devotional erotic depth.",
+    benefit: "Move from surface closeness into embodied longing with clear structure and safety.",
+    bullets: [
+      "Layered rituals for anticipation, devotion, and polarity.",
+      "Guided sensual pacing maps for emotional and erotic attunement.",
+      "Integration prompts so afterglow becomes lasting relationship growth.",
+    ],
+    cta: "Unlock Sacred Desire Premium",
+  },
+  "breath-bridge": {
+    headline: "When words fail, reconnect through breath.",
+    benefit: "Use body-first reset protocols to reduce activation before difficult conversations.",
+    bullets: [
+      "Co-regulation sequences for conflict, fatigue, and shutdown states.",
+      "Escalation guardrails with consent and pacing checkpoints.",
+      "Recovery tracks from stress reactivity to relational availability.",
+    ],
+    cta: "Unlock Breath Bridge Premium",
+  },
+  "speak-the-unsent": {
+    headline: "Say what matters without blowing up the bond.",
+    benefit: "Use structured conversation frameworks that make honesty safer and more productive.",
+    bullets: [
+      "Turn-based scripts for backlog conversations with lower defensiveness.",
+      "Repair prompts that combine accountability with care.",
+      "Follow-up integration sequences so clarity becomes new behavior.",
+    ],
+    cta: "Unlock Speak The Unsent Premium",
+  },
+  "polarity-reset": {
+    headline: "Recover attraction after emotional flattening.",
+    benefit: "Use consent-first polarity drills that reintroduce charge without destabilizing trust.",
+    bullets: [
+      "Guided lead/receive sequences for magnetic contrast and safety.",
+      "Truth-and-desire prompts that clear hidden resentment.",
+      "Progression maps from reconnection to sustained erotic momentum.",
+    ],
+    cta: "Unlock Polarity Reset Premium",
+  },
+  "ritual-aftercare": {
+    headline: "Protect connection after big moments.",
+    benefit: "Use aftercare systems that turn intensity into secure bonding and continuity.",
+    bullets: [
+      "Post-intimacy and post-conflict debrief templates for couples.",
+      "Reassurance and recovery check-ins for nervous-system safety.",
+      "Next-day integration maps that prevent emotional crash and drift.",
+    ],
+    cta: "Unlock Ritual Aftercare Premium",
+  },
 };
 
 const shellCardClass =
@@ -473,14 +553,22 @@ const ReconnectHeroCard = ({ tool }: { tool: ReconnectTool }) => {
   );
 };
 
-const PremiumMiniCard = () => (
+const PremiumMiniCard = ({ tool }: { tool: ReconnectTool }) => {
+  const upgradeCopy = reconnectUpgradeCopy[tool.slug] ?? {
+    benefit: "Use premium reconnect tracks to move from friction to closeness with clear, repeatable structure.",
+  };
+  const miniLine = tool.tier === "free"
+    ? tool.content?.premiumBanner ?? upgradeCopy.benefit
+    : upgradeCopy.benefit;
+
+  return (
   <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.24),transparent_55%),linear-gradient(135deg,rgba(245,158,11,0.18),rgba(15,23,42,0.15))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.62)]">
     <div className="flex items-center gap-2 text-amber-200">
       <Lock className="h-4 w-4" />
       <span className="text-xs uppercase tracking-[0.16em]">Locked</span>
     </div>
     <p className="mt-3 text-sm leading-6 text-foreground/90">
-      Unlock reconnect systems with high-impact scripts, guided pacing, and advanced recovery pathways that move couples toward sacred love.
+      {miniLine}
     </p>
     <div className="mt-3 flex flex-wrap gap-2">
       <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Guided Scripts</span>
@@ -495,15 +583,28 @@ const PremiumMiniCard = () => (
       <ArrowRight className="h-4 w-4" />
     </Link>
   </section>
-);
+  );
+};
 
-const ReconnectPremiumBlock = () => (
+const ReconnectPremiumBlock = ({ tool }: { tool: ReconnectTool }) => {
+  const upgradeCopy = reconnectUpgradeCopy[tool.slug] ?? {
+    headline: "Stop losing each other in stressful weeks.",
+    benefit: "Use premium reconnect tracks to move from friction to closeness with clear, repeatable structure.",
+    bullets: [
+      "Guided scripts for emotional repair without blame or shutdown loops.",
+      "Stepwise body-first reset sequences for high-intensity moments.",
+      "Progressive reconnect tracks from tender contact to renewed attraction.",
+    ],
+    cta: "Unlock Reconnect Premium",
+  };
+
+  return (
   <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
     <p className="text-xs uppercase tracking-[0.2em] text-amber-300">8. Premium Value</p>
-    <h4 className="mt-2 font-display text-2xl text-foreground">{reconnectUpgradeCopy.headline}</h4>
-    <p className="mt-3 text-sm leading-7 text-foreground/90">{reconnectUpgradeCopy.benefit}</p>
+    <h4 className="mt-2 font-display text-2xl text-foreground">{upgradeCopy.headline}</h4>
+    <p className="mt-3 text-sm leading-7 text-foreground/90">{upgradeCopy.benefit}</p>
     <div className="mt-4 space-y-2">
-      {reconnectUpgradeCopy.bullets.map((bullet) => (
+      {upgradeCopy.bullets.map((bullet) => (
         <div key={bullet} className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
           <span className="mt-2 h-1.5 w-1.5 rounded-full bg-amber-300" />
           <span>{bullet}</span>
@@ -514,11 +615,12 @@ const ReconnectPremiumBlock = () => (
       to="/pricing"
       className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
     >
-      {reconnectUpgradeCopy.cta}
+      {upgradeCopy.cta}
       <ArrowRight className="h-4 w-4" />
     </Link>
   </section>
-);
+  );
+};
 
 const FreeReconnectContent = ({ tool }: { tool: ReconnectTool }) => {
   if (!tool.content) return null;
@@ -622,7 +724,7 @@ const FreeReconnectContent = ({ tool }: { tool: ReconnectTool }) => {
         </div>
       </section>
 
-      <ReconnectPremiumBlock />
+      <ReconnectPremiumBlock tool={tool} />
     </main>
   );
 };
@@ -676,24 +778,7 @@ const PremiumReconnectContent = ({ tool }: { tool: ReconnectTool }) => (
       </div>
     </section>
 
-    <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.2),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
-      <p className="text-xs uppercase tracking-[0.2em] text-amber-300">Locked Banner</p>
-      <p className="mt-3 text-sm leading-7 text-foreground/90">
-        Unlock reconnect tracks into complete transformation systems, with guided structure from rupture to trust and from distance to sacred closeness.
-      </p>
-      <div className="mt-4 grid gap-2 md:grid-cols-3">
-        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Structured recovery</div>
-        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Use-now guidance</div>
-        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Sacred love momentum</div>
-      </div>
-      <Link
-        to="/pricing"
-        className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
-      >
-        View plans and start trial
-        <ArrowRight className="h-4 w-4" />
-      </Link>
-    </section>
+    <ReconnectPremiumBlock tool={tool} />
   </main>
 );
 
@@ -893,7 +978,7 @@ const Reconnect = () => {
 
         <aside className="space-y-4 lg:sticky lg:top-24">
           <ReconnectHeroCard tool={selected} />
-          <PremiumMiniCard />
+          <PremiumMiniCard tool={selected} />
         </aside>
 
         <div className="space-y-4">

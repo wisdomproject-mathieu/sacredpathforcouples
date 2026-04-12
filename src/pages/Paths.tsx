@@ -109,49 +109,50 @@ const pathDetails: PathDetail[] = [
     iconClass: "text-fuchsia-300",
     content: {
       hero: [
-        "Tantric Wisdom is a path of integration. It does not split desire from consciousness or tenderness from intensity. It invites couples to stay present with longing, pleasure, vulnerability, devotion, and silence.",
-        "For modern couples, Tantra is not about looking mystical. It is a practical method for turning fast, distracted evenings into moments of grounded contact, emotional truth, and erotic aliveness.",
-        "It teaches you to regulate first, open second, and intensify only when both bodies signal readiness. That sequence protects trust and creates more sustainable attraction over time.",
-        "The core shift is simple but profound: intimacy stops being performance and becomes shared practice. When practice deepens, love feels less random and more intentionally alive.",
+        "Historically, Tantra developed as a body-inclusive spiritual path in Hindu and Buddhist traditions, using breath, attention, ritual, mantra, and devotion to transform raw energy into awareness.",
+        "For couples, the practical translation is simple: do not split desire from consciousness. Stay connected to sensation, emotion, and meaning in the same moment.",
+        "Tantric pacing helps modern partners regulate first, open second, and intensify only when both bodies are genuinely ready. That sequence protects trust and increases sustainable attraction.",
+        "The shift is from performance to practice. Intimacy becomes a repeatable path where eros, tenderness, truth, and reverence grow together over time.",
       ],
       whyMatters: [
-        "Tantra gives long-term couples a framework for staying emotionally connected while growing erotic depth.",
-        "It offers clear pacing when one partner wants intensity and the other needs safety first.",
-        "It turns breath and awareness into tools that can de-escalate conflict and reignite desire.",
+        "It gives long-term couples a framework for growing erotic depth without sacrificing emotional safety.",
+        "It offers practical pacing when one partner wants intensity and the other needs grounding first.",
+        "Sexual mindfulness research points toward stronger relational flourishing when partners stay present in body and awareness.",
+        "It turns breath into a co-regulation tool that can lower stress load before difficult conversations or deeper touch.",
         "It restores reverence in relationships that have become efficient but emotionally dry.",
-        "It creates repeatable rituals, so closeness does not depend only on mood or perfect timing.",
+        "It creates repeatable rituals, so closeness does not depend on perfect mood, timing, or chemistry spikes.",
       ],
       whoItsFor: [
         {
-          title: "Couples with strong love but fading charge",
-          body: "Use tantric polarity and pacing to bring desire back without forcing intensity.",
+          title: "Couples with strong loyalty but fading erotic charge",
+          body: "Use tantric pacing and polarity to revive desire without pressuring either nervous system.",
         },
         {
           title: "Couples healing from stress loops",
-          body: "Use breath-led regulation before touch, so closeness feels safe and warm again.",
+          body: "Use breath-led regulation before touch so closeness becomes safe, warm, and emotionally reachable again.",
         },
         {
           title: "Couples ready for sacred depth",
-          body: "Build devotion practices that support both erotic aliveness and spiritual intimacy.",
+          body: "Build devotional rituals that support both erotic aliveness and spiritual intimacy in daily life.",
         },
         {
-          title: "Couples rebuilding trust in intimacy",
-          body: "Use explicit consent cues and structured rituals to restore confidence and contact.",
+          title: "Couples rebuilding trust after rupture or avoidance",
+          body: "Use explicit consent language and structured rituals to restore confidence, clarity, and steady contact.",
         },
       ],
       practicePreview: {
         title: "Tantric Arrival Sequence",
-        body: "A low-pressure opening sequence for evenings when you want depth without overwhelm.",
+        body: "A low-pressure sequence that moves from stress to presence before any intensity.",
         steps: [
-          "Sit face-to-face, hands connected, and breathe in sync for two minutes.",
-          "Name one present feeling and one relational intention for tonight.",
-          "Use three minutes of devotional touch in non-genital zones.",
-          "Pause and ask: more, same, or slower before moving forward.",
+          "Sit face-to-face, hands connected, and breathe in sync for 2 minutes.",
+          "Each partner names one present feeling and one relational intention for tonight.",
+          "Use 3 minutes of devotional non-goal touch in non-genital zones.",
+          "Pause and ask: more, same, slower, or stop before moving forward.",
         ],
       },
       quote: {
-        text: "Tantra matures intimacy by turning attention into devotion and sensation into awareness.",
-        source: "Sacred Path Tantric Wisdom summary",
+        text: "Tantric intimacy grows when attention, consent, and devotion stay alive in the same breath.",
+        source: "Sacred Path Tantric editorial synthesis",
       },
       whatItIsNot: [
         "It is not spiritual aesthetics layered over disconnection.",
@@ -256,7 +257,7 @@ const pathDetails: PathDetail[] = [
         { name: "Sally Kempton", tier: "premium", note: "Kashmir Shaivism and intimate recognition practice." },
       ],
       premiumBanner:
-        "Unlock full Tantric Wisdom journeys with guided audio, chakra-informed partner rituals, and progressive tracks that help couples move toward sacred love.",
+        "Unlock full Tantric Wisdom journeys with guided audio, consent-forward ritual progressions, and layered modules that turn chemistry into a durable sacred couple practice.",
     },
   },
   {
@@ -269,15 +270,16 @@ const pathDetails: PathDetail[] = [
     iconClass: "text-cyan-300",
     content: {
       hero: [
-        "Tao is the path of flow. In intimacy it teaches softness, pacing, warmth, and circulation so closeness feels replenishing instead of draining.",
-        "It is especially useful for modern couples under sustained stress load. Tao restores rhythm and body trust so partners can reconnect without force, pressure, or emotional collapse.",
-        "Instead of chasing peaks, Tao trains continuity: less burnout, more sustainable sensual aliveness, and better nervous-system cooperation between partners.",
-        "When practiced consistently, Tao creates a new relational baseline where calm and desire no longer compete. They begin to support each other.",
+        "Classical Taoist teaching emphasizes harmony with the Dao through balance, non-forcing (wu wei), and flow. In intimacy, that becomes softness, precise pacing, and full-body circulation.",
+        "Tao is especially useful during high-stress seasons: it helps couples reconnect without force, pressure, or emotional collapse.",
+        "Instead of chasing peaks, Tao trains continuity. You learn to preserve erotic energy, reduce depletion, and keep desire alive across ordinary weeknights.",
+        "With practice, calm and passion stop competing. They become one integrated rhythm that supports long-term closeness.",
       ],
       whyMatters: [
-        "Tao helps couples recover closeness on low-energy days when intensity would backfire.",
+        "It helps couples recover closeness on low-energy days when intensity would backfire.",
         "It gives practical pacing for mismatched desire rhythms without shame or withdrawal.",
-        "It reduces post-intimacy depletion by teaching circulation and conservation.",
+        "It uses slow breath and circulation principles that can reduce stress activation and improve emotional access.",
+        "It lowers post-intimacy depletion by teaching conservation, grounding, and recovery.",
         "It makes touch safer for sensitive or anxious nervous systems.",
         "It builds erotic longevity for couples who want depth that lasts years, not weeks.",
       ],
@@ -301,7 +303,7 @@ const pathDetails: PathDetail[] = [
       ],
       practicePreview: {
         title: "Tao Evening Reset",
-        body: "A stress-compatible sequence to move from overdrive into connected sensual presence.",
+        body: "A stress-compatible sequence for moving from overdrive into connected sensual presence.",
         steps: [
           "Lie side-by-side with one hand on each other’s lower belly.",
           "Breathe 4-count inhale and 6-count exhale for five rounds.",
@@ -310,8 +312,8 @@ const pathDetails: PathDetail[] = [
         ],
       },
       quote: {
-        text: "Taoist intimacy is measured by how nourished you feel after connection, not by how dramatic it looked.",
-        source: "Sacred Path Tao summary",
+        text: "Tao intimacy is measured by nourishment, steadiness, and the quality of connection you can sustain.",
+        source: "Sacred Path Tao editorial synthesis",
       },
       whatItIsNot: [
         "It is not repression or anti-passion restraint.",
@@ -416,7 +418,7 @@ const pathDetails: PathDetail[] = [
         { name: "Barry Long", tier: "premium", note: "Simplicity and relational integrity in intimate practice." },
       ],
       premiumBanner:
-        "Unlock advanced Tao pathways for partner breathing maps, circulation work, sensual longevity training, and vitality routines for lasting couple closeness.",
+        "Unlock advanced Tao pathways with partner breathing maps, circulation drills, and sensual longevity sequences that protect attraction while preserving your energy.",
     },
   },
   {
@@ -571,24 +573,124 @@ const pathUpgradeCopy: Record<
   }
 > = {
   tantra: {
-    headline: "Turn sacred intimacy into a lived couple rhythm.",
-    benefit: "Move from one beautiful moment into a clear weekly structure you can sustain together.",
+    headline: "Turn sacred intimacy into a lived weekly rhythm.",
+    benefit: "Move from occasional depth to a repeatable couple practice that keeps trust, devotion, and desire aligned.",
     bullets: [
-      "Guided tantric audio journeys with breath pacing and polarity calibration.",
+      "Guided tantric audio journeys with breath pacing, attunement cues, and polarity calibration.",
       "Progressive partner rituals with devotion prompts and integration checkpoints.",
-      "Advanced consent and emotional safety maps for deeper erotic trust.",
+      "Advanced consent and emotional-safety maps for deeper erotic trust.",
     ],
     cta: "Unlock Tantric Premium",
   },
   tao: {
     headline: "Protect your energy while deepening desire.",
-    benefit: "Learn partner-ready Tao pacing so closeness feels replenishing, not draining.",
+    benefit: "Learn partner-ready Tao pacing so intimacy feels replenishing instead of draining.",
     bullets: [
       "Circulation sequences for stress-heavy weeks and low-energy evenings.",
       "Longevity drills for erotic vitality, softness, and sustainable sensual charge.",
       "Step-by-step Tao progression from calming reset to advanced partner flow.",
     ],
     cta: "Unlock Tao Premium",
+  },
+  "kama-sutra": {
+    headline: "Make desire intentional, elegant, and emotionally connected.",
+    benefit: "Go beyond positions into mood design, anticipation, and relational erotic craft.",
+    bullets: [
+      "Atmosphere frameworks for building anticipation before touch starts.",
+      "Guided scripts for sensual communication, consent, and pacing.",
+      "Progressive couple rituals that turn chemistry into a reliable art.",
+    ],
+    cta: "Unlock Kama Sutra Premium",
+  },
+  polarity: {
+    headline: "Rebuild magnetic charge without emotional chaos.",
+    benefit: "Use clear leading-receiving structures that restore attraction while preserving safety.",
+    bullets: [
+      "Consent-first polarity drills for real long-term relationships.",
+      "Truth-and-devotion scripts that prevent shutdown and defensiveness.",
+      "Progressive edge training that keeps tenderness fully intact.",
+    ],
+    cta: "Unlock Polarity Premium",
+  },
+  "sacred-desire": {
+    headline: "Let longing become a devotional force between you.",
+    benefit: "Blend reverence, tenderness, and erotic intensity in one coherent couple practice.",
+    bullets: [
+      "Ritual maps for building anticipation and emotional resonance.",
+      "Guided partner sequences for embodied magnetism and trust.",
+      "Integration prompts that carry sacred intimacy into daily life.",
+    ],
+    cta: "Unlock Sacred Desire Premium",
+  },
+  shamanism: {
+    headline: "Explore altered-state intimacy with grounded structure.",
+    benefit: "Use ceremony responsibly so intensity deepens connection instead of destabilizing it.",
+    bullets: [
+      "Safety-first ceremonial frameworks for partner practice.",
+      "Guided energetic rituals with clear pacing and closure.",
+      "Integration paths that convert peak moments into lasting trust.",
+    ],
+    cta: "Unlock Shamanism Premium",
+  },
+  "neo-tantra": {
+    headline: "Modernize sacred sexuality without losing depth.",
+    benefit: "Combine classical tantric principles with clear modern relationship language.",
+    bullets: [
+      "Module-based partner journeys from basics to advanced practice.",
+      "Communication scripts that keep vulnerability embodied and practical.",
+      "Progression maps linking intimacy, healing, and relational growth.",
+    ],
+    cta: "Unlock Neo-Tantra Premium",
+  },
+  "qigong-neidan": {
+    headline: "Build couple vitality that lasts.",
+    benefit: "Train circulation, grounding, and internal energy care as shared relationship skills.",
+    bullets: [
+      "Partner-aware qi cultivation and conservation sequences.",
+      "Guided full-body circulation drills for sensual resilience.",
+      "Long-range vitality routines for sustained intimacy over years.",
+    ],
+    cta: "Unlock Qigong & Neidan Premium",
+  },
+  "kundalini-kriya-yoga": {
+    headline: "Channel intensity with discipline and care.",
+    benefit: "Work with awakening practices in a paced, consent-aware couple container.",
+    bullets: [
+      "Structured breath and bandha progressions for partners.",
+      "Activation safeguards with grounding and recovery protocols.",
+      "Integration guidance for translating energy work into daily intimacy.",
+    ],
+    cta: "Unlock Kundalini / Kriya Premium",
+  },
+  sufism: {
+    headline: "Let heart devotion shape daily intimacy.",
+    benefit: "Turn remembrance, tenderness, and sacred attention into shared relational practice.",
+    bullets: [
+      "Guided heart-centered rituals for emotional and spiritual bonding.",
+      "Devotional prompts that deepen affection without performance pressure.",
+      "Practice tracks that anchor spiritual love in everyday partnership.",
+    ],
+    cta: "Unlock Sufism Premium",
+  },
+  "buddhism-forum": {
+    headline: "Bring mindful compassion into your hardest moments.",
+    benefit: "Use contemplative discipline to reduce reactivity and strengthen relational clarity.",
+    bullets: [
+      "Partner meditative protocols for conflict and repair windows.",
+      "Attachment-aware reflection sequences for steady emotional growth.",
+      "Ethical intimacy frameworks for trust, honesty, and long-term alignment.",
+    ],
+    cta: "Unlock Buddhism Premium",
+  },
+  "vajrayana-kashmir-shaivism": {
+    headline: "Integrate subtle energy and non-dual intimacy with precision.",
+    benefit: "Study advanced sacred frameworks inside a grounded modern couple pathway.",
+    bullets: [
+      "Guided mantra, visualization, and channel-awareness progression.",
+      "Recognition-based Shaivism practices adapted for relational life.",
+      "Safety-aware sequencing that protects emotional and energetic stability.",
+    ],
+    cta: "Unlock Vajrayana & Shaivism Premium",
   },
 };
 
@@ -632,14 +734,23 @@ const PathHeroCard = ({ path }: { path: PathDetail }) => {
   );
 };
 
-const PremiumMiniCard = () => (
+const PremiumMiniCard = ({ path }: { path: PathDetail }) => {
+  const upgradeCopy = pathUpgradeCopy[path.slug] ?? {
+    benefit: "Add guided depth, clearer progression, and stronger partner integration.",
+  };
+
+  const miniLine = path.tier === "free"
+    ? path.content?.premiumBanner ?? upgradeCopy.benefit
+    : upgradeCopy.benefit;
+
+  return (
   <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.24),transparent_55%),linear-gradient(135deg,rgba(245,158,11,0.18),rgba(15,23,42,0.15))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.62)]">
     <div className="flex items-center gap-2 text-amber-200">
       <Lock className="h-4 w-4" />
       <span className="text-xs uppercase tracking-[0.16em]">Locked</span>
     </div>
     <p className="mt-3 text-sm leading-6 text-foreground/90">
-      Unlock full path journeys with advanced practices, richer context, and direct bridges into sacred-love transformation for couples.
+      {miniLine}
     </p>
     <div className="mt-3 flex flex-wrap gap-2">
       <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Guided Tracks</span>
@@ -654,7 +765,8 @@ const PremiumMiniCard = () => (
       <ArrowRight className="h-4 w-4" />
     </Link>
   </section>
-);
+  );
+};
 
 const PathPremiumBlock = ({ path }: { path: PathDetail }) => {
   const upgradeCopy = pathUpgradeCopy[path.slug] ?? {
@@ -1130,7 +1242,7 @@ const Paths = () => {
 
         <aside className="space-y-4 lg:sticky lg:top-24">
           <PathHeroCard path={selected} />
-          <PremiumMiniCard />
+          <PremiumMiniCard path={selected} />
         </aside>
 
         <div className="space-y-4">

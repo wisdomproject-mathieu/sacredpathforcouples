@@ -107,8 +107,9 @@ const authors: Author[] = [
     iconClass: "text-amber-300",
     content: {
       heroIntro: [
-        "David Deida is useful when a relationship still has loyalty and care, but erotic aliveness has thinned out. He translates ancient polarity principles into language modern couples can use tonight.",
-        "At his best, Deida is not about rigid roles. He is about conscious contrast, directed presence, and devotional intensity that stays consensual, grounded, and supportive of lasting closeness.",
+        "David Deida is most useful when a relationship still has loyalty and care, but erotic aliveness has flattened. His work gives couples language for restoring charge without abandoning tenderness.",
+        "Read skillfully, this is not about rigid gender scripts. It is about directed presence, conscious contrast, emotional truth, and devotion held inside explicit consent.",
+        "For modern couples, Deida becomes practical when translated into short rituals: truth naming, lead/receive rounds, and clear pacing signals that protect nervous-system safety.",
       ],
       whoItsFor: [
         {
@@ -132,20 +133,21 @@ const authors: Author[] = [
         title: "Deida polarity check-in",
         body: "A structured pre-intimacy sequence for reconnecting desire with emotional integrity.",
         steps: [
-          "Name one truth you have been avoiding this week.",
+          "Name one relational truth you have been avoiding this week.",
           "Name one devotional action you will take tonight.",
-          "Run a two-minute lead/receive breath round and switch.",
-          "Close with explicit more/same/pause consent language.",
+          "Run a 2-minute lead/receive breath round and switch.",
+          "Close with explicit more, same, slower, or pause consent language.",
         ],
       },
       quote: {
-        text: "Attraction often returns when partners stop managing each other and start meeting each other with directed, loving presence.",
-        source: "Sacred Path editorial summary",
+        text: "Attraction often returns when partners stop managing each other and start meeting with directed, loving presence.",
+        source: "Sacred Path Deida editorial synthesis",
       },
       whyMatters: [
         "He names the gap between companionate love and erotic charge without shaming either partner.",
         "He offers practical language for leadership, receptivity, honesty, and devotion.",
         "He helps long-term couples reintroduce anticipation and tension without abandoning tenderness.",
+        "His framework pairs well with research on emotional bids: turning toward each other consistently restores connection momentum.",
       ],
       coreTeachings: [
         {
@@ -172,7 +174,7 @@ const authors: Author[] = [
         },
         {
           title: "When communication is strong but chemistry is weak",
-          body: "Use embodied leading/receiving rounds instead of more analysis.",
+          body: "Use embodied leading/receiving rounds instead of adding more analysis.",
         },
         {
           title: "When one partner over-functions",
@@ -232,6 +234,7 @@ const authors: Author[] = [
         "What kind of polarity feels alive without feeling fake?",
         "What truth am I avoiding that is costing us desire?",
         "What devotional action would help my partner feel chosen this week?",
+        "What small daily bid for connection am I currently missing?",
       ],
       relatedPaths: [
         { name: "Polarity", note: "Conscious energetic contrast and devotional edge." },
@@ -239,7 +242,7 @@ const authors: Author[] = [
         { name: "Kama Sutra", note: "Atmosphere and anticipation as erotic architecture." },
       ],
       premiumBanner:
-        "Unlock advanced polarity pathways, guided scripts for erotic honesty, and progressive modules that help long-term couples move toward sacred love.",
+        "Unlock advanced Deida pathways with guided polarity scripts, truth-and-devotion flows, and progressive modules that restore charge while protecting emotional safety.",
     },
   },
   {
@@ -253,8 +256,9 @@ const authors: Author[] = [
     iconClass: "text-fuchsia-300",
     content: {
       heroIntro: [
-        "Osho's practical value is method, not mythology: bring awareness into sensation, emotion, and relational patterning. His teachings help modern couples move from unconscious reactivity into conscious contact.",
-        "He distinguishes suppression from integration. The invitation is neither collapse nor control, but witnessing: feel fully, breathe fully, and remain present so closeness can return naturally.",
+        "Osho's practical value is method, not mythology: bring awareness into sensation, emotion, and relational patterning so reactivity does not run the relationship.",
+        "He distinguishes suppression from integration. The invitation is neither collapse nor control, but witnessing: feel fully, breathe fully, and stay present enough for connection to return.",
+        "For couples, the usable piece is simple: regulate the body, name what is real, and re-enter dialogue from awareness instead of defensive reflex.",
       ],
       whoItsFor: [
         {
@@ -286,12 +290,13 @@ const authors: Author[] = [
       },
       quote: {
         text: "Love deepens when partners stop controlling inner weather and learn to witness it together.",
-        source: "Sacred Path editorial summary",
+        source: "Sacred Path Osho editorial synthesis",
       },
       whyMatters: [
         "He gives couples permission to feel deeply without dramatizing every emotion.",
         "He reframes intimacy as awareness practice, not only compatibility outcome.",
         "He uses body-led methods that reduce conversational looping.",
+        "His approach supports the same present-moment attention linked to stronger sexual and relational flourishing.",
       ],
       coreTeachings: [
         { title: "Awareness transforms intensity", body: "Witnessed sensation becomes information, not threat." },
@@ -356,6 +361,7 @@ const authors: Author[] = [
         "Where do I confuse expression with responsibility?",
         "What helps me stay present when sensation rises?",
         "Which 5-minute daily awareness ritual would most help us?",
+        "How quickly do we return to contact after our first stress signal?",
       ],
       relatedPaths: [
         { name: "Tantra", note: "Sacred embodied awareness and breath-led intimacy." },
@@ -363,7 +369,7 @@ const authors: Author[] = [
         { name: "Polarity", note: "Conscious charge shaped with presence." },
       ],
       premiumBanner:
-        "Unlock deeper Osho-inspired practices, guided meditative intimacy tracks, and advanced integration pathways for couples growing sacred love as a daily discipline.",
+        "Unlock deeper Osho-inspired practices, guided witnessing sequences, and advanced integration pathways that turn daily stress into deeper conscious intimacy.",
     },
   },
   {
@@ -537,6 +543,116 @@ const authorUpgradeCopy: Record<
     ],
     cta: "Unlock Deida Premium",
   },
+  osho: {
+    headline: "Turn awareness into practical relationship repair.",
+    benefit: "Use guided witnessing and regulation tracks that reduce reactivity and restore emotional contact.",
+    bullets: [
+      "Meditative co-regulation sequences for stressful evenings and conflict residue.",
+      "Body-led dialogue scripts that reduce looping and increase clarity.",
+      "Progressive awareness modules for steady sacred intimacy in daily life.",
+    ],
+    cta: "Unlock Osho Premium",
+  },
+  "mantak-chia": {
+    headline: "Build erotic vitality without burnout.",
+    benefit: "Learn Taoist couple alchemy that preserves energy and deepens attraction over time.",
+    bullets: [
+      "Partner circulation protocols for low-energy and high-stress seasons.",
+      "Breath and conservation drills for sustainable sensual longevity.",
+      "Progressive modules from first practice to advanced energetic intimacy.",
+    ],
+    cta: "Unlock Mantak Chia Premium",
+  },
+  "margot-anand": {
+    headline: "Make intimacy feel ecstatic, warm, and intentional.",
+    benefit: "Use ceremonial structures that blend joy, devotion, and erotic creativity.",
+    bullets: [
+      "Guided sacred sensual rituals designed for modern partnership life.",
+      "Playful-to-devotional transitions with clear consent and pacing.",
+      "Layered journey tracks for lasting emotional and erotic closeness.",
+    ],
+    cta: "Unlock Margot Anand Premium",
+  },
+  "daniel-odier": {
+    headline: "Choose subtle depth over performative intensity.",
+    benefit: "Practice contemplative intimacy that makes silence, touch, and attention profoundly connective.",
+    bullets: [
+      "Non-dual intimacy sequences for grounded couple meditation.",
+      "Gentle partner practices for presence-led erotic refinement.",
+      "Integration prompts that carry subtle awareness into daily life.",
+    ],
+    cta: "Unlock Daniel Odier Premium",
+  },
+  "michaela-boehm": {
+    headline: "Let body intelligence guide your relationship.",
+    benefit: "Use somatic tools to recover attraction, co-regulation, and honest emotional contact.",
+    bullets: [
+      "Nervous-system-informed partner drills for stress and shutdown patterns.",
+      "Embodied communication scripts for hard moments that need precision.",
+      "Progression maps for stable chemistry and long-term relational resilience.",
+    ],
+    cta: "Unlock Michaela Boehm Premium",
+  },
+  "barry-long": {
+    headline: "Replace drama loops with grounded relational truth.",
+    benefit: "Apply disciplined clarity practices that increase respect, sobriety, and warmth.",
+    bullets: [
+      "Direct-honesty frameworks for difficult but loving conversations.",
+      "Presence-first rituals for emotional integrity in daily partnership.",
+      "Repair structures that prevent resentment from accumulating quietly.",
+    ],
+    cta: "Unlock Barry Long Premium",
+  },
+  "jan-day": {
+    headline: "Rebuild trust in touch, vulnerability, and expression.",
+    benefit: "Use body-led repair practices that move couples from guarded to open.",
+    bullets: [
+      "Guided safety rituals for touch confidence and emotional honesty.",
+      "Trauma-sensitive communication flows for rupture recovery.",
+      "Integration sequences that turn breakthrough moments into new habits.",
+    ],
+    cta: "Unlock Jan Day Premium",
+  },
+  "max-bush": {
+    headline: "Grow erotic skill without losing tenderness.",
+    benefit: "Train practical sensual communication that strengthens both confidence and trust.",
+    bullets: [
+      "Stepwise erotic craft modules for long-term couples.",
+      "Partner scripts that blend directness, care, and consent.",
+      "Practice progressions that keep chemistry alive beyond date night.",
+    ],
+    cta: "Unlock Max Bush Premium",
+  },
+  "victor-gold": {
+    headline: "Refine polarity and sensual form with depth.",
+    benefit: "Access advanced relational erotic architecture grounded in devotion and precision.",
+    bullets: [
+      "Layered practices for leading, receiving, and magnetic contrast.",
+      "High-integrity erotic communication frameworks for committed couples.",
+      "Advanced progression maps for sustained sacred sensual growth.",
+    ],
+    cta: "Unlock Victor Gold Premium",
+  },
+  "charles-muir": {
+    headline: "Bring Neo-Tantra into real relationship life.",
+    benefit: "Use modular partner rituals that integrate intimacy, communication, and emotional safety.",
+    bullets: [
+      "Guided ritual scripts adapted for modern schedules and stress.",
+      "Progressive couple sequences for embodied connection and trust.",
+      "Cross-library integration with Paths and Reconnect for continuity.",
+    ],
+    cta: "Unlock Charles Muir Premium",
+  },
+  "sally-kempton": {
+    headline: "Let contemplative recognition deepen your bond.",
+    benefit: "Practice heart-led non-dual intimacy in forms modern couples can actually sustain.",
+    bullets: [
+      "Kashmir Shaivism-inspired partner contemplations for daily closeness.",
+      "Guided awareness rituals that join tenderness and depth.",
+      "Integration prompts for carrying sacred presence into ordinary life.",
+    ],
+    cta: "Unlock Sally Kempton Premium",
+  },
 };
 
 const shellCardClass =
@@ -582,14 +698,22 @@ const AuthorHeroCard = ({ author }: { author: Author }) => {
   );
 };
 
-const PremiumMiniCard = () => (
+const PremiumMiniCard = ({ author }: { author: Author }) => {
+  const upgradeCopy = authorUpgradeCopy[author.slug] ?? {
+    benefit: "Turn insight into guided couple practice with structure that lasts.",
+  };
+  const miniLine = author.tier === "free"
+    ? author.content?.premiumBanner ?? upgradeCopy.benefit
+    : upgradeCopy.benefit;
+
+  return (
   <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.24),transparent_55%),linear-gradient(135deg,rgba(245,158,11,0.18),rgba(15,23,42,0.15))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.62)]">
     <div className="flex items-center gap-2 text-amber-200">
       <Lock className="h-4 w-4" />
       <span className="text-xs uppercase tracking-[0.16em]">Locked</span>
     </div>
     <p className="mt-3 text-sm leading-6 text-foreground/90">
-      Unlock deeper author journeys with guided partner practices, integration maps, and sacred-love pathways built for real couples.
+      {miniLine}
     </p>
     <div className="mt-3 flex flex-wrap gap-2">
       <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Guided Journeys</span>
@@ -604,7 +728,8 @@ const PremiumMiniCard = () => (
       <ArrowRight className="h-4 w-4" />
     </Link>
   </section>
-);
+  );
+};
 
 const AuthorPremiumBlock = ({ author }: { author: Author }) => {
   const upgradeCopy = authorUpgradeCopy[author.slug] ?? {
@@ -1066,7 +1191,7 @@ const Authors = () => {
 
         <aside className="space-y-4 lg:sticky lg:top-24">
           <AuthorHeroCard author={selected} />
-          <PremiumMiniCard />
+          <PremiumMiniCard author={selected} />
         </aside>
 
         <div className="space-y-4">
