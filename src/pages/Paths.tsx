@@ -41,6 +41,13 @@ type RelatedAuthor = {
 
 type PathContent = {
   hero: string[];
+  whyMatters?: string[];
+  whoItsFor?: Block[];
+  practicePreview?: {
+    title: string;
+    body: string;
+    steps: string[];
+  };
   quote: {
     text: string;
     source: string;
@@ -103,8 +110,45 @@ const pathDetails: PathDetail[] = [
     content: {
       hero: [
         "Tantric Wisdom is a path of integration. It does not split desire from consciousness or tenderness from intensity. It invites couples to stay present with longing, pleasure, vulnerability, devotion, and silence.",
-        "In modern life this means replacing rushed, goal-oriented intimacy with intentional pacing. The point is not to appear spiritual, but to become relationally awake and closer together.",
+        "For modern couples, Tantra is not about looking mystical. It is a practical method for turning fast, distracted evenings into moments of grounded contact, emotional truth, and erotic aliveness.",
+        "It teaches you to regulate first, open second, and intensify only when both bodies signal readiness. That sequence protects trust and creates more sustainable attraction over time.",
+        "The core shift is simple but profound: intimacy stops being performance and becomes shared practice. When practice deepens, love feels less random and more intentionally alive.",
       ],
+      whyMatters: [
+        "Tantra gives long-term couples a framework for staying emotionally connected while growing erotic depth.",
+        "It offers clear pacing when one partner wants intensity and the other needs safety first.",
+        "It turns breath and awareness into tools that can de-escalate conflict and reignite desire.",
+        "It restores reverence in relationships that have become efficient but emotionally dry.",
+        "It creates repeatable rituals, so closeness does not depend only on mood or perfect timing.",
+      ],
+      whoItsFor: [
+        {
+          title: "Couples with strong love but fading charge",
+          body: "Use tantric polarity and pacing to bring desire back without forcing intensity.",
+        },
+        {
+          title: "Couples healing from stress loops",
+          body: "Use breath-led regulation before touch, so closeness feels safe and warm again.",
+        },
+        {
+          title: "Couples ready for sacred depth",
+          body: "Build devotion practices that support both erotic aliveness and spiritual intimacy.",
+        },
+        {
+          title: "Couples rebuilding trust in intimacy",
+          body: "Use explicit consent cues and structured rituals to restore confidence and contact.",
+        },
+      ],
+      practicePreview: {
+        title: "Tantric Arrival Sequence",
+        body: "A low-pressure opening sequence for evenings when you want depth without overwhelm.",
+        steps: [
+          "Sit face-to-face, hands connected, and breathe in sync for two minutes.",
+          "Name one present feeling and one relational intention for tonight.",
+          "Use three minutes of devotional touch in non-genital zones.",
+          "Pause and ask: more, same, or slower before moving forward.",
+        ],
+      },
       quote: {
         text: "Tantra matures intimacy by turning attention into devotion and sensation into awareness.",
         source: "Sacred Path Tantric Wisdom summary",
@@ -113,6 +157,8 @@ const pathDetails: PathDetail[] = [
         "It is not spiritual aesthetics layered over disconnection.",
         "It is not pressure for endless intensity or perfect performance.",
         "It is not permission to bypass consent or emotional accountability.",
+        "It is not a shortcut that avoids emotional repair or honest communication.",
+        "It is not about exotic novelty; it is about consistency, depth, and embodied truth.",
       ],
       pillars: [
         { name: "Presence", body: "Returning attention to what is truly alive right now." },
@@ -120,6 +166,8 @@ const pathDetails: PathDetail[] = [
         { name: "Polarity", body: "Cultivating conscious contrast so charge can move." },
         { name: "Devotion", body: "Holding intimacy with reverence, care, and intention." },
         { name: "Embodied Awareness", body: "Tracking sensation and truth in the body first." },
+        { name: "Consent Language", body: "Keeping every step explicit, mutual, and adjustable in real time." },
+        { name: "Integration", body: "Closing intimate moments with reflection so trust compounds over time." },
       ],
       modernCouples: [
         {
@@ -134,11 +182,21 @@ const pathDetails: PathDetail[] = [
           title: "When stress suppresses desire",
           body: "Breath-led regulation reopens relational contact without forcing chemistry.",
         },
+        {
+          title: "When conflict residue lingers for days",
+          body: "Use devotional repair rituals that pair accountability with soothing body contact.",
+        },
+        {
+          title: "When intimacy feels disconnected from daily life",
+          body: "Anchor one 10-minute tantric ritual into your weekly rhythm so closeness stays alive.",
+        },
       ],
       misunderstandings: [
         { title: "Tantra equals constant intensity", body: "Real Tantra includes stillness, softness, and pause." },
         { title: "Tantra is only technique", body: "Technique is secondary to awareness quality and relational integrity." },
         { title: "Tantra avoids conflict", body: "It does not remove friction; it gives better ways to meet it." },
+        { title: "Tantra is only for advanced couples", body: "Beginners benefit quickly when they start with breath, consent, and pacing." },
+        { title: "Tantra replaces communication", body: "Embodied practice works best when paired with clear relational language." },
       ],
       practices: [
         {
@@ -171,17 +229,31 @@ const pathDetails: PathDetail[] = [
           ],
           integration: "Improves trust, consent, and attunement.",
         },
+        {
+          title: "Polarity and Tenderness Loop (9 minutes)",
+          setup: "Alternate one minute of directional leading and one minute of receptive stillness.",
+          steps: [
+            "Partner A leads with voice and pace for one minute.",
+            "Partner B receives and signals more/same/pause.",
+            "Switch roles and repeat for four rounds.",
+          ],
+          integration: "Rebuilds erotic contrast while keeping emotional warmth intact.",
+        },
       ],
       reflections: [
         "Where do we rush instead of arrive?",
         "Which of the five pillars is strongest for us right now?",
         "What would devotion look like in one concrete weekly action?",
         "How can we bring embodied awareness into our conflict cycles?",
+        "What makes each of us feel both desired and safe at the same time?",
+        "Which ritual from this page can we realistically repeat twice this week?",
+        "Where do we still prioritize performance over presence?",
       ],
       relatedAuthors: [
         { name: "Osho", tier: "free", note: "Awareness-based intimacy and witnessing." },
         { name: "David Deida", tier: "free", note: "Polarity and devotional edge." },
         { name: "Margot Anand", tier: "premium", note: "Ecstatic ceremony and sacred sensuality." },
+        { name: "Sally Kempton", tier: "premium", note: "Kashmir Shaivism and intimate recognition practice." },
       ],
       premiumBanner:
         "Unlock full Tantric Wisdom journeys with guided audio, chakra-informed partner rituals, and progressive tracks that help couples move toward sacred love.",
@@ -198,8 +270,45 @@ const pathDetails: PathDetail[] = [
     content: {
       hero: [
         "Tao is the path of flow. In intimacy it teaches softness, pacing, warmth, and circulation so closeness feels replenishing instead of draining.",
-        "It is especially useful for modern couples under stress load. Tao restores rhythm and body trust so partners can reconnect without force.",
+        "It is especially useful for modern couples under sustained stress load. Tao restores rhythm and body trust so partners can reconnect without force, pressure, or emotional collapse.",
+        "Instead of chasing peaks, Tao trains continuity: less burnout, more sustainable sensual aliveness, and better nervous-system cooperation between partners.",
+        "When practiced consistently, Tao creates a new relational baseline where calm and desire no longer compete. They begin to support each other.",
       ],
+      whyMatters: [
+        "Tao helps couples recover closeness on low-energy days when intensity would backfire.",
+        "It gives practical pacing for mismatched desire rhythms without shame or withdrawal.",
+        "It reduces post-intimacy depletion by teaching circulation and conservation.",
+        "It makes touch safer for sensitive or anxious nervous systems.",
+        "It builds erotic longevity for couples who want depth that lasts years, not weeks.",
+      ],
+      whoItsFor: [
+        {
+          title: "Couples in high-output life seasons",
+          body: "Use Tao to reconnect when work, parenting, and fatigue compress emotional capacity.",
+        },
+        {
+          title: "Couples with energy mismatch",
+          body: "Use breath rhythm and pressure reduction to stay connected without forcing chemistry.",
+        },
+        {
+          title: "Couples recovering from burnout",
+          body: "Use restorative intimacy to rebuild vitality and trust in the body.",
+        },
+        {
+          title: "Couples seeking long-term sensual health",
+          body: "Use Tao circulation practices to make desire sustainable and nourishing over time.",
+        },
+      ],
+      practicePreview: {
+        title: "Tao Evening Reset",
+        body: "A stress-compatible sequence to move from overdrive into connected sensual presence.",
+        steps: [
+          "Lie side-by-side with one hand on each other’s lower belly.",
+          "Breathe 4-count inhale and 6-count exhale for five rounds.",
+          "Pause and name one place in your body that softened.",
+          "Close with three minutes of non-goal touch under 6/10 intensity.",
+        ],
+      },
       quote: {
         text: "Taoist intimacy is measured by how nourished you feel after connection, not by how dramatic it looked.",
         source: "Sacred Path Tao summary",
@@ -208,6 +317,8 @@ const pathDetails: PathDetail[] = [
         "It is not repression or anti-passion restraint.",
         "It is not emotional detachment disguised as calm.",
         "It is not only solo energetics; it is a partner skillset.",
+        "It is not avoidance of desire; it is desire with steadier regulation.",
+        "It is not endless slowness; pace can rise once both bodies are resourced.",
       ],
       pillars: [
         { name: "Softness", body: "Relaxation enables deeper sensation and better flow." },
@@ -215,6 +326,8 @@ const pathDetails: PathDetail[] = [
         { name: "Conservation", body: "Stewarding energy supports long-term vitality." },
         { name: "Circulation", body: "Distributing warmth through the body reduces depletion." },
         { name: "Nourishment", body: "The aim is restorative intimacy for both partners." },
+        { name: "Grounding", body: "Anchor contact in lower-body awareness to reduce reactivity." },
+        { name: "Recovery", body: "Use aftercare and closure so connection leaves both partners clearer." },
       ],
       modernCouples: [
         {
@@ -229,11 +342,21 @@ const pathDetails: PathDetail[] = [
           title: "For burnout recovery",
           body: "Tao rebuilds erotic vitality gradually rather than forcing intensity.",
         },
+        {
+          title: "For post-conflict intimacy hesitation",
+          body: "Use low-intensity Tao reset rituals before attempting high-charge contact.",
+        },
+        {
+          title: "For partners with different touch thresholds",
+          body: "Use structured pacing language to maintain connection while respecting boundaries.",
+        },
       ],
       misunderstandings: [
         { title: "Slow equals boring", body: "Slow pacing often increases sensitivity and depth." },
         { title: "Conservation equals withholding", body: "Conservation is circulation, not distance." },
         { title: "Tao kills passion", body: "Tao stabilizes passion so it can last." },
+        { title: "Tao is only physical technique", body: "Emotional trust and co-regulation are central, not optional." },
+        { title: "Tao is too gentle for attraction", body: "Gentle pacing often increases anticipation and erotic precision." },
       ],
       practices: [
         {
@@ -266,17 +389,31 @@ const pathDetails: PathDetail[] = [
           ],
           integration: "Trains pace control and shared regulation.",
         },
+        {
+          title: "Partner Grounding Spiral (7 minutes)",
+          setup: "Sit back-to-back and coordinate breath with subtle spine movement.",
+          steps: [
+            "Inhale and lengthen through spine together.",
+            "Exhale and soften shoulders, jaw, and pelvis.",
+            "End by naming one word for your current relational state.",
+          ],
+          integration: "Excellent before difficult conversations or evening reconnection.",
+        },
       ],
       reflections: [
         "Where are we depleting ourselves in intimacy?",
         "What would calmer pacing change for us?",
         "How does my body signal that I need slower rhythm?",
         "What helps me feel replenished after closeness?",
+        "What is one Tao rhythm we could make our default weeknight reconnect?",
+        "How can we preserve attraction while lowering pressure?",
+        "Which moments in our intimacy currently feel forced rather than flowing?",
       ],
       relatedAuthors: [
         { name: "Mantak Chia", tier: "premium", note: "Taoist circulation and alchemy." },
         { name: "Osho", tier: "free", note: "Awareness and embodied regulation." },
         { name: "Michaela Boehm", tier: "premium", note: "Somatic relational grounding." },
+        { name: "Barry Long", tier: "premium", note: "Simplicity and relational integrity in intimate practice." },
       ],
       premiumBanner:
         "Unlock advanced Tao pathways for partner breathing maps, circulation work, sensual longevity training, and vitality routines for lasting couple closeness.",
@@ -563,7 +700,7 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
   return (
     <main className="space-y-5">
       <section className={shellCardClass}>
-        <p className="text-xs uppercase tracking-[0.2em] text-primary/80">1. What {path.name} Really Is</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-primary/80">What This Path Is</p>
         <h3 className="mt-2 font-display text-3xl text-foreground">{path.name}</h3>
         <div className="mt-4 space-y-3 text-sm leading-7 text-foreground/90">
           {data.hero.map((line) => (
@@ -576,8 +713,52 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
         </blockquote>
       </section>
 
+      {data.whyMatters?.length ? (
+        <section className="rounded-[24px] border border-primary/20 bg-primary/8 p-5">
+          <p className="text-xs uppercase tracking-[0.2em] text-primary/80">Why It Matters For Couples</p>
+          <div className="mt-4 space-y-3">
+            {data.whyMatters.map((line) => (
+              <div key={line} className="flex items-start gap-3 text-sm leading-7 text-foreground/90">
+                <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+                <span>{line}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {data.whoItsFor?.length ? (
+        <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Who It Is For</p>
+          <div className="mt-4 space-y-3">
+            {data.whoItsFor.map((item) => (
+              <article key={item.title} className="rounded-2xl border border-border/25 bg-card/35 p-4">
+                <h4 className="font-body text-sm text-foreground">{item.title}</h4>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {data.practicePreview ? (
+        <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Concrete Practice Preview</p>
+          <h4 className="mt-2 font-display text-2xl text-foreground">{data.practicePreview.title}</h4>
+          <p className="mt-2 text-sm leading-7 text-foreground/90">{data.practicePreview.body}</p>
+          <div className="mt-3 space-y-2">
+            {data.practicePreview.steps.map((step) => (
+              <div key={step} className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+                <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+                <span>{step}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">2. What {path.name} Is Not</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">What This Path Is Not</p>
         <div className="mt-4 space-y-3">
           {data.whatItIsNot.map((item) => (
             <div key={item} className="flex items-start gap-3 text-sm leading-7 text-foreground/90">
@@ -589,7 +770,7 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
       </section>
 
       <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">3. The 5 Pillars</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Core Pillars</p>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           {data.pillars.map((pillar, index) => (
             <article key={pillar.name} className="rounded-2xl border border-border/25 bg-card/35 p-4">
@@ -602,7 +783,7 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
       </section>
 
       <section className="rounded-[24px] border border-primary/20 bg-primary/8 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-primary/80">4. {path.name} For Modern Couples</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-primary/80">Why It Matters In Modern Relationship Life</p>
         <div className="mt-4 space-y-3">
           {data.modernCouples.map((item) => (
             <article key={item.title} className="rounded-2xl border border-primary/20 bg-background/50 p-4">
@@ -614,7 +795,7 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
       </section>
 
       <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">5. Common Misunderstandings</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Common Misunderstandings</p>
         <div className="mt-4 space-y-3">
           {data.misunderstandings.map((item) => (
             <article key={item.title} className="rounded-2xl border border-border/25 bg-card/35 p-4">
@@ -626,7 +807,7 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
       </section>
 
       <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">6. 3 Beginner Practices</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Practices You Can Run Tonight</p>
         <div className="mt-4 space-y-4">
           {data.practices.map((practice, index) => (
             <article key={practice.title} className="rounded-2xl border border-border/25 bg-card/35 p-4">
@@ -648,7 +829,7 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
       </section>
 
       <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">7. Reflection Prompts</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Reflection Prompts</p>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           {data.reflections.map((prompt) => (
             <article key={prompt} className="rounded-2xl border border-border/25 bg-card/35 p-4 text-sm leading-7 text-foreground/90">
@@ -672,8 +853,10 @@ const PremiumPathContent = ({ path }: { path: PathDetail }) => (
           Locked Path
         </span>
       </div>
-      <h3 className="mt-3 font-display text-3xl text-foreground">{path.name}</h3>
-      <p className="mt-3 text-sm leading-7 text-foreground/90">{path.overviewLine}</p>
+      <p className="mt-3 text-xs uppercase tracking-[0.2em] text-primary/80">What This Path Is</p>
+      <h3 className="mt-2 font-display text-3xl text-foreground">{path.name}</h3>
+      <p className="mt-3 text-sm leading-7 text-foreground/90">{path.oneLine}</p>
+      <p className="mt-2 text-sm leading-7 text-muted-foreground">{path.overviewLine}</p>
       <div className="mt-4 space-y-3 text-sm leading-7 text-muted-foreground">
         {path.teaser?.map((line) => (
           <p key={line}>{line}</p>
@@ -688,47 +871,69 @@ const PremiumPathContent = ({ path }: { path: PathDetail }) => (
       </Link>
     </section>
 
+    <section className="rounded-[24px] border border-primary/20 bg-primary/8 p-5">
+      <p className="text-xs uppercase tracking-[0.2em] text-primary/80">Why It Matters For Couples</p>
+      <div className="mt-4 space-y-2">
+        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+          <span>Translate ancient philosophy into a structured modern intimacy path you can actually sustain.</span>
+        </div>
+        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+          <span>Move from episodic closeness into progressive relationship growth with shared language and pacing.</span>
+        </div>
+        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+          <span>Protect attraction, emotional trust, and spiritual depth at the same time.</span>
+        </div>
+      </div>
+    </section>
+
     <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">What unlocks for couples here</p>
+      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Who This Is For</p>
       <div className="mt-4 grid gap-3 md:grid-cols-2">
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">Layered educational map</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Ancient foundations, modern translation, advanced applications, and clear progression.</p>
+          <h4 className="font-body text-sm text-foreground">Couples with stable love but unclear direction</h4>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Use a structured premium path to create continuity and momentum.</p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">Guided exercises</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Practice flows with timing, prompts, and integration checkpoints for immediate use.</p>
+          <h4 className="font-body text-sm text-foreground">Couples rebuilding trust in intimacy</h4>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Get pacing safeguards, progressive scripts, and grounded relational guardrails.</p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">Misunderstanding safeguards</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Clear boundaries for consent, pacing, and healthy couple implementation.</p>
+          <h4 className="font-body text-sm text-foreground">Couples seeking advanced erotic-spiritual depth</h4>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Access layered modules that blend desire, devotion, and embodied awareness.</p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">Cross-library links</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Related authors, reconnect tools, and next-step continuity for shared growth.
-          </p>
+          <h4 className="font-body text-sm text-foreground">Couples wanting long-term progression</h4>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Map each phase from first practices to deeper couple integration.</p>
         </article>
       </div>
     </section>
 
-    <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.2),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
-      <p className="text-xs uppercase tracking-[0.2em] text-amber-300">Locked Banner</p>
-      <p className="mt-3 text-sm leading-7 text-foreground/90">
-        Unlock complete path transmissions: deeper context, advanced techniques, and guided integration designed for lasting couple closeness and sacred love.
+    <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Concrete Practice Preview</p>
+      <h4 className="mt-2 font-display text-2xl text-foreground">Premium path orientation sequence</h4>
+      <p className="mt-2 text-sm leading-7 text-foreground/90">
+        A structured first-night sequence that calibrates emotional safety, sensual pace, and relational intention before deeper modules.
       </p>
-      <div className="mt-4 grid gap-2 md:grid-cols-3">
-        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Master-level depth</div>
-        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Use-now guidance</div>
-        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Sacred love progression</div>
+      <div className="mt-3 space-y-2">
+        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+          <span>Set one relationship intention and one embodied intention for tonight.</span>
+        </div>
+        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+          <span>Run guided breath and touch pacing according to the path module structure.</span>
+        </div>
+        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+          <span>Close with a two-minute integration check so the next module fits your actual couple state.</span>
+        </div>
       </div>
-      <Link
-        to="/pricing"
-        className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
-      >
-        View plans and start trial
-        <ArrowRight className="h-4 w-4" />
-      </Link>
     </section>
+
+    <PathPremiumBlock path={path} />
   </main>
 );
 

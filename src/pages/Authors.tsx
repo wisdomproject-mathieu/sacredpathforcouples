@@ -38,6 +38,12 @@ type RelatedPath = {
 
 type FreeAuthorContent = {
   heroIntro: string[];
+  whoItsFor?: Teaching[];
+  practicePreview?: {
+    title: string;
+    body: string;
+    steps: string[];
+  };
   quote: {
     text: string;
     source: string;
@@ -104,6 +110,34 @@ const authors: Author[] = [
         "David Deida is useful when a relationship still has loyalty and care, but erotic aliveness has thinned out. He translates ancient polarity principles into language modern couples can use tonight.",
         "At his best, Deida is not about rigid roles. He is about conscious contrast, directed presence, and devotional intensity that stays consensual, grounded, and supportive of lasting closeness.",
       ],
+      whoItsFor: [
+        {
+          title: "Couples who feel emotionally close but erotically flat",
+          body: "Deida gives language and structure for restoring attraction without abandoning tenderness.",
+        },
+        {
+          title: "Couples stuck in over-analysis loops",
+          body: "Use directional embodied rounds to create movement before more conversation.",
+        },
+        {
+          title: "Couples carrying subtle resentment",
+          body: "Use truth-forward polarity dialogue to clear charge-draining avoidance.",
+        },
+        {
+          title: "Couples ready for devotional-erotic growth",
+          body: "Train presence, contrast, and reverence as practical relationship skills.",
+        },
+      ],
+      practicePreview: {
+        title: "Deida polarity check-in",
+        body: "A structured pre-intimacy sequence for reconnecting desire with emotional integrity.",
+        steps: [
+          "Name one truth you have been avoiding this week.",
+          "Name one devotional action you will take tonight.",
+          "Run a two-minute lead/receive breath round and switch.",
+          "Close with explicit more/same/pause consent language.",
+        ],
+      },
       quote: {
         text: "Attraction often returns when partners stop managing each other and start meeting each other with directed, loving presence.",
         source: "Sacred Path editorial summary",
@@ -222,6 +256,34 @@ const authors: Author[] = [
         "Osho's practical value is method, not mythology: bring awareness into sensation, emotion, and relational patterning. His teachings help modern couples move from unconscious reactivity into conscious contact.",
         "He distinguishes suppression from integration. The invitation is neither collapse nor control, but witnessing: feel fully, breathe fully, and remain present so closeness can return naturally.",
       ],
+      whoItsFor: [
+        {
+          title: "Couples overwhelmed by stress reactivity",
+          body: "Osho-inspired witnessing practices help regulate before escalation takes over.",
+        },
+        {
+          title: "Couples trapped in repetitive arguments",
+          body: "Shift from verbal looping to body-led awareness, then return to dialogue with more clarity.",
+        },
+        {
+          title: "Couples disconnected from sensation",
+          body: "Use breath, stillness, and emotional witnessing to reopen body-level connection.",
+        },
+        {
+          title: "Couples exploring intimacy as spiritual practice",
+          body: "Build awareness rituals that make daily closeness more conscious and meaningful.",
+        },
+      ],
+      practicePreview: {
+        title: "Witnessing reset loop",
+        body: "A practical sequence for turning charged evenings into regulated connection.",
+        steps: [
+          "Sit back-to-back and track breath without changing it.",
+          "Name one sensation and one emotion without explanation.",
+          "Turn face-to-face and mirror each other’s words exactly.",
+          "Close with one shared intention for the next hour.",
+        ],
+      },
       quote: {
         text: "Love deepens when partners stop controlling inner weather and learn to witness it together.",
         source: "Sacred Path editorial summary",
@@ -588,7 +650,7 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
   return (
     <main className="space-y-5">
       <section className={shellCardClass}>
-        <p className="text-xs uppercase tracking-[0.2em] text-primary/80">1. Hero Intro</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-primary/80">What This Author Is About</p>
         <h3 className="mt-2 font-display text-3xl text-foreground">{author.name}</h3>
         <div className="mt-4 space-y-3 text-sm leading-7 text-foreground/90">
           {data.heroIntro.map((line) => (
@@ -601,8 +663,38 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
         </blockquote>
       </section>
 
+      {data.whoItsFor?.length ? (
+        <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Who This Is For</p>
+          <div className="mt-4 space-y-3">
+            {data.whoItsFor.map((item) => (
+              <article key={item.title} className="rounded-2xl border border-border/25 bg-card/35 p-4">
+                <h4 className="font-body text-sm text-foreground">{item.title}</h4>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {data.practicePreview ? (
+        <section className="rounded-[24px] border border-primary/20 bg-primary/8 p-5">
+          <p className="text-xs uppercase tracking-[0.2em] text-primary/80">Concrete Practice Preview</p>
+          <h4 className="mt-2 font-display text-2xl text-foreground">{data.practicePreview.title}</h4>
+          <p className="mt-2 text-sm leading-7 text-foreground/90">{data.practicePreview.body}</p>
+          <div className="mt-3 space-y-2">
+            {data.practicePreview.steps.map((step) => (
+              <div key={step} className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+                <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+                <span>{step}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">2. Why This Author Matters</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Why This Author Matters</p>
         <div className="mt-4 space-y-3">
           {data.whyMatters.map((item) => (
             <div key={item} className="flex items-start gap-3 text-sm leading-7 text-foreground/90">
@@ -614,7 +706,7 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
       </section>
 
       <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">3. Core Teachings</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Core Teachings</p>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           {data.coreTeachings.map((teaching, index) => (
             <article key={teaching.title} className="rounded-2xl border border-border/25 bg-card/35 p-4">
@@ -627,7 +719,7 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
       </section>
 
       <section className="rounded-[24px] border border-primary/20 bg-primary/8 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-primary/80">4. What Modern Couples Can Use Today</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-primary/80">What Modern Couples Can Use Today</p>
         <div className="mt-4 space-y-3">
           {data.modernUse.map((item) => (
             <article key={item.title} className="rounded-2xl border border-primary/20 bg-background/50 p-4">
@@ -639,7 +731,7 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
       </section>
 
       <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">5. Shadow / Misuse / What To Avoid</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Shadow / Misuse / What To Avoid</p>
         <div className="mt-4 space-y-3">
           {data.shadowToAvoid.map((item) => (
             <article key={item.title} className="rounded-2xl border border-border/25 bg-card/35 p-4">
@@ -651,7 +743,7 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
       </section>
 
       <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">6. 3 Practical Exercises</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Practical Exercises</p>
         <div className="mt-4 space-y-4">
           {data.exercises.map((exercise, index) => (
             <article key={exercise.title} className="rounded-2xl border border-border/25 bg-card/35 p-4">
@@ -673,7 +765,7 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
       </section>
 
       <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">7. Reflection Prompts</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Reflection Prompts</p>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           {data.reflectionPrompts.map((prompt) => (
             <article key={prompt} className="rounded-2xl border border-border/25 bg-card/35 p-4 text-sm leading-7 text-foreground/90">
@@ -697,8 +789,10 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => (
           Locked Author
         </span>
       </div>
-      <h3 className="mt-3 font-display text-3xl text-foreground">{author.name}</h3>
+      <p className="mt-3 text-xs uppercase tracking-[0.2em] text-primary/80">What This Author Offers</p>
+      <h3 className="mt-2 font-display text-3xl text-foreground">{author.name}</h3>
       <p className="mt-3 text-sm leading-7 text-foreground/90">{author.descriptor}</p>
+      <p className="mt-2 text-sm leading-7 text-muted-foreground">{author.oneLiner}</p>
       <div className="mt-4 space-y-3 text-sm leading-7 text-muted-foreground">
         {author.teaser?.map((line) => (
           <p key={line}>{line}</p>
@@ -713,46 +807,69 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => (
       </Link>
     </section>
 
+    <section className="rounded-[24px] border border-primary/20 bg-primary/8 p-5">
+      <p className="text-xs uppercase tracking-[0.2em] text-primary/80">Why It Matters For Couples</p>
+      <div className="mt-4 space-y-2">
+        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+          <span>Translate philosophy into practical relational behavior that works in real life.</span>
+        </div>
+        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+          <span>Upgrade communication, touch quality, and emotional clarity in the same framework.</span>
+        </div>
+        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+          <span>Build a consistent couple practice instead of waiting for random moments of closeness.</span>
+        </div>
+      </div>
+    </section>
+
     <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">What unlocks for your relationship</p>
+      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Who This Is For</p>
       <div className="mt-4 grid gap-3 md:grid-cols-2">
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">Deep educational modules</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Layered ancient teachings translated for modern couple life and shared growth.</p>
+          <h4 className="font-body text-sm text-foreground">Couples craving deeper guidance</h4>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Go beyond short quotes into structured couple implementation.</p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">Practice blocks and scripts</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Ready-to-use exercises, dialogue prompts, and integration steps for immediate closeness.</p>
+          <h4 className="font-body text-sm text-foreground">Couples navigating recurring tension</h4>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Use premium scripts and frameworks to break repetitive emotional loops.</p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">Misuse safeguards</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Clear guardrails for consent, pacing, and relational integrity in every practice.</p>
+          <h4 className="font-body text-sm text-foreground">Couples rebuilding sensual confidence</h4>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Pair emotional depth with embodied practice so attraction can return safely.</p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">Cross-path progression</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Mapped links into Paths and Temple routines so couples keep moving forward together.</p>
+          <h4 className="font-body text-sm text-foreground">Couples seeking long-term sacred growth</h4>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Follow progression maps that connect Authors, Paths, and Reconnect tools.</p>
         </article>
       </div>
     </section>
 
-    <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.2),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
-      <p className="text-xs uppercase tracking-[0.2em] text-amber-300">Locked Banner</p>
-      <p className="mt-3 text-sm leading-7 text-foreground/90">
-        Unlock full author transmissions with depth, warmth, and practical implementation so your relationship can keep moving toward sacred love.
+    <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Concrete Practice Preview</p>
+      <h4 className="mt-2 font-display text-2xl text-foreground">Premium author integration sequence</h4>
+      <p className="mt-2 text-sm leading-7 text-foreground/90">
+        A guided sequence that translates one teaching into breath, dialogue, touch, and integration in the same session.
       </p>
-      <div className="mt-4 grid gap-2 md:grid-cols-3">
-        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Deep wisdom tracks</div>
-        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Use-tonight prompts</div>
-        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Sacred love progression</div>
+      <div className="mt-3 space-y-2">
+        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+          <span>Choose one teaching and one relational pain-point to work on tonight.</span>
+        </div>
+        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+          <span>Run a timed dialogue plus body-regulation sequence from the premium module.</span>
+        </div>
+        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+          <span>Close with one integration commitment and one next-step recommendation.</span>
+        </div>
       </div>
-      <Link
-        to="/pricing"
-        className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
-      >
-        View plans and start trial
-        <ArrowRight className="h-4 w-4" />
-      </Link>
     </section>
+
+    <AuthorPremiumBlock author={author} />
   </main>
 );
 

@@ -31,6 +31,7 @@ import WisdomOracle from "@/components/space/WisdomOracle";
 import ShareCardButton from "@/components/space/ShareCardButton";
 import { Tables } from "@/integrations/supabase/types";
 import { isPremiumTier, MembershipTier } from "@/lib/Premium";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type ToolKey = "weather" | "rituals" | "positions" | "messages" | "guide" | "repair" | "pathways" | "altar";
 type ViewMode = "doorways" | "journey" | "oracle";
@@ -217,7 +218,43 @@ const truncateText = (value: string, max = 132) => {
   return `${value.slice(0, max).trimEnd()}...`;
 };
 
+const DoorwayDetailBar = ({
+  title,
+  unlocked,
+  onBack,
+}: {
+  title: string;
+  unlocked: boolean;
+  onBack: () => void;
+}) => (
+  <div className="sticky top-2 z-30 rounded-2xl border border-border/35 bg-background/95 p-3 shadow-[0_16px_40px_-30px_rgba(0,0,0,0.68)] backdrop-blur">
+    <div className="flex items-center justify-between gap-3">
+      <button
+        type="button"
+        onClick={onBack}
+        className="rounded-xl border border-border/35 bg-card/45 px-3 py-2 text-xs uppercase tracking-[0.14em] text-foreground"
+      >
+        Back to doorways
+      </button>
+      <div className="min-w-0 flex-1 text-right">
+        <p className="truncate font-display text-lg text-foreground">{title}</p>
+        <p className="text-xs text-muted-foreground">{unlocked ? "Open access" : "Locked in premium"}</p>
+      </div>
+      <div
+        className={`inline-flex h-8 w-8 items-center justify-center rounded-full border ${
+          unlocked
+            ? "border-emerald-300/35 bg-emerald-500/14 text-emerald-200"
+            : "border-amber-300/35 bg-amber-500/14 text-amber-200"
+        }`}
+      >
+        {unlocked ? <LockOpen className="h-3.5 w-3.5" /> : <Lock className="h-3.5 w-3.5" />}
+      </div>
+    </div>
+  </div>
+);
+
 const PartnerSpace = () => {
+  const isMobile = useIsMobile();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -228,6 +265,7 @@ const PartnerSpace = () => {
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<ViewMode>("doorways");
   const [activeTool, setActiveTool] = useState<ToolKey>("weather");
+  const [mobileDoorwayDetailMode, setMobileDoorwayDetailMode] = useState(false);
   const [activityTick, setActivityTick] = useState(0);
   const [activity, setActivity] = useState<ActivityState>({
     partnerNote: "No message in your shared thread yet. Offer one honest line and let the night begin.",
@@ -250,6 +288,10 @@ const PartnerSpace = () => {
   const activateTool = (tool: ToolKey) => {
     setViewMode("doorways");
     setActiveTool(tool);
+    if (isMobile) {
+      setMobileDoorwayDetailMode(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   useEffect(() => {
@@ -374,6 +416,20 @@ const PartnerSpace = () => {
 
   const activeMeta = useMemo(() => tools.find((tool) => tool.key === activeTool) ?? tools[0], [activeTool]);
   const showClosingPremiumBanner = !hasPremiumAccess && viewMode === "doorways" && activeToolUnlocked;
+  const showDoorwayCards = !isMobile || !mobileDoorwayDetailMode;
+  const showDoorwayContent = !isMobile || mobileDoorwayDetailMode;
+
+  useEffect(() => {
+    if (!isMobile && mobileDoorwayDetailMode) {
+      setMobileDoorwayDetailMode(false);
+    }
+  }, [isMobile, mobileDoorwayDetailMode]);
+
+  useEffect(() => {
+    if (viewMode !== "doorways" && mobileDoorwayDetailMode) {
+      setMobileDoorwayDetailMode(false);
+    }
+  }, [mobileDoorwayDetailMode, viewMode]);
 
   const premiumGateCard = (title: string, description: string) => (
     <section className="rounded-[28px] border border-amber-300/30 bg-gradient-to-br from-amber-500/14 via-background to-background p-6 shadow-[0_26px_80px_-40px_rgba(251,191,36,0.45)]">
@@ -646,6 +702,7 @@ const PartnerSpace = () => {
 
         {viewMode === "doorways" && (
           <>
+            {showDoorwayCards ? (
             <section>
               <div className="mb-4">
                 <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Sacred Doorways</p>
@@ -723,8 +780,17 @@ const PartnerSpace = () => {
                 })}
               </div>
             </section>
+            ) : null}
 
-            <section>
+            {showDoorwayContent ? (
+            <section className="space-y-4">
+              {isMobile ? (
+                <DoorwayDetailBar
+                  title={activeMeta.title}
+                  unlocked={activeToolUnlocked}
+                  onBack={() => setMobileDoorwayDetailMode(false)}
+                />
+              ) : null}
               {!activeToolUnlocked && premiumGateCard(activeMeta.title, activeMeta.subtitle)}
               {activeToolUnlocked && activeTool === "weather" && <IntimacyWeather coupleId={coupleId ?? undefined} onNavigate={navigateTool} />}
               {activeToolUnlocked && activeTool === "rituals" && (
@@ -737,6 +803,7 @@ const PartnerSpace = () => {
               {activeToolUnlocked && activeTool === "pathways" && <Pathways coupleId={coupleId ?? undefined} onNavigate={navigateTool} />}
               {activeToolUnlocked && activeTool === "altar" && <MemoryAltar coupleId={coupleId ?? undefined} onNavigate={navigateTool} />}
             </section>
+            ) : null}
           </>
         )}
 
