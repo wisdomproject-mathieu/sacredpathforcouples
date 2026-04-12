@@ -242,7 +242,7 @@ const PartnerSpace = () => {
 
   const activateTool = (tool: ToolKey) => {
     setViewMode("doorways");
-    setActiveTool(isToolUnlocked(tool) ? tool : "weather");
+    setActiveTool(tool);
   };
 
   useEffect(() => {
@@ -366,6 +366,7 @@ const PartnerSpace = () => {
   };
 
   const activeMeta = useMemo(() => tools.find((tool) => tool.key === activeTool) ?? tools[0], [activeTool]);
+  const showClosingPremiumBanner = !hasPremiumAccess && viewMode === "doorways" && activeToolUnlocked;
 
   const premiumGateCard = (title: string, description: string) => (
     <section className="rounded-[28px] border border-amber-300/30 bg-gradient-to-br from-amber-500/14 via-background to-background p-6 shadow-[0_26px_80px_-40px_rgba(251,191,36,0.45)]">
@@ -453,7 +454,6 @@ const PartnerSpace = () => {
                   const Icon = view.icon;
                   const active = viewMode === view.key;
                   const locked = !isViewUnlocked(view.key);
-                  const isPremiumPage = view.premium;
                   return (
                     <button
                       key={view.key}
@@ -466,28 +466,19 @@ const PartnerSpace = () => {
                       } ${locked ? "relative overflow-hidden" : ""}`}
                     >
                       {locked && (
-                        <div className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full border border-amber-300/30 bg-amber-500/12 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-amber-200">
-                          <Lock className="h-3 w-3" />
-                          Premium
-                        </div>
+                        <Link
+                          to="/pricing"
+                          onClick={(event) => event.stopPropagation()}
+                          className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-full border border-amber-300/35 bg-amber-500/14 text-amber-200 transition-all hover:border-amber-300/55 hover:bg-amber-500/20"
+                          aria-label="Open plans"
+                        >
+                          <Lock className="h-3.5 w-3.5" />
+                        </Link>
                       )}
-                      <div
-                        className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-2.5 ${view.iconClass}`}
-                      >
+                      <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-2.5 ${view.iconClass}`}>
                         <Icon className="h-4 w-4" />
                       </div>
-                      <div className="mt-3 flex items-center gap-2">
-                        <div className="font-display text-xl text-foreground">{view.title}</div>
-                        <span
-                          className={`inline-flex rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] ${
-                            isPremiumPage
-                              ? "border-amber-300/35 bg-amber-500/12 text-amber-200"
-                              : "border-emerald-300/35 bg-emerald-500/10 text-emerald-200"
-                          }`}
-                        >
-                          {isPremiumPage ? "Premium" : "Free"}
-                        </span>
-                      </div>
+                      <div className="mt-3 font-display text-xl text-foreground">{view.title}</div>
                       <p className="mt-1 text-sm leading-6 text-muted-foreground">{view.subtitle}</p>
                       {locked && (
                         <p className="mt-2 text-xs leading-5 text-amber-100/85">
@@ -515,7 +506,6 @@ const PartnerSpace = () => {
                   const Icon = tool.icon;
                   const active = activeTool === tool.key;
                   const locked = !isToolUnlocked(tool.key);
-                  const isFreeDoorway = freeDoorways.includes(tool.key);
                   return (
                     <div
                       key={tool.key}
@@ -529,26 +519,24 @@ const PartnerSpace = () => {
                         <div className="absolute -right-6 top-0 h-24 w-24 rounded-full bg-primary/10 blur-2xl" />
                         <div className="absolute bottom-0 left-0 h-20 w-20 rounded-full bg-violet-500/10 blur-2xl" />
                       </div>
+                      {locked && (
+                        <Link
+                          to="/pricing"
+                          className="absolute right-4 top-4 z-20 inline-flex h-8 w-8 items-center justify-center rounded-full border border-amber-300/35 bg-amber-500/14 text-amber-200 transition-all hover:border-amber-300/55 hover:bg-amber-500/20"
+                          aria-label="Open plans"
+                        >
+                          <Lock className="h-3.5 w-3.5" />
+                        </Link>
+                      )}
                       <button type="button" onClick={() => activateTool(tool.key)} className="relative flex h-full w-full flex-col text-left">
                         <div className={`inline-flex w-fit rounded-2xl border border-border/30 bg-background/45 p-3 ${tool.iconClass}`}>
                           <Icon className="h-5 w-5" />
                         </div>
-                        <div className="mt-4 flex flex-wrap items-center gap-2">
-                          <h3 className="font-display text-2xl text-foreground">{tool.title}</h3>
-                          <span
-                            className={`inline-flex rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] ${
-                              isFreeDoorway
-                                ? "border-emerald-300/35 bg-emerald-500/10 text-emerald-200"
-                                : "border-amber-300/35 bg-amber-500/12 text-amber-200"
-                            }`}
-                          >
-                            {isFreeDoorway ? "Free" : "Premium"}
-                          </span>
-                        </div>
+                        <h3 className="mt-4 font-display text-2xl text-foreground">{tool.title}</h3>
                         <p className="mt-3 text-sm leading-7 text-muted-foreground">{tool.subtitle}</p>
                         {locked && (
                           <p className="mt-2 text-xs leading-5 text-amber-100/85">
-                            Included in premium plan. Start with Intimacy Weather and ritual previews first.
+                            This doorway is unlocked in plans. Tap the golden lock to subscribe.
                           </p>
                         )}
                       </button>
@@ -556,9 +544,10 @@ const PartnerSpace = () => {
                         {locked ? (
                           <Link
                             to="/pricing"
-                            className="rounded-2xl border border-amber-300/30 bg-amber-500/12 px-3 py-2 text-xs text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/16"
+                            className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-amber-300/35 bg-amber-500/14 text-amber-200 transition-all hover:border-amber-300/55 hover:bg-amber-500/20"
+                            aria-label="Open plans"
                           >
-                            Unlock premium
+                            <Lock className="h-3.5 w-3.5" />
                           </Link>
                         ) : (
                           <>
@@ -731,7 +720,7 @@ const PartnerSpace = () => {
             )
           ))}
 
-        {!hasPremiumAccess && (
+        {showClosingPremiumBanner && (
           <section className="rounded-[30px] border border-amber-300/30 bg-gradient-to-br from-amber-500/12 via-background to-background p-6 shadow-[0_28px_90px_-46px_rgba(251,191,36,0.45)] md:p-7">
             <p className="text-xs uppercase tracking-[0.24em] text-amber-200">Temple Premium</p>
             <h2 className="mt-3 font-display text-3xl text-foreground md:text-4xl">Bring the full sanctuary online</h2>
