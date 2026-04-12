@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BookOpen, Heart, MessageCircle, Sparkles, Stars, type LucideIcon } from "lucide-react";
+import { BookOpen, Heart, Lock, MessageCircle, Sparkles, Stars, type LucideIcon } from "lucide-react";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,6 +23,12 @@ type DailyFlowStep = {
   route: string;
   icon: LucideIcon;
   accentClass: string;
+};
+
+type PremiumDailyCard = {
+  id: string;
+  area: string;
+  title: string;
 };
 
 const quotes = [
@@ -105,6 +111,24 @@ const reconnectPrompts = [
     route: "/app/reconnect",
   },
 ] as const;
+
+const premiumDailyCards: PremiumDailyCard[] = [
+  { id: "p-temple-weather", area: "Sacred Temple", title: "Intimacy Weather Deep Decode" },
+  { id: "p-temple-polarity", area: "Sacred Temple", title: "Polarity Ritual of the Day" },
+  { id: "p-temple-ladder", area: "Sacred Temple", title: "Slow-Burn Position Ladder" },
+  { id: "p-library-desire", area: "Sacred Library", title: "Desire Cycles Quick Insight" },
+  { id: "p-library-trust", area: "Sacred Library", title: "Trust Repair in 24 Hours" },
+  { id: "p-library-author", area: "Sacred Library", title: "Author Reflection Pairing" },
+  { id: "p-reconnect-reset", area: "Reconnect", title: "After-Conflict Tender Reset" },
+  { id: "p-reconnect-magnetic", area: "Reconnect", title: "Nightly Magnetic Check-In" },
+  { id: "p-reconnect-text", area: "Reconnect", title: "Devotion Text Prompt" },
+  { id: "p-oracle-timing", area: "Wisdom Oracle", title: "Erotic Timing Forecast" },
+  { id: "p-oracle-bridge", area: "Wisdom Oracle", title: "Emotional Bridge Move" },
+  { id: "p-oracle-map", area: "Wisdom Oracle", title: "Weeklong Intimacy Map" },
+  { id: "p-journey-milestone", area: "Our Journey", title: "Shared Milestone Card" },
+  { id: "p-journey-celebration", area: "Our Journey", title: "Celebration Memory Prompt" },
+  { id: "p-journey-next", area: "Our Journey", title: "Next Sacred Leap" },
+];
 
 const hashString = (value: string) =>
   Array.from(value).reduce((acc, char) => (acc * 31 + char.charCodeAt(0)) >>> 0, 7);
@@ -339,7 +363,7 @@ const AppHome = () => {
           <p className="text-xs uppercase tracking-[0.28em] text-primary/80">{todayLabel}</p>
           <h1 className="mt-3 font-display text-4xl leading-tight text-foreground md:text-5xl">Your daily sacred flow is ready.</h1>
           <p className="mt-4 max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
-            Sacred Path now chooses the day for you. Five guided moves. No decision fatigue. One clear rhythm for couples moving toward infinite love.
+            Sacred Path now chooses the day for you. Five guided moves. One clear rhythm. One devotion to infinite love.
           </p>
         </div>
 
@@ -352,7 +376,7 @@ const AppHome = () => {
             <p className="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">
               {loading
                 ? "Gathering your shared rhythm and selecting today’s sequence."
-                : "This sequence stays fixed all day, then refreshes tomorrow with a new guided page."}
+                : "This sequence stays fixed all day, then returns tomorrow as a fresh sacred page."}
             </p>
           </div>
 
@@ -371,10 +395,51 @@ const AppHome = () => {
               <p className="mt-2 text-sm leading-6 text-muted-foreground">
                 {loading
                   ? "The page is drawing your five moves."
-                  : "Open each card in order, share what resonates, and let your journey page carry the continuity."}
+                  : "Open each card in order, share what resonates, and let your journey carry the continuity."}
               </p>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="rounded-[24px] border border-amber-400/35 bg-gradient-to-br from-amber-500/12 via-card/65 to-card/35 p-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-xs uppercase tracking-[0.2em] text-amber-200">Locked Premium Expansion</p>
+            <h2 className="mt-2 font-display text-2xl text-foreground">15 additional daily cards across the entire app</h2>
+          </div>
+          <button
+            type="button"
+            onClick={() => navigate("/pricing")}
+            className="rounded-2xl border border-amber-300/45 bg-amber-500/15 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-200/70 hover:bg-amber-500/20"
+          >
+            Unlock plans
+          </button>
+        </div>
+
+        <p className="mt-3 text-sm leading-6 text-muted-foreground">
+          Expand your daily rhythm with deeper Temple moments, richer Sacred Library wisdom, advanced reconnect guidance, and Wisdom Oracle precision for next-step intimacy.
+        </p>
+
+        <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          {premiumDailyCards.map((card) => (
+            <button
+              key={card.id}
+              type="button"
+              onClick={() => navigate("/pricing")}
+              className="w-full rounded-2xl border border-amber-300/30 bg-amber-500/8 p-4 text-left transition-all hover:border-amber-200/60 hover:bg-amber-500/12"
+            >
+              <div className="flex items-start gap-3">
+                <span className="mt-0.5 inline-flex rounded-full border border-amber-300/45 bg-amber-400/15 p-1.5 text-amber-100">
+                  <Lock className="h-3.5 w-3.5" />
+                </span>
+                <div>
+                  <p className="text-[11px] uppercase tracking-[0.14em] text-amber-100/90">{card.area}</p>
+                  <p className="mt-1 text-sm leading-5 text-foreground/95">{card.title}</p>
+                </div>
+              </div>
+            </button>
+          ))}
         </div>
       </section>
 
