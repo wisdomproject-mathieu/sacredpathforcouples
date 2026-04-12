@@ -335,7 +335,7 @@ const RitualCards = ({ coupleId, onNavigate, isPremium = false }: Props) => {
             <p className="text-xs uppercase tracking-[0.18em] text-amber-200">Premium rituals</p>
             <h3 className="mt-2 font-display text-2xl text-foreground">Unlock the full ritual sanctuary</h3>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              You currently have {freeCategoryCount} category previews in the free temple. Premium opens every ritual variation, deeper progression, and full couple sequencing.
+              You currently have {freeCategoryCount} category previews in open access. Premium opens every ritual variation, deeper progression, and full couple sequencing.
             </p>
             <Link
               to="/pricing"

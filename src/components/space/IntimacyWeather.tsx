@@ -123,20 +123,6 @@ const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
       onAction={() => onNavigate("rituals")}
     >
 
-      <section className="grid gap-4 lg:grid-cols-2">
-        {renderCard("Your weather", myEntry, true)}
-        {isPreview && !partnerEntry ? (
-          <div className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-            <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Beloved weather</div>
-            <div className="mt-3 text-sm text-muted-foreground">
-              Connect with your beloved to sync your shared weather here.
-            </div>
-          </div>
-        ) : (
-          renderCard("Beloved weather", partnerEntry)
-        )}
-      </section>
-
       <section className="rounded-[28px] border border-border/30 bg-card/45 p-6">
         <div className="mb-4">
           <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Choose your state</p>
@@ -208,6 +194,20 @@ const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
             />
           )}
         </div>
+      </section>
+
+      <section className="grid gap-4 lg:grid-cols-2">
+        {renderCard("Your weather", myEntry, true)}
+        {isPreview && !partnerEntry ? (
+          <div className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+            <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Beloved weather</div>
+            <div className="mt-3 text-sm text-muted-foreground">
+              Connect with your beloved to sync your shared weather here.
+            </div>
+          </div>
+        ) : (
+          renderCard("Beloved weather", partnerEntry)
+        )}
       </section>
     </DoorwayShell>
   );

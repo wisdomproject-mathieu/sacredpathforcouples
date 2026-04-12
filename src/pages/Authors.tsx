@@ -763,7 +763,7 @@ const Authors = () => {
         <h2 className="mt-2 font-display text-3xl text-foreground">Choose an author for immediate closeness and deeper shared growth</h2>
 
         <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {authors.map((author, index) => {
+          {authors.map((author) => {
             const Icon = author.icon;
             const isSelected = selectedSlug === author.slug;
             return (
@@ -781,14 +781,7 @@ const Authors = () => {
                   <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-3 ${author.iconClass}`}>
                     <Icon className="h-4 w-4" />
                   </div>
-                  <div className="flex items-center gap-2">
-                    {index === 0 ? (
-                      <span className="inline-flex rounded-full border border-primary/30 bg-primary/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-primary/90">
-                        Featured first
-                      </span>
-                    ) : null}
-                    <TierBadge tier={author.tier} />
-                  </div>
+                  <TierBadge tier={author.tier} />
                 </div>
                 <h3 className="mt-3 font-display text-2xl text-foreground">{author.name}</h3>
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">{author.overviewLine}</p>

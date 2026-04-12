@@ -679,6 +679,14 @@ const PartnerSpace = () => {
                           <Lock className="h-3.5 w-3.5" />
                         </Link>
                       )}
+                      {!locked && (
+                        <div
+                          className="absolute right-4 top-4 z-20 inline-flex h-8 w-8 items-center justify-center rounded-full border border-amber-300/35 bg-amber-500/14 text-amber-200"
+                          aria-label="Open access"
+                        >
+                          <LockOpen className="h-3.5 w-3.5" />
+                        </div>
+                      )}
                       <button type="button" onClick={() => activateTool(tool.key)} className="relative flex h-full w-full flex-col text-left">
                         <div className={`inline-flex w-fit rounded-2xl border border-border/30 bg-background/45 p-3 ${tool.iconClass}`}>
                           <Icon className="h-5 w-5" />
