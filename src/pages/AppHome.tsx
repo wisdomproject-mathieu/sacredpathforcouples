@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { BookOpen, Heart, Lock, MessageCircle, Sparkles, Stars, type LucideIcon } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ArrowRight, BookOpen, Heart, Lock, MessageCircle, Sparkles, Stars, type LucideIcon } from "lucide-react";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,12 +18,6 @@ type DailyCard = {
   description: string;
   icon: LucideIcon;
   accentClass: string;
-};
-
-type PremiumDailyCard = {
-  id: string;
-  area: string;
-  title: string;
 };
 
 const quotes = [
@@ -93,24 +88,6 @@ const templePulses = [
     description: "Build anticipation slowly and let polarity unfold without rushing.",
   },
 ] as const;
-
-const premiumDailyCards: PremiumDailyCard[] = [
-  { id: "p-temple-weather", area: "Sacred Temple", title: "Intimacy Weather Deep Decode" },
-  { id: "p-temple-polarity", area: "Sacred Temple", title: "Polarity Ritual of the Day" },
-  { id: "p-temple-ladder", area: "Sacred Temple", title: "Slow-Burn Position Ladder" },
-  { id: "p-library-desire", area: "Sacred Library", title: "Desire Cycles Quick Insight" },
-  { id: "p-library-trust", area: "Sacred Library", title: "Trust Repair in 24 Hours" },
-  { id: "p-library-author", area: "Sacred Library", title: "Author Reflection Pairing" },
-  { id: "p-reconnect-reset", area: "Reconnect", title: "After-Conflict Tender Reset" },
-  { id: "p-reconnect-magnetic", area: "Reconnect", title: "Nightly Magnetic Check-In" },
-  { id: "p-reconnect-text", area: "Reconnect", title: "Devotion Text Prompt" },
-  { id: "p-oracle-timing", area: "Wisdom Oracle", title: "Erotic Timing Forecast" },
-  { id: "p-oracle-bridge", area: "Wisdom Oracle", title: "Emotional Bridge Move" },
-  { id: "p-oracle-map", area: "Wisdom Oracle", title: "Weeklong Intimacy Map" },
-  { id: "p-journey-milestone", area: "Our Journey", title: "Shared Milestone Card" },
-  { id: "p-journey-celebration", area: "Our Journey", title: "Celebration Memory Prompt" },
-  { id: "p-journey-next", area: "Our Journey", title: "Next Sacred Leap" },
-];
 
 const hashString = (value: string) =>
   Array.from(value).reduce((acc, char) => (acc * 31 + char.charCodeAt(0)) >>> 0, 7);
@@ -362,30 +339,51 @@ const AppHome = () => {
         </div>
       </section>
 
-      <section className="rounded-[24px] border border-amber-400/35 bg-gradient-to-br from-amber-500/12 via-card/65 to-card/35 p-5">
-        <div className="flex items-center gap-2">
-          <Lock className="h-4 w-4 text-amber-100" />
-          <p className="text-xs uppercase tracking-[0.2em] text-amber-200">Premium Expansion</p>
+      <section className="grid gap-4 md:grid-cols-2">
+        <div className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.18),rgba(15,23,42,0.12))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.5)]">
+          <div className="flex items-center gap-2 text-amber-200">
+            <Lock className="h-4 w-4" />
+            <span className="text-xs uppercase tracking-[0.16em]">Locked Daily Expansion</span>
+          </div>
+          <h3 className="mt-2 font-display text-xl text-foreground">More of this page: 15 extra daily cards</h3>
+          <p className="mt-3 text-sm leading-6 text-foreground/90">
+            Keep your daily rhythm fresh with additional rituals, quotes, insights, positions, and temple pulses shaped for modern couples.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">15 Extra Cards</span>
+            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Daily Refresh</span>
+            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Sensual Guidance</span>
+          </div>
+          <Link
+            to="/pricing"
+            className="mt-4 inline-flex items-center gap-2 rounded-xl border border-amber-300/30 bg-amber-500/14 px-3 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
+          >
+            See daily expansion plans
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
-        <h2 className="mt-2 font-display text-2xl text-foreground">15 more daily cards across Temple, Library, Reconnect, Oracle, and Journey</h2>
-        <p className="mt-3 text-sm leading-6 text-muted-foreground">
-          Premium unlocks deeper daily guidance for modern couples ready to move from good moments to a true sacred relationship lifestyle.
-        </p>
 
-        <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-          {premiumDailyCards.map((card) => (
-            <div key={card.id} className="rounded-2xl border border-amber-300/30 bg-amber-500/8 p-4 text-left">
-              <div className="flex items-start gap-3">
-                <span className="mt-0.5 inline-flex rounded-full border border-amber-300/45 bg-amber-400/15 p-1.5 text-amber-100">
-                  <Lock className="h-3.5 w-3.5" />
-                </span>
-                <div>
-                  <p className="text-[11px] uppercase tracking-[0.14em] text-amber-100/90">{card.area}</p>
-                  <p className="mt-1 text-sm leading-5 text-foreground/95">{card.title}</p>
-                </div>
-              </div>
-            </div>
-          ))}
+        <div className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(250,204,21,0.2),transparent_60%),linear-gradient(135deg,rgba(251,191,36,0.16),rgba(17,24,39,0.14))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.46)]">
+          <div className="flex items-center gap-2 text-amber-200">
+            <Lock className="h-4 w-4" />
+            <span className="text-xs uppercase tracking-[0.16em]">Locked Full Experience</span>
+          </div>
+          <h3 className="mt-2 font-display text-xl text-foreground">More of Sacred Path across the entire app</h3>
+          <p className="mt-3 text-sm leading-6 text-foreground/90">
+            Unlock all eight temple doorways, full Sacred Library depth, advanced reconnect systems, Wisdom Oracle innovation, and complete journey intelligence.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Sacred Temple</span>
+            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Sacred Library</span>
+            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Wisdom Oracle</span>
+          </div>
+          <Link
+            to="/pricing"
+            className="mt-4 inline-flex items-center gap-2 rounded-xl border border-amber-300/30 bg-amber-500/14 px-3 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
+          >
+            View full plans
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </section>
     </div>
