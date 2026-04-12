@@ -460,7 +460,7 @@ const RelatedPathsCard = ({
       <h3 className="font-display text-xl text-foreground">Related Paths</h3>
       <BookOpen className="h-4 w-4 text-primary/80" />
     </div>
-    <p className="mt-2 text-sm leading-6 text-muted-foreground">Move across the library without losing context.</p>
+    <p className="mt-2 text-sm leading-6 text-muted-foreground">Choose what helps tonight, then return for deeper couple practice when you have time.</p>
 
     <div className="mt-4 space-y-2">
       {pathDetails.map((path) => {
@@ -740,9 +740,9 @@ const Paths = () => {
       <section className="rounded-[30px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-6 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] md:p-8">
         <div className="max-w-4xl">
           <p className="text-xs uppercase tracking-[0.28em] text-primary/80">Sacred Library · Paths</p>
-          <h1 className="mt-3 font-display text-4xl text-foreground md:text-5xl">Path pages rebuilt as mini-libraries</h1>
+          <h1 className="mt-3 font-display text-4xl text-foreground md:text-5xl">Ancient pathways translated for modern couples</h1>
           <p className="mt-4 text-sm leading-7 text-muted-foreground md:text-base">
-            Free depth where you requested it (Tantra, Tao), plus a premium architecture for advanced traditions and specialized intimate pathways.
+            Start with a quick insight you can use immediately, then go deeper as a couple when you have space. Each path helps you move from information to real closeness.
           </p>
         </div>
 
@@ -761,7 +761,7 @@ const Paths = () => {
 
       <section className={shellCardClass}>
         <p className="text-xs uppercase tracking-[0.22em] text-primary/80">Paths Overview</p>
-        <h2 className="mt-2 font-display text-3xl text-foreground">Choose a path and study deeply</h2>
+        <h2 className="mt-2 font-display text-3xl text-foreground">Choose a path for immediate practice and long-term growth</h2>
 
         <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {pathDetails.map((path) => {
@@ -794,11 +794,11 @@ const Paths = () => {
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           <div className="rounded-2xl border border-emerald-400/25 bg-emerald-500/8 p-4">
             <p className="text-xs uppercase tracking-[0.14em] text-emerald-200">Free Paths</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">{freeCount} fully open deep-learning paths with complete section architecture.</p>
+            <p className="mt-2 text-sm leading-6 text-foreground/90">{freeCount} fully open paths so couples can apply wisdom now and reconnect in the same moment.</p>
           </div>
           <div className="rounded-2xl border border-amber-400/25 bg-amber-500/8 p-4">
             <p className="text-xs uppercase tracking-[0.14em] text-amber-200">Premium Paths</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">{premiumCount} premium paths with elegant lock cards and direct inline unlock flows.</p>
+            <p className="mt-2 text-sm leading-6 text-foreground/90">{premiumCount} premium paths for deeper inspiration, richer guidance, and a structured journey toward sacred love.</p>
           </div>
         </div>
       </section>

@@ -458,7 +458,7 @@ const MoreReconnectCard = ({
       <h3 className="font-display text-xl text-foreground">More Reconnect Tools</h3>
       <BookOpen className="h-4 w-4 text-primary/80" />
     </div>
-    <p className="mt-2 text-sm leading-6 text-muted-foreground">Move between tools without leaving the page.</p>
+    <p className="mt-2 text-sm leading-6 text-muted-foreground">Choose the fastest way to reconnect now, then explore deeper tools together when you have more space.</p>
 
     <div className="mt-4 space-y-2">
       {reconnectTools.map((tool) => {
@@ -739,9 +739,9 @@ const Reconnect = () => {
       <section className="rounded-[30px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-6 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] md:p-8">
         <div className="max-w-4xl">
           <p className="text-xs uppercase tracking-[0.28em] text-primary/80">Sacred Library · Reconnect</p>
-          <h1 className="mt-3 font-display text-4xl text-foreground md:text-5xl">Reconnect rebuilt with the same library architecture</h1>
+          <h1 className="mt-3 font-display text-4xl text-foreground md:text-5xl">Ancient reconnect wisdom for modern relationship moments</h1>
           <p className="mt-4 text-sm leading-7 text-muted-foreground md:text-base">
-            Same structure as Authors and Paths: overview, sticky left rail stack, rich right content, and the same premium closing logic.
+            Read, apply, and feel closer right away. Then return for deeper tracks and premium guidance that help your relationship keep moving toward sacred love.
           </p>
         </div>
 
@@ -760,7 +760,7 @@ const Reconnect = () => {
 
       <section className={shellCardClass}>
         <p className="text-xs uppercase tracking-[0.22em] text-primary/80">Reconnect Overview</p>
-        <h2 className="mt-2 font-display text-3xl text-foreground">Choose a reconnect track</h2>
+        <h2 className="mt-2 font-display text-3xl text-foreground">Choose the reconnect track your relationship needs now</h2>
 
         <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {reconnectTools.map((tool) => {
@@ -793,11 +793,11 @@ const Reconnect = () => {
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           <div className="rounded-2xl border border-emerald-400/25 bg-emerald-500/8 p-4">
             <p className="text-xs uppercase tracking-[0.14em] text-emerald-200">Free Reconnect Tracks</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">{freeCount} fully open reconnect guides with practical section depth.</p>
+            <p className="mt-2 text-sm leading-6 text-foreground/90">{freeCount} fully open guides so couples can shift from distance to connection in minutes.</p>
           </div>
           <div className="rounded-2xl border border-amber-400/25 bg-amber-500/8 p-4">
             <p className="text-xs uppercase tracking-[0.14em] text-amber-200">Premium Reconnect Tracks</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">{premiumCount} premium reconnect tracks with elegant lock previews and direct unlock CTA.</p>
+            <p className="mt-2 text-sm leading-6 text-foreground/90">{premiumCount} premium tracks with deeper support, richer wisdom, and guided progression toward sacred partnership.</p>
           </div>
         </div>
       </section>

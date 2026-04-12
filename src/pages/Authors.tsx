@@ -529,7 +529,7 @@ const MoreAuthorsCard = ({
       <h3 className="font-display text-xl text-foreground">More Authors</h3>
       <BookOpen className="h-4 w-4 text-primary/80" />
     </div>
-    <p className="mt-2 text-sm leading-6 text-muted-foreground">Explore nearby voices without leaving this page.</p>
+    <p className="mt-2 text-sm leading-6 text-muted-foreground">Take a quick insight now, then move deeper as a couple when you have more space.</p>
 
     <div className="mt-4 space-y-2">
       {moreAuthorsRows.map((row) => {
@@ -805,9 +805,9 @@ const Authors = () => {
       <section className="rounded-[30px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-6 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] md:p-8">
         <div className="max-w-4xl">
           <p className="text-xs uppercase tracking-[0.28em] text-primary/80">Sacred Library · Authors</p>
-          <h1 className="mt-3 font-display text-4xl text-foreground md:text-5xl">Author wisdom, rebuilt as a true study library</h1>
+          <h1 className="mt-3 font-display text-4xl text-foreground md:text-5xl">Ancient voices for modern couples in real relationship life</h1>
           <p className="mt-4 text-sm leading-7 text-muted-foreground md:text-base">
-            Deep free author pages, elegant premium author teasers, and one consistent navigation structure across the whole Library.
+            Read for one minute and feel closer tonight, or study deeply when you have time. Every page is designed to turn timeless wisdom into practical closeness with your partner.
           </p>
         </div>
 
@@ -826,7 +826,7 @@ const Authors = () => {
 
       <section className={shellCardClass}>
         <p className="text-xs uppercase tracking-[0.22em] text-primary/80">Authors Overview</p>
-        <h2 className="mt-2 font-display text-3xl text-foreground">Choose an author and go deep</h2>
+        <h2 className="mt-2 font-display text-3xl text-foreground">Choose an author for insight now and depth later</h2>
 
         <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {authors.map((author, index) => {
@@ -866,11 +866,11 @@ const Authors = () => {
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           <div className="rounded-2xl border border-emerald-400/25 bg-emerald-500/8 p-4">
             <p className="text-xs uppercase tracking-[0.14em] text-emerald-200">Free Authors</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">{freeAuthors.map((author) => author.name).join(" and ")} have fully open educational pages.</p>
+            <p className="mt-2 text-sm leading-6 text-foreground/90">{freeAuthors.map((author) => author.name).join(" and ")} are fully open so couples can apply wisdom immediately and feel closer today.</p>
           </div>
           <div className="rounded-2xl border border-amber-400/25 bg-amber-500/8 p-4">
             <p className="text-xs uppercase tracking-[0.14em] text-amber-200">Premium Authors</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">{premiumAuthors.length} premium voices with elegant teaser cards and direct unlock flows.</p>
+            <p className="mt-2 text-sm leading-6 text-foreground/90">{premiumAuthors.length} premium voices for couples who want more inspiration, deeper wisdom, and a guided path toward sacred love.</p>
           </div>
         </div>
       </section>
