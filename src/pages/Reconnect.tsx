@@ -20,6 +20,8 @@ type Tier = "free" | "premium";
 type Insight = {
   title: string;
   body: string;
+  beginnerReframe?: string;
+  advancedReframe?: string;
 };
 
 type Exercise = {
@@ -27,6 +29,14 @@ type Exercise = {
   setup: string;
   steps: string[];
   integration: string;
+  beginnerNote?: string;
+  advancedNote?: string;
+};
+
+type GrowthTrack = {
+  title: string;
+  body: string;
+  steps: string[];
 };
 
 type RelatedLink = {
@@ -37,6 +47,8 @@ type RelatedLink = {
 
 type FreeReconnectContent = {
   heroIntro: string[];
+  beginnerTrack?: GrowthTrack;
+  advancedTrack?: GrowthTrack;
   quote: {
     text: string;
     source: string;
@@ -103,6 +115,26 @@ const reconnectTools: ReconnectTool[] = [
         "Soft Landing is the reconnect tool for overloaded evenings. It lowers emotional temperature without draining erotic possibility.",
         "Instead of pushing depth too fast, it creates a believable bridge from stress physiology to relational presence and renewed couple closeness.",
       ],
+      beginnerTrack: {
+        title: "Beginner Track: Reliable 5-10 Minute Reset",
+        body: "Use Soft Landing as your default transition ritual after difficult days. Consistency matters more than depth in early phase.",
+        steps: [
+          "Run one short reset before discussing logistics or conflict.",
+          "Keep language minimal: body state, one need, one appreciation.",
+          "Stay at low intensity and prioritize felt safety.",
+          "Repeat at least four nights per week for two weeks.",
+        ],
+      },
+      advancedTrack: {
+        title: "Advanced Track: Integrate Reset Into Conflict Recovery",
+        body: "Once the base ritual is stable, use Soft Landing to prevent escalation and accelerate repair after tense exchanges.",
+        steps: [
+          "Start with synchronized breath before any high-stakes dialogue.",
+          "Use two short regulation intervals during hard conversations.",
+          "Add one direct accountability statement plus one reassurance statement.",
+          "Close with a next-step agreement for the next 24 hours.",
+        ],
+      },
       quote: {
         text: "When the body feels safer, love becomes easier to feel and easier to offer.",
         source: "Sacred Path Reconnect editorial synthesis",
@@ -113,9 +145,24 @@ const reconnectTools: ReconnectTool[] = [
         "When big conversation would likely backfire tonight.",
       ],
       whyItWorks: [
-        { title: "Low demand, high return", body: "It asks for very little effort and quickly creates relational softening." },
-        { title: "Regulation before interpretation", body: "Bodies settle first, then communication quality improves naturally." },
-        { title: "Protects connection momentum", body: "Small successful contact prevents longer emotional drift." },
+        {
+          title: "Low demand, high return",
+          body: "It asks for very little effort and quickly creates relational softening.",
+          beginnerReframe: "Beginner move: do the ritual even when you only have five minutes.",
+          advancedReframe: "Advanced move: insert micro-resets during difficult conversations.",
+        },
+        {
+          title: "Regulation before interpretation",
+          body: "Bodies settle first, then communication quality improves naturally.",
+          beginnerReframe: "Beginner move: wait for slower breath before discussing content.",
+          advancedReframe: "Advanced move: track partner cues and recalibrate pace in real time.",
+        },
+        {
+          title: "Protects connection momentum",
+          body: "Small successful contact prevents longer emotional drift.",
+          beginnerReframe: "Beginner move: end with one warm gesture every session.",
+          advancedReframe: "Advanced move: convert each reset into a concrete relational next step.",
+        },
       ],
       modernUse: [
         { title: "Weeknight reset", body: "Use as a 10-minute transition ritual before dinner or bedtime." },
@@ -123,9 +170,24 @@ const reconnectTools: ReconnectTool[] = [
         { title: "Desire-friendly calm", body: "Calm can become fertile ground for tenderness and erotic openness." },
       ],
       whatToAvoid: [
-        { title: "Turning it into performance", body: "Keep it simple; over-optimizing kills its effect." },
-        { title: "Forcing disclosure", body: "The goal is arrival, not immediate emotional excavation." },
-        { title: "Skipping consent cues", body: "Even gentle tools require mutual pacing and choice." },
+        {
+          title: "Turning it into performance",
+          body: "Keep it simple; over-optimizing kills its effect.",
+          beginnerReframe: "Beginner move: run the same short structure repeatedly.",
+          advancedReframe: "Advanced move: change only one variable at a time when refining.",
+        },
+        {
+          title: "Forcing disclosure",
+          body: "The goal is arrival, not immediate emotional excavation.",
+          beginnerReframe: "Beginner move: share one feeling, not full story.",
+          advancedReframe: "Advanced move: sequence deeper disclosure after regulation is stable.",
+        },
+        {
+          title: "Skipping consent cues",
+          body: "Even gentle tools require mutual pacing and choice.",
+          beginnerReframe: "Beginner move: ask before touch every round.",
+          advancedReframe: "Advanced move: use explicit pacing checkpoints during longer sessions.",
+        },
       ],
       exercises: [
         {
@@ -137,6 +199,8 @@ const reconnectTools: ReconnectTool[] = [
             "Each partner says one simple need for tonight.",
           ],
           integration: "Use as a daily micro-ritual.",
+          beginnerNote: "Keep answers short and concrete to avoid cognitive overload.",
+          advancedNote: "Add one relational intention after naming needs.",
         },
         {
           title: "Shoulder Drop Reset",
@@ -147,6 +211,8 @@ const reconnectTools: ReconnectTool[] = [
             "Repeat for five rounds with eye softness.",
           ],
           integration: "Fast reset after commute transitions.",
+          beginnerNote: "Use this right after arriving home to prevent friction carryover.",
+          advancedNote: "Pair round five with one appreciation sentence.",
         },
         {
           title: "One-Minute Presence Loop",
@@ -157,6 +223,8 @@ const reconnectTools: ReconnectTool[] = [
             "Close with one gentle touch and no analysis.",
           ],
           integration: "Useful when energy is low but connection matters.",
+          beginnerNote: "Keep appreciation specific and current.",
+          advancedNote: "Add one short request after appreciation loop.",
         },
       ],
       reflectionPrompts: [
@@ -188,6 +256,26 @@ const reconnectTools: ReconnectTool[] = [
         "Heart Opening helps couples move from functional partnership back into felt affection. It is not dramatic repair; it is emotional rewarming.",
         "This tool works especially well when neither partner is hostile, but both feel under-loved or under-seen in modern daily life.",
       ],
+      beginnerTrack: {
+        title: "Beginner Track: Rebuild Daily Warmth",
+        body: "Start with short appreciation rituals that are easy to repeat. The objective is emotional nourishment, not perfect processing.",
+        steps: [
+          "Run a 5-minute appreciation round at least three times weekly.",
+          "Keep praise specific, concrete, and present tense.",
+          "Include one emotional need statement without blame.",
+          "Close each practice with 30 seconds of warm touch.",
+        ],
+      },
+      advancedTrack: {
+        title: "Advanced Track: Blend Warmth With Repair Precision",
+        body: "When baseline warmth returns, use Heart Opening to support harder conversations and strengthen trust repair.",
+        steps: [
+          "Lead with appreciation before discussing sensitive topics.",
+          "Use mirror listening to confirm emotional understanding.",
+          "Pair reassurance with one specific behavior commitment.",
+          "Review weekly which reassurance signals are most effective for each partner.",
+        ],
+      },
       quote: {
         text: "Tenderness grows when appreciation becomes active rather than assumed.",
         source: "Sacred Path Reconnect editorial synthesis",
@@ -198,9 +286,24 @@ const reconnectTools: ReconnectTool[] = [
         "When one or both partners need reassurance and emotional warmth.",
       ],
       whyItWorks: [
-        { title: "Creates felt safety", body: "Appreciation lowers defensiveness and opens relational trust." },
-        { title: "Builds emotional momentum", body: "Small gratitude loops produce cumulative softening." },
-        { title: "Prepares deeper intimacy", body: "Warmth often becomes the foundation for erotic aliveness." },
+        {
+          title: "Creates felt safety",
+          body: "Appreciation lowers defensiveness and opens relational trust.",
+          beginnerReframe: "Beginner move: appreciate behavior, not vague traits.",
+          advancedReframe: "Advanced move: combine appreciation with explicit repair commitments.",
+        },
+        {
+          title: "Builds emotional momentum",
+          body: "Small gratitude loops produce cumulative softening.",
+          beginnerReframe: "Beginner move: keep loops short enough to stay consistent.",
+          advancedReframe: "Advanced move: track which appreciation themes shift mood fastest.",
+        },
+        {
+          title: "Prepares deeper intimacy",
+          body: "Warmth often becomes the foundation for erotic aliveness.",
+          beginnerReframe: "Beginner move: stop after warmth if energy is low.",
+          advancedReframe: "Advanced move: bridge warmth into sensual practice with consent check.",
+        },
       ],
       modernUse: [
         { title: "Post-busy-day reconnect", body: "Use before screens and logistics consume the evening." },
@@ -208,9 +311,24 @@ const reconnectTools: ReconnectTool[] = [
         { title: "Affection restoration", body: "Rebuild touch confidence with low-pressure emotional contact." },
       ],
       whatToAvoid: [
-        { title: "Transactional gratitude", body: "Do not use appreciation as hidden leverage." },
-        { title: "Over-talking", body: "Keep language simple so the body can stay open." },
-        { title: "Skipping reciprocity", body: "Both partners need space to give and receive." },
+        {
+          title: "Transactional gratitude",
+          body: "Do not use appreciation as hidden leverage.",
+          beginnerReframe: "Beginner move: appreciate without attaching a demand.",
+          advancedReframe: "Advanced move: separate gratitude round from negotiation round.",
+        },
+        {
+          title: "Over-talking",
+          body: "Keep language simple so the body can stay open.",
+          beginnerReframe: "Beginner move: limit each share to one or two sentences.",
+          advancedReframe: "Advanced move: alternate words with brief silence intervals.",
+        },
+        {
+          title: "Skipping reciprocity",
+          body: "Both partners need space to give and receive.",
+          beginnerReframe: "Beginner move: use equal timed turns.",
+          advancedReframe: "Advanced move: track whether one partner consistently over-gives.",
+        },
       ],
       exercises: [
         {
@@ -222,6 +340,8 @@ const reconnectTools: ReconnectTool[] = [
             "Switch roles.",
           ],
           integration: "Use twice weekly for emotional warmth maintenance.",
+          beginnerNote: "Choose small everyday actions to keep appreciation believable.",
+          advancedNote: "Add one appreciation for how partner handled recent tension.",
         },
         {
           title: "Hand-on-Heart Mirror",
@@ -232,6 +352,8 @@ const reconnectTools: ReconnectTool[] = [
             "Switch roles.",
           ],
           integration: "Strengthens clarity with kindness.",
+          beginnerNote: "Keep needs specific and actionable.",
+          advancedNote: "Add one reassurance request and one reassurance offer each.",
         },
         {
           title: "Warm Closure Minute",
@@ -242,6 +364,8 @@ const reconnectTools: ReconnectTool[] = [
             "Close with 30 seconds of silent touch.",
           ],
           integration: "Prevents slow emotional drift.",
+          beginnerNote: "Do this even on low-energy nights to keep connection continuity.",
+          advancedNote: "Add one sentence about tomorrow's emotional intention.",
         },
       ],
       reflectionPrompts: [
@@ -273,6 +397,26 @@ const reconnectTools: ReconnectTool[] = [
         "Playful Spark reintroduces levity without losing intimacy. It is a bridge from over-seriousness back into attraction and fun.",
         "The goal is not forced humor. The goal is movement, curiosity, and low-pressure erotic aliveness couples can sustain.",
       ],
+      beginnerTrack: {
+        title: "Beginner Track: Reintroduce Lightness Safely",
+        body: "Use short playful moments to break heaviness without forcing sexual escalation.",
+        steps: [
+          "Choose one playful micro-practice three times this week.",
+          "Keep tone warm and kind, never sarcastic or critical.",
+          "Pause if either partner feels pressured or disconnected.",
+          "Close with one appreciation so play ends in safety.",
+        ],
+      },
+      advancedTrack: {
+        title: "Advanced Track: Build Play Into Erotic Momentum",
+        body: "When safety is stable, use playful energy to build anticipation and reconnect sensual polarity.",
+        steps: [
+          "Sequence playful banter into structured touch rounds.",
+          "Use contrast shifts: playful, tender, then magnetic.",
+          "Add consent checkpoints before moving toward higher charge.",
+          "Debrief what type of play most reliably increases attraction for each partner.",
+        ],
+      },
       quote: {
         text: "A little play can reopen desire where analysis has exhausted it.",
         source: "Sacred Path Reconnect editorial synthesis",
@@ -283,9 +427,24 @@ const reconnectTools: ReconnectTool[] = [
         "When both partners need emotional oxygen before depth.",
       ],
       whyItWorks: [
-        { title: "Breaks heavy loops", body: "Play interrupts rigid relational scripts." },
-        { title: "Invites spontaneous attraction", body: "Novelty and laughter can quickly increase felt connection." },
-        { title: "Builds positive momentum", body: "Light interactions accumulate into stronger emotional tone." },
+        {
+          title: "Breaks heavy loops",
+          body: "Play interrupts rigid relational scripts.",
+          beginnerReframe: "Beginner move: start with gentle humor, not teasing edge.",
+          advancedReframe: "Advanced move: use playful contrast to shift into sensual polarity.",
+        },
+        {
+          title: "Invites spontaneous attraction",
+          body: "Novelty and laughter can quickly increase felt connection.",
+          beginnerReframe: "Beginner move: try one new playful prompt each date night.",
+          advancedReframe: "Advanced move: map which novelty cues awaken desire for each partner.",
+        },
+        {
+          title: "Builds positive momentum",
+          body: "Light interactions accumulate into stronger emotional tone.",
+          beginnerReframe: "Beginner move: keep playful contact short and frequent.",
+          advancedReframe: "Advanced move: chain playful contact into a longer intimacy sequence.",
+        },
       ],
       modernUse: [
         { title: "Date-night ignition", body: "Use as a first phase before slower intimacy practices." },
@@ -293,9 +452,24 @@ const reconnectTools: ReconnectTool[] = [
         { title: "Before difficult topics", body: "Soften relational field before heavier dialogue." },
       ],
       whatToAvoid: [
-        { title: "Sarcasm as play", body: "Play should increase safety, not disguise criticism." },
-        { title: "Forced extroversion", body: "Keep exercises adaptable for quieter personalities." },
-        { title: "Escalation pressure", body: "Play does not need to become sexual every time." },
+        {
+          title: "Sarcasm as play",
+          body: "Play should increase safety, not disguise criticism.",
+          beginnerReframe: "Beginner move: avoid jokes about vulnerabilities.",
+          advancedReframe: "Advanced move: keep edgy play inside explicit mutual agreement.",
+        },
+        {
+          title: "Forced extroversion",
+          body: "Keep exercises adaptable for quieter personalities.",
+          beginnerReframe: "Beginner move: choose low-verbal play formats if needed.",
+          advancedReframe: "Advanced move: personalize play styles instead of copying templates.",
+        },
+        {
+          title: "Escalation pressure",
+          body: "Play does not need to become sexual every time.",
+          beginnerReframe: "Beginner move: end on warmth even without sexual follow-through.",
+          advancedReframe: "Advanced move: signal clearly when shifting from playful to erotic mode.",
+        },
       ],
       exercises: [
         {
@@ -307,6 +481,8 @@ const reconnectTools: ReconnectTool[] = [
             "Switch roles and repeat.",
           ],
           integration: "Builds playful honesty and desire language.",
+          beginnerNote: "Keep requests gentle and emotionally safe.",
+          advancedNote: "Add one structured sensual follow-through when desire is mutual.",
         },
         {
           title: "Compliment Roulette",
@@ -317,6 +493,8 @@ const reconnectTools: ReconnectTool[] = [
             "End with one appreciation that surprised you.",
           ],
           integration: "Great quick reconnection before bed.",
+          beginnerNote: "Avoid body critique disguised as humor.",
+          advancedNote: "Shift from playful compliment into one desire invitation.",
         },
         {
           title: "Mood Shift Touch",
@@ -327,6 +505,8 @@ const reconnectTools: ReconnectTool[] = [
             "Switch roles.",
           ],
           integration: "Reintroduces body confidence and responsiveness.",
+          beginnerNote: "Use gentle zones first to keep confidence high.",
+          advancedNote: "Layer intentional polarity shifts between each mood round.",
         },
       ],
       reflectionPrompts: [
@@ -662,10 +842,51 @@ const FreeReconnectContent = ({ tool }: { tool: ReconnectTool }) => {
             <article key={item.title} className="rounded-2xl border border-border/25 bg-card/35 p-4">
               <h4 className="font-body text-sm text-foreground">{item.title}</h4>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.body}</p>
+              {item.beginnerReframe ? <p className="mt-2 text-sm leading-6 text-emerald-200/90">{item.beginnerReframe}</p> : null}
+              {item.advancedReframe ? <p className="mt-1 text-sm leading-6 text-amber-200/90">{item.advancedReframe}</p> : null}
             </article>
           ))}
         </div>
       </section>
+
+      {data.beginnerTrack || data.advancedTrack ? (
+        <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">3.5 Beginner And Advanced Route</p>
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            {data.beginnerTrack ? (
+              <article className="rounded-2xl border border-emerald-300/25 bg-emerald-500/8 p-4">
+                <p className="text-[11px] uppercase tracking-[0.14em] text-emerald-200">Beginner</p>
+                <h4 className="mt-2 font-body text-sm text-foreground">{data.beginnerTrack.title}</h4>
+                <p className="mt-2 text-sm leading-6 text-foreground/90">{data.beginnerTrack.body}</p>
+                <div className="mt-3 space-y-2">
+                  {data.beginnerTrack.steps.map((step) => (
+                    <div key={step} className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-emerald-300" />
+                      <span>{step}</span>
+                    </div>
+                  ))}
+                </div>
+              </article>
+            ) : null}
+
+            {data.advancedTrack ? (
+              <article className="rounded-2xl border border-amber-300/25 bg-amber-500/8 p-4">
+                <p className="text-[11px] uppercase tracking-[0.14em] text-amber-200">Advanced</p>
+                <h4 className="mt-2 font-body text-sm text-foreground">{data.advancedTrack.title}</h4>
+                <p className="mt-2 text-sm leading-6 text-foreground/90">{data.advancedTrack.body}</p>
+                <div className="mt-3 space-y-2">
+                  {data.advancedTrack.steps.map((step) => (
+                    <div key={step} className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-amber-300" />
+                      <span>{step}</span>
+                    </div>
+                  ))}
+                </div>
+              </article>
+            ) : null}
+          </div>
+        </section>
+      ) : null}
 
       <section className="rounded-[24px] border border-primary/20 bg-primary/8 p-5">
         <p className="text-xs uppercase tracking-[0.2em] text-primary/80">4. Modern Application</p>
@@ -686,6 +907,8 @@ const FreeReconnectContent = ({ tool }: { tool: ReconnectTool }) => {
             <article key={item.title} className="rounded-2xl border border-border/25 bg-card/35 p-4">
               <h4 className="font-body text-sm text-foreground">{item.title}</h4>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.body}</p>
+              {item.beginnerReframe ? <p className="mt-2 text-sm leading-6 text-emerald-200/90">{item.beginnerReframe}</p> : null}
+              {item.advancedReframe ? <p className="mt-1 text-sm leading-6 text-amber-200/90">{item.advancedReframe}</p> : null}
             </article>
           ))}
         </div>
@@ -707,6 +930,8 @@ const FreeReconnectContent = ({ tool }: { tool: ReconnectTool }) => {
                   </div>
                 ))}
               </div>
+              {exercise.beginnerNote ? <p className="mt-3 text-sm leading-6 text-emerald-200/90">Beginner: {exercise.beginnerNote}</p> : null}
+              {exercise.advancedNote ? <p className="mt-1 text-sm leading-6 text-amber-200/90">Advanced: {exercise.advancedNote}</p> : null}
               <p className="mt-3 text-sm leading-6 text-primary/85">Integration: {exercise.integration}</p>
             </article>
           ))}

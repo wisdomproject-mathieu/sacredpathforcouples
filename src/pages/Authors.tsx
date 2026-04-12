@@ -22,6 +22,8 @@ type Tier = "free" | "premium";
 type Teaching = {
   title: string;
   body: string;
+  beginnerReframe?: string;
+  advancedReframe?: string;
 };
 
 type Exercise = {
@@ -29,6 +31,14 @@ type Exercise = {
   setup: string;
   steps: string[];
   integration: string;
+  beginnerNote?: string;
+  advancedNote?: string;
+};
+
+type GrowthTrack = {
+  title: string;
+  body: string;
+  steps: string[];
 };
 
 type RelatedPath = {
@@ -44,6 +54,8 @@ type FreeAuthorContent = {
     body: string;
     steps: string[];
   };
+  beginnerTrack?: GrowthTrack;
+  advancedTrack?: GrowthTrack;
   quote: {
     text: string;
     source: string;
@@ -139,6 +151,26 @@ const authors: Author[] = [
           "Close with explicit more, same, slower, or pause consent language.",
         ],
       },
+      beginnerTrack: {
+        title: "Beginner Track: Restore Charge Without Overwhelm",
+        body: "For the first weeks, use Deida principles in short, low-pressure rounds. The aim is to rebuild directional energy while keeping emotional safety stable.",
+        steps: [
+          "Run one 8-minute polarity check-in three times per week.",
+          "Keep touch intensity under 6/10 and prioritize clarity over intensity.",
+          "Use one truth sentence and one devotional sentence each round.",
+          "Close every practice with one concrete next action for the next 24 hours.",
+        ],
+      },
+      advancedTrack: {
+        title: "Advanced Track: Integrate Polarity, Truth, and Devotion",
+        body: "Once stability is strong, deepen contrast and charge while preserving consent, warmth, and accountability.",
+        steps: [
+          "Alternate 2-minute directional rounds with 1-minute receptive stillness for 4 cycles.",
+          "Use edge language plus nervous-system check-ins every cycle.",
+          "Practice truth delivery with direct tone and non-defensive listening.",
+          "Debrief each session: what increased attraction, what reduced trust, what needs recalibration.",
+        ],
+      },
       quote: {
         text: "Attraction often returns when partners stop managing each other and start meeting with directed, loving presence.",
         source: "Sacred Path Deida editorial synthesis",
@@ -153,18 +185,26 @@ const authors: Author[] = [
         {
           title: "Presence is erotic",
           body: "The body senses directed attention before the mind finishes analyzing. Presence itself changes desire.",
+          beginnerReframe: "Beginner move: hold eye contact for 20 seconds before speaking.",
+          advancedReframe: "Advanced move: sustain directed attention while naming difficult truth without collapse.",
         },
         {
           title: "Conscious difference creates magnetism",
           body: "Too much sameness can flatten chemistry; conscious contrast can revive it.",
+          beginnerReframe: "Beginner move: practice one lead/receive round with explicit consent language.",
+          advancedReframe: "Advanced move: alternate leadership quality while maintaining emotional attunement.",
         },
         {
           title: "Devotion and desire reinforce each other",
           body: "Reverence does not weaken erotic life when it is paired with embodied truth.",
+          beginnerReframe: "Beginner move: make one devotional offering before any sensual practice.",
+          advancedReframe: "Advanced move: pair longing expression with grounded aftercare and integration.",
         },
         {
           title: "Truth keeps charge alive",
           body: "Hidden resentment and polite avoidance kill attraction faster than conflict does.",
+          beginnerReframe: "Beginner move: name one small avoided truth this week.",
+          advancedReframe: "Advanced move: run timed truth rounds with mirror reflection and repair closure.",
         },
       ],
       modernUse: [
@@ -185,14 +225,20 @@ const authors: Author[] = [
         {
           title: "Stereotypes disguised as spirituality",
           body: "Polarity is not an excuse for rigid identity scripts.",
+          beginnerReframe: "Beginner move: define polarity as dynamic role, not fixed identity.",
+          advancedReframe: "Advanced move: explore role fluidity while preserving energetic contrast.",
         },
         {
           title: "Intensity without consent",
           body: "Edge must stay in dialogue with nervous-system safety and mutual choice.",
+          beginnerReframe: "Beginner move: slow down at first sign of freeze, shutdown, or confusion.",
+          advancedReframe: "Advanced move: use intensity ladders and explicit recalibration checkpoints.",
         },
         {
           title: "Performance over intimacy",
           body: "If it becomes theater, the body disconnects even when the scene looks dramatic.",
+          beginnerReframe: "Beginner move: shorten sessions and remove performative goals.",
+          advancedReframe: "Advanced move: track authenticity over intensity in post-session debriefs.",
         },
       ],
       exercises: [
@@ -206,6 +252,8 @@ const authors: Author[] = [
             "Close with one sentence each about what shifted.",
           ],
           integration: "Repeat twice weekly to rebuild trust in energetic contrast.",
+          beginnerNote: "Keep voice calm and directional, not dominant.",
+          advancedNote: "Add a truth sentence at minute four without breaking breath pace.",
         },
         {
           title: "Truth and Devotion Check-In (10 minutes)",
@@ -217,6 +265,8 @@ const authors: Author[] = [
             "End with one tiny next action for 24 hours.",
           ],
           integration: "Use when tension is subtle but persistent.",
+          beginnerNote: "Choose low-stakes truth first to build safety.",
+          advancedNote: "Use higher-stakes truth with explicit repair intention and closure.",
         },
         {
           title: "Edge Window Practice (6 minutes)",
@@ -227,6 +277,8 @@ const authors: Author[] = [
             "Switch after three minutes.",
           ],
           integration: "Builds charge while preserving co-regulation.",
+          beginnerNote: "Keep intensity cap conservative during first week.",
+          advancedNote: "Use micro-pauses to amplify anticipation without losing regulation.",
         },
       ],
       reflectionPrompts: [
@@ -288,6 +340,26 @@ const authors: Author[] = [
           "Close with one shared intention for the next hour.",
         ],
       },
+      beginnerTrack: {
+        title: "Beginner Track: Move From Reactivity to Presence",
+        body: "Start with short body-led resets that lower activation quickly. The goal is to prevent emotional spirals before they harden into distance.",
+        steps: [
+          "Use a 5-7 minute witnessing reset on stressful evenings.",
+          "Name sensation first, then emotion, before interpretation.",
+          "Keep language simple and avoid analysis during regulation phase.",
+          "Close with one shared intention for the next hour.",
+        ],
+      },
+      advancedTrack: {
+        title: "Advanced Track: Integrate Awareness Into Conflict And Desire",
+        body: "When base regulation is stable, expand into deeper emotional honesty and conscious erotic presence without bypassing accountability.",
+        steps: [
+          "Run 12-minute awareness rounds before high-stakes dialogue.",
+          "Practice mirrored listening plus one direct repair request each.",
+          "Integrate stillness, breath, and touch into one coherent sequence.",
+          "Review patterns weekly: triggers, recovery speed, and trust impact.",
+        ],
+      },
       quote: {
         text: "Love deepens when partners stop controlling inner weather and learn to witness it together.",
         source: "Sacred Path Osho editorial synthesis",
@@ -299,10 +371,30 @@ const authors: Author[] = [
         "His approach supports the same present-moment attention linked to stronger sexual and relational flourishing.",
       ],
       coreTeachings: [
-        { title: "Awareness transforms intensity", body: "Witnessed sensation becomes information, not threat." },
-        { title: "The body is the doorway", body: "Breath, sound, and movement reveal truth faster than abstract debate." },
-        { title: "Freedom with attunement", body: "Authenticity is strongest when paired with relational care." },
-        { title: "Meditation inside intimacy", body: "Stillness and breath can make simple contact feel sacred and clean." },
+        {
+          title: "Awareness transforms intensity",
+          body: "Witnessed sensation becomes information, not threat.",
+          beginnerReframe: "Beginner move: pause and name sensation before reacting.",
+          advancedReframe: "Advanced move: stay present during high emotional charge without shutting down.",
+        },
+        {
+          title: "The body is the doorway",
+          body: "Breath, sound, and movement reveal truth faster than abstract debate.",
+          beginnerReframe: "Beginner move: use breath sync before any hard conversation.",
+          advancedReframe: "Advanced move: track subtle body shifts during dialogue and recalibrate pace.",
+        },
+        {
+          title: "Freedom with attunement",
+          body: "Authenticity is strongest when paired with relational care.",
+          beginnerReframe: "Beginner move: express one honest feeling plus one caring intention.",
+          advancedReframe: "Advanced move: hold direct truth while actively maintaining partner safety.",
+        },
+        {
+          title: "Meditation inside intimacy",
+          body: "Stillness and breath can make simple contact feel sacred and clean.",
+          beginnerReframe: "Beginner move: add one minute of stillness before touch.",
+          advancedReframe: "Advanced move: use stillness intervals between polarity or desire rounds.",
+        },
       ],
       modernUse: [
         {
@@ -319,9 +411,24 @@ const authors: Author[] = [
         },
       ],
       shadowToAvoid: [
-        { title: "Spiritual bypassing", body: "Awareness language should not replace accountability and repair." },
-        { title: "Catharsis without integration", body: "Release helps only if behavior and agreements also change." },
-        { title: "Boundary blur", body: "Exploration still requires explicit consent and pacing." },
+        {
+          title: "Spiritual bypassing",
+          body: "Awareness language should not replace accountability and repair.",
+          beginnerReframe: "Beginner move: pair every insight with one behavioral commitment.",
+          advancedReframe: "Advanced move: use awareness plus repair protocol after each rupture.",
+        },
+        {
+          title: "Catharsis without integration",
+          body: "Release helps only if behavior and agreements also change.",
+          beginnerReframe: "Beginner move: after release, set one concrete next step for tomorrow.",
+          advancedReframe: "Advanced move: track whether each release changes recurring patterns.",
+        },
+        {
+          title: "Boundary blur",
+          body: "Exploration still requires explicit consent and pacing.",
+          beginnerReframe: "Beginner move: ask consent before each new practice phase.",
+          advancedReframe: "Advanced move: use explicit pacing checkpoints in long sessions.",
+        },
       ],
       exercises: [
         {
@@ -333,6 +440,8 @@ const authors: Author[] = [
             "Turn toward each other and continue for three minutes.",
           ],
           integration: "Use before sensitive conversations.",
+          beginnerNote: "If tension rises, return to back-to-back breathing for one minute.",
+          advancedNote: "Add one minute of silent eye contact before speaking.",
         },
         {
           title: "Shake and Stillness (9 minutes)",
@@ -343,6 +452,8 @@ const authors: Author[] = [
             "Sit in stillness for four minutes.",
           ],
           integration: "Useful on anxious or irritable days.",
+          beginnerNote: "Keep shake intensity low and prioritize grounded feet.",
+          advancedNote: "Add intentional sound release on exhale to deepen settling.",
         },
         {
           title: "Sacred Listening Round (12 minutes)",
@@ -354,6 +465,8 @@ const authors: Author[] = [
             "Close with one gratitude and one request each.",
           ],
           integration: "Builds honesty without escalation.",
+          beginnerNote: "Keep requests small and actionable to protect follow-through.",
+          advancedNote: "Add one repair acknowledgment before gratitude close.",
         },
       ],
       reflectionPrompts: [
@@ -838,6 +951,8 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
               <p className="text-[11px] uppercase tracking-[0.14em] text-primary/80">Teaching {index + 1}</p>
               <h4 className="mt-2 font-body text-sm text-foreground">{teaching.title}</h4>
               <p className="mt-2 text-sm leading-6 text-foreground/90">{teaching.body}</p>
+              {teaching.beginnerReframe ? <p className="mt-2 text-sm leading-6 text-emerald-200/90">{teaching.beginnerReframe}</p> : null}
+              {teaching.advancedReframe ? <p className="mt-1 text-sm leading-6 text-amber-200/90">{teaching.advancedReframe}</p> : null}
             </article>
           ))}
         </div>
@@ -855,6 +970,45 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
         </div>
       </section>
 
+      {data.beginnerTrack || data.advancedTrack ? (
+        <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Beginner And Advanced Path</p>
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            {data.beginnerTrack ? (
+              <article className="rounded-2xl border border-emerald-300/25 bg-emerald-500/8 p-4">
+                <p className="text-[11px] uppercase tracking-[0.14em] text-emerald-200">Beginner</p>
+                <h4 className="mt-2 font-body text-sm text-foreground">{data.beginnerTrack.title}</h4>
+                <p className="mt-2 text-sm leading-6 text-foreground/90">{data.beginnerTrack.body}</p>
+                <div className="mt-3 space-y-2">
+                  {data.beginnerTrack.steps.map((step) => (
+                    <div key={step} className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-emerald-300" />
+                      <span>{step}</span>
+                    </div>
+                  ))}
+                </div>
+              </article>
+            ) : null}
+
+            {data.advancedTrack ? (
+              <article className="rounded-2xl border border-amber-300/25 bg-amber-500/8 p-4">
+                <p className="text-[11px] uppercase tracking-[0.14em] text-amber-200">Advanced</p>
+                <h4 className="mt-2 font-body text-sm text-foreground">{data.advancedTrack.title}</h4>
+                <p className="mt-2 text-sm leading-6 text-foreground/90">{data.advancedTrack.body}</p>
+                <div className="mt-3 space-y-2">
+                  {data.advancedTrack.steps.map((step) => (
+                    <div key={step} className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-amber-300" />
+                      <span>{step}</span>
+                    </div>
+                  ))}
+                </div>
+              </article>
+            ) : null}
+          </div>
+        </section>
+      ) : null}
+
       <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
         <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Shadow / Misuse / What To Avoid</p>
         <div className="mt-4 space-y-3">
@@ -862,6 +1016,8 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
             <article key={item.title} className="rounded-2xl border border-border/25 bg-card/35 p-4">
               <h4 className="font-body text-sm text-foreground">{item.title}</h4>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.body}</p>
+              {item.beginnerReframe ? <p className="mt-2 text-sm leading-6 text-emerald-200/90">{item.beginnerReframe}</p> : null}
+              {item.advancedReframe ? <p className="mt-1 text-sm leading-6 text-amber-200/90">{item.advancedReframe}</p> : null}
             </article>
           ))}
         </div>
@@ -883,6 +1039,8 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
                   </div>
                 ))}
               </div>
+              {exercise.beginnerNote ? <p className="mt-3 text-sm leading-6 text-emerald-200/90">Beginner: {exercise.beginnerNote}</p> : null}
+              {exercise.advancedNote ? <p className="mt-1 text-sm leading-6 text-amber-200/90">Advanced: {exercise.advancedNote}</p> : null}
               <p className="mt-3 text-sm leading-6 text-primary/85">Integration: {exercise.integration}</p>
             </article>
           ))}

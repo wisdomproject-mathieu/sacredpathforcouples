@@ -24,6 +24,8 @@ type Pillar = {
 type Block = {
   title: string;
   body: string;
+  beginnerReframe?: string;
+  advancedReframe?: string;
 };
 
 type Practice = {
@@ -31,6 +33,14 @@ type Practice = {
   setup: string;
   steps: string[];
   integration: string;
+  beginnerNote?: string;
+  advancedNote?: string;
+};
+
+type GrowthTrack = {
+  title: string;
+  body: string;
+  steps: string[];
 };
 
 type RelatedAuthor = {
@@ -48,6 +58,8 @@ type PathContent = {
     body: string;
     steps: string[];
   };
+  beginnerTrack?: GrowthTrack;
+  advancedTrack?: GrowthTrack;
   quote: {
     text: string;
     source: string;
@@ -150,6 +162,26 @@ const pathDetails: PathDetail[] = [
           "Pause and ask: more, same, slower, or stop before moving forward.",
         ],
       },
+      beginnerTrack: {
+        title: "Beginner Track: Build Safety Before Intensity",
+        body: "For the first 2-3 weeks, prioritize consistency over intensity. The goal is to make your bodies trust the process so desire can return naturally.",
+        steps: [
+          "Run a 6-10 minute arrival ritual three times per week.",
+          "Use explicit consent language every round: more, same, slower, pause, stop.",
+          "Keep intensity under 6/10 and end while both still feel regulated.",
+          "Close with 2 minutes of integration: one gratitude and one request for next time.",
+        ],
+      },
+      advancedTrack: {
+        title: "Advanced Track: Deepen Charge Without Losing Coherence",
+        body: "Once regulation and trust are stable, layer polarity, breath depth, and devotional intent without sacrificing clarity or consent.",
+        steps: [
+          "Alternate 2 minutes of directional polarity with 1 minute of stillness for 4 rounds.",
+          "Use wave pacing: build charge, pause for breath integration, then re-enter contact.",
+          "Introduce truth-and-devotion dialogue before touch: one edge truth, one offering.",
+          "Debrief after every session: what opened, what overwhelmed, what to adjust next time.",
+        ],
+      },
       quote: {
         text: "Tantric intimacy grows when attention, consent, and devotion stay alive in the same breath.",
         source: "Sacred Path Tantric editorial synthesis",
@@ -193,11 +225,36 @@ const pathDetails: PathDetail[] = [
         },
       ],
       misunderstandings: [
-        { title: "Tantra equals constant intensity", body: "Real Tantra includes stillness, softness, and pause." },
-        { title: "Tantra is only technique", body: "Technique is secondary to awareness quality and relational integrity." },
-        { title: "Tantra avoids conflict", body: "It does not remove friction; it gives better ways to meet it." },
-        { title: "Tantra is only for advanced couples", body: "Beginners benefit quickly when they start with breath, consent, and pacing." },
-        { title: "Tantra replaces communication", body: "Embodied practice works best when paired with clear relational language." },
+        {
+          title: "Tantra equals constant intensity",
+          body: "Popular imagery can make Tantra look like endless high charge. Real tantric training uses waves of activation and settling so the nervous system can integrate instead of crash.",
+          beginnerReframe: "Beginner move: keep sessions short and end before overwhelm appears.",
+          advancedReframe: "Advanced move: cycle intensity and stillness intentionally to build resilience and depth.",
+        },
+        {
+          title: "Tantra is only technique",
+          body: "Technique helps, but it is not the core. Quality of attention, consent clarity, and emotional honesty determine whether practice becomes truly connective.",
+          beginnerReframe: "Beginner move: choose one simple ritual and execute it with full presence.",
+          advancedReframe: "Advanced move: track subtle state shifts and adjust pace in real time.",
+        },
+        {
+          title: "Tantra avoids conflict",
+          body: "Tantra does not remove friction. It gives couples better ways to meet friction through body regulation, truth, and repair-oriented contact.",
+          beginnerReframe: "Beginner move: pause conflict with breath sync before discussing content.",
+          advancedReframe: "Advanced move: pair accountability language with soothing touch and integration.",
+        },
+        {
+          title: "Tantra is only for advanced couples",
+          body: "Beginners often benefit fastest because foundational tools are simple: arrive, breathe, ask consent, and move slowly. Depth comes from repetition, not complexity.",
+          beginnerReframe: "Beginner move: repeat one 8-minute ritual three times this week.",
+          advancedReframe: "Advanced move: layer polarity and devotional truth once consistency is stable.",
+        },
+        {
+          title: "Tantra replaces communication",
+          body: "Embodied practice works best when paired with clear language. Somatic depth without communication can create confusion; language without embodiment can stay dry.",
+          beginnerReframe: "Beginner move: name one feeling and one need before touch.",
+          advancedReframe: "Advanced move: use structured debriefs to convert insight into relational agreements.",
+        },
       ],
       practices: [
         {
@@ -209,6 +266,8 @@ const pathDetails: PathDetail[] = [
             "Each partner names one desire for the evening.",
           ],
           integration: "Use before intimacy and before repair talks.",
+          beginnerNote: "Keep this practice exactly as written for your first two weeks.",
+          advancedNote: "Add one minute of eye-gazing silence before naming desires.",
         },
         {
           title: "Three-Phase Breath (8 minutes)",
@@ -219,6 +278,8 @@ const pathDetails: PathDetail[] = [
             "Whole-body breathing with eye softness.",
           ],
           integration: "Builds shared coherence quickly.",
+          beginnerNote: "If dysregulated, stay longer in phase one and shorten phases two and three.",
+          advancedNote: "Use subtle sound on the exhale to increase release and emotional clarity.",
         },
         {
           title: "Devotional Touch Round (10 minutes)",
@@ -229,6 +290,8 @@ const pathDetails: PathDetail[] = [
             "Switch roles after five minutes.",
           ],
           integration: "Improves trust, consent, and attunement.",
+          beginnerNote: "Keep touch non-goal and non-genital so safety stays high.",
+          advancedNote: "Add one intentional polarity shift before switching roles.",
         },
         {
           title: "Polarity and Tenderness Loop (9 minutes)",
@@ -239,6 +302,8 @@ const pathDetails: PathDetail[] = [
             "Switch roles and repeat for four rounds.",
           ],
           integration: "Rebuilds erotic contrast while keeping emotional warmth intact.",
+          beginnerNote: "Use slower voice pace and lower intensity to keep confidence steady.",
+          advancedNote: "Layer in one truth statement per round to increase intimacy depth.",
         },
       ],
       reflections: [
@@ -311,6 +376,26 @@ const pathDetails: PathDetail[] = [
           "Close with three minutes of non-goal touch under 6/10 intensity.",
         ],
       },
+      beginnerTrack: {
+        title: "Beginner Track: Restore Rhythm and Safety",
+        body: "For the first month, Tao practice is about downshifting stress and rebuilding body trust. Calm consistency is more important than erotic intensity.",
+        steps: [
+          "Use a 5-8 minute Tao reset on weeknights before any heavy conversation.",
+          "Stay under 6/10 intensity and keep breath longer on exhale than inhale.",
+          "Track one body signal of softening and one signal of overload each session.",
+          "Close with a short aftercare check: what felt nourishing, what should slow down next time.",
+        ],
+      },
+      advancedTrack: {
+        title: "Advanced Track: Refine Flow and Longevity",
+        body: "Once regulation is stable, build sustained sensual charge through circulation, pacing precision, and recovery intelligence.",
+        steps: [
+          "Run 12-18 minute circulation sessions with alternating stillness and movement phases.",
+          "Use shared breath cadence as the primary intensity regulator rather than willpower.",
+          "Practice full-body warmth circulation before any high-charge focus zone work.",
+          "Maintain next-day vitality check-ins to ensure practice is nourishing, not depleting.",
+        ],
+      },
       quote: {
         text: "Tao intimacy is measured by nourishment, steadiness, and the quality of connection you can sustain.",
         source: "Sacred Path Tao editorial synthesis",
@@ -354,11 +439,36 @@ const pathDetails: PathDetail[] = [
         },
       ],
       misunderstandings: [
-        { title: "Slow equals boring", body: "Slow pacing often increases sensitivity and depth." },
-        { title: "Conservation equals withholding", body: "Conservation is circulation, not distance." },
-        { title: "Tao kills passion", body: "Tao stabilizes passion so it can last." },
-        { title: "Tao is only physical technique", body: "Emotional trust and co-regulation are central, not optional." },
-        { title: "Tao is too gentle for attraction", body: "Gentle pacing often increases anticipation and erotic precision." },
+        {
+          title: "Slow equals boring",
+          body: "In Tao practice, slower pacing often increases sensitivity, anticipation, and full-body awareness. Fast escalation can numb the system before depth has time to build.",
+          beginnerReframe: "Beginner move: use one deliberately slow touch pattern for 3 minutes.",
+          advancedReframe: "Advanced move: alternate slow and medium rhythm to sharpen erotic contrast.",
+        },
+        {
+          title: "Conservation equals withholding",
+          body: "Conservation is not emotional distance. It means circulating and stewarding energy so both partners stay nourished after intimacy.",
+          beginnerReframe: "Beginner move: prioritize sessions that leave both partners clearer afterward.",
+          advancedReframe: "Advanced move: track post-practice vitality over 24 hours and adjust intensity.",
+        },
+        {
+          title: "Tao kills passion",
+          body: "Tao does not reduce passion; it stabilizes passion. The aim is desire that stays alive over years rather than burning out in short spikes.",
+          beginnerReframe: "Beginner move: keep desire gentle but continuous across the week.",
+          advancedReframe: "Advanced move: build longer arcs of anticipation before peak intensity.",
+        },
+        {
+          title: "Tao is only physical technique",
+          body: "Technique matters, but emotional trust and co-regulation are central. Without relational safety, physical methods lose their depth quickly.",
+          beginnerReframe: "Beginner move: include one emotional check-in before touch begins.",
+          advancedReframe: "Advanced move: integrate repair language into circulation practice after tense days.",
+        },
+        {
+          title: "Tao is too gentle for attraction",
+          body: "Gentle pacing often increases precision and erotic responsiveness. Pressure can flatten arousal, while attuned pacing tends to amplify it.",
+          beginnerReframe: "Beginner move: lower pressure and focus on responsiveness cues.",
+          advancedReframe: "Advanced move: use pacing ladders to increase intensity without losing flow.",
+        },
       ],
       practices: [
         {
@@ -370,6 +480,8 @@ const pathDetails: PathDetail[] = [
             "Keep words minimal and attention soft.",
           ],
           integration: "A fast reset after difficult days.",
+          beginnerNote: "Use this whenever either partner feels mentally overloaded.",
+          advancedNote: "Add synchronized pelvic floor softening on every exhale.",
         },
         {
           title: "Orbit of Warmth (8 minutes)",
@@ -380,6 +492,8 @@ const pathDetails: PathDetail[] = [
             "Share one place that softened.",
           ],
           integration: "Builds full-body erotic sensitivity.",
+          beginnerNote: "Keep it simple: chest, belly, pelvis only for your first week.",
+          advancedNote: "Add spine and throat pathways for finer energetic circulation.",
         },
         {
           title: "Soft Rhythm Exchange (10 minutes)",
@@ -390,6 +504,8 @@ const pathDetails: PathDetail[] = [
             "Keep intensity under 6/10.",
           ],
           integration: "Trains pace control and shared regulation.",
+          beginnerNote: "Use timer cues so neither partner has to manage duration mentally.",
+          advancedNote: "Introduce micro-pauses every 60 seconds to heighten sensitivity.",
         },
         {
           title: "Partner Grounding Spiral (7 minutes)",
@@ -400,6 +516,8 @@ const pathDetails: PathDetail[] = [
             "End by naming one word for your current relational state.",
           ],
           integration: "Excellent before difficult conversations or evening reconnection.",
+          beginnerNote: "Stay small and gentle with movement; breath quality matters more than range.",
+          advancedNote: "Add synchronized hum on exhale to deepen vagal settling.",
         },
       ],
       reflections: [
@@ -906,6 +1024,45 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
         </div>
       </section>
 
+      {data.beginnerTrack || data.advancedTrack ? (
+        <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Beginner And Advanced Path</p>
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            {data.beginnerTrack ? (
+              <article className="rounded-2xl border border-emerald-300/25 bg-emerald-500/8 p-4">
+                <p className="text-[11px] uppercase tracking-[0.14em] text-emerald-200">Beginner</p>
+                <h4 className="mt-2 font-body text-sm text-foreground">{data.beginnerTrack.title}</h4>
+                <p className="mt-2 text-sm leading-6 text-foreground/90">{data.beginnerTrack.body}</p>
+                <div className="mt-3 space-y-2">
+                  {data.beginnerTrack.steps.map((step) => (
+                    <div key={step} className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-emerald-300" />
+                      <span>{step}</span>
+                    </div>
+                  ))}
+                </div>
+              </article>
+            ) : null}
+
+            {data.advancedTrack ? (
+              <article className="rounded-2xl border border-amber-300/25 bg-amber-500/8 p-4">
+                <p className="text-[11px] uppercase tracking-[0.14em] text-amber-200">Advanced</p>
+                <h4 className="mt-2 font-body text-sm text-foreground">{data.advancedTrack.title}</h4>
+                <p className="mt-2 text-sm leading-6 text-foreground/90">{data.advancedTrack.body}</p>
+                <div className="mt-3 space-y-2">
+                  {data.advancedTrack.steps.map((step) => (
+                    <div key={step} className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-amber-300" />
+                      <span>{step}</span>
+                    </div>
+                  ))}
+                </div>
+              </article>
+            ) : null}
+          </div>
+        </section>
+      ) : null}
+
       <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
         <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Common Misunderstandings</p>
         <div className="mt-4 space-y-3">
@@ -913,6 +1070,8 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
             <article key={item.title} className="rounded-2xl border border-border/25 bg-card/35 p-4">
               <h4 className="font-body text-sm text-foreground">{item.title}</h4>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.body}</p>
+              {item.beginnerReframe ? <p className="mt-2 text-sm leading-6 text-emerald-200/90">{item.beginnerReframe}</p> : null}
+              {item.advancedReframe ? <p className="mt-1 text-sm leading-6 text-amber-200/90">{item.advancedReframe}</p> : null}
             </article>
           ))}
         </div>
@@ -934,6 +1093,8 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
                   </div>
                 ))}
               </div>
+              {practice.beginnerNote ? <p className="mt-3 text-sm leading-6 text-emerald-200/90">Beginner: {practice.beginnerNote}</p> : null}
+              {practice.advancedNote ? <p className="mt-1 text-sm leading-6 text-amber-200/90">Advanced: {practice.advancedNote}</p> : null}
               <p className="mt-3 text-sm leading-6 text-primary/85">Integration: {practice.integration}</p>
             </article>
           ))}
