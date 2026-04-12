@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowRight,
@@ -11,6 +11,8 @@ import {
   Waves,
   type LucideIcon,
 } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useSeoMetadata } from "@/lib/seo";
 
 type Tier = "free" | "premium";
 
@@ -422,6 +424,37 @@ const pathDetails: PathDetail[] = [
   },
 ];
 
+const pathUpgradeCopy: Record<
+  string,
+  {
+    headline: string;
+    benefit: string;
+    bullets: string[];
+    cta: string;
+  }
+> = {
+  tantra: {
+    headline: "Turn sacred intimacy into a lived couple rhythm.",
+    benefit: "Move from one beautiful moment into a clear weekly structure you can sustain together.",
+    bullets: [
+      "Guided tantric audio journeys with breath pacing and polarity calibration.",
+      "Progressive partner rituals with devotion prompts and integration checkpoints.",
+      "Advanced consent and emotional safety maps for deeper erotic trust.",
+    ],
+    cta: "Unlock Tantric Premium",
+  },
+  tao: {
+    headline: "Protect your energy while deepening desire.",
+    benefit: "Learn partner-ready Tao pacing so closeness feels replenishing, not draining.",
+    bullets: [
+      "Circulation sequences for stress-heavy weeks and low-energy evenings.",
+      "Longevity drills for erotic vitality, softness, and sustainable sensual charge.",
+      "Step-by-step Tao progression from calming reset to advanced partner flow.",
+    ],
+    cta: "Unlock Tao Premium",
+  },
+};
+
 const shellCardClass =
   "rounded-[28px] border border-border/30 bg-card/45 p-5 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.46)]";
 
@@ -485,6 +518,42 @@ const PremiumMiniCard = () => (
     </Link>
   </section>
 );
+
+const PathPremiumBlock = ({ path }: { path: PathDetail }) => {
+  const upgradeCopy = pathUpgradeCopy[path.slug] ?? {
+    headline: `Go deeper with ${path.name}`,
+    benefit: "Add guided depth, clearer progression, and stronger partner integration.",
+    bullets: [
+      "Layered lessons translated for real modern couple life.",
+      "Stepwise practice progression with practical implementation prompts.",
+      "Cross-library bridges into Authors and Reconnect for continuity.",
+    ],
+    cta: "Unlock Premium Path",
+  };
+
+  return (
+    <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
+      <p className="text-xs uppercase tracking-[0.2em] text-amber-300">8. Premium Value</p>
+      <h4 className="mt-2 font-display text-2xl text-foreground">{upgradeCopy.headline}</h4>
+      <p className="mt-3 text-sm leading-7 text-foreground/90">{upgradeCopy.benefit}</p>
+      <div className="mt-4 space-y-2">
+        {upgradeCopy.bullets.map((bullet) => (
+          <div key={bullet} className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-amber-300" />
+            <span>{bullet}</span>
+          </div>
+        ))}
+      </div>
+      <Link
+        to="/pricing"
+        className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
+      >
+        {upgradeCopy.cta}
+        <ArrowRight className="h-4 w-4" />
+      </Link>
+    </section>
+  );
+};
 
 const FreePathContent = ({ path }: { path: PathDetail }) => {
   if (!path.content) return null;
@@ -589,22 +658,7 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
         </div>
       </section>
 
-      <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
-        <p className="text-xs uppercase tracking-[0.2em] text-amber-300">8. Locked Banner</p>
-        <p className="mt-3 text-sm leading-7 text-foreground/90">{data.premiumBanner}</p>
-        <div className="mt-4 grid gap-2 md:grid-cols-3">
-          <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Advanced teachings</div>
-          <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Practice progression</div>
-          <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Locked guidance</div>
-        </div>
-        <Link
-          to="/pricing"
-          className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
-        >
-          View premium plans
-          <ArrowRight className="h-4 w-4" />
-        </Link>
-      </section>
+      <PathPremiumBlock path={path} />
     </main>
   );
 };
@@ -678,19 +732,108 @@ const PremiumPathContent = ({ path }: { path: PathDetail }) => (
   </main>
 );
 
+const MobileDetailHeader = ({
+  title,
+  tier,
+  onBack,
+}: {
+  title: string;
+  tier: Tier;
+  onBack: () => void;
+}) => (
+  <div className="sticky top-2 z-30 rounded-2xl border border-border/40 bg-background/95 p-3 shadow-[0_16px_40px_-32px_rgba(0,0,0,0.7)] backdrop-blur">
+    <div className="flex items-center justify-between gap-3">
+      <button
+        type="button"
+        onClick={onBack}
+        className="rounded-xl border border-border/35 bg-card/45 px-3 py-2 text-xs uppercase tracking-[0.14em] text-foreground"
+      >
+        Back to Library
+      </button>
+      <div className="min-w-0 flex-1 text-right">
+        <p className="truncate font-display text-lg text-foreground">{title}</p>
+        <p className="text-xs text-muted-foreground">{tier === "free" ? "Open access" : "Locked in premium"}</p>
+      </div>
+      <TierBadge tier={tier} />
+    </div>
+  </div>
+);
+
+const RelatedPathCarousel = ({
+  items,
+  onSelect,
+}: {
+  items: PathDetail[];
+  onSelect: (slug: string) => void;
+}) => (
+  <section className="rounded-[24px] border border-border/30 bg-card/40 p-4">
+    <p className="text-xs uppercase tracking-[0.18em] text-primary/80">Related Paths</p>
+    <div className="mt-3 flex snap-x gap-3 overflow-x-auto pb-1">
+      {items.map((item) => {
+        const Icon = item.icon;
+        return (
+          <button
+            key={item.slug}
+            type="button"
+            onClick={() => onSelect(item.slug)}
+            className="min-w-[220px] snap-start rounded-2xl border border-border/30 bg-background/50 p-3 text-left"
+          >
+            <div className="flex items-start justify-between gap-2">
+              <div className={`inline-flex rounded-xl border border-border/30 bg-card/45 p-2 ${item.iconClass}`}>
+                <Icon className="h-4 w-4" />
+              </div>
+              <TierBadge tier={item.tier} />
+            </div>
+            <h4 className="mt-2 font-display text-xl text-foreground">{item.name}</h4>
+            <p className="mt-1 text-sm leading-6 text-muted-foreground">{item.oneLine}</p>
+          </button>
+        );
+      })}
+    </div>
+  </section>
+);
+
 const Paths = () => {
+  const isMobile = useIsMobile();
   const [selectedSlug, setSelectedSlug] = useState(pathDetails[0].slug);
+  const [mobileDetailMode, setMobileDetailMode] = useState(false);
   const selected = useMemo(() => pathDetails.find((path) => path.slug === selectedSlug) ?? pathDetails[0], [selectedSlug]);
 
   const freeCount = pathDetails.filter((path) => path.tier === "free").length;
   const premiumCount = pathDetails.filter((path) => path.tier === "premium").length;
+  const relatedPaths = pathDetails.filter((path) => path.slug !== selectedSlug).slice(0, 6);
+  const showBrowse = !isMobile || !mobileDetailMode;
+  const showDetail = !isMobile || mobileDetailMode;
+
+  useSeoMetadata({
+    title: `Paths Library - ${selected.name}`,
+    description: selected.overviewLine,
+    path: "/app/paths",
+    surface: "app",
+    noIndex: true,
+  });
+
+  useEffect(() => {
+    if (!isMobile && mobileDetailMode) {
+      setMobileDetailMode(false);
+    }
+  }, [isMobile, mobileDetailMode]);
+
+  const handleSelectPath = (slug: string) => {
+    setSelectedSlug(slug);
+    if (isMobile) {
+      setMobileDetailMode(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   return (
-    <div className="space-y-6">
-      <section className="rounded-[30px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-6 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] md:p-8">
+    <div className="space-y-4 md:space-y-6">
+      {showBrowse ? (
+      <section className="rounded-[30px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-5 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] md:p-8">
         <div className="max-w-4xl">
           <p className="text-xs uppercase tracking-[0.28em] text-primary/80">Sacred Library · Paths</p>
-          <h1 className="mt-3 font-display text-4xl text-foreground md:text-5xl">Ancient pathways translated for modern couples</h1>
+          <h1 className="mt-3 font-display text-3xl text-foreground md:text-5xl">Ancient pathways translated for modern couples</h1>
           <p className="mt-4 text-sm leading-7 text-muted-foreground md:text-base">
             Start with a quick insight you can use immediately, then go deeper as a couple when you have space. Each path helps you move from information to real closeness.
           </p>
@@ -723,12 +866,14 @@ const Paths = () => {
           </div>
         </div>
       </section>
+      ) : null}
 
+      {showBrowse ? (
       <section className={shellCardClass}>
         <p className="text-xs uppercase tracking-[0.22em] text-primary/80">Paths Overview</p>
         <h2 className="mt-2 font-display text-3xl text-foreground">Choose a path for immediate closeness and long-term sacred growth</h2>
 
-        <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           {pathDetails.map((path) => {
             const Icon = path.icon;
             const isSelected = selectedSlug === path.slug;
@@ -736,7 +881,7 @@ const Paths = () => {
               <button
                 key={path.slug}
                 type="button"
-                onClick={() => setSelectedSlug(path.slug)}
+                onClick={() => handleSelectPath(path.slug)}
                 className={`rounded-[24px] border p-4 text-left transition-all ${
                   isSelected
                     ? "border-primary/30 bg-primary/10 shadow-[0_16px_50px_-40px_rgba(255,173,70,0.45)]"
@@ -750,7 +895,12 @@ const Paths = () => {
                   <TierBadge tier={path.tier} />
                 </div>
                 <h3 className="mt-3 font-display text-2xl text-foreground">{path.name}</h3>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">{path.overviewLine}</p>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">{path.oneLine}</p>
+                <p className="mt-2 text-xs leading-5 text-foreground/80">
+                  {path.tier === "free"
+                    ? `Practice preview: ${path.content?.practices[0]?.title ?? "Foundational couple exercise"}`
+                    : `Premium preview: ${path.teaser?.[0] ?? "Deep guided path content"}`}
+                </p>
               </button>
             );
           })}
@@ -767,15 +917,23 @@ const Paths = () => {
           </div>
         </div>
       </section>
+      ) : null}
 
-      <section className="grid items-start gap-8 lg:grid-cols-[320px_minmax(0,1fr)]">
+      {showDetail ? (
+      <section className={`${isMobile ? "space-y-4" : "grid items-start gap-6 lg:grid-cols-[minmax(280px,360px)_minmax(0,1fr)]"}`}>
+        {isMobile ? <MobileDetailHeader title={selected.name} tier={selected.tier} onBack={() => setMobileDetailMode(false)} /> : null}
+
         <aside className="space-y-4 lg:sticky lg:top-24">
           <PathHeroCard path={selected} />
           <PremiumMiniCard />
         </aside>
 
-        {selected.tier === "free" ? <FreePathContent path={selected} /> : <PremiumPathContent path={selected} />}
+        <div className="space-y-4">
+          {selected.tier === "free" ? <FreePathContent path={selected} /> : <PremiumPathContent path={selected} />}
+          {isMobile ? <RelatedPathCarousel items={relatedPaths} onSelect={handleSelectPath} /> : null}
+        </div>
       </section>
+      ) : null}
     </div>
   );
 };

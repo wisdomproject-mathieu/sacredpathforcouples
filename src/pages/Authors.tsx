@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowRight,
@@ -14,6 +14,8 @@ import {
   Waves,
   type LucideIcon,
 } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useSeoMetadata } from "@/lib/seo";
 
 type Tier = "free" | "premium";
 
@@ -454,6 +456,27 @@ const authors: Author[] = [
   },
 ];
 
+const authorUpgradeCopy: Record<
+  string,
+  {
+    headline: string;
+    benefit: string;
+    bullets: string[];
+    cta: string;
+  }
+> = {
+  deida: {
+    headline: "Bring devotion and polarity back into your real week.",
+    benefit: "Use guided structure to rebuild erotic charge without losing emotional safety.",
+    bullets: [
+      "Polarity scripts for nights when attraction feels flat but love is still strong.",
+      "Truth-and-devotion dialogue flows that prevent shutdown and defensive loops.",
+      "Progressive partner practices for sustained chemistry, not one-off intensity.",
+    ],
+    cta: "Unlock Deida Premium",
+  },
+};
+
 const shellCardClass =
   "rounded-[28px] border border-border/30 bg-card/45 p-5 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.46)]";
 
@@ -520,6 +543,42 @@ const PremiumMiniCard = () => (
     </Link>
   </section>
 );
+
+const AuthorPremiumBlock = ({ author }: { author: Author }) => {
+  const upgradeCopy = authorUpgradeCopy[author.slug] ?? {
+    headline: `Go deeper with ${author.name}`,
+    benefit: "Turn insight into guided couple practice with structure that lasts.",
+    bullets: [
+      "Expanded modules translated into direct relational application.",
+      "Step-by-step partner exercises for communication, sensuality, and integration.",
+      "Cross-library progression linking authors, paths, and reconnect flows.",
+    ],
+    cta: "Unlock Author Premium",
+  };
+
+  return (
+    <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
+      <p className="text-xs uppercase tracking-[0.2em] text-amber-300">8. Premium Value</p>
+      <h4 className="mt-2 font-display text-2xl text-foreground">{upgradeCopy.headline}</h4>
+      <p className="mt-3 text-sm leading-7 text-foreground/90">{upgradeCopy.benefit}</p>
+      <div className="mt-4 space-y-2">
+        {upgradeCopy.bullets.map((bullet) => (
+          <div key={bullet} className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-amber-300" />
+            <span>{bullet}</span>
+          </div>
+        ))}
+      </div>
+      <Link
+        to="/pricing"
+        className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
+      >
+        {upgradeCopy.cta}
+        <ArrowRight className="h-4 w-4" />
+      </Link>
+    </section>
+  );
+};
 
 const FreeAuthorContent = ({ author }: { author: Author }) => {
   if (!author.content) return null;
@@ -624,22 +683,7 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
         </div>
       </section>
 
-      <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
-        <p className="text-xs uppercase tracking-[0.2em] text-amber-300">8. Locked Library Expansion</p>
-        <p className="mt-3 text-sm leading-7 text-foreground/90">{data.premiumBanner}</p>
-        <div className="mt-4 grid gap-2 md:grid-cols-3">
-          <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Advanced author maps</div>
-          <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Guided couple practices</div>
-          <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Direct Temple bridges</div>
-        </div>
-        <Link
-          to="/pricing"
-          className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
-        >
-          View premium plans
-          <ArrowRight className="h-4 w-4" />
-        </Link>
-      </section>
+      <AuthorPremiumBlock author={author} />
     </main>
   );
 };
@@ -712,19 +756,108 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => (
   </main>
 );
 
+const MobileDetailHeader = ({
+  title,
+  tier,
+  onBack,
+}: {
+  title: string;
+  tier: Tier;
+  onBack: () => void;
+}) => (
+  <div className="sticky top-2 z-30 rounded-2xl border border-border/40 bg-background/95 p-3 shadow-[0_16px_40px_-32px_rgba(0,0,0,0.7)] backdrop-blur">
+    <div className="flex items-center justify-between gap-3">
+      <button
+        type="button"
+        onClick={onBack}
+        className="rounded-xl border border-border/35 bg-card/45 px-3 py-2 text-xs uppercase tracking-[0.14em] text-foreground"
+      >
+        Back to Library
+      </button>
+      <div className="min-w-0 flex-1 text-right">
+        <p className="truncate font-display text-lg text-foreground">{title}</p>
+        <p className="text-xs text-muted-foreground">{tier === "free" ? "Open access" : "Locked in premium"}</p>
+      </div>
+      <TierBadge tier={tier} />
+    </div>
+  </div>
+);
+
+const RelatedAuthorCarousel = ({
+  items,
+  onSelect,
+}: {
+  items: Author[];
+  onSelect: (slug: string) => void;
+}) => (
+  <section className="rounded-[24px] border border-border/30 bg-card/40 p-4">
+    <p className="text-xs uppercase tracking-[0.18em] text-primary/80">Related Authors</p>
+    <div className="mt-3 flex snap-x gap-3 overflow-x-auto pb-1">
+      {items.map((item) => {
+        const Icon = item.icon;
+        return (
+          <button
+            key={item.slug}
+            type="button"
+            onClick={() => onSelect(item.slug)}
+            className="min-w-[220px] snap-start rounded-2xl border border-border/30 bg-background/50 p-3 text-left"
+          >
+            <div className="flex items-start justify-between gap-2">
+              <div className={`inline-flex rounded-xl border border-border/30 bg-card/45 p-2 ${item.iconClass}`}>
+                <Icon className="h-4 w-4" />
+              </div>
+              <TierBadge tier={item.tier} />
+            </div>
+            <h4 className="mt-2 font-display text-xl text-foreground">{item.name}</h4>
+            <p className="mt-1 text-sm leading-6 text-muted-foreground">{item.oneLiner}</p>
+          </button>
+        );
+      })}
+    </div>
+  </section>
+);
+
 const Authors = () => {
+  const isMobile = useIsMobile();
   const [selectedSlug, setSelectedSlug] = useState("deida");
+  const [mobileDetailMode, setMobileDetailMode] = useState(false);
   const selected = useMemo(() => authors.find((author) => author.slug === selectedSlug) ?? authors[0], [selectedSlug]);
 
   const freeAuthors = authors.filter((author) => author.tier === "free");
   const premiumAuthors = authors.filter((author) => author.tier === "premium");
+  const relatedAuthors = authors.filter((author) => author.slug !== selectedSlug).slice(0, 6);
+  const showBrowse = !isMobile || !mobileDetailMode;
+  const showDetail = !isMobile || mobileDetailMode;
+
+  useSeoMetadata({
+    title: `Authors Library - ${selected.name}`,
+    description: selected.overviewLine,
+    path: "/app/authors",
+    surface: "app",
+    noIndex: true,
+  });
+
+  useEffect(() => {
+    if (!isMobile && mobileDetailMode) {
+      setMobileDetailMode(false);
+    }
+  }, [isMobile, mobileDetailMode]);
+
+  const handleSelectAuthor = (slug: string) => {
+    setSelectedSlug(slug);
+    if (isMobile) {
+      setMobileDetailMode(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   return (
-    <div className="space-y-6">
-      <section className="rounded-[30px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-6 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] md:p-8">
+    <div className="space-y-4 md:space-y-6">
+      {showBrowse ? (
+      <section className="rounded-[30px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-5 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] md:p-8">
         <div className="max-w-4xl">
           <p className="text-xs uppercase tracking-[0.28em] text-primary/80">Sacred Library · Authors</p>
-          <h1 className="mt-3 font-display text-4xl text-foreground md:text-5xl">Ancient voices for modern couples in real relationship life</h1>
+          <h1 className="mt-3 font-display text-3xl text-foreground md:text-5xl">Ancient voices for modern couples in real relationship life</h1>
           <p className="mt-4 text-sm leading-7 text-muted-foreground md:text-base">
             Read for one minute and feel closer tonight, or study deeply when you have time. Every page is designed to turn timeless wisdom into practical closeness with your partner.
           </p>
@@ -757,12 +890,14 @@ const Authors = () => {
           </div>
         </div>
       </section>
+      ) : null}
 
+      {showBrowse ? (
       <section className={shellCardClass}>
         <p className="text-xs uppercase tracking-[0.22em] text-primary/80">Authors Overview</p>
         <h2 className="mt-2 font-display text-3xl text-foreground">Choose an author for immediate closeness and deeper shared growth</h2>
 
-        <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           {authors.map((author) => {
             const Icon = author.icon;
             const isSelected = selectedSlug === author.slug;
@@ -770,7 +905,7 @@ const Authors = () => {
               <button
                 key={author.slug}
                 type="button"
-                onClick={() => setSelectedSlug(author.slug)}
+                onClick={() => handleSelectAuthor(author.slug)}
                 className={`rounded-[24px] border p-4 text-left transition-all ${
                   isSelected
                     ? "border-primary/30 bg-primary/10 shadow-[0_16px_50px_-40px_rgba(255,173,70,0.45)]"
@@ -784,7 +919,12 @@ const Authors = () => {
                   <TierBadge tier={author.tier} />
                 </div>
                 <h3 className="mt-3 font-display text-2xl text-foreground">{author.name}</h3>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">{author.overviewLine}</p>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">{author.descriptor}</p>
+                <p className="mt-2 text-xs leading-5 text-foreground/80">
+                  {author.tier === "free"
+                    ? `Practice preview: ${author.content?.exercises[0]?.title ?? "Guided author exercise"}`
+                    : `Premium preview: ${author.teaser?.[0] ?? "Expanded guided author journey"}`}
+                </p>
               </button>
             );
           })}
@@ -801,15 +941,23 @@ const Authors = () => {
           </div>
         </div>
       </section>
+      ) : null}
 
-      <section className="grid items-start gap-8 lg:grid-cols-[320px_minmax(0,1fr)]">
+      {showDetail ? (
+      <section className={`${isMobile ? "space-y-4" : "grid items-start gap-6 lg:grid-cols-[minmax(280px,360px)_minmax(0,1fr)]"}`}>
+        {isMobile ? <MobileDetailHeader title={selected.name} tier={selected.tier} onBack={() => setMobileDetailMode(false)} /> : null}
+
         <aside className="space-y-4 lg:sticky lg:top-24">
           <AuthorHeroCard author={selected} />
           <PremiumMiniCard />
         </aside>
 
-        {selected.tier === "free" ? <FreeAuthorContent author={selected} /> : <PremiumAuthorContent author={selected} />}
+        <div className="space-y-4">
+          {selected.tier === "free" ? <FreeAuthorContent author={selected} /> : <PremiumAuthorContent author={selected} />}
+          {isMobile ? <RelatedAuthorCarousel items={relatedAuthors} onSelect={handleSelectAuthor} /> : null}
+        </div>
       </section>
+      ) : null}
     </div>
   );
 };
