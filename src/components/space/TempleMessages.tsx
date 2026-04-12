@@ -12,11 +12,11 @@ interface Props {
 }
 
 const messageStarters = [
-  "Tonight I want to feel closer by…",
-  "One thing I’m grateful for in us is…",
-  "A kind touch I would love tonight is…",
-  "Something my heart needs from you is…",
-  "One small ritual I want with you this week is…",
+  "Tonight I long to feel you through…",
+  "One thing I cherish in us right now is…",
+  "A touch I crave from you tonight is…",
+  "What my heart quietly needs from you is…",
+  "One sacred ritual I want us to share this week is…",
 ];
 
 const TempleMessages = ({ coupleId, onNavigate }: Props) => {
@@ -78,15 +78,15 @@ const TempleMessages = ({ coupleId, onNavigate }: Props) => {
 
   return (
     <DoorwayShell
-      label="Temple Messages"
-      title="Send something that softens the distance"
-      description="Small loving notes keep the temple alive. Keep it simple, true, and specific."
-      actionLabel="Open repair mode"
+      label="Sacred Messages"
+      title="Whisper what your beloved can truly feel"
+      description="One honest line can melt distance faster than a long explanation. Keep it true, warm, and embodied."
+      actionLabel="Enter repair"
       onAction={onNavigate ? () => onNavigate("repair") : undefined}
     >
 
       <section className="rounded-[24px] border border-border/30 bg-card/45 p-4">
-        <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Prompt for tonight</div>
+        <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Tonight's whisper prompt</div>
         <div className="mt-2 text-sm text-foreground">{featuredStarter}</div>
       </section>
 
@@ -96,7 +96,7 @@ const TempleMessages = ({ coupleId, onNavigate }: Props) => {
             <MessageCircleHeart className="h-5 w-5" />
             <span className="text-xs uppercase tracking-[0.22em]">Write now</span>
           </div>
-          <h3 className="mt-4 font-display text-2xl text-foreground">A note your partner can feel</h3>
+          <h3 className="mt-4 font-display text-2xl text-foreground">A note your beloved can feel</h3>
 
           <textarea
             value={draft}
@@ -113,7 +113,7 @@ const TempleMessages = ({ coupleId, onNavigate }: Props) => {
               className="inline-flex items-center gap-2 rounded-2xl border border-border/35 bg-card/45 px-4 py-3 text-sm text-foreground transition-all hover:border-border/55 hover:bg-card/60"
             >
               <Sparkles className="h-4 w-4" />
-              Use starter
+              Use whisper
             </button>
             <button
               type="button"
@@ -122,13 +122,13 @@ const TempleMessages = ({ coupleId, onNavigate }: Props) => {
               className="inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-3 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16 disabled:opacity-60"
             >
               <Send className="h-4 w-4" />
-              {isPreview ? "Connect to send" : sending ? "Sending..." : "Send message"}
+              {isPreview ? "Connect to send" : sending ? "Sending..." : "Send whisper"}
             </button>
             <ShareCardButton
               coupleId={coupleId}
               messageType="message_prompt_share"
               content={`Message starter card ✦ ${featuredStarter}`}
-              label="Share starter card"
+              label="Offer this prompt"
             />
           </div>
         </div>
@@ -136,16 +136,16 @@ const TempleMessages = ({ coupleId, onNavigate }: Props) => {
         <div className="rounded-[28px] border border-border/30 bg-card/45 p-6">
           <div className="flex items-center gap-2 text-rose-300">
             <Heart className="h-5 w-5" />
-            <span className="text-xs uppercase tracking-[0.22em]">Shared notes</span>
+            <span className="text-xs uppercase tracking-[0.22em]">Shared thread</span>
           </div>
-          <h3 className="mt-4 font-display text-2xl text-foreground">Recent messages</h3>
+          <h3 className="mt-4 font-display text-2xl text-foreground">Recent offerings</h3>
 
           <div className="mt-5 space-y-3">
             {messages.length === 0 ? (
               <div className="rounded-[22px] border border-border/30 bg-background/45 p-5 text-sm leading-6 text-muted-foreground">
                 {isPreview
-                  ? "Preview mode is active. Connect with your partner to send and sync messages."
-                  : "No messages yet. Start with one sentence, not a perfect speech."}
+                  ? "Sacred Temple preview is active. Connect with your beloved to exchange whispers in real time."
+                  : "No offerings yet. Begin with one sincere sentence, not a perfect speech."}
               </div>
             ) : (
               messages.map((message) => {
@@ -161,7 +161,7 @@ const TempleMessages = ({ coupleId, onNavigate }: Props) => {
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
-                        {mine ? "You" : "Partner"}
+                        {mine ? "You" : "Beloved"}
                       </div>
                       <div className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
                         <Star className="h-3 w-3" />

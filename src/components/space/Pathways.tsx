@@ -94,7 +94,7 @@ const Pathways = ({ coupleId, onNavigate }: Props) => {
       label="Pathways"
       title={t("pathways.title")}
       description={t("pathways.subtitle")}
-      actionLabel="Open temple guide"
+      actionLabel="Enter temple guide"
       onAction={onNavigate ? () => onNavigate("guide") : undefined}
     >
 
@@ -170,7 +170,7 @@ const Pathways = ({ coupleId, onNavigate }: Props) => {
                         coupleId={coupleId}
                         messageType="pathway_share"
                         content={`Pathway card ✦ ${p.title} — ${p.description || `${p.duration_days} days`}`}
-                        label="Share this pathway card"
+                        label="Offer this pathway card"
                       />
                     </div>
                   </div>

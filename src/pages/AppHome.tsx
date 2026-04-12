@@ -9,8 +9,8 @@ const AppHome = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [quoteIndex, setQuoteIndex] = useState(0);
-  const [connectionStatus, setConnectionStatus] = useState("You can begin alone in the Library and move into the Temple when the relationship is ready.");
-  const [activityStatus, setActivityStatus] = useState("No partner activity yet. Start with the Library to discover a path, then enter the Temple when you want to practice together.");
+  const [connectionStatus, setConnectionStatus] = useState("You can begin in the Library and move into Sacred Temple when the relationship is ready.");
+  const [activityStatus, setActivityStatus] = useState("No partner activity yet. Begin in the Library, then enter Sacred Temple when you are ready to practice together.");
   const [journeyPhase, setJourneyPhase] = useState("Arrival");
 
   const quotes = useMemo(
@@ -53,8 +53,8 @@ const AppHome = () => {
         .maybeSingle();
 
       if (!couple) {
-        setConnectionStatus("You are not connected yet. Sacred Path still works beautifully for one: learn inside the Library, then invite your partner when you are ready.");
-        setActivityStatus("Begin with a foundational path, save a few favorites, and let the Temple become your shared space later.");
+        setConnectionStatus("You are not connected yet. Sacred Path still works beautifully for one: learn in the Library, then invite your beloved when you are ready.");
+        setActivityStatus("Begin with a foundational path, save a few favorites, and let Sacred Temple become your shared space later.");
         setJourneyPhase("Arrival");
         return;
       }
@@ -62,7 +62,7 @@ const AppHome = () => {
       const connected = Boolean(couple.partner_a && couple.partner_b);
       setConnectionStatus(
         connected
-          ? "You and your partner are inside the same temple. Home now becomes a living dashboard for your shared rhythm."
+          ? "You and your partner are inside Sacred Temple together. Home now becomes a living dashboard for your shared rhythm."
           : "Your invitation is open. While you wait, use the Library to gather the words, rituals, and wisdom you want to bring into the relationship."
       );
 
@@ -98,13 +98,13 @@ const AppHome = () => {
       const latestAltar = altarRes.data?.[0];
 
       if (latestMessage) {
-        setActivityStatus("Your partner left something in the Temple recently. Open the Temple to read it and let the next move come from what was actually felt.");
+        setActivityStatus("Your partner left something in Sacred Temple. Open it and let the next move come from what was truly felt.");
       } else if (latestWeather) {
         setActivityStatus(`The latest shared climate was ${latestWeather.state}. Let that mood guide whether tonight needs softness, teasing, repair, or stillness.`);
       } else if (latestAltar) {
         setActivityStatus("A memory has already been saved in the altar. The relationship is beginning to leave traces you can return to.");
       } else {
-        setActivityStatus("Your shared temple is open. Start with Intimacy Weather, one warm message, or a small ritual that asks very little and gives a lot.");
+        setActivityStatus("Your shared Sacred Temple is open. Begin with Intimacy Weather, one warm whisper, or a small ritual that gives a lot with little strain.");
       }
 
       const totalTouches = (weatherRes.data?.length || 0) + (messageRes.data?.length || 0) + (altarRes.data?.length || 0);
@@ -140,7 +140,7 @@ const AppHome = () => {
             onClick={() => navigate("/app/space")}
             className="rounded-2xl border border-primary/25 bg-primary/12 px-5 py-3 font-body text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
           >
-            Connect with your partner in Temple
+            Enter Sacred Temple
           </button>
           <button
             type="button"
@@ -167,7 +167,7 @@ const AppHome = () => {
               <p className="mt-2 text-sm leading-6 text-foreground/90">{journeyPhase}</p>
             </div>
             <div className="rounded-[22px] border border-border/30 bg-background/45 p-4">
-              <div className="text-xs uppercase tracking-[0.18em] text-primary/80">Temple news</div>
+              <div className="text-xs uppercase tracking-[0.18em] text-primary/80">Sacred Temple news</div>
               <p className="mt-2 text-sm leading-6 text-foreground/90">{activityStatus}</p>
             </div>
           </div>
@@ -198,9 +198,9 @@ const AppHome = () => {
           <div className="inline-flex rounded-2xl border border-border/30 bg-background/45 p-3 text-fuchsia-300">
             <MessageCircle className="h-5 w-5" />
           </div>
-          <h2 className="mt-4 font-display text-3xl text-foreground">Temple</h2>
+          <h2 className="mt-4 font-display text-3xl text-foreground">Sacred Temple</h2>
           <p className="mt-3 text-sm leading-7 text-muted-foreground">
-            Enter the shared sanctuary for weather, ritual, positions, teasing, messages, repair, memory, and the living rhythm of two people.
+            Enter your shared sanctuary for weather, ritual, sensual positions, whispers, repair, memory, and the living rhythm of two lovers.
           </p>
         </div>
 
@@ -210,7 +210,7 @@ const AppHome = () => {
           </div>
           <h2 className="mt-4 font-display text-3xl text-foreground">For one or for two</h2>
           <p className="mt-3 text-sm leading-7 text-muted-foreground">
-            Home and Library work beautifully even before a partner joins. Temple becomes the shared field when the relationship is ready to practice together.
+            Home and Library work beautifully before partner connection. Sacred Temple becomes your shared field when love is ready for embodied practice.
           </p>
         </div>
       </section>

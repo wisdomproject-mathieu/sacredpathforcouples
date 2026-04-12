@@ -80,7 +80,7 @@ const MemoryAltar = ({ coupleId, onNavigate }: Props) => {
       label="Altar"
       title={t("altar.title")}
       description={t("altar.subtitle")}
-      actionLabel="Open pathways"
+      actionLabel="Enter pathways"
       onAction={onNavigate ? () => onNavigate("pathways") : undefined}
     >
       <div className="px-5 max-w-xl mx-auto">
@@ -116,7 +116,7 @@ const MemoryAltar = ({ coupleId, onNavigate }: Props) => {
 
         {isPreview && (
           <div className="mb-5 rounded-2xl border border-border/30 bg-background/45 p-4 text-sm leading-6 text-muted-foreground">
-            Preview mode is active. Connect with your partner to save shared altar moments.
+            Sacred Temple preview is active. Connect with your beloved to seal shared altar memories.
           </div>
         )}
 
@@ -147,7 +147,7 @@ const MemoryAltar = ({ coupleId, onNavigate }: Props) => {
           {filtered.length === 0 && (
             <div className="text-center py-12">
               <Star className="h-8 w-8 text-primary/20 mx-auto mb-3" />
-              <p className="text-base text-muted-foreground font-body">{isPreview ? "No shared altar yet in preview mode." : t("altar.empty")}</p>
+              <p className="text-base text-muted-foreground font-body">{isPreview ? "No shared altar memory yet in preview mode." : t("altar.empty")}</p>
             </div>
           )}
           {filtered.map((item) => {
@@ -166,7 +166,7 @@ const MemoryAltar = ({ coupleId, onNavigate }: Props) => {
                         coupleId={coupleId}
                         messageType="altar_share"
                         content={`Altar card ✦ ${item.title}${item.note ? ` — ${item.note}` : ""}`}
-                        label="Share this altar card"
+                        label="Offer this altar memory"
                       />
                     </div>
                   </div>

@@ -124,7 +124,7 @@ const RitualCards = ({ coupleId, onNavigate }: Props) => {
       content: `Ritual card ✦ ${ritual.title}${ritual.hook ? ` — ${ritual.hook}` : ""}`,
     });
 
-    toast.success("Shared ritual card to your partner.");
+    toast.success("Offered ritual card to your beloved.");
   };
 
   return (
@@ -132,7 +132,7 @@ const RitualCards = ({ coupleId, onNavigate }: Props) => {
       label="Rituals"
       title={t("ritual_cards.title")}
       description={t("ritual_cards.subtitle")}
-      actionLabel="Open temple guide"
+      actionLabel="Enter temple guide"
       onAction={onNavigate ? () => onNavigate("guide") : undefined}
     >
 

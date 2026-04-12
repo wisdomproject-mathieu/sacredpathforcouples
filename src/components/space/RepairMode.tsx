@@ -35,7 +35,7 @@ const RepairMode = ({ onNavigate, coupleId }: Props) => {
       label="Repair"
       title={t("repair.title")}
       description={t("repair.subtitle")}
-      actionLabel="Go to messages"
+      actionLabel="Enter messages"
       onAction={onNavigate ? () => onNavigate("messages") : undefined}
     >
 
@@ -110,7 +110,7 @@ const RepairMode = ({ onNavigate, coupleId }: Props) => {
               coupleId={coupleId}
               messageType="repair_share"
               content={`Repair card ✦ ${t(`repair.${currentStep.key}.title`)} — ${t(`repair.${currentStep.key}.instruction`)}`}
-              label="Share this repair card"
+              label="Offer this repair card"
             />
           </div>
         </div>

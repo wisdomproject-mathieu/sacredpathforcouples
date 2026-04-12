@@ -69,10 +69,10 @@ const TempleGuide = ({ onNavigate, coupleId }: Props) => {
 
   return (
     <DoorwayShell
-      label="Temple Guide"
-      title={t("guide.title")}
-      description={t("guide.subtitle")}
-      actionLabel="Open rituals"
+      label="Sacred Guide"
+      title="Sacred Guide"
+      description="When love feels uncertain, Sacred Guide offers a grounded next step for tenderness, polarity, and presence."
+      actionLabel="Enter rituals"
       onAction={onNavigate ? () => onNavigate("rituals") : undefined}
     >
 
@@ -171,7 +171,7 @@ const TempleGuide = ({ onNavigate, coupleId }: Props) => {
                       coupleId={coupleId}
                       messageType="guide_share"
                       content={`Guide card ✦ ${t(rec.titleKey)} — ${t(rec.descKey)}`}
-                      label="Share this guide card"
+                      label="Offer this guide card"
                       className="w-full justify-center"
                     />
                   </div>

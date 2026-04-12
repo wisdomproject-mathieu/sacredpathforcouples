@@ -51,7 +51,7 @@ const tonePresets: {
   {
     key: "romantic",
     title: "Romantic",
-    subtitle: "Tender atmosphere, appreciation, and emotional closeness.",
+    subtitle: "Tender atmosphere, devotion, and emotional closeness.",
     iconClass: "text-rose-300",
     categories: ["presence", "touch", "reconnect"],
     openingTarget: "messages",
@@ -67,7 +67,7 @@ const tonePresets: {
   {
     key: "playful",
     title: "Playful",
-    subtitle: "Lightness, novelty, teasing, and spontaneity.",
+    subtitle: "Lightness, teasing, novelty, and spontaneous delight.",
     iconClass: "text-fuchsia-300",
     categories: ["playful", "presence", "reconnect"],
     openingTarget: "rituals",
@@ -97,10 +97,10 @@ const heatOptions: { key: HeatLevel; label: string; note: string }[] = [
 ];
 
 const focusOptions: { key: OracleFocus; label: string; note: string }[] = [
-  { key: "bonding", label: "Bonding", note: "More emotional closeness tonight" },
-  { key: "attraction", label: "Attraction", note: "More playful/erotic momentum" },
-  { key: "repair", label: "Repair", note: "Clear tension and reconnect" },
-  { key: "growth", label: "Growth", note: "Invest in long-term pathway" },
+  { key: "bonding", label: "Bonding", note: "Deepen emotional closeness tonight" },
+  { key: "attraction", label: "Attraction", note: "Awaken playful and erotic momentum" },
+  { key: "repair", label: "Repair", note: "Soothe tension and reconnect" },
+  { key: "growth", label: "Growth", note: "Invest in a long-term sacred path" },
 ];
 
 const dayKey = (iso?: string | null) => (iso ? new Date(iso).toISOString().slice(0, 10) : null);
@@ -381,7 +381,7 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
       moves.push({
         id: "preview-start-weather",
         title: "Set your first couple baseline",
-        why: "When your partner connects, two weather check-ins instantly improve Oracle precision.",
+        why: "When your beloved connects, two weather check-ins instantly improve Oracle precision.",
         cta: "Open weather",
         target: "weather",
         iconClass: "text-sky-300",
@@ -437,8 +437,8 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
     if (!analytics.latestMessage || (analytics.silentDays !== null && analytics.silentDays >= 2)) {
       moves.push({
         id: "message-bridge",
-        title: "Close the gap with one precise message",
-        why: "A short shared note protects momentum between bigger rituals.",
+        title: "Close the gap with one precise whisper",
+        why: "A short shared whisper protects momentum between deeper rituals.",
         cta: "Open messages",
         target: "messages",
         iconClass: "text-violet-300",
@@ -493,12 +493,12 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
       },
       {
         label: "Latest climate",
-        value: coupleId ? analytics.latestWeather?.state ?? "No check-in" : "Preview mode",
+        value: coupleId ? analytics.latestWeather?.state ?? "No check-in" : "Temple preview",
         note: "Most recent intimacy weather",
       },
       {
         label: "Message gap",
-        value: coupleId ? (analytics.silentDays === null ? "No messages" : `${analytics.silentDays} day(s)`) : "Preview mode",
+        value: coupleId ? (analytics.silentDays === null ? "No messages" : `${analytics.silentDays} day(s)`) : "Temple preview",
         note: "Days since last partner message",
       },
     ],
@@ -508,9 +508,9 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
   return (
     <DoorwayShell
       label="Wisdom Oracle"
-      title="Couple intelligence engine for what to do next"
-      description="Configure the tone you want tonight, then Oracle composes the next best sequence from your shared signals, saved memory, and Temple content." 
-      actionLabel="Refresh oracle"
+      title="Sacred intelligence for your next loving move"
+      description="Set the tone you desire tonight, then Oracle composes your next steps from shared signals, memory, and Temple wisdom."
+      actionLabel="Receive fresh guidance"
       onAction={() => setRefreshTick((value) => value + 1)}
       actionDisabled={loading}
     >
@@ -519,7 +519,7 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
           <Stars className="h-4 w-4" />
           <p className="text-xs uppercase tracking-[0.22em]">Oracle configuration</p>
         </div>
-        <h3 className="mt-2 font-display text-3xl text-foreground">Pre-configure tonight together</h3>
+        <h3 className="mt-2 font-display text-3xl text-foreground">Co-create tonight's intention</h3>
 
         <div className="mt-5 grid gap-3 md:grid-cols-5">
           {tonePresets.map((preset) => {
@@ -594,7 +594,7 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
             coupleId={coupleId}
             messageType="oracle_config_share"
             content={`Oracle configuration ✦ Tone: ${selectedTone.title}, Intensity: ${heat}, Focus: ${focus}.`}
-            label="Share oracle configuration"
+            label="Offer this intention"
           />
         </div>
       </section>
@@ -620,7 +620,7 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
               <Compass className="h-4 w-4" />
               <p className="text-xs uppercase tracking-[0.22em]">Tonight sequence</p>
             </div>
-            <h3 className="mt-2 font-display text-3xl text-foreground">Oracle sequence for tonight</h3>
+            <h3 className="mt-2 font-display text-3xl text-foreground">Oracle ritual arc for tonight</h3>
 
             <div className="mt-5 grid gap-4 md:grid-cols-3">
               {oraclePlan.map((step) => (
@@ -636,13 +636,13 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
                       onClick={() => onNavigate(step.target)}
                       className="rounded-2xl border border-primary/25 bg-primary/12 px-4 py-3 text-xs text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
                     >
-                      Open step
+                      Enter step
                     </button>
                     <ShareCardButton
                       coupleId={coupleId}
                       messageType="oracle_sequence_share"
                       content={`Oracle sequence card ✦ ${step.title} — ${step.detail}`}
-                      label="Share step"
+                      label="Offer this step"
                     />
                   </div>
                 </div>
@@ -655,7 +655,7 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
               <Brain className="h-4 w-4" />
               <p className="text-xs uppercase tracking-[0.22em]">Oracle moves</p>
             </div>
-            <h3 className="mt-2 font-display text-3xl text-foreground">What to do next</h3>
+            <h3 className="mt-2 font-display text-3xl text-foreground">What love wants next</h3>
 
             <div className="mt-5 grid gap-4 lg:grid-cols-2">
               {oracleMoves.map((move) => (
@@ -671,13 +671,13 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
                       onClick={() => onNavigate(move.target)}
                       className="rounded-2xl border border-primary/25 bg-primary/12 px-4 py-3 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
                     >
-                      {move.cta}
+                      {move.cta.replace("Open", "Enter")}
                     </button>
                     <ShareCardButton
                       coupleId={coupleId}
                       messageType="oracle_move_share"
                       content={`Oracle move card ✦ ${move.title} — ${move.why}`}
-                      label="Share move"
+                      label="Offer this move"
                     />
                   </div>
                 </div>
@@ -688,9 +688,9 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
           <section className="rounded-[28px] border border-border/30 bg-card/45 p-6">
             <div className="flex items-center gap-2 text-amber-300">
               <Sparkles className="h-4 w-4" />
-              <p className="text-xs uppercase tracking-[0.22em]">Niche subscription features</p>
+              <p className="text-xs uppercase tracking-[0.22em]">Beloved-tier features</p>
             </div>
-            <h3 className="mt-2 font-display text-3xl text-foreground">Premium couple intelligence lovers ask for</h3>
+            <h3 className="mt-2 font-display text-3xl text-foreground">Premium intimacy intelligence couples crave</h3>
 
             <div className="mt-5 grid gap-4 md:grid-cols-3">
               <div className="rounded-[22px] border border-border/30 bg-background/45 p-4">
@@ -698,7 +698,7 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
                   <Heart className="h-4 w-4" />
                 </div>
                 <h4 className="mt-3 font-display text-xl text-foreground">Desire Synchrony Dial</h4>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">Tracks how often erotic and emotional tempos match, then proposes precise bridge rituals.</p>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">Tracks how often erotic and emotional tempos match, then proposes exact bridge rituals.</p>
               </div>
 
               <div className="rounded-[22px] border border-border/30 bg-background/45 p-4">
@@ -706,7 +706,7 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
                   <MessageCircle className="h-4 w-4" />
                 </div>
                 <h4 className="mt-3 font-display text-xl text-foreground">Afterglow Debrief Engine</h4>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">Turns shared moments into post-ritual prompts that deepen trust instead of fading overnight.</p>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">Transforms shared moments into post-ritual prompts that deepen trust instead of fading overnight.</p>
               </div>
 
               <div className="rounded-[22px] border border-border/30 bg-background/45 p-4">
@@ -714,7 +714,7 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
                   <Route className="h-4 w-4" />
                 </div>
                 <h4 className="mt-3 font-display text-xl text-foreground">Seasonal Intimacy Forecast</h4>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">Predicts your next best relational season and suggests the exact pathway to maintain momentum.</p>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">Predicts your next relational season and suggests the precise pathway to sustain momentum.</p>
               </div>
             </div>
 
@@ -722,7 +722,7 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
               <div className="flex items-start gap-3">
                 <Shield className="h-4 w-4 text-primary mt-1" />
                 <p className="text-sm leading-6 text-muted-foreground">
-                  Oracle stays advisory, never coercive. It gives a strong next move, while preserving emotional consent, pacing, and relational sovereignty.
+                  Oracle stays devotional to consent and pacing. It offers a strong next move while preserving emotional sovereignty for both lovers.
                 </p>
               </div>
             </div>

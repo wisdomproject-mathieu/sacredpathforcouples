@@ -105,7 +105,7 @@ const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
                 <div className="text-sm text-muted-foreground">{stateMeta.hint}</div>
               </div>
             </div>
-            {mine && <div className="mt-4 text-xs text-muted-foreground">You can update your weather at any time.</div>}
+            {mine && <div className="mt-4 text-xs text-muted-foreground">You can update your weather whenever your inner climate shifts.</div>}
           </>
         ) : (
           <div className="mt-3 text-sm text-muted-foreground">No check-in yet today.</div>
@@ -117,9 +117,9 @@ const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
   return (
     <DoorwayShell
       label="Intimacy Weather"
-      title="Name the climate before choosing the ritual"
-      description="Check in first. It makes the next step kinder, more accurate, and more connecting."
-      actionLabel="Go to rituals"
+      title="Name the climate before you touch the night"
+      description="Check in first. When the truth is named, every next move lands with more tenderness and accuracy."
+      actionLabel="Enter rituals"
       onAction={() => onNavigate("rituals")}
     >
 
@@ -127,13 +127,13 @@ const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
         {renderCard("Your weather", myEntry, true)}
         {isPreview && !partnerEntry ? (
           <div className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-            <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Partner weather</div>
+            <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Beloved weather</div>
             <div className="mt-3 text-sm text-muted-foreground">
-              Connect with your partner to sync shared weather here.
+              Connect with your beloved to sync your shared weather here.
             </div>
           </div>
         ) : (
-          renderCard("Partner weather", partnerEntry)
+          renderCard("Beloved weather", partnerEntry)
         )}
       </section>
 
@@ -178,7 +178,7 @@ const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
                 ? "Open Positions or a sensual ritual and keep the pace slow at first."
                 : selectedState.key === "playful"
                 ? "Try a lighter reconnect tool before deeper emotional work."
-                : "A gratitude or heart-opening ritual will likely land well tonight."}
+                : "A gratitude or heart-opening ritual will likely open beautifully tonight."}
             </p>
           </div>
         )}
@@ -190,21 +190,21 @@ const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
             onClick={saveWeather}
             className="rounded-2xl border border-primary/25 bg-primary/12 px-5 py-3 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16 disabled:opacity-60"
           >
-            {isPreview ? "Connect to save weather" : saving ? "Saving..." : "Save my weather"}
+            {isPreview ? "Connect to save weather" : saving ? "Saving..." : "Seal my weather"}
           </button>
           <button
             type="button"
             onClick={() => onNavigate("messages")}
             className="rounded-2xl border border-border/35 bg-card/45 px-5 py-3 text-sm text-foreground transition-all hover:border-border/55 hover:bg-card/60"
           >
-            Send a message next
+            Send a whisper next
           </button>
           {selectedState && (
             <ShareCardButton
               coupleId={coupleId}
               messageType="weather_share"
               content={`Weather card ✦ I am arriving as ${selectedState.label} ${selectedState.emoji}. ${selectedState.hint}`}
-              label="Share this weather card"
+              label="Offer this weather card"
             />
           )}
         </div>

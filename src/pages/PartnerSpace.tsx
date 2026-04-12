@@ -53,56 +53,56 @@ const tools: {
     key: "weather",
     icon: Cloud,
     title: "Intimacy Weather",
-    subtitle: "Name the emotional climate first so love lands with precision, not guesswork.",
+    subtitle: "Begin with truth: name the emotional weather so tenderness lands where it is needed.",
     iconClass: "text-sky-300",
   },
   {
     key: "rituals",
     icon: Sparkles,
     title: "Rituals",
-    subtitle: "Choose guided practices that turn ordinary evenings into sacred connection.",
+    subtitle: "Guided sacred practices for softness, devotion, longing, and embodied presence.",
     iconClass: "text-fuchsia-300",
   },
   {
     key: "positions",
     icon: Heart,
     title: "Positions",
-    subtitle: "Use body-based doorways to restore tenderness, charge, and relational trust.",
+    subtitle: "Body-led doorways that awaken trust, polarity, tenderness, and magnetic charge.",
     iconClass: "text-rose-300",
   },
   {
     key: "messages",
     icon: MessageCircle,
     title: "Teasing & Messages",
-    subtitle: "Send one true sentence of warmth, desire, gratitude, or repair at the right moment.",
+    subtitle: "Whispers, gratitude, desire, and repair notes that keep love moving.",
     iconClass: "text-violet-300",
   },
   {
     key: "guide",
     icon: Compass,
-    title: "Temple Guide",
-    subtitle: "When you feel unsure, get a grounded next step aligned with your current reality.",
+    title: "Sacred Guide",
+    subtitle: "Receive a wise next step when the heart wants direction.",
     iconClass: "text-cyan-300",
   },
   {
     key: "repair",
     icon: Shield,
     title: "Repair",
-    subtitle: "Transform tension into closeness through safety-first repair you can actually complete.",
+    subtitle: "Return from friction into closeness with gentle, safety-first repair.",
     iconClass: "text-red-300",
   },
   {
     key: "pathways",
     icon: Route,
     title: "Pathways",
-    subtitle: "Move from random moments to a deliberate growth arc you both can feel.",
+    subtitle: "Turn beautiful nights into a living relational path you both can feel.",
     iconClass: "text-emerald-300",
   },
   {
     key: "altar",
     icon: Bookmark,
     title: "Altar",
-    subtitle: "Save the moments, vows, and breakthroughs your relationship should never lose.",
+    subtitle: "Keep sacred moments, vows, and breakthroughs alive in memory.",
     iconClass: "text-orange-300",
   },
 ];
@@ -117,22 +117,22 @@ const templeViews: {
   {
     key: "doorways",
     icon: Sparkles,
-    title: "Doorways",
-    subtitle: "Open all 8 Temple tools and practice now.",
+    title: "Sacred Doorways",
+    subtitle: "Eight sensual tools for the exact moment you are in.",
     iconClass: "text-fuchsia-300",
   },
   {
     key: "journey",
     icon: Route,
-    title: "Journey",
-    subtitle: "See where your relationship is, and what next.",
+    title: "Our Journey",
+    subtitle: "See your shared pulse, patterns, and the next loving move.",
     iconClass: "text-amber-300",
   },
   {
     key: "oracle",
     icon: Brain,
     title: "Wisdom Oracle",
-    subtitle: "Get AI-guided next steps from your shared data.",
+    subtitle: "Personalized relationship intelligence for what opens next.",
     iconClass: "text-cyan-300",
   },
 ];
@@ -142,35 +142,35 @@ const dayKey = (iso?: string | null) => (iso ? new Date(iso).toISOString().slice
 const messageTypeLabel = (messageType?: string | null) => {
   switch (messageType) {
     case "doorway_share":
-      return "Doorway card";
+      return "Doorway offering";
     case "weather_share":
-      return "Weather card";
+      return "Weather offering";
     case "ritual_share":
-      return "Ritual card";
+      return "Ritual offering";
     case "position_share":
-      return "Position card";
+      return "Position offering";
     case "guide_share":
-      return "Guide card";
+      return "Guide offering";
     case "repair_share":
-      return "Repair card";
+      return "Repair offering";
     case "pathway_share":
-      return "Pathway card";
+      return "Pathway offering";
     case "altar_share":
-      return "Altar card";
+      return "Altar offering";
     case "oracle_move_share":
-      return "Oracle move";
+      return "Oracle guidance";
     case "oracle_sequence_share":
       return "Oracle sequence";
     case "oracle_config_share":
-      return "Oracle config";
+      return "Oracle intention";
     case "message_prompt_share":
-      return "Message starter";
+      return "Message prompt";
     case "message":
-      return "Message";
+      return "Whisper";
     case "invitation":
       return "Invitation";
     default:
-      return "Shared note";
+      return "Shared offering";
   }
 };
 
@@ -205,12 +205,12 @@ const PartnerSpace = () => {
   const [activeTool, setActiveTool] = useState<ToolKey>("weather");
   const [activityTick, setActivityTick] = useState(0);
   const [activity, setActivity] = useState<ActivityState>({
-    partnerNote: "No partner note yet. Once one of you leaves a message, this area becomes the emotional pulse of the temple.",
-    lastMove: "No shared ritual or message yet. Begin with Weather or one warm message.",
+    partnerNote: "No message in your shared thread yet. Offer one honest line and let the night begin.",
+    lastMove: "No shared movement yet. Begin with Intimacy Weather or a soft invitation.",
     rhythmCount: 0,
     streakCount: 0,
-    altarNote: "Nothing has been saved in the altar yet.",
-    nextSuggestion: "Start with Intimacy Weather. It is the cleanest first move for most couples.",
+    altarNote: "No altar memory has been sealed yet.",
+    nextSuggestion: "Start with Intimacy Weather to meet each other where you truly are.",
   });
   const [journeyFeed, setJourneyFeed] = useState<JourneyItem[]>([]);
 
@@ -276,17 +276,17 @@ const PartnerSpace = () => {
       const rhythmCount = new Set(allDates).size;
       const streakCount = computeStreak(allDates);
 
-      let nextSuggestion = "Start with Intimacy Weather. It gives the whole temple a more honest tone.";
-      if (latestWeather?.state === "stormy") nextSuggestion = "Choose Repair or a very soft message before attempting anything more intense.";
-      if (latestWeather?.state === "warm") nextSuggestion = "This is a good night for Rituals or Teasing & Messages.";
-      if (latestWeather?.state === "passionate") nextSuggestion = "Open Positions or Rituals and let the energy move with some conscious shape.";
+      let nextSuggestion = "Begin with Intimacy Weather so your next move feels precise and kind.";
+      if (latestWeather?.state === "stormy") nextSuggestion = "Lead with Repair or a gentle reassurance note before intensity.";
+      if (latestWeather?.state === "warm") nextSuggestion = "A beautiful night for Rituals or a warm teasing message.";
+      if (latestWeather?.state === "passionate") nextSuggestion = "Open Positions or Rituals and shape the energy with presence.";
 
       setActivity({
-        partnerNote: latestMessage?.content || "No partner note yet. Once one of you leaves a message, this area becomes the emotional pulse of the temple.",
-        lastMove: latestWeather ? `Latest shared weather: ${latestWeather.state}.` : latestAltar ? `Latest altar memory: ${latestAltar.title}.` : "No shared ritual or message yet. Begin with Weather or one warm message.",
+        partnerNote: latestMessage?.content || "No message in your shared thread yet. Offer one honest line and let the night begin.",
+        lastMove: latestWeather ? `Latest shared weather: ${latestWeather.state}.` : latestAltar ? `Latest altar memory: ${latestAltar.title}.` : "No shared movement yet. Begin with Intimacy Weather or a soft invitation.",
         rhythmCount,
         streakCount,
-        altarNote: latestAltar?.title || "Nothing has been saved in the altar yet.",
+        altarNote: latestAltar?.title || "No altar memory has been sealed yet.",
         nextSuggestion,
       });
     };
@@ -342,9 +342,9 @@ const PartnerSpace = () => {
                 <Heart className="h-5 w-5" />
               </div>
               <div>
-                <h2 className="font-display text-2xl text-foreground">Temple preview mode</h2>
+                <h2 className="font-display text-2xl text-foreground">Sacred Temple preview</h2>
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  You can explore the Temple now, even before partner connection. Shared syncing unlocks automatically once both partners are linked.
+                  Explore every doorway now. Shared syncing awakens the moment both lovers are connected.
                 </p>
               </div>
             </div>
@@ -354,15 +354,15 @@ const PartnerSpace = () => {
         <section className="rounded-[30px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-6 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] md:p-7">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <p className="text-xs uppercase tracking-[0.28em] text-primary/80">Temple</p>
-              <h1 className="mt-3 font-display text-3xl text-foreground md:text-5xl">A private sanctuary for two</h1>
+              <p className="text-xs uppercase tracking-[0.28em] text-primary/80">Sacred Temple</p>
+              <h1 className="mt-3 font-display text-3xl text-foreground md:text-5xl">A private sanctuary for modern lovers</h1>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">
-                The Temple is for shared practice: weather, ritual, positions, teasing, messages, repair, memory, and the living rhythm of your relationship.
+                Ancient wisdom meets living intimacy: read your inner weather, open sensual ritual, repair gently, and weave a shared rhythm that deepens over time.
               </p>
             </div>
 
             <div className="rounded-[24px] border border-border/30 bg-card/45 p-4">
-              <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Currently open</div>
+              <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Current doorway</div>
               <div className="mt-2 flex items-center gap-3">
                 <div className={`rounded-2xl border border-border/30 bg-background/45 p-3 ${activeMeta.iconClass}`}>
                   <activeMeta.icon className="h-5 w-5" />
@@ -377,7 +377,7 @@ const PartnerSpace = () => {
 
           <div className="mt-6 flex flex-wrap gap-3">
             <div className="w-full rounded-[24px] border border-border/30 bg-card/45 p-4">
-              <div className="text-xs uppercase tracking-[0.22em] text-primary/80">Temple pages</div>
+              <div className="text-xs uppercase tracking-[0.22em] text-primary/80">Sacred pages</div>
               <div className="mt-3 grid gap-3 md:grid-cols-3">
                 {templeViews.map((view) => {
                   const Icon = view.icon;
@@ -410,8 +410,8 @@ const PartnerSpace = () => {
           <>
             <section>
               <div className="mb-4">
-                <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Doorways</p>
-                <h2 className="mt-2 font-display text-3xl text-foreground">Choose the right doorway for tonight</h2>
+                <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Sacred Doorways</p>
+                <h2 className="mt-2 font-display text-3xl text-foreground">Choose the doorway your love needs tonight</h2>
               </div>
 
               <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -444,13 +444,13 @@ const PartnerSpace = () => {
                           onClick={() => setActiveTool(tool.key)}
                           className="rounded-2xl border border-primary/25 bg-primary/12 px-3 py-2 text-xs text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
                         >
-                          Open doorway
+                          Enter doorway
                         </button>
                         <ShareCardButton
                           coupleId={coupleId ?? undefined}
                           messageType="doorway_share"
                           content={`Doorway card ✦ ${tool.title} — ${tool.subtitle}`}
-                          label="Share doorway card"
+                          label="Offer this doorway"
                         />
                       </div>
                     </div>
@@ -476,14 +476,14 @@ const PartnerSpace = () => {
           <section className="space-y-4">
             <div>
               <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Our Journey</p>
-              <h2 className="mt-2 font-display text-3xl text-foreground">What is living in the relationship now</h2>
+              <h2 className="mt-2 font-display text-3xl text-foreground">The living story of your love</h2>
             </div>
 
             <div className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
               <div className="rounded-[28px] border border-border/30 bg-card/45 p-5">
                 <div className="flex items-center gap-2 text-violet-300">
                   <MessageCircle className="h-4 w-4" />
-                  <span className="text-xs uppercase tracking-[0.18em]">Sticky note from your partner</span>
+                  <span className="text-xs uppercase tracking-[0.18em]">Beloved note</span>
                 </div>
                 <p className="mt-4 text-sm leading-7 text-foreground/90">{activity.partnerNote}</p>
               </div>
@@ -491,7 +491,7 @@ const PartnerSpace = () => {
               <div className="rounded-[28px] border border-border/30 bg-card/45 p-5">
                 <div className="flex items-center gap-2 text-amber-300">
                   <Stars className="h-4 w-4" />
-                  <span className="text-xs uppercase tracking-[0.18em]">Last temple movement</span>
+                  <span className="text-xs uppercase tracking-[0.18em]">Latest shared movement</span>
                 </div>
                 <p className="mt-4 text-sm leading-7 text-foreground/90">{activity.lastMove}</p>
               </div>
@@ -500,16 +500,16 @@ const PartnerSpace = () => {
             <div className="rounded-[28px] border border-border/30 bg-card/45 p-5">
               <div className="flex items-center gap-2 text-cyan-300">
                 <Stars className="h-4 w-4" />
-                <span className="text-xs uppercase tracking-[0.18em]">Shared cards timeline</span>
+                <span className="text-xs uppercase tracking-[0.18em]">Shared offerings timeline</span>
               </div>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                Every shared card from Doorways and Oracle appears here so your story becomes visible over time.
+                Every offering from Doorways and Oracle is woven here, so your relationship story stays visible over time.
               </p>
 
               <div className="mt-4 space-y-3">
                 {journeyFeed.length === 0 ? (
                   <div className="rounded-[22px] border border-border/30 bg-background/45 p-4 text-sm text-muted-foreground">
-                    No shared cards yet. Share one doorway card to start your couple timeline.
+                    No shared offerings yet. Offer one doorway card to begin your couple timeline.
                   </div>
                 ) : (
                   journeyFeed.map((item) => {
@@ -526,7 +526,7 @@ const PartnerSpace = () => {
                             {messageTypeLabel(item.message_type)}
                           </div>
                           <div className="text-[11px] text-muted-foreground">
-                            {new Date(item.created_at).toLocaleDateString()} · {mine ? "You" : "Partner"}
+                            {new Date(item.created_at).toLocaleDateString()} · {mine ? "You" : "Beloved"}
                           </div>
                         </div>
                         <p className="mt-3 text-sm leading-6 text-foreground/90">{item.content}</p>
@@ -539,24 +539,24 @@ const PartnerSpace = () => {
 
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
               <div className="rounded-[26px] border border-border/30 bg-card/45 p-5">
-                <div className="text-xs uppercase tracking-[0.18em] text-primary/80">Shared rhythm</div>
+                <div className="text-xs uppercase tracking-[0.18em] text-primary/80">Sacred rhythm</div>
                 <div className="mt-3 font-display text-4xl text-foreground">{activity.rhythmCount}</div>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">Days with some shared temple activity recorded.</p>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">Days with shared Sacred Temple activity recorded.</p>
               </div>
 
               <div className="rounded-[26px] border border-border/30 bg-card/45 p-5">
-                <div className="text-xs uppercase tracking-[0.18em] text-primary/80">Streak count</div>
+                <div className="text-xs uppercase tracking-[0.18em] text-primary/80">Continuity streak</div>
                 <div className="mt-3 font-display text-4xl text-foreground">{activity.streakCount}</div>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">Consecutive active days based on your recent temple rhythm.</p>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">Consecutive active days based on your recent Sacred Temple rhythm.</p>
               </div>
 
               <div className="rounded-[26px] border border-border/30 bg-card/45 p-5">
-                <div className="text-xs uppercase tracking-[0.18em] text-primary/80">Altar memory</div>
+                <div className="text-xs uppercase tracking-[0.18em] text-primary/80">Altar resonance</div>
                 <p className="mt-3 text-sm leading-7 text-foreground/90">{activity.altarNote}</p>
               </div>
 
               <div className="rounded-[26px] border border-border/30 bg-card/45 p-5">
-                <div className="text-xs uppercase tracking-[0.18em] text-primary/80">Next suggestion</div>
+                <div className="text-xs uppercase tracking-[0.18em] text-primary/80">Oracle next move</div>
                 <p className="mt-3 text-sm leading-7 text-foreground/90">{activity.nextSuggestion}</p>
               </div>
             </div>
@@ -568,7 +568,7 @@ const PartnerSpace = () => {
                   <span className="text-xs uppercase tracking-[0.18em]">Cards, history, and teasing</span>
                 </div>
                 <p className="mt-4 text-sm leading-7 text-muted-foreground">
-                  This space is ready to become the history of what you send each other: teasing cards, gratitude cards, ritual invitations, little apologies, and warm follow-ups after the night is over.
+                  Let this become the golden thread of your love: desire notes, gratitude offerings, ritual invitations, gentle apologies, and afterglow follow-ups.
                 </p>
               </div>
 
@@ -578,7 +578,7 @@ const PartnerSpace = () => {
                   <span className="text-xs uppercase tracking-[0.18em]">Where the journey can grow</span>
                 </div>
                 <p className="mt-4 text-sm leading-7 text-muted-foreground">
-                  Over time, this page can become your living dashboard: notes from each other, last rituals completed, streaks, saved memories, message history, and the current season of your relationship.
+                  Over time, this page becomes your living sanctuary map: what opened, what healed, what deepened, and what your love is ready for next.
                 </p>
               </div>
             </div>

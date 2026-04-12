@@ -30,7 +30,7 @@ const PositionDeck = ({ onNavigate, coupleId }: Props) => {
       label="Positions"
       title={t("position.title")}
       description={t("position.subtitle")}
-      actionLabel="Go to rituals"
+      actionLabel="Enter rituals"
       onAction={onNavigate ? () => onNavigate("rituals") : undefined}
     >
 
@@ -72,7 +72,7 @@ const PositionDeck = ({ onNavigate, coupleId }: Props) => {
                             coupleId={coupleId}
                             messageType="position_share"
                             content={`Position card ✦ ${t(`position.${p.key}.title`)} — ${t(`position.${p.key}.desc`)}`}
-                            label="Share this position card"
+                            label="Offer this position"
                           />
                         </div>
                       </div>
