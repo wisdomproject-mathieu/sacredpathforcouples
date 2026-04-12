@@ -2,8 +2,6 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowRight,
-  BookOpen,
-  ChevronRight,
   Crown,
   Flame,
   Heart,
@@ -448,55 +446,6 @@ const PathHeroCard = ({ path }: { path: PathDetail }) => {
   );
 };
 
-const RelatedPathsCard = ({
-  selectedSlug,
-  onSelect,
-}: {
-  selectedSlug: string;
-  onSelect: (slug: string) => void;
-}) => (
-  <section className={shellCardClass}>
-    <div className="flex items-center justify-between gap-3">
-      <h3 className="font-display text-xl text-foreground">Related Paths</h3>
-      <BookOpen className="h-4 w-4 text-primary/80" />
-    </div>
-    <p className="mt-2 text-sm leading-6 text-muted-foreground">Choose what helps tonight, then return for deeper couple practice when you have time.</p>
-
-    <div className="mt-4 space-y-2">
-      {pathDetails.map((path) => {
-        const isSelected = path.slug === selectedSlug;
-        return (
-          <button
-            key={path.slug}
-            type="button"
-            onClick={() => onSelect(path.slug)}
-            className={`w-full rounded-2xl border p-3 text-left transition-all ${
-              isSelected
-                ? "border-primary/30 bg-primary/10"
-                : "border-border/25 bg-background/45 hover:border-primary/20 hover:bg-card/55"
-            }`}
-          >
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <div className="font-body text-sm text-foreground">{path.name}</div>
-                <div className="mt-1 text-xs leading-5 text-muted-foreground">{path.oneLine}</div>
-              </div>
-              <div className="flex items-center gap-2">
-                <TierBadge tier={path.tier} />
-                {path.tier === "free" ? (
-                  <ChevronRight className="h-4 w-4 text-primary/70" />
-                ) : (
-                  <Lock className="h-4 w-4 text-amber-300/90" />
-                )}
-              </div>
-            </div>
-          </button>
-        );
-      })}
-    </div>
-  </section>
-);
-
 const PremiumMiniCard = () => (
   <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.24),transparent_55%),linear-gradient(135deg,rgba(245,158,11,0.18),rgba(15,23,42,0.15))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.62)]">
     <div className="flex items-center gap-2 text-amber-200">
@@ -806,7 +755,6 @@ const Paths = () => {
       <section className="grid items-start gap-8 lg:grid-cols-[320px_minmax(0,1fr)]">
         <aside className="space-y-4 lg:sticky lg:top-24">
           <PathHeroCard path={selected} />
-          <RelatedPathsCard selectedSlug={selectedSlug} onSelect={setSelectedSlug} />
           <PremiumMiniCard />
         </aside>
 

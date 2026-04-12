@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -213,6 +213,7 @@ const computeStreak = (dates: string[]) => {
 
 const PartnerSpace = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const toolParam = searchParams.get("tool");
   const viewParam = searchParams.get("view");
@@ -454,26 +455,29 @@ const PartnerSpace = () => {
                   const active = viewMode === view.key;
                   const locked = !isViewUnlocked(view.key);
                   return (
-                    <button
+                    <div
                       key={view.key}
-                      type="button"
-                      onClick={() => setViewMode(view.key)}
-                      className={`rounded-[20px] border p-4 text-left transition-all ${
+                      className={`relative overflow-hidden rounded-[20px] border p-4 text-left transition-all ${
                         active
                           ? "border-primary/30 bg-primary/10 shadow-[0_18px_50px_-36px_rgba(255,173,70,0.42)]"
                           : "border-border/30 bg-background/45 hover:border-primary/20 hover:bg-card/55"
-                      } ${locked ? "relative overflow-hidden" : ""}`}
+                      }`}
                     >
                       {locked && (
-                        <Link
-                          to="/pricing"
-                          onClick={(event) => event.stopPropagation()}
+                        <button
+                          type="button"
+                          onClick={() => navigate("/pricing")}
                           className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-full border border-amber-300/35 bg-amber-500/14 text-amber-200 transition-all hover:border-amber-300/55 hover:bg-amber-500/20"
                           aria-label="Open plans"
                         >
                           <Lock className="h-3.5 w-3.5" />
-                        </Link>
+                        </button>
                       )}
+                      <button
+                        type="button"
+                        onClick={() => (locked ? navigate("/pricing") : setViewMode(view.key))}
+                        className="w-full text-left"
+                      >
                       <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-2.5 ${view.iconClass}`}>
                         <Icon className="h-4 w-4" />
                       </div>
@@ -484,7 +488,8 @@ const PartnerSpace = () => {
                           Unlock this page in plans to turn your shared data into next-step relationship guidance.
                         </p>
                       )}
-                    </button>
+                      </button>
+                    </div>
                   );
                 })}
               </div>
