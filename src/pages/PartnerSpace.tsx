@@ -481,7 +481,7 @@ const PartnerSpace = () => {
                       <p className="mt-1 text-sm leading-6 text-muted-foreground">{view.subtitle}</p>
                       {locked && (
                         <p className="mt-2 text-xs leading-5 text-amber-100/85">
-                          Unlock premium to open this page and turn your shared data into next-step relationship guidance.
+                          Unlock this page in plans to turn your shared data into next-step relationship guidance.
                         </p>
                       )}
                     </button>
@@ -540,15 +540,7 @@ const PartnerSpace = () => {
                         )}
                       </button>
                       <div className="relative mt-4 flex flex-wrap gap-2">
-                        {locked ? (
-                          <Link
-                            to="/pricing"
-                            className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-amber-300/35 bg-amber-500/14 text-amber-200 transition-all hover:border-amber-300/55 hover:bg-amber-500/20"
-                            aria-label="Open plans"
-                          >
-                            <Lock className="h-3.5 w-3.5" />
-                          </Link>
-                        ) : (
+                        {!locked && (
                           <>
                             <button
                               type="button"
@@ -702,7 +694,7 @@ const PartnerSpace = () => {
             </section>
           ) : (
             premiumGateCard(
-              "Our Journey is a premium sacred page",
+              "Our Journey is currently locked",
               "Track your shared story, offerings, and intimate rhythm over time with full partner timeline intelligence."
             )
           ))}
@@ -714,7 +706,7 @@ const PartnerSpace = () => {
             </section>
           ) : (
             premiumGateCard(
-              "Wisdom Oracle is a premium sacred page",
+              "Wisdom Oracle is currently locked",
               "Unlock tailored relationship intelligence, personalized romantic guidance, and data-shaped next steps built for your couple."
             )
           ))}
