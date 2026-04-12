@@ -22,12 +22,13 @@ interface AltarItem {
 }
 
 interface Props {
-  coupleId: string;
+  coupleId?: string;
 }
 
 const MemoryAltar = ({ coupleId }: Props) => {
   const { user } = useAuth();
   const { t } = useLanguage();
+  const isPreview = !coupleId;
   const [items, setItems] = useState<AltarItem[]>([]);
   const [filter, setFilter] = useState("all");
   const [showAdd, setShowAdd] = useState(false);
@@ -49,7 +50,7 @@ const MemoryAltar = ({ coupleId }: Props) => {
   }, [coupleId]);
 
   const addItem = async () => {
-    if (!newTitle.trim() || !user) return;
+    if (!newTitle.trim() || !user || !coupleId) return;
     const { data } = await supabase.from("altar_items").insert({
       couple_id: coupleId,
       user_id: user.id,
@@ -64,6 +65,7 @@ const MemoryAltar = ({ coupleId }: Props) => {
   };
 
   const deleteItem = async (id: string) => {
+    if (!coupleId) return;
     await supabase.from("altar_items").delete().eq("id", id);
     setItems((prev) => prev.filter((i) => i.id !== id));
   };
@@ -98,12 +100,19 @@ const MemoryAltar = ({ coupleId }: Props) => {
           })}
         </div>
         <button
-          onClick={() => setShowAdd(!showAdd)}
-          className="h-9 w-9 rounded-xl bg-primary/15 text-primary flex items-center justify-center hover:bg-primary/25 transition-colors shrink-0 ml-2"
+          onClick={() => !isPreview && setShowAdd(!showAdd)}
+          disabled={isPreview}
+          className="h-9 w-9 rounded-xl bg-primary/15 text-primary flex items-center justify-center hover:bg-primary/25 transition-colors shrink-0 ml-2 disabled:opacity-40"
         >
           <Plus className="h-4 w-4" />
         </button>
       </div>
+
+      {isPreview && (
+        <div className="mb-5 rounded-2xl border border-border/30 bg-background/45 p-4 text-sm leading-6 text-muted-foreground">
+          Preview mode is active. Connect with your partner to save shared altar moments.
+        </div>
+      )}
 
       {showAdd && (
         <div className="mb-6 p-4 rounded-2xl border border-primary/20 bg-primary/5 animate-fade-in">
@@ -132,7 +141,7 @@ const MemoryAltar = ({ coupleId }: Props) => {
         {filtered.length === 0 && (
           <div className="text-center py-12">
             <Star className="h-8 w-8 text-primary/20 mx-auto mb-3" />
-            <p className="text-base text-muted-foreground font-body">{t("altar.empty")}</p>
+            <p className="text-base text-muted-foreground font-body">{isPreview ? "No shared altar yet in preview mode." : t("altar.empty")}</p>
           </div>
         )}
         {filtered.map((item) => {

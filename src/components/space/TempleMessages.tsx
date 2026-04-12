@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
-  coupleId: string;
+  coupleId?: string;
 }
 
 const messageStarters = [
@@ -18,6 +18,7 @@ const messageStarters = [
 
 const TempleMessages = ({ coupleId }: Props) => {
   const { user } = useAuth();
+  const isPreview = !coupleId;
   const [messages, setMessages] = useState<any[]>([]);
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
@@ -58,7 +59,7 @@ const TempleMessages = ({ coupleId }: Props) => {
   }, [coupleId]);
 
   const sendMessage = async () => {
-    if (!user || !draft.trim()) return;
+    if (!user || !draft.trim() || !coupleId) return;
 
     setSending(true);
     const { error } = await supabase.from("partner_messages").insert({
@@ -116,12 +117,12 @@ const TempleMessages = ({ coupleId }: Props) => {
             </button>
             <button
               type="button"
-              disabled={sending || !draft.trim()}
+              disabled={sending || !draft.trim() || isPreview}
               onClick={sendMessage}
               className="inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-3 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16 disabled:opacity-60"
             >
               <Send className="h-4 w-4" />
-              {sending ? "Sending..." : "Send message"}
+              {isPreview ? "Connect to send" : sending ? "Sending..." : "Send message"}
             </button>
           </div>
         </div>
@@ -136,7 +137,9 @@ const TempleMessages = ({ coupleId }: Props) => {
           <div className="mt-5 space-y-3">
             {messages.length === 0 ? (
               <div className="rounded-[22px] border border-border/30 bg-background/45 p-5 text-sm leading-6 text-muted-foreground">
-                No messages yet. Start with one sentence, not a perfect speech.
+                {isPreview
+                  ? "Preview mode is active. Connect with your partner to send and sync messages."
+                  : "No messages yet. Start with one sentence, not a perfect speech."}
               </div>
             ) : (
               messages.map((message) => {

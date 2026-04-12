@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
-  coupleId: string;
+  coupleId?: string;
   onNavigate: (tab: string) => void;
 }
 
@@ -22,6 +22,7 @@ const states = [
 
 const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
   const { user } = useAuth();
+  const isPreview = !coupleId;
   const [selected, setSelected] = useState<string | null>(null);
   const [myEntry, setMyEntry] = useState<any | null>(null);
   const [partnerEntry, setPartnerEntry] = useState<any | null>(null);
@@ -71,7 +72,7 @@ const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
   }, [coupleId, user]);
 
   const saveWeather = async () => {
-    if (!user || !selected) return;
+    if (!user || !selected || !coupleId) return;
 
     setSaving(true);
     const { error } = await supabase.from("weather_entries").insert({
@@ -134,7 +135,16 @@ const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
 
       <section className="grid gap-4 lg:grid-cols-2">
         {renderCard("Your weather", myEntry, true)}
-        {renderCard("Partner weather", partnerEntry)}
+        {isPreview && !partnerEntry ? (
+          <div className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+            <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Partner weather</div>
+            <div className="mt-3 text-sm text-muted-foreground">
+              Connect with your partner to sync shared weather here.
+            </div>
+          </div>
+        ) : (
+          renderCard("Partner weather", partnerEntry)
+        )}
       </section>
 
       <section className="rounded-[28px] border border-border/30 bg-card/45 p-6">
@@ -186,11 +196,11 @@ const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
         <div className="mt-5 flex flex-wrap gap-3">
           <button
             type="button"
-            disabled={!selected || saving}
+            disabled={!selected || saving || isPreview}
             onClick={saveWeather}
             className="rounded-2xl border border-primary/25 bg-primary/12 px-5 py-3 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16 disabled:opacity-60"
           >
-            {saving ? "Saving..." : "Save my weather"}
+            {isPreview ? "Connect to save weather" : saving ? "Saving..." : "Save my weather"}
           </button>
           <button
             type="button"

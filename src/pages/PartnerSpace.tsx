@@ -128,6 +128,7 @@ const computeStreak = (dates: string[]) => {
 const PartnerSpace = () => {
   const { user } = useAuth();
   const [coupleId, setCoupleId] = useState<string | null>(null);
+  const [hasConnectedPartner, setHasConnectedPartner] = useState(false);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<ViewMode>("doorways");
   const [activeTool, setActiveTool] = useState<ToolKey>("weather");
@@ -146,12 +147,17 @@ const PartnerSpace = () => {
     const load = async () => {
       const { data } = await supabase
         .from("couples")
-        .select("*")
+        .select("id, partner_a, partner_b")
         .or(`partner_a.eq.${user.id},partner_b.eq.${user.id}`)
-        .not("partner_b", "is", null)
         .maybeSingle();
 
-      if (data) setCoupleId(data.id);
+      if (data) {
+        setCoupleId(data.id);
+        setHasConnectedPartner(Boolean(data.partner_a && data.partner_b));
+      } else {
+        setCoupleId(null);
+        setHasConnectedPartner(false);
+      }
       setLoading(false);
     };
 
@@ -225,23 +231,25 @@ const PartnerSpace = () => {
     return <div className="min-h-screen bg-background" />;
   }
 
-  if (!coupleId) {
-    return (
-      <div className="min-h-screen bg-background px-4 py-10 text-foreground md:px-6">
-        <div className="mx-auto max-w-2xl rounded-[30px] border border-border/30 bg-card/45 p-8 text-center shadow-[0_24px_80px_-42px_rgba(0,0,0,0.65)]">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10 text-primary">
-            <Heart className="h-7 w-7" />
-          </div>
-          <h2 className="mt-5 font-display text-3xl text-foreground">Connect first</h2>
-          <p className="mt-3 font-body text-muted-foreground">The Temple becomes a living sanctuary once both partners are inside the same shared space.</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-background px-4 py-6 text-foreground md:px-6">
       <div className="mx-auto max-w-6xl space-y-6">
+        {!hasConnectedPartner && (
+          <section className="rounded-[28px] border border-amber-300/30 bg-amber-500/10 p-5">
+            <div className="flex items-start gap-3">
+              <div className="rounded-2xl border border-amber-300/35 bg-background/45 p-3 text-amber-300">
+                <Heart className="h-5 w-5" />
+              </div>
+              <div>
+                <h2 className="font-display text-2xl text-foreground">Temple preview mode</h2>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  You can explore the Temple now, even before partner connection. Shared syncing unlocks automatically once both partners are linked.
+                </p>
+              </div>
+            </div>
+          </section>
+        )}
+
         <section className="rounded-[30px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-6 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] md:p-7">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
@@ -325,14 +333,14 @@ const PartnerSpace = () => {
             </section>
 
             <section>
-              {activeTool === "weather" && <IntimacyWeather coupleId={coupleId} onNavigate={navigateTool} />}
-              {activeTool === "rituals" && <RitualCards coupleId={coupleId} />}
+              {activeTool === "weather" && <IntimacyWeather coupleId={coupleId ?? undefined} onNavigate={navigateTool} />}
+              {activeTool === "rituals" && <RitualCards coupleId={coupleId ?? undefined} />}
               {activeTool === "positions" && <PositionDeck />}
-              {activeTool === "messages" && <TempleMessages coupleId={coupleId} />}
+              {activeTool === "messages" && <TempleMessages coupleId={coupleId ?? undefined} />}
               {activeTool === "guide" && <TempleGuide />}
               {activeTool === "repair" && <RepairMode />}
-              {activeTool === "pathways" && <Pathways coupleId={coupleId} />}
-              {activeTool === "altar" && <MemoryAltar coupleId={coupleId} />}
+              {activeTool === "pathways" && <Pathways coupleId={coupleId ?? undefined} />}
+              {activeTool === "altar" && <MemoryAltar coupleId={coupleId ?? undefined} />}
             </section>
           </>
         )}
