@@ -4,6 +4,8 @@ import {
   ArrowRight,
   BookOpen,
   ChevronRight,
+  Compass,
+  Feather,
   Flame,
   Heart,
   Lock,
@@ -58,7 +60,6 @@ type Author = {
   overviewLine: string;
   icon: LucideIcon;
   iconClass: string;
-  badgeClass: string;
   teaser?: string[];
   content?: FreeAuthorContent;
 };
@@ -82,310 +83,333 @@ const authors: Author[] = [
     name: "David Deida",
     tier: "free",
     descriptor: "Polarity, devotional edge, and erotic presence for long-term love.",
-    oneLiner:
-      "Helps couples recover charge when love is steady but desire has gone flat.",
-    overviewLine:
-      "Polarity and devotional intimacy for couples who want depth and charge.",
+    oneLiner: "Helps couples recover charge when love is steady but desire has gone flat.",
+    overviewLine: "Polarity and devotional intimacy for couples who want depth and charge.",
     icon: Flame,
     iconClass: "text-amber-300",
-    badgeClass: "border-emerald-400/30 bg-emerald-500/12 text-emerald-200",
     content: {
       heroIntro: [
-        "David Deida is useful when a relationship still has love, loyalty, and friendship but erotic aliveness has quietly faded. He gives language to a subtle problem modern couples rarely name: emotional safety can increase while magnetic tension decreases.",
-        "His work is not a script for gender performance. At its best, it is a practice of conscious contrast: direction and surrender, devotion and edge, steadiness and fire. The point is not role-play. The point is charge that is loving, consensual, and alive.",
+        "David Deida is useful when a relationship still has loyalty and care, but erotic aliveness has thinned out. He gives language to a common modern paradox: communication improves while attraction fades.",
+        "At his best, Deida is not about rigid roles. He is about conscious contrast, directed presence, and devotional intensity that stays consensual, grounded, and relationally respectful.",
       ],
       quote: {
         text: "Attraction often returns when partners stop managing each other and start meeting each other with directed presence.",
-        source: "Sacred Path editorial summary of Deida's core teaching",
+        source: "Sacred Path editorial summary",
       },
       whyMatters: [
-        "He names the gap between companionate love and erotic polarity without shaming either partner.",
-        "He gives couples practical language for leadership, receptivity, truth, and devotional intensity.",
-        "He helps long-term partners bring back anticipation and charge without abandoning tenderness.",
+        "He names the gap between companionate love and erotic charge without shaming either partner.",
+        "He offers practical language for leadership, receptivity, honesty, and devotion.",
+        "He helps long-term couples reintroduce anticipation and tension without abandoning tenderness.",
       ],
       coreTeachings: [
         {
-          title: "Presence is felt physically",
-          body: "The body notices directed attention faster than words. Deep attention often reawakens desire before any explicit technique does.",
+          title: "Presence is erotic",
+          body: "The body senses directed attention before the mind finishes analyzing. Presence itself changes desire.",
         },
         {
           title: "Conscious difference creates magnetism",
-          body: "When both partners collapse into the same emotional posture all the time, attraction can flatten. Chosen energetic contrast can restore spark.",
+          body: "Too much sameness can flatten chemistry; conscious contrast can revive it.",
         },
         {
-          title: "Devotion and desire can coexist",
-          body: "Erotic life does not need to be separate from reverence. The strongest intimacy often combines rawness with care.",
+          title: "Devotion and desire reinforce each other",
+          body: "Reverence does not weaken erotic life when it is paired with embodied truth.",
         },
         {
-          title: "Truth before strategy",
-          body: "Charge dies in politeness and hidden resentment. Honest, kind truth keeps the field alive.",
+          title: "Truth keeps charge alive",
+          body: "Hidden resentment and polite avoidance kill attraction faster than conflict does.",
         },
       ],
       modernUse: [
         {
-          title: "When schedules kill anticipation",
-          body: "Use Deida's lens to reintroduce ritual transitions between logistical mode and lover mode.",
+          title: "When routines erase erotic anticipation",
+          body: "Create brief transitions from logistics mode to lover mode before touch begins.",
         },
         {
-          title: "When communication is excellent but chemistry is low",
-          body: "Move from endless analysis to embodied polarity moments: deliberate leading, deliberate receiving, and breath-led pauses.",
+          title: "When communication is strong but chemistry is weak",
+          body: "Use embodied leading/receiving rounds instead of more analysis.",
         },
         {
           title: "When one partner over-functions",
-          body: "Practice directional leadership in one domain and surrendered trust in another so both partners can feel contrast again.",
+          body: "Practice role contrast with explicit consent so both partners can feel dynamic energy again.",
         },
       ],
       shadowToAvoid: [
         {
           title: "Stereotypes disguised as spirituality",
-          body: "Polarity is not rigid gender coding. If either partner feels reduced to a caricature, the practice has drifted.",
+          body: "Polarity is not an excuse for rigid identity scripts.",
         },
         {
-          title: "Using 'edge' to bypass consent",
-          body: "Intensity without explicit attunement is not sacred. Erotic charge must stay in dialogue with safety and mutual choice.",
+          title: "Intensity without consent",
+          body: "Edge must stay in dialogue with nervous-system safety and mutual choice.",
         },
         {
-          title: "Performing power instead of embodying love",
-          body: "If the relationship becomes theater, nervous systems disconnect. Keep tenderness and repair active.",
+          title: "Performance over intimacy",
+          body: "If it becomes theater, the body disconnects even when the scene looks dramatic.",
         },
       ],
       exercises: [
         {
           title: "Directional Breath Frame (8 minutes)",
-          setup:
-            "Choose one partner to hold directional structure for the practice while the other receives and mirrors.",
+          setup: "One partner leads rhythm, one receives, then switch.",
           steps: [
-            "Face each other, knees touching or close enough to feel warmth.",
-            "Leader sets a simple breathing rhythm for two minutes, receiver follows without correcting.",
-            "Switch roles and repeat for two minutes.",
-            "Close with one sentence each: 'When you led, I felt…' / 'When you received, I felt…'.",
+            "Face each other and set a simple shared breathing pace.",
+            "Leader holds the frame for two minutes while receiver tracks sensations.",
+            "Switch and repeat.",
+            "Close with one sentence each about what shifted.",
           ],
-          integration: "Repeat twice weekly to restore trust in leading and receiving without overwhelm.",
+          integration: "Repeat twice weekly to rebuild trust in energetic contrast.",
         },
         {
-          title: "Truth + Devotion Check-In (10 minutes)",
-          setup:
-            "Sit side by side. One hand on your own heart, one hand touching your partner's shoulder or leg.",
+          title: "Truth and Devotion Check-In (10 minutes)",
+          setup: "Sit side by side with one point of physical contact.",
           steps: [
             "Partner A names one erotic truth and one devotional commitment.",
-            "Partner B reflects back what they heard without argument.",
+            "Partner B reflects back exactly what they heard.",
             "Switch roles.",
-            "End by naming one tiny action for the next 24 hours.",
+            "End with one tiny next action for 24 hours.",
           ],
-          integration: "Use when resentment is subtle but growing.",
+          integration: "Use when tension is subtle but persistent.",
         },
         {
           title: "Edge Window Practice (6 minutes)",
-          setup: "Agree on a gentle intensity level from 1-10 before beginning.",
+          setup: "Agree on intensity limit before starting.",
           steps: [
-            "Hold eye contact while one partner gives slow directional touch (arm, face, neck).",
-            "Receiver tracks breath and says 'more', 'same', or 'pause'.",
-            "Switch roles after three minutes.",
+            "Use slow directional touch and eye contact.",
+            "Receiver responds only with more/same/pause.",
+            "Switch after three minutes.",
           ],
-          integration: "Builds erotic charge without losing co-regulation.",
+          integration: "Builds charge while preserving co-regulation.",
         },
       ],
       reflectionPrompts: [
-        "Where did our relationship become safe but energetically neutral?",
-        "What form of polarity feels enlivening to me without feeling fake?",
-        "When do I avoid truth to avoid friction, and what does that cost our desire?",
-        "What devotional action from me would make my partner feel chosen this week?",
+        "Where has our relationship become safe but energetically neutral?",
+        "What kind of polarity feels alive without feeling fake?",
+        "What truth am I avoiding that is costing us desire?",
+        "What devotional action would help my partner feel chosen this week?",
       ],
       relatedPaths: [
-        { name: "Polarity", note: "Conscious contrast, leadership, receptivity, and erotic charge." },
-        { name: "Tantra", note: "Presence and breath to hold charge without rushing." },
-        { name: "Kama Sutra", note: "Atmosphere and anticipation to support erotic expression." },
+        { name: "Polarity", note: "Conscious energetic contrast and devotional edge." },
+        { name: "Tantra", note: "Breath and presence to hold charge with depth." },
+        { name: "Kama Sutra", note: "Atmosphere and anticipation as erotic architecture." },
       ],
       premiumBanner:
-        "Unlock guided polarity sequences, communication scripts for erotic truth, and structured pathways for reigniting long-term attraction without losing emotional safety.",
+        "Unlock advanced polarity pathways, guided scripts for erotic honesty, and progressive modules for long-term couples restoring magnetic intimacy.",
     },
   },
   {
     slug: "osho",
     name: "Osho",
     tier: "free",
-    descriptor: "Meditative intimacy, emotional honesty, and aliveness through awareness.",
-    oneLiner:
-      "Useful for couples who feel numb, over-mental, or disconnected from embodied joy.",
-    overviewLine:
-      "Awareness-centered Tantra with emotional freedom and meditative intimacy.",
+    descriptor: "Meditative intimacy, emotional freedom, and embodied awareness.",
+    oneLiner: "Helps couples reconnect when they feel numb, over-mental, or emotionally blocked.",
+    overviewLine: "Awareness-based Tantra with practical nervous-system and intimacy tools.",
     icon: SunMoon,
     iconClass: "text-fuchsia-300",
-    badgeClass: "border-emerald-400/30 bg-emerald-500/12 text-emerald-200",
     content: {
       heroIntro: [
-        "Osho's value for modern couples is not ideology but method: bring awareness into the body, into emotion, and into relationship patterns that usually run unconsciously. His approach helps couples who are affectionate but shut down, mentally overloaded, or spiritually hungry.",
-        "He emphasizes that suppression and unconscious indulgence are two sides of the same trap. The middle way is witnessing: feel fully, breathe fully, and stay conscious while desire, fear, tenderness, and intensity move through the system.",
+        "Osho's practical value is method, not mythology: bring awareness into sensation, emotion, and relational patterning. His work helps couples move from unconscious reactivity into conscious contact.",
+        "He distinguishes suppression from integration. The invitation is neither collapse nor control, but witnessing: feel fully, breathe fully, and remain present while energy moves.",
       ],
       quote: {
-        text: "Love deepens when partners stop controlling their inner weather and learn to witness it together.",
-        source: "Sacred Path editorial summary of Osho's relational teaching",
+        text: "Love deepens when partners stop controlling inner weather and learn to witness it together.",
+        source: "Sacred Path editorial summary",
       },
       whyMatters: [
-        "He gives couples permission to feel deeply without collapsing into chaos.",
-        "He reframes intimacy as an awareness practice, not just a compatibility outcome.",
-        "He offers body-based methods that move stuck energy before trying to talk everything through.",
+        "He gives couples permission to feel deeply without dramatizing every emotion.",
+        "He reframes intimacy as awareness practice, not only compatibility outcome.",
+        "He uses body-led methods that reduce conversational looping.",
       ],
       coreTeachings: [
-        {
-          title: "Awareness transforms intensity",
-          body: "When sensation is witnessed instead of resisted, it becomes information rather than threat.",
-        },
-        {
-          title: "The body is the doorway",
-          body: "Breath, sound, movement, and stillness help couples access truth faster than intellectual debate.",
-        },
-        {
-          title: "Freedom with responsibility",
-          body: "Authenticity matters, but so does relational care. Real freedom includes attunement.",
-        },
-        {
-          title: "Meditation inside intimacy",
-          body: "Silence, eye contact, and breath can make ordinary touch feel sacred and emotionally clean.",
-        },
+        { title: "Awareness transforms intensity", body: "Witnessed sensation becomes information, not threat." },
+        { title: "The body is the doorway", body: "Breath, sound, and movement reveal truth faster than abstract debate." },
+        { title: "Freedom with attunement", body: "Authenticity is strongest when paired with relational care." },
+        { title: "Meditation inside intimacy", body: "Stillness and breath can make simple contact feel sacred and clean." },
       ],
       modernUse: [
         {
-          title: "When both partners are chronically stressed",
-          body: "Use active discharge first (movement, shaking, breath), then connect from regulation instead of tension.",
+          title: "When stress dominates the relationship climate",
+          body: "Use short active-release practices before expecting emotionally nuanced conversation.",
         },
         {
-          title: "When conversations loop without resolution",
-          body: "Pause discussion and run a short witnessing ritual so both partners can speak from the present instead of old activation.",
+          title: "When talks keep circling",
+          body: "Pause verbal processing and regulate together, then return to dialogue.",
         },
         {
-          title: "When desire feels blocked by shame",
-          body: "Use compassionate awareness language to normalize sensation without forcing outcomes.",
+          title: "When shame blocks desire",
+          body: "Use non-judgmental awareness language and paced embodiment.",
         },
       ],
       shadowToAvoid: [
-        {
-          title: "Spiritual bypassing",
-          body: "Meditative language should never erase practical accountability, repair, or boundaries.",
-        },
-        {
-          title: "Mistaking catharsis for integration",
-          body: "Emotional release can help, but without reflection and behavior change it becomes a repeating cycle.",
-        },
-        {
-          title: "Boundary confusion",
-          body: "Conscious exploration still needs explicit consent, pacing, and shared agreements.",
-        },
+        { title: "Spiritual bypassing", body: "Awareness language should not replace accountability and repair." },
+        { title: "Catharsis without integration", body: "Release helps only if behavior and agreements also change." },
+        { title: "Boundary blur", body: "Exploration still requires explicit consent and pacing." },
       ],
       exercises: [
         {
           title: "Witnessing Breath (7 minutes)",
-          setup: "Sit back-to-back so each partner can feel the other's breath without eye-contact pressure.",
+          setup: "Begin back-to-back, then turn face-to-face.",
           steps: [
-            "Breathe naturally for one minute and notice pace differences without correcting.",
-            "Gradually synchronize exhalation for three minutes.",
-            "Turn to face each other and keep the same pace for three more minutes.",
+            "Notice breath differences without correcting.",
+            "Synchronize exhalation gradually.",
+            "Turn toward each other and continue for three minutes.",
           ],
-          integration: "Excellent before difficult conversations.",
+          integration: "Use before sensitive conversations.",
         },
         {
-          title: "Dynamic Shake + Stillness (9 minutes)",
-          setup: "Stand with feet grounded and knees soft.",
+          title: "Shake and Stillness (9 minutes)",
+          setup: "Stand grounded with soft knees.",
           steps: [
-            "Shake the body for three minutes to release held tension.",
-            "Breathe through the mouth and sound softly for two minutes.",
-            "Sit in complete stillness for four minutes and notice emotional shifts.",
+            "Shake for three minutes to release charge.",
+            "Breathe and vocalize gently for two minutes.",
+            "Sit in stillness for four minutes.",
           ],
-          integration: "Use on days with anxiety, irritability, or emotional numbness.",
+          integration: "Useful on anxious or irritable days.",
         },
         {
-          title: "Sacred Listening Circle (12 minutes)",
-          setup: "Set a timer with two rounds per partner.",
+          title: "Sacred Listening Round (12 minutes)",
+          setup: "Use strict timed turns.",
           steps: [
-            "Speaker shares what feels alive right now for 2 minutes.",
-            "Listener responds with only: 'I hear you. Tell me more.'",
+            "Speaker shares for two minutes.",
+            "Listener responds only with validating prompts.",
             "Switch and repeat.",
             "Close with one gratitude and one request each.",
           ],
-          integration: "Builds emotional honesty without over-processing.",
+          integration: "Builds honesty without escalation.",
         },
       ],
       reflectionPrompts: [
-        "What do I habitually suppress in intimacy, and what does suppression cost us?",
-        "Where do I confuse emotional expression with emotional responsibility?",
-        "What helps me feel safe enough to stay present with sensation?",
-        "Which daily 5-minute awareness ritual would most improve our relationship climate?",
+        "What do I suppress in intimacy, and what does it cost us?",
+        "Where do I confuse expression with responsibility?",
+        "What helps me stay present when sensation rises?",
+        "Which 5-minute daily awareness ritual would most help us?",
       ],
       relatedPaths: [
-        { name: "Tantra", note: "Breath-led presence and sacred embodied union." },
-        { name: "Tao", note: "Nervous-system regulation and nourishing sensual rhythm." },
-        { name: "Polarity", note: "Channeling intensity into conscious relational charge." },
+        { name: "Tantra", note: "Sacred embodied awareness and breath-led intimacy." },
+        { name: "Tao", note: "Regulated pacing and nourishing sensual flow." },
+        { name: "Polarity", note: "Conscious charge shaped with presence." },
       ],
       premiumBanner:
-        "Unlock deeper Osho-inspired meditations, relational integration guides, and advanced embodied practices designed for couples who want awareness to become daily intimacy.",
+        "Unlock deeper Osho-inspired practices, guided meditative intimacy tracks, and advanced integration pathways for couples building awareness as a daily discipline.",
     },
   },
   {
     slug: "mantak-chia",
     name: "Mantak Chia",
     tier: "premium",
-    descriptor: "Taoist sexual alchemy, energy circulation, and vitality stewardship.",
-    oneLiner: "Learn how couples transform arousal into long-term vitality and deep steadiness.",
-    overviewLine:
-      "Taoist intimate longevity and micro-practices for energy conservation.",
+    descriptor: "Taoist sexual alchemy, circulation, and vitality stewardship.",
+    oneLiner: "For couples learning to transform arousal into sustainable life-force.",
+    overviewLine: "Taoist intimacy mechanics, breath, and erotic longevity.",
     icon: Waves,
     iconClass: "text-cyan-300",
-    badgeClass: "border-amber-400/30 bg-amber-500/12 text-amber-200",
     teaser: [
-      "Mantak Chia's work gives couples a full map for breath, pelvic awareness, and energy circulation that supports intimacy without depletion.",
-      "The premium library unpacks beginner-to-advanced partner practices so charge becomes sustainable instead of exhausting.",
-      "Includes guided progressions for pacing, containment, and post-intimacy recovery.",
+      "Learn the practical architecture of Taoist couple energy work.",
+      "Move from depletion cycles to circulation-based intimacy.",
+      "Includes beginner to advanced partner sequencing in premium.",
     ],
   },
   {
     slug: "margot-anand",
     name: "Margot Anand",
     tier: "premium",
-    descriptor: "Ecstatic Tantra, devotion, and joyful sacred sensual ceremony.",
-    oneLiner: "For couples who want erotic celebration with spiritual heart and elegant ritual.",
-    overviewLine:
-      "Ecstatic sacred sensuality with ceremonial structure for modern partners.",
+    descriptor: "Ecstatic Tantra, sacred sensuality, and ceremonial intimacy.",
+    oneLiner: "For couples wanting joy, devotion, and erotic celebration with structure.",
+    overviewLine: "Ceremonial Tantra for modern relational practice.",
     icon: Sparkles,
     iconClass: "text-rose-300",
-    badgeClass: "border-amber-400/30 bg-amber-500/12 text-amber-200",
     teaser: [
-      "Margot Anand helps couples bring play, reverence, and ecstatic ritual into intimacy without losing emotional grounding.",
-      "Premium access includes ceremonial templates, sensual preparation, and partner attunement structures.",
-      "Ideal for couples who want sensuality that feels devotional, playful, and intentional.",
+      "Bring play and reverence into the same erotic field.",
+      "Explore ceremonial frameworks that feel alive and tasteful.",
+      "Premium includes guided rituals, scripts, and progression maps.",
     ],
   },
   {
     slug: "daniel-odier",
     name: "Daniel Odier",
     tier: "premium",
-    descriptor: "Non-dual Tantra, refined attention, and subtle relational presence.",
-    oneLiner: "For couples drawn to meditative intimacy and deep stillness inside desire.",
-    overviewLine:
-      "Subtle Tantra and non-dual intimacy for deeply contemplative couples.",
+    descriptor: "Non-dual Tantra, subtle attention, and contemplative erotic depth.",
+    oneLiner: "For couples drawn to silence, subtlety, and refined presence.",
+    overviewLine: "Contemplative intimacy for partners who value depth over performance.",
     icon: Star,
     iconClass: "text-violet-300",
-    badgeClass: "border-amber-400/30 bg-amber-500/12 text-amber-200",
     teaser: [
-      "Daniel Odier's teachings center on subtle attention, presence, and intimacy as a direct contemplative path.",
-      "Premium includes guided stillness practices and paired meditations for couples who prefer depth over performance.",
-      "A strong fit for relationships where silence and nuanced sensation matter.",
+      "Subtle tantric teachings for meditative relational work.",
+      "Bridge sensuality and non-dual awareness with practical methods.",
+      "Premium includes paired contemplative practices and integration guides.",
     ],
   },
   {
     slug: "michaela-boehm",
     name: "Michaela Boehm",
     tier: "premium",
-    descriptor: "Embodied relational work, nervous-system literacy, and feminine depth practices.",
-    oneLiner: "Learn practical embodiment skills for attraction, regulation, and emotional honesty.",
-    overviewLine:
-      "Embodiment-driven intimacy and nervous-system intelligence in partnership.",
+    descriptor: "Embodiment, relational nervous-system literacy, and erotic honesty.",
+    oneLiner: "For couples who want grounded somatic tools, not theory-only advice.",
+    overviewLine: "Somatic relational skills for attraction, regulation, and truth.",
     icon: Heart,
     iconClass: "text-orange-300",
-    badgeClass: "border-amber-400/30 bg-amber-500/12 text-amber-200",
     teaser: [
-      "Michaela Boehm bridges somatic work with modern relationship pressure points: overwhelm, shutdown, and attraction fatigue.",
-      "Premium includes movement-based partner drills, tension-release protocols, and embodied communication practices.",
-      "Best for couples who want grounded transformation, not abstract theory.",
+      "Translate body intelligence into better connection and desire.",
+      "Work with tension, shutdown, and over-activation in real time.",
+      "Premium includes embodied drills and partner regulation maps.",
+    ],
+  },
+  {
+    slug: "barry-long",
+    name: "Barry Long",
+    tier: "premium",
+    descriptor: "Relational truth, simplicity, and disciplined conscious love.",
+    oneLiner: "For couples who want less drama and more uncompromising clarity.",
+    overviewLine: "Presence-led relational integrity and emotional simplification.",
+    icon: Feather,
+    iconClass: "text-emerald-300",
+    teaser: [
+      "Cut through noise and performative relationship habits.",
+      "Practice direct honesty with emotional sobriety.",
+      "Premium includes clarity practices for long-term partnership.",
+    ],
+  },
+  {
+    slug: "jan-day",
+    name: "Jan Day",
+    tier: "premium",
+    descriptor: "Body-led intimacy, relational healing, and emotional courage.",
+    oneLiner: "For couples rebuilding trust in touch, vulnerability, and expression.",
+    overviewLine: "Embodied intimacy repair with practical relational exercises.",
+    icon: Compass,
+    iconClass: "text-violet-300",
+    teaser: [
+      "Use body-awareness to repair disconnect and shame patterns.",
+      "Build communication that feels honest and gentle at the same time.",
+      "Premium includes guided repair rituals for modern couples.",
+    ],
+  },
+  {
+    slug: "max-bush",
+    name: "Max Bush",
+    tier: "premium",
+    descriptor: "Erotic confidence, practical sensual development, and partner attunement.",
+    oneLiner: "For couples who want more skillful erotic communication and confidence.",
+    overviewLine: "Practical erotic craft and confidence-building progression.",
+    icon: Flame,
+    iconClass: "text-amber-300",
+    teaser: [
+      "Turn intention into embodied erotic skill step by step.",
+      "Build confidence without losing tenderness.",
+      "Premium includes practical progression drills and partner scripts.",
+    ],
+  },
+  {
+    slug: "victor-gold",
+    name: "Victor Gold",
+    tier: "premium",
+    descriptor: "Refined erotic craftsmanship, devotion, and magnetic relational form.",
+    oneLiner: "For couples exploring elegant polarity and deeper erotic architecture.",
+    overviewLine: "Advanced relational erotics with structure and depth.",
+    icon: Star,
+    iconClass: "text-rose-300",
+    teaser: [
+      "Explore nuanced erotic form without performative excess.",
+      "Integrate devotion, structure, and sensual intelligence.",
+      "Premium includes layered pathways for advanced couples.",
     ],
   },
 ];
@@ -475,9 +499,7 @@ const MoreAuthorsCard = ({
       <h3 className="font-display text-xl text-foreground">More Authors</h3>
       <BookOpen className="h-4 w-4 text-primary/80" />
     </div>
-    <p className="mt-2 text-sm leading-6 text-muted-foreground">
-      Explore nearby voices without leaving the page.
-    </p>
+    <p className="mt-2 text-sm leading-6 text-muted-foreground">Explore nearby voices without leaving this page.</p>
 
     <div className="mt-4 space-y-2">
       {moreAuthorsRows.map((row) => {
@@ -521,7 +543,7 @@ const PremiumMiniCard = () => (
       <span className="text-xs uppercase tracking-[0.16em]">Premium</span>
     </div>
     <p className="mt-3 text-sm leading-6 text-foreground/90">
-      Unlock the full author library with guided practices, layered teachings, and integration plans.
+      Unlock the full author library with guided practices, layered teachings, and integration maps.
     </p>
     <Link
       to="/pricing"
@@ -534,9 +556,7 @@ const PremiumMiniCard = () => (
 );
 
 const FreeAuthorContent = ({ author }: { author: Author }) => {
-  if (!author.content) {
-    return null;
-  }
+  if (!author.content) return null;
 
   const data = author.content;
 
@@ -670,8 +690,8 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => (
     <section className="rounded-[28px] border border-amber-400/20 bg-gradient-to-br from-amber-500/12 via-background to-background p-5 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.5)]">
       <div className="flex flex-wrap items-center gap-2">
         <TierBadge tier="premium" />
-        <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] ${author.badgeClass}`}>
-          Locked author
+        <span className="inline-flex items-center rounded-full border border-amber-400/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] text-amber-200">
+          Locked Author
         </span>
       </div>
       <h3 className="mt-3 font-display text-3xl text-foreground">{author.name}</h3>
@@ -691,39 +711,31 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => (
     </section>
 
     <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">What you'll find inside</p>
+      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">What you get with premium</p>
       <div className="mt-4 grid gap-3 md:grid-cols-2">
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">Guided educational modules</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            Structured lessons that move from foundations to practical integration.
-          </p>
+          <h4 className="font-body text-sm text-foreground">Deep educational modules</h4>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Layered teachings with modern translation and practical framing.</p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">Couple exercises and scripts</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            Partner prompts and embodied drills designed for real nights, not theory-only reading.
-          </p>
+          <h4 className="font-body text-sm text-foreground">Practice blocks and scripts</h4>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Ready-to-use exercises, dialogue prompts, and integration steps.</p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">Modern misuse safeguards</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            Clear guidance on consent, pacing, and healthy application in contemporary relationships.
-          </p>
+          <h4 className="font-body text-sm text-foreground">Misuse safeguards</h4>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Clear guardrails for consent, pacing, and relational integrity.</p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">Pathway mapping</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            Related paths and progressions so each teaching becomes part of a larger growth arc.
-          </p>
+          <h4 className="font-body text-sm text-foreground">Cross-path progression</h4>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Mapped links into Paths and Temple routines for continuity.</p>
         </article>
       </div>
     </section>
 
     <section className="rounded-[24px] border border-amber-400/20 bg-amber-500/8 p-5">
-      <p className="text-xs uppercase tracking-[0.2em] text-amber-300">Premium Access</p>
+      <p className="text-xs uppercase tracking-[0.2em] text-amber-300">Premium Banner</p>
       <p className="mt-3 text-sm leading-7 text-foreground/90">
-        Premium turns locked author pages into full mini-libraries with deep context, practical application, and progression plans.
+        Premium turns locked authors into full mini-libraries with educational depth, practical application, and guided progression.
       </p>
       <Link
         to="/pricing"
@@ -739,6 +751,7 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => (
 const Authors = () => {
   const [selectedSlug, setSelectedSlug] = useState("deida");
   const selected = useMemo(() => authors.find((author) => author.slug === selectedSlug) ?? authors[0], [selectedSlug]);
+
   const freeAuthors = authors.filter((author) => author.tier === "free");
   const premiumAuthors = authors.filter((author) => author.tier === "premium");
 
@@ -747,9 +760,9 @@ const Authors = () => {
       <section className="rounded-[30px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-6 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] md:p-8">
         <div className="max-w-4xl">
           <p className="text-xs uppercase tracking-[0.28em] text-primary/80">Sacred Library · Authors</p>
-          <h1 className="mt-3 font-display text-4xl text-foreground md:text-5xl">Author wisdom, rebuilt as a real learning space</h1>
+          <h1 className="mt-3 font-display text-4xl text-foreground md:text-5xl">Author wisdom, rebuilt as a true study library</h1>
           <p className="mt-4 text-sm leading-7 text-muted-foreground md:text-base">
-            Explore substantial author pages with practical relationship guidance, clear structure, and premium depth where you need it.
+            Deep free author pages, elegant premium author teasers, and one consistent navigation structure across the whole Library.
           </p>
         </div>
 
@@ -770,7 +783,7 @@ const Authors = () => {
         <p className="text-xs uppercase tracking-[0.22em] text-primary/80">Authors Overview</p>
         <h2 className="mt-2 font-display text-3xl text-foreground">Choose an author and go deep</h2>
 
-        <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {authors.map((author, index) => {
             const Icon = author.icon;
             const isSelected = selectedSlug === author.slug;
@@ -800,13 +813,6 @@ const Authors = () => {
                 </div>
                 <h3 className="mt-3 font-display text-2xl text-foreground">{author.name}</h3>
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">{author.overviewLine}</p>
-                {author.tier === "premium" ? (
-                  <p className="mt-3 text-xs leading-5 text-amber-200/90">
-                    Rich teaser now, full teachings with premium unlock.
-                  </p>
-                ) : (
-                  <p className="mt-3 text-xs leading-5 text-emerald-200/90">Open access with full educational depth.</p>
-                )}
               </button>
             );
           })}
@@ -814,16 +820,12 @@ const Authors = () => {
 
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           <div className="rounded-2xl border border-emerald-400/25 bg-emerald-500/8 p-4">
-            <p className="text-xs uppercase tracking-[0.14em] text-emerald-200">Free authors</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">
-              {freeAuthors.map((author) => author.name).join(" and ")} include full educational sections, practices, and reflection prompts.
-            </p>
+            <p className="text-xs uppercase tracking-[0.14em] text-emerald-200">Free Authors</p>
+            <p className="mt-2 text-sm leading-6 text-foreground/90">{freeAuthors.map((author) => author.name).join(" and ")} have fully open educational pages.</p>
           </div>
           <div className="rounded-2xl border border-amber-400/25 bg-amber-500/8 p-4">
-            <p className="text-xs uppercase tracking-[0.14em] text-amber-200">Premium authors</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">
-              {premiumAuthors.map((author) => author.name).join(", ")} are presented with elegant lock teasers and direct inline upgrade paths.
-            </p>
+            <p className="text-xs uppercase tracking-[0.14em] text-amber-200">Premium Authors</p>
+            <p className="mt-2 text-sm leading-6 text-foreground/90">{premiumAuthors.length} premium voices with elegant teaser cards and direct unlock flows.</p>
           </div>
         </div>
       </section>
