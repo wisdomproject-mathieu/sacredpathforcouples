@@ -15,7 +15,7 @@ const AppLayout = () => {
     () => [
       { to: "/app", icon: Home, label: "Home", iconClass: "text-amber-300" },
       { to: "/app/paths", icon: BookOpen, label: "Library", iconClass: "text-violet-300" },
-      { to: "/app/space", icon: Sparkles, label: "Temple", iconClass: "text-fuchsia-300" },
+      { to: "/app/space", icon: Sparkles, label: "Sacred Temple", iconClass: "text-fuchsia-300" },
     ],
     []
   );
@@ -42,7 +42,7 @@ const AppLayout = () => {
               </div>
 
               <p className="mt-4 text-sm leading-6 text-muted-foreground">
-                Ancient wisdom translated for modern love. Home for orientation, Library for learning, Temple for shared practice.
+                Ancient wisdom for modern love. Home for orientation, Library for insight, Sacred Temple for embodied shared practice.
               </p>
             </div>
 

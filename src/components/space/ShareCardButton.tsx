@@ -18,7 +18,7 @@ const ShareCardButton = ({
   coupleId,
   content,
   messageType = "card_share",
-  label = "Share with partner",
+  label = "Offer to your beloved",
   className,
 }: ShareCardButtonProps) => {
   const { user } = useAuth();
@@ -37,8 +37,8 @@ const ShareCardButton = ({
       content: content.trim(),
     });
 
-    if (error) toast.error("Could not share right now.");
-    else toast.success("Shared to your partner.");
+    if (error) toast.error("The offering could not be sent yet.");
+    else toast.success("Shared into your sacred thread.");
     setSharing(false);
   };
 
@@ -53,7 +53,7 @@ const ShareCardButton = ({
       )}
     >
       <Send className="h-3.5 w-3.5" />
-      {canShare ? (sharing ? "Sharing..." : label) : "Connect to share"}
+      {canShare ? (sharing ? "Offering..." : label) : "Connect to offer"}
     </button>
   );
 };
