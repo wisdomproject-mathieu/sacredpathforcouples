@@ -76,13 +76,13 @@ const reconnectTools: ReconnectTool[] = [
     tier: "free",
     icon: MoonStar,
     iconClass: "text-cyan-300",
-    descriptor: "A gentle sequence to settle, breathe, and arrive back into each other.",
-    oneLiner: "Best when both partners want closeness but feel overstimulated or tired.",
-    overviewLine: "Nervous-system-first reconnection for real life stress days.",
+    descriptor: "A gentle sequence to settle, breathe, and arrive back into each other quickly.",
+    oneLiner: "Best when both partners want closeness but feel overstimulated, tired, or far away.",
+    overviewLine: "Nervous-system-first reconnection for real-life stress days and fast repair.",
     content: {
       heroIntro: [
         "Soft Landing is the reconnect tool for overloaded evenings. It lowers emotional temperature without draining erotic possibility.",
-        "Instead of pushing depth too fast, it creates a believable bridge from stress physiology to relational presence.",
+        "Instead of pushing depth too fast, it creates a believable bridge from stress physiology to relational presence and renewed couple closeness.",
       ],
       quote: {
         text: "When the body feels safer, love becomes easier to feel and easier to offer.",
@@ -152,7 +152,7 @@ const reconnectTools: ReconnectTool[] = [
         { name: "Tantric Wisdom", kind: "Path", note: "Presence-first intimacy foundation." },
       ],
       premiumBanner:
-        "Unlock guided co-regulation sequences, layered reconnect scripts, and advanced transition rituals for high-pressure relationship seasons.",
+        "Unlock guided co-regulation sequences, layered reconnect scripts, and advanced transition rituals for high-pressure seasons in modern couple life.",
     },
   },
   {
@@ -163,11 +163,11 @@ const reconnectTools: ReconnectTool[] = [
     iconClass: "text-rose-300",
     descriptor: "A warm route into appreciation, tenderness, reassurance, and emotional closeness.",
     oneLiner: "Ideal when love is present but emotional nourishment has thinned out.",
-    overviewLine: "Gratitude-led intimacy recovery for modern couples.",
+    overviewLine: "Gratitude-led intimacy recovery couples can use tonight.",
     content: {
       heroIntro: [
         "Heart Opening helps couples move from functional partnership back into felt affection. It is not dramatic repair; it is emotional rewarming.",
-        "This tool works especially well when neither partner is hostile, but both feel under-loved or under-seen.",
+        "This tool works especially well when neither partner is hostile, but both feel under-loved or under-seen in modern daily life.",
       ],
       quote: {
         text: "Tenderness grows when appreciation becomes active rather than assumed.",
@@ -237,7 +237,7 @@ const reconnectTools: ReconnectTool[] = [
         { name: "David Deida", kind: "Author", note: "Devotion as living relational practice." },
       ],
       premiumBanner:
-        "Unlock deeper heart-devotion reconnect journeys, guided reassurance rituals, and advanced emotional repair pathways for long-term partners.",
+        "Unlock deeper heart-devotion reconnect journeys, guided reassurance rituals, and advanced emotional repair pathways for long-term sacred partnership.",
     },
   },
   {
@@ -246,13 +246,13 @@ const reconnectTools: ReconnectTool[] = [
     tier: "free",
     icon: PlayCircle,
     iconClass: "text-amber-300",
-    descriptor: "A light route into teasing, flirtation, and relational aliveness.",
+    descriptor: "A light route into teasing, flirtation, and relational aliveness for modern couples.",
     oneLiner: "Useful when the relationship feels too serious, practical, or emotionally heavy.",
-    overviewLine: "Playful reactivation for chemistry and emotional oxygen.",
+    overviewLine: "Playful reactivation for chemistry, emotional oxygen, and closeness now.",
     content: {
       heroIntro: [
         "Playful Spark reintroduces levity without losing intimacy. It is a bridge from over-seriousness back into attraction and fun.",
-        "The goal is not forced humor. The goal is movement, curiosity, and low-pressure erotic aliveness.",
+        "The goal is not forced humor. The goal is movement, curiosity, and low-pressure erotic aliveness couples can sustain.",
       ],
       quote: {
         text: "A little play can reopen desire where analysis has exhausted it.",
@@ -322,7 +322,7 @@ const reconnectTools: ReconnectTool[] = [
         { name: "Polarity", kind: "Path", note: "Playful edge and erotic contrast." },
       ],
       premiumBanner:
-        "Unlock advanced playful scripts, anticipation games, and flirtation-to-intimacy bridges designed for long-term couples who want chemistry back.",
+        "Unlock advanced playful scripts, anticipation games, and flirtation-to-intimacy bridges designed for long-term couples who want chemistry and sacred warmth back.",
     },
   },
   {
@@ -331,13 +331,13 @@ const reconnectTools: ReconnectTool[] = [
     tier: "premium",
     icon: Flame,
     iconClass: "text-orange-300",
-    descriptor: "A sensual premium reconnect arc for magnetic tension and devotional longing.",
+    descriptor: "A sensual premium reconnect arc for magnetic tension, devotional longing, and bonded intimacy.",
     oneLiner: "For couples ready to move from reconnection into embodied erotic depth.",
-    overviewLine: "Premium reconnect track for long-term attraction renewal.",
+    overviewLine: "Premium reconnect track for long-term attraction renewal and sacred love.",
     teaser: [
       "Restore erotic aliveness with structure and emotional safety.",
-      "Blend anticipation, devotion, and embodied desire sequencing.",
-      "Premium includes progressive rituals and partner scripts.",
+      "Blend anticipation, devotion, and embodied desire sequencing for modern partnership.",
+      "Premium includes progressive rituals and partner scripts for lasting closeness.",
     ],
   },
   {
@@ -346,13 +346,13 @@ const reconnectTools: ReconnectTool[] = [
     tier: "premium",
     icon: Waves,
     iconClass: "text-emerald-300",
-    descriptor: "Co-regulation reconnect protocol when words are too sharp or too exhausted.",
+    descriptor: "Co-regulation reconnect protocol for moments when words are too sharp or exhausted.",
     oneLiner: "For high-conflict or high-fatigue moments needing physiological reset first.",
-    overviewLine: "Premium nervous-system reconnect framework for difficult days.",
+    overviewLine: "Premium nervous-system reconnect framework for difficult modern relationship days.",
     teaser: [
       "Use breath-led sequencing to rebuild contact safely after rupture.",
-      "Lower activation before attempting complex emotional dialogue.",
-      "Premium includes guided pacing maps and escalation guardrails.",
+      "Lower activation before attempting complex emotional dialogue together.",
+      "Premium includes guided pacing maps and escalation guardrails for couples.",
     ],
   },
   {
@@ -362,12 +362,12 @@ const reconnectTools: ReconnectTool[] = [
     icon: MessageCircleHeart,
     iconClass: "text-violet-300",
     descriptor: "A structured language framework for what has been carried but not spoken.",
-    oneLiner: "For couples needing honest expression without collapse or blame loops.",
-    overviewLine: "Premium communication bridge for unresolved emotional backlog.",
+    oneLiner: "For couples needing honest expression without collapse, shutdown, or blame loops.",
+    overviewLine: "Premium communication bridge for unresolved emotional backlog and deeper trust.",
     teaser: [
       "Turn emotional backlog into clear, kind, high-integrity conversation.",
       "Use turn-based scripts that reduce reactivity and defensiveness.",
-      "Premium includes repair flows and follow-up integration prompts.",
+      "Premium includes repair flows and follow-up integration prompts for lasting closeness.",
     ],
   },
   {
@@ -378,11 +378,11 @@ const reconnectTools: ReconnectTool[] = [
     iconClass: "text-rose-300",
     descriptor: "A premium reconnect protocol for rebuilding erotic edge after emotional flattening.",
     oneLiner: "For couples who still love each other but miss charge, anticipation, and directional tension.",
-    overviewLine: "Premium edge-restoration track for long-term chemistry renewal.",
+    overviewLine: "Premium edge-restoration track for long-term chemistry renewal and relational devotion.",
     teaser: [
-      "Reintroduce conscious leading/receiving dynamics with precision and care.",
+      "Reintroduce conscious leading and receiving dynamics with precision and care.",
       "Use structured polarity drills that preserve consent and emotional safety.",
-      "Premium includes step-by-step charge recovery scripts and integration prompts.",
+      "Premium includes step-by-step charge recovery scripts and integration prompts for couples.",
     ],
   },
   {
@@ -393,11 +393,11 @@ const reconnectTools: ReconnectTool[] = [
     iconClass: "text-cyan-300",
     descriptor: "A premium post-intimacy and post-conflict integration track that protects relational trust.",
     oneLiner: "For couples who want closeness to stay stable after big emotional or erotic moments.",
-    overviewLine: "Premium aftercare system for emotional safety, bonding, and continuity.",
+    overviewLine: "Premium aftercare system for emotional safety, bonding, and sacred continuity.",
     teaser: [
       "Transform intense moments into secure attachment rather than confusion or crash.",
       "Practice debrief, reassurance, and body-led recovery in a structured format.",
-      "Premium includes aftercare templates, check-ins, and next-day integration maps.",
+      "Premium includes aftercare templates, check-ins, and next-day integration maps for modern couples.",
     ],
   },
 ];
@@ -439,7 +439,7 @@ const ReconnectHeroCard = ({ tool }: { tool: ReconnectTool }) => {
           className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-2 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/18"
         >
           <Lock className="h-4 w-4" />
-          Unlock this reconnect tool
+          Unlock this reconnect journey
         </Link>
       ) : null}
     </section>
@@ -502,12 +502,12 @@ const PremiumMiniCard = () => (
       <span className="text-xs uppercase tracking-[0.16em]">Premium</span>
     </div>
     <p className="mt-3 text-sm leading-6 text-foreground/90">
-      Unlock premium reconnect systems with high-impact scripts, guided pacing, and advanced relationship recovery pathways.
+      Unlock premium reconnect systems with high-impact scripts, guided pacing, and advanced recovery pathways that move couples toward sacred love.
     </p>
     <div className="mt-3 flex flex-wrap gap-2">
       <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Guided Scripts</span>
       <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Repair Tools</span>
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Intimacy Bridges</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Sacred Love Bridges</span>
     </div>
     <Link
       to="/pricing"
@@ -646,7 +646,7 @@ const FreeReconnectContent = ({ tool }: { tool: ReconnectTool }) => {
           to="/pricing"
           className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
         >
-          See premium plans
+          View premium plans
           <ArrowRight className="h-4 w-4" />
         </Link>
       </section>
@@ -675,16 +675,16 @@ const PremiumReconnectContent = ({ tool }: { tool: ReconnectTool }) => (
         className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-2 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/18"
       >
         <Lock className="h-4 w-4" />
-        Unlock this reconnect track
+        Unlock this reconnect track in premium
       </Link>
     </section>
 
     <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">What premium unlocks</p>
+      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">What premium unlocks for your relationship</p>
       <div className="mt-4 grid gap-3 md:grid-cols-2">
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
           <h4 className="font-body text-sm text-foreground">Structured scripts</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Turn emotional complexity into safe, guided communication flow.</p>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Turn emotional complexity into safe, guided communication flow couples can trust.</p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
           <h4 className="font-body text-sm text-foreground">Guided partner practices</h4>
@@ -692,12 +692,12 @@ const PremiumReconnectContent = ({ tool }: { tool: ReconnectTool }) => (
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
           <h4 className="font-body text-sm text-foreground">Advanced progression</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Move from basic reconnect into deeper repair and intimacy renewal.
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Move from basic reconnect into deeper repair and intimacy renewal that lasts.
           </p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
           <h4 className="font-body text-sm text-foreground">Cross-library integration</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Linked Paths and Authors recommendations for continuity.
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Linked Paths and Authors recommendations so partners keep growing together.
           </p>
         </article>
       </div>
@@ -706,12 +706,12 @@ const PremiumReconnectContent = ({ tool }: { tool: ReconnectTool }) => (
     <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.2),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
       <p className="text-xs uppercase tracking-[0.2em] text-amber-300">Premium Banner</p>
       <p className="mt-3 text-sm leading-7 text-foreground/90">
-        Premium turns reconnect tracks into complete transformation systems, with guided structure from rupture to trust, and from distance to embodied closeness.
+        Premium turns reconnect tracks into complete transformation systems, with guided structure from rupture to trust and from distance to sacred closeness.
       </p>
       <div className="mt-4 grid gap-2 md:grid-cols-3">
         <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Structured recovery</div>
-        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Expert guidance</div>
-        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Practical intimacy tools</div>
+        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Use-now guidance</div>
+        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Sacred love momentum</div>
       </div>
       <Link
         to="/pricing"
@@ -760,7 +760,7 @@ const Reconnect = () => {
 
       <section className={shellCardClass}>
         <p className="text-xs uppercase tracking-[0.22em] text-primary/80">Reconnect Overview</p>
-        <h2 className="mt-2 font-display text-3xl text-foreground">Choose the reconnect track your relationship needs now</h2>
+        <h2 className="mt-2 font-display text-3xl text-foreground">Choose the reconnect track your relationship needs right now</h2>
 
         <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {reconnectTools.map((tool) => {

@@ -82,18 +82,18 @@ const authors: Author[] = [
     slug: "deida",
     name: "David Deida",
     tier: "free",
-    descriptor: "Polarity, devotional edge, and erotic presence for long-term love.",
-    oneLiner: "Helps couples recover charge when love is steady but desire has gone flat.",
-    overviewLine: "Polarity and devotional intimacy for couples who want depth and charge.",
+    descriptor: "Ancient polarity wisdom translated into practical intimacy for modern couples.",
+    oneLiner: "Helps couples recover charge quickly when love is steady but desire has gone flat.",
+    overviewLine: "Use now for erotic clarity and devotion, then go deeper as a couple over time.",
     icon: Flame,
     iconClass: "text-amber-300",
     content: {
       heroIntro: [
-        "David Deida is useful when a relationship still has loyalty and care, but erotic aliveness has thinned out. He gives language to a common modern paradox: communication improves while attraction fades.",
-        "At his best, Deida is not about rigid roles. He is about conscious contrast, directed presence, and devotional intensity that stays consensual, grounded, and relationally respectful.",
+        "David Deida is useful when a relationship still has loyalty and care, but erotic aliveness has thinned out. He translates ancient polarity principles into language modern couples can use tonight.",
+        "At his best, Deida is not about rigid roles. He is about conscious contrast, directed presence, and devotional intensity that stays consensual, grounded, and supportive of lasting closeness.",
       ],
       quote: {
-        text: "Attraction often returns when partners stop managing each other and start meeting each other with directed presence.",
+        text: "Attraction often returns when partners stop managing each other and start meeting each other with directed, loving presence.",
         source: "Sacred Path editorial summary",
       },
       whyMatters: [
@@ -193,22 +193,22 @@ const authors: Author[] = [
         { name: "Kama Sutra", note: "Atmosphere and anticipation as erotic architecture." },
       ],
       premiumBanner:
-        "Unlock advanced polarity pathways, guided scripts for erotic honesty, and progressive modules for long-term couples restoring magnetic intimacy.",
+        "Unlock advanced polarity pathways, guided scripts for erotic honesty, and progressive modules that help long-term couples move toward sacred love.",
     },
   },
   {
     slug: "osho",
     name: "Osho",
     tier: "free",
-    descriptor: "Meditative intimacy, emotional freedom, and embodied awareness.",
-    oneLiner: "Helps couples reconnect when they feel numb, over-mental, or emotionally blocked.",
-    overviewLine: "Awareness-based Tantra with practical nervous-system and intimacy tools.",
+    descriptor: "Meditative intimacy from ancient awareness teachings, adapted for modern couples.",
+    oneLiner: "Helps couples reconnect fast when they feel numb, over-mental, or emotionally blocked.",
+    overviewLine: "Awareness-based intimacy tools you can apply now and deepen over time together.",
     icon: SunMoon,
     iconClass: "text-fuchsia-300",
     content: {
       heroIntro: [
-        "Osho's practical value is method, not mythology: bring awareness into sensation, emotion, and relational patterning. His work helps couples move from unconscious reactivity into conscious contact.",
-        "He distinguishes suppression from integration. The invitation is neither collapse nor control, but witnessing: feel fully, breathe fully, and remain present while energy moves.",
+        "Osho's practical value is method, not mythology: bring awareness into sensation, emotion, and relational patterning. His teachings help modern couples move from unconscious reactivity into conscious contact.",
+        "He distinguishes suppression from integration. The invitation is neither collapse nor control, but witnessing: feel fully, breathe fully, and remain present so closeness can return naturally.",
       ],
       quote: {
         text: "Love deepens when partners stop controlling inner weather and learn to witness it together.",
@@ -289,157 +289,157 @@ const authors: Author[] = [
         { name: "Polarity", note: "Conscious charge shaped with presence." },
       ],
       premiumBanner:
-        "Unlock deeper Osho-inspired practices, guided meditative intimacy tracks, and advanced integration pathways for couples building awareness as a daily discipline.",
+        "Unlock deeper Osho-inspired practices, guided meditative intimacy tracks, and advanced integration pathways for couples growing sacred love as a daily discipline.",
     },
   },
   {
     slug: "mantak-chia",
     name: "Mantak Chia",
     tier: "premium",
-    descriptor: "Taoist sexual alchemy, circulation, and vitality stewardship.",
-    oneLiner: "For couples learning to transform arousal into sustainable life-force.",
-    overviewLine: "Taoist intimacy mechanics, breath, and erotic longevity.",
+    descriptor: "Taoist alchemy translated into partner practices for sustainable intimacy and vitality.",
+    oneLiner: "For couples learning to transform arousal into shared life-force and deeper connection.",
+    overviewLine: "Ancient Taoist mechanics for modern couples who want lasting erotic energy.",
     icon: Waves,
     iconClass: "text-cyan-300",
     teaser: [
-      "Learn the practical architecture of Taoist couple energy work.",
-      "Move from depletion cycles to circulation-based intimacy.",
-      "Includes beginner to advanced partner sequencing in premium.",
+      "Learn the practical architecture of Taoist couple energy work for modern relationship life.",
+      "Move from depletion cycles to circulation-based intimacy that leaves both partners nourished.",
+      "Premium includes guided progression from first practices to advanced couple sequencing.",
     ],
   },
   {
     slug: "margot-anand",
     name: "Margot Anand",
     tier: "premium",
-    descriptor: "Ecstatic Tantra, sacred sensuality, and ceremonial intimacy.",
-    oneLiner: "For couples wanting joy, devotion, and erotic celebration with structure.",
-    overviewLine: "Ceremonial Tantra for modern relational practice.",
+    descriptor: "Ecstatic Tantra and sacred sensuality translated for modern couple ritual life.",
+    oneLiner: "For couples wanting joy, devotion, and erotic celebration with relational structure.",
+    overviewLine: "Ceremonial Tantra for partners growing closer through beauty and intention.",
     icon: Sparkles,
     iconClass: "text-rose-300",
     teaser: [
-      "Bring play and reverence into the same erotic field.",
-      "Explore ceremonial frameworks that feel alive and tasteful.",
-      "Premium includes guided rituals, scripts, and progression maps.",
+      "Bring play and reverence into the same erotic field without losing emotional safety.",
+      "Explore ceremonial frameworks that feel alive, tasteful, and usable in modern life.",
+      "Premium includes guided rituals, scripts, and progression maps toward sacred love.",
     ],
   },
   {
     slug: "daniel-odier",
     name: "Daniel Odier",
     tier: "premium",
-    descriptor: "Non-dual Tantra, subtle attention, and contemplative erotic depth.",
-    oneLiner: "For couples drawn to silence, subtlety, and refined presence.",
-    overviewLine: "Contemplative intimacy for partners who value depth over performance.",
+    descriptor: "Non-dual Tantra and subtle attention for couples seeking contemplative erotic depth.",
+    oneLiner: "For couples drawn to silence, subtlety, and refined presence that builds intimacy.",
+    overviewLine: "Contemplative intimacy for partners who value depth over performance pressure.",
     icon: Star,
     iconClass: "text-violet-300",
     teaser: [
-      "Subtle tantric teachings for meditative relational work.",
-      "Bridge sensuality and non-dual awareness with practical methods.",
-      "Premium includes paired contemplative practices and integration guides.",
+      "Subtle tantric teachings for meditative relational work that supports modern couples.",
+      "Bridge sensuality and non-dual awareness with practical methods you can apply gently.",
+      "Premium includes paired contemplative practices and integration guides for ongoing closeness.",
     ],
   },
   {
     slug: "michaela-boehm",
     name: "Michaela Boehm",
     tier: "premium",
-    descriptor: "Embodiment, relational nervous-system literacy, and erotic honesty.",
-    oneLiner: "For couples who want grounded somatic tools, not theory-only advice.",
-    overviewLine: "Somatic relational skills for attraction, regulation, and truth.",
+    descriptor: "Embodiment and relational nervous-system literacy for modern couple intimacy.",
+    oneLiner: "For couples who want grounded somatic tools they can use immediately.",
+    overviewLine: "Somatic relational skills for attraction, regulation, and honest connection.",
     icon: Heart,
     iconClass: "text-orange-300",
     teaser: [
-      "Translate body intelligence into better connection and desire.",
-      "Work with tension, shutdown, and over-activation in real time.",
-      "Premium includes embodied drills and partner regulation maps.",
+      "Translate body intelligence into better connection and desire in everyday relationship moments.",
+      "Work with tension, shutdown, and over-activation in real time, together.",
+      "Premium includes embodied drills and partner regulation maps for durable closeness.",
     ],
   },
   {
     slug: "barry-long",
     name: "Barry Long",
     tier: "premium",
-    descriptor: "Relational truth, simplicity, and disciplined conscious love.",
-    oneLiner: "For couples who want less drama and more uncompromising clarity.",
-    overviewLine: "Presence-led relational integrity and emotional simplification.",
+    descriptor: "Relational truth, simplicity, and disciplined conscious love for committed partners.",
+    oneLiner: "For couples who want less drama and more clarity that restores respect and closeness.",
+    overviewLine: "Presence-led relational integrity for modern couples seeking grounded sacred love.",
     icon: Feather,
     iconClass: "text-emerald-300",
     teaser: [
-      "Cut through noise and performative relationship habits.",
-      "Practice direct honesty with emotional sobriety.",
-      "Premium includes clarity practices for long-term partnership.",
+      "Cut through noise and performative relationship habits that create distance.",
+      "Practice direct honesty with emotional sobriety and mutual care.",
+      "Premium includes clarity practices for long-term partnership and daily repair.",
     ],
   },
   {
     slug: "jan-day",
     name: "Jan Day",
     tier: "premium",
-    descriptor: "Body-led intimacy, relational healing, and emotional courage.",
-    oneLiner: "For couples rebuilding trust in touch, vulnerability, and expression.",
-    overviewLine: "Embodied intimacy repair with practical relational exercises.",
+    descriptor: "Body-led intimacy, relational healing, and emotional courage for modern couples.",
+    oneLiner: "For couples rebuilding trust in touch, vulnerability, and honest expression.",
+    overviewLine: "Embodied intimacy repair with practical exercises for deeper connection.",
     icon: Compass,
     iconClass: "text-violet-300",
     teaser: [
-      "Use body-awareness to repair disconnect and shame patterns.",
+      "Use body-awareness to repair disconnect and shame patterns without overwhelm.",
       "Build communication that feels honest and gentle at the same time.",
-      "Premium includes guided repair rituals for modern couples.",
+      "Premium includes guided repair rituals for modern couples moving toward sacred partnership.",
     ],
   },
   {
     slug: "max-bush",
     name: "Max Bush",
     tier: "premium",
-    descriptor: "Erotic confidence, practical sensual development, and partner attunement.",
-    oneLiner: "For couples who want more skillful erotic communication and confidence.",
-    overviewLine: "Practical erotic craft and confidence-building progression.",
+    descriptor: "Erotic confidence and practical sensual development for connected modern couples.",
+    oneLiner: "For couples who want skillful erotic communication that strengthens emotional trust.",
+    overviewLine: "Practical erotic craft with confidence-building progression for long-term love.",
     icon: Flame,
     iconClass: "text-amber-300",
     teaser: [
-      "Turn intention into embodied erotic skill step by step.",
-      "Build confidence without losing tenderness.",
-      "Premium includes practical progression drills and partner scripts.",
+      "Turn intention into embodied erotic skill step by step, with relational integrity.",
+      "Build confidence without losing tenderness, consent, or emotional attunement.",
+      "Premium includes practical progression drills and partner scripts for real-life use.",
     ],
   },
   {
     slug: "victor-gold",
     name: "Victor Gold",
     tier: "premium",
-    descriptor: "Refined erotic craftsmanship, devotion, and magnetic relational form.",
-    oneLiner: "For couples exploring elegant polarity and deeper erotic architecture.",
-    overviewLine: "Advanced relational erotics with structure and depth.",
+    descriptor: "Refined erotic craftsmanship, devotion, and magnetic relational form for couples.",
+    oneLiner: "For couples exploring elegant polarity and deeper erotic architecture together.",
+    overviewLine: "Advanced relational erotics with structure, depth, and sacred intentionality.",
     icon: Star,
     iconClass: "text-rose-300",
     teaser: [
-      "Explore nuanced erotic form without performative excess.",
-      "Integrate devotion, structure, and sensual intelligence.",
-      "Premium includes layered pathways for advanced couples.",
+      "Explore nuanced erotic form without performative excess or pressure.",
+      "Integrate devotion, structure, and sensual intelligence in a grounded way.",
+      "Premium includes layered pathways for advanced couples growing sacred love.",
     ],
   },
   {
     slug: "charles-muir",
     name: "Charles Muir",
     tier: "premium",
-    descriptor: "Modern sacred intimacy facilitation, ritualized connection, and practical tantric partner work.",
+    descriptor: "Modern sacred intimacy facilitation and practical tantric partner work for couples.",
     oneLiner: "For couples who want usable ritual structure with grounded, modern language.",
-    overviewLine: "Applied Neo-Tantra and practical sacred intimacy sequencing.",
+    overviewLine: "Applied Neo-Tantra sequencing that turns insight into embodied closeness.",
     icon: Waves,
     iconClass: "text-cyan-300",
     teaser: [
       "Learn modernized tantric partner rituals built for real relationship life.",
-      "Bridge sensual exploration, communication, and emotional safety in one arc.",
-      "Premium includes modular ritual scripts and progression tracks for couples.",
+      "Bridge sensual exploration, communication, and emotional safety in one coherent arc.",
+      "Premium includes modular ritual scripts and progression tracks for couples growing together.",
     ],
   },
   {
     slug: "sally-kempton",
     name: "Sally Kempton",
     tier: "premium",
-    descriptor: "Kashmir Shaivism-inspired contemplative practice and embodied recognition of divine awareness.",
+    descriptor: "Kashmir Shaivism-inspired contemplative practice for intimate recognition and presence.",
     oneLiner: "For couples drawn to heart-depth, non-dual intimacy, and subtle consciousness work.",
-    overviewLine: "Kashmir Shaivism contemplative depth translated for modern relational practice.",
+    overviewLine: "Kashmir Shaivism depth translated for modern couples seeking sacred love.",
     icon: SunMoon,
     iconClass: "text-violet-300",
     teaser: [
       "Work with recognition-based practice rather than performance-heavy spirituality.",
       "Unify meditation, tenderness, and intimate presence through non-dual awareness.",
-      "Premium includes guided contemplations, partner prompts, and integration rituals.",
+      "Premium includes guided contemplations, partner prompts, and integration rituals for daily life.",
     ],
   },
 ];
@@ -448,25 +448,25 @@ const moreAuthorsRows: MoreAuthorRow[] = [
   {
     slug: "osho",
     name: "Osho",
-    line: "Meditative awareness and emotional freedom in intimacy.",
+    line: "Meditative awareness and emotional freedom couples can apply tonight.",
     tier: "free",
   },
   {
     slug: "mantak-chia",
     name: "Mantak Chia",
-    line: "Taoist alchemy, breath, and sensual longevity.",
+    line: "Taoist alchemy, breath, and sensual longevity for lasting partnership.",
     tier: "premium",
   },
   {
     slug: "margot-anand",
     name: "Margot Anand",
-    line: "Ecstatic sacred sensuality and ceremony.",
+    line: "Ecstatic sacred sensuality and ceremony for modern couples.",
     tier: "premium",
   },
   {
     slug: "daniel-odier",
     name: "Daniel Odier",
-    line: "Subtle Tantra and non-dual presence.",
+    line: "Subtle Tantra and non-dual presence that deepens couple closeness.",
     tier: "premium",
   },
 ];
@@ -510,7 +510,7 @@ const AuthorHeroCard = ({ author }: { author: Author }) => {
           className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-2 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/18"
         >
           <Lock className="h-4 w-4" />
-          Unlock this author
+          Unlock this couple author journey
         </Link>
       ) : null}
     </section>
@@ -573,12 +573,12 @@ const PremiumMiniCard = () => (
       <span className="text-xs uppercase tracking-[0.16em]">Premium</span>
     </div>
     <p className="mt-3 text-sm leading-6 text-foreground/90">
-      Unlock the full author temple: deeper teachings, guided partner practices, and high-impact integration maps for lasting change.
+      Unlock deeper author journeys with guided partner practices, integration maps, and sacred-love pathways built for real couples.
     </p>
     <div className="mt-3 flex flex-wrap gap-2">
       <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Guided Journeys</span>
       <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Practice Scripts</span>
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Expert Paths</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Sacred Love Paths</span>
     </div>
     <Link
       to="/pricing"
@@ -717,7 +717,7 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
           to="/pricing"
           className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
         >
-          See premium plans
+          View premium plans
           <ArrowRight className="h-4 w-4" />
         </Link>
       </section>
@@ -746,28 +746,28 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => (
         className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-2 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/18"
       >
         <Lock className="h-4 w-4" />
-        Unlock this author in premium
+        Unlock this author journey in premium
       </Link>
     </section>
 
     <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">What you get with premium</p>
+      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">What premium unlocks for your relationship</p>
       <div className="mt-4 grid gap-3 md:grid-cols-2">
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
           <h4 className="font-body text-sm text-foreground">Deep educational modules</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Layered teachings with modern translation and practical framing.</p>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Layered ancient teachings translated for modern couple life and shared growth.</p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
           <h4 className="font-body text-sm text-foreground">Practice blocks and scripts</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Ready-to-use exercises, dialogue prompts, and integration steps.</p>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Ready-to-use exercises, dialogue prompts, and integration steps for immediate closeness.</p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
           <h4 className="font-body text-sm text-foreground">Misuse safeguards</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Clear guardrails for consent, pacing, and relational integrity.</p>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Clear guardrails for consent, pacing, and relational integrity in every practice.</p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
           <h4 className="font-body text-sm text-foreground">Cross-path progression</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Mapped links into Paths and Temple routines for continuity.</p>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Mapped links into Paths and Temple routines so couples keep moving forward together.</p>
         </article>
       </div>
     </section>
@@ -775,12 +775,12 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => (
     <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.2),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
       <p className="text-xs uppercase tracking-[0.2em] text-amber-300">Premium Banner</p>
       <p className="mt-3 text-sm leading-7 text-foreground/90">
-        Premium unlocks full author transmissions with depth, rigor, and practical intimacy implementation for real couples.
+        Premium unlocks full author transmissions with depth, warmth, and practical implementation so your relationship can keep moving toward sacred love.
       </p>
       <div className="mt-4 grid gap-2 md:grid-cols-3">
-        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Deep learning tracks</div>
-        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Practice prompts</div>
-        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Progressive modules</div>
+        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Deep wisdom tracks</div>
+        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Use-tonight prompts</div>
+        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Sacred love progression</div>
       </div>
       <Link
         to="/pricing"
@@ -826,7 +826,7 @@ const Authors = () => {
 
       <section className={shellCardClass}>
         <p className="text-xs uppercase tracking-[0.22em] text-primary/80">Authors Overview</p>
-        <h2 className="mt-2 font-display text-3xl text-foreground">Choose an author for insight now and depth later</h2>
+        <h2 className="mt-2 font-display text-3xl text-foreground">Choose an author for immediate closeness and deeper shared growth</h2>
 
         <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {authors.map((author, index) => {
@@ -866,7 +866,7 @@ const Authors = () => {
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           <div className="rounded-2xl border border-emerald-400/25 bg-emerald-500/8 p-4">
             <p className="text-xs uppercase tracking-[0.14em] text-emerald-200">Free Authors</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">{freeAuthors.map((author) => author.name).join(" and ")} are fully open so couples can apply wisdom immediately and feel closer today.</p>
+            <p className="mt-2 text-sm leading-6 text-foreground/90">{freeAuthors.map((author) => author.name).join(" and ")} are fully open so couples can apply ancient wisdom immediately and feel closer today.</p>
           </div>
           <div className="rounded-2xl border border-amber-400/25 bg-amber-500/8 p-4">
             <p className="text-xs uppercase tracking-[0.14em] text-amber-200">Premium Authors</p>

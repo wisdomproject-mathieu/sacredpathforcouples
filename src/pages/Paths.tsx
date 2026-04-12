@@ -77,14 +77,14 @@ const pathDetails: PathDetail[] = [
     slug: "tantra",
     name: "Tantric Wisdom",
     tier: "free",
-    oneLine: "A sacred-intimate path that unites breath, presence, polarity, and devotion.",
-    overviewLine: "For couples who want intimacy to feel conscious, embodied, and spiritually alive.",
+    oneLine: "An ancient path translated for modern couples through breath, presence, polarity, and devotion.",
+    overviewLine: "For couples who want intimacy to feel conscious tonight and grow spiritually over time.",
     icon: Sparkles,
     iconClass: "text-fuchsia-300",
     content: {
       hero: [
-        "Tantric Wisdom is a path of integration. It does not split desire from consciousness or tenderness from intensity. It invites couples to stay present with the whole field: longing, pleasure, vulnerability, devotion, and silence.",
-        "In modern life this means replacing rushed, goal-oriented intimacy with intentional pacing. The point is not to appear spiritual. The point is to become relationally awake together.",
+        "Tantric Wisdom is a path of integration. It does not split desire from consciousness or tenderness from intensity. It invites couples to stay present with longing, pleasure, vulnerability, devotion, and silence.",
+        "In modern life this means replacing rushed, goal-oriented intimacy with intentional pacing. The point is not to appear spiritual, but to become relationally awake and closer together.",
       ],
       quote: {
         text: "Tantra matures intimacy by turning attention into devotion and sensation into awareness.",
@@ -165,21 +165,21 @@ const pathDetails: PathDetail[] = [
         { name: "Margot Anand", tier: "premium", note: "Ecstatic ceremony and sacred sensuality." },
       ],
       premiumBanner:
-        "Unlock full Tantric Wisdom journeys with guided audio, chakra-informed partner rituals, and progressive practice tracks from beginner to advanced.",
+        "Unlock full Tantric Wisdom journeys with guided audio, chakra-informed partner rituals, and progressive tracks that help couples move toward sacred love.",
     },
   },
   {
     slug: "tao",
     name: "Tao",
     tier: "free",
-    oneLine: "Flow, breath, and sensual longevity that leaves both partners nourished.",
-    overviewLine: "For couples who want calm intensity, better pacing, and sustainable erotic energy.",
+    oneLine: "Flow, breath, and sensual longevity from ancient Taoist practice for modern couples.",
+    overviewLine: "For couples who want calm intensity now and sustainable erotic energy long-term.",
     icon: Waves,
     iconClass: "text-cyan-300",
     content: {
       hero: [
         "Tao is the path of flow. In intimacy it teaches softness, pacing, warmth, and circulation so closeness feels replenishing instead of draining.",
-        "It is especially useful for modern couples under stress load. Tao restores rhythm and body trust when nervous systems are overworked.",
+        "It is especially useful for modern couples under stress load. Tao restores rhythm and body trust so partners can reconnect without force.",
       ],
       quote: {
         text: "Taoist intimacy is measured by how nourished you feel after connection, not by how dramatic it looked.",
@@ -260,35 +260,35 @@ const pathDetails: PathDetail[] = [
         { name: "Michaela Boehm", tier: "premium", note: "Somatic relational grounding." },
       ],
       premiumBanner:
-        "Unlock advanced Tao pathways for partner breathing maps, circulation work, sensual longevity training, and vitality integration routines.",
+        "Unlock advanced Tao pathways for partner breathing maps, circulation work, sensual longevity training, and vitality routines for lasting couple closeness.",
     },
   },
   {
     slug: "kama-sutra",
     name: "Kama Sutra",
     tier: "premium",
-    oneLine: "The art of cultivated desire, atmosphere, and elegant erotic expression.",
-    overviewLine: "Premium path for couples practicing sensual refinement and playful intentionality.",
+    oneLine: "Ancient arts of cultivated desire, atmosphere, and elegant erotic expression.",
+    overviewLine: "Premium path for couples practicing sensual refinement in service of sacred love.",
     icon: Crown,
     iconClass: "text-amber-300",
     teaser: [
-      "Go far beyond positions into mood, anticipation, and relational erotic design.",
+      "Go far beyond positions into mood, anticipation, and relational erotic design for modern couples.",
       "Learn to make desire intentional, beautiful, and emotionally connected.",
-      "Premium includes structured rituals, scripts, and guided progression.",
+      "Premium includes structured rituals, scripts, and guided progression you can actually sustain.",
     ],
   },
   {
     slug: "polarity",
     name: "Polarity",
     tier: "premium",
-    oneLine: "Conscious energetic contrast that restores magnetic charge in long-term love.",
-    overviewLine: "Premium path for couples rebuilding erotic tension, edge, and devotion.",
+    oneLine: "Conscious energetic contrast that restores magnetic charge in long-term partnership.",
+    overviewLine: "Premium path for couples rebuilding erotic tension, edge, and devotion safely.",
     icon: Flame,
     iconClass: "text-rose-300",
     teaser: [
       "Rebuild attraction where affection remains but charge has flattened.",
-      "Train leading/receiving dynamics with consent and precision.",
-      "Premium includes progressive drills and relational scripts.",
+      "Train leading and receiving dynamics with consent, precision, and emotional care.",
+      "Premium includes progressive drills and relational scripts for modern couples.",
     ],
   },
   {
@@ -296,55 +296,55 @@ const pathDetails: PathDetail[] = [
     name: "Sacred Desire",
     tier: "premium",
     oneLine: "A devotional-erotic path for couples cultivating longing, reverence, and embodied magnetism.",
-    overviewLine: "Premium path for couples who want intimacy to feel both sacred and deeply alive.",
+    overviewLine: "Premium path for couples who want intimacy to feel sacred, alive, and deeply connected.",
     icon: Heart,
     iconClass: "text-orange-300",
     teaser: [
       "Integrate longing, tenderness, and erotic intensity without fragmentation.",
-      "Learn devotional practices that keep desire emotionally connected.",
-      "Premium includes advanced rituals, pacing maps, and partner prompts.",
+      "Learn devotional practices that keep desire emotionally connected in daily life.",
+      "Premium includes advanced rituals, pacing maps, and partner prompts for sacred partnership.",
     ],
   },
   {
     slug: "shamanism",
     name: "Shamanism",
     tier: "premium",
-    oneLine: "Ecstatic ritual and energetic channeling through direct spiritual experience.",
-    overviewLine: "Premium path exploring altered-state practice, energy work, and sacred ceremony.",
+    oneLine: "Ecstatic ritual and energetic channeling through direct spiritual experience for couples.",
+    overviewLine: "Premium path exploring altered-state practice, energy work, and bonded sacred ceremony.",
     icon: Flame,
     iconClass: "text-orange-300",
     teaser: [
       "Explore shamanic journey frameworks for relational and energetic transformation.",
       "Bridge trance, ritual, and embodied intimacy in a grounded modern context.",
-      "Premium includes safety-first ceremonial maps, partner prompts, and integration guides.",
+      "Premium includes safety-first ceremonial maps, partner prompts, and integration guides for couples.",
     ],
   },
   {
     slug: "neo-tantra",
     name: "Neo-Tantra",
     tier: "premium",
-    oneLine: "A modern synthesis of classical Tantra and contemporary psychological insight.",
-    overviewLine: "Premium path focused on sacred sexuality, self-empowerment, and conscious intimacy.",
+    oneLine: "A modern synthesis of classical Tantra and contemporary psychological insight for couples.",
+    overviewLine: "Premium path focused on sacred sexuality, shared empowerment, and conscious intimacy.",
     icon: Sparkles,
     iconClass: "text-fuchsia-300",
     teaser: [
       "Blend ancient tantric principles with modern relational and therapeutic language.",
-      "Practice intimacy as both personal healing and erotic awakening.",
-      "Premium includes guided modules, communication scripts, and integration sequences.",
+      "Practice intimacy as both personal healing and bonded erotic awakening.",
+      "Premium includes guided modules, communication scripts, and integration sequences for partners.",
     ],
   },
   {
     slug: "qigong-neidan",
     name: "Qigong & Neidan",
     tier: "premium",
-    oneLine: "Internal alchemy practices for cultivating, storing, and circulating life-force.",
-    overviewLine: "Premium path for vitality, longevity, and refined energetic partnership.",
+    oneLine: "Internal alchemy practices for cultivating, storing, and circulating life-force in partnership.",
+    overviewLine: "Premium path for vitality, longevity, and refined energetic couple practice.",
     icon: Waves,
     iconClass: "text-cyan-300",
     teaser: [
       "Learn partner-aware Qi cultivation and internal alchemy foundations.",
       "Develop circulation patterns that support both health and sensual depth.",
-      "Premium includes stepwise energetic training maps and co-practice protocols.",
+      "Premium includes stepwise energetic training maps and co-practice protocols for long-term love.",
     ],
   },
   {
@@ -352,13 +352,13 @@ const pathDetails: PathDetail[] = [
     name: "Kundalini / Kriya Yoga",
     tier: "premium",
     oneLine: "Awakening and directing latent energy through breath, bandha, and meditative discipline.",
-    overviewLine: "Premium path for chakra-oriented energetic ascent and embodied spiritual refinement.",
+    overviewLine: "Premium path for chakra-oriented energetic ascent with grounded couple integration.",
     icon: Flame,
     iconClass: "text-rose-300",
     teaser: [
       "Work with structured kriya and kundalini-oriented energy awakening principles.",
       "Integrate spinal energy cultivation with relational grounding and consent.",
-      "Premium includes guided progression, pacing safeguards, and integration practices.",
+      "Premium includes guided progression, pacing safeguards, and integration practices for modern partners.",
     ],
   },
   {
@@ -366,13 +366,13 @@ const pathDetails: PathDetail[] = [
     name: "Sufism",
     tier: "premium",
     oneLine: "Heart-centered mysticism through remembrance, devotion, and direct divine experience.",
-    overviewLine: "Premium path for sacred love, embodied remembrance, and spiritual intimacy.",
+    overviewLine: "Premium path for sacred love, embodied remembrance, and heart-led couple intimacy.",
     icon: Heart,
     iconClass: "text-emerald-300",
     teaser: [
       "Explore dhikr-inspired presence practices for couples and contemplative lovers.",
       "Unite heart devotion, music, movement, and surrendered awareness.",
-      "Premium includes guided devotional sequences and relational integration prompts.",
+      "Premium includes guided devotional sequences and relational integration prompts for daily closeness.",
     ],
   },
   {
@@ -380,13 +380,13 @@ const pathDetails: PathDetail[] = [
     name: "Buddhism Forum",
     tier: "premium",
     oneLine: "Contemplative relational path emphasizing awareness, compassion, and ethical intimacy.",
-    overviewLine: "Premium path for mindful partnership, direct experience, and disciplined inner work.",
+    overviewLine: "Premium path for mindful partnership, direct experience, and disciplined shared growth.",
     icon: Crown,
     iconClass: "text-violet-300",
     teaser: [
       "Develop meditation-informed intimacy with compassion-centered communication.",
       "Work with attachment, reactivity, and desire through mindful relational practice.",
-      "Premium includes contemplative partner protocols and integration frameworks.",
+      "Premium includes contemplative partner protocols and integration frameworks for modern couples.",
     ],
   },
   {
@@ -394,13 +394,13 @@ const pathDetails: PathDetail[] = [
     name: "Vajrayana & Kashmir Shaivism",
     tier: "premium",
     oneLine: "Diamond-vehicle energy transformation meets non-dual recognition of divine consciousness.",
-    overviewLine: "Premium path combining Tibetan Vajrayana methods with Kashmir Shaivism realization practice.",
+    overviewLine: "Premium path combining Vajrayana and Shaivism for couples seeking sacred, embodied intimacy.",
     icon: Crown,
     iconClass: "text-indigo-300",
     teaser: [
       "Work with mantra, visualization, channels, winds, and meditative concentration responsibly.",
       "Integrate recognition-based Kashmir Shaivism practice into modern relational intimacy.",
-      "Premium includes safety-aware energetic sequencing and deep integration maps.",
+      "Premium includes safety-aware energetic sequencing and deep integration maps for couple practice.",
     ],
   },
 ];
@@ -441,7 +441,7 @@ const PathHeroCard = ({ path }: { path: PathDetail }) => {
           className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-2 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/18"
         >
           <Lock className="h-4 w-4" />
-          Unlock this path
+          Unlock this couple path journey
         </Link>
       ) : null}
     </section>
@@ -504,12 +504,12 @@ const PremiumMiniCard = () => (
       <span className="text-xs uppercase tracking-[0.16em]">Premium</span>
     </div>
     <p className="mt-3 text-sm leading-6 text-foreground/90">
-      Unlock full path mastery with advanced practices, richer context, and direct bridges into relationship transformation.
+      Unlock full path journeys with advanced practices, richer context, and direct bridges into sacred-love transformation for couples.
     </p>
     <div className="mt-3 flex flex-wrap gap-2">
       <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Guided Tracks</span>
       <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Energy Maps</span>
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Expert Library</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Sacred Love Library</span>
     </div>
     <Link
       to="/pricing"
@@ -651,7 +651,7 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
           to="/pricing"
           className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
         >
-          See premium plans
+          View premium plans
           <ArrowRight className="h-4 w-4" />
         </Link>
       </section>
@@ -680,28 +680,28 @@ const PremiumPathContent = ({ path }: { path: PathDetail }) => (
         className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-2 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/18"
       >
         <Lock className="h-4 w-4" />
-        Unlock this path in premium
+        Unlock this path journey in premium
       </Link>
     </section>
 
     <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">What premium unlocks here</p>
+      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">What premium unlocks for couples here</p>
       <div className="mt-4 grid gap-3 md:grid-cols-2">
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
           <h4 className="font-body text-sm text-foreground">Layered educational map</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Foundations, modern translation, advanced applications, and progression.</p>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Ancient foundations, modern translation, advanced applications, and clear progression.</p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
           <h4 className="font-body text-sm text-foreground">Guided exercises</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Practice flows with timing, prompts, and integration checkpoints.</p>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Practice flows with timing, prompts, and integration checkpoints for immediate use.</p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
           <h4 className="font-body text-sm text-foreground">Misunderstanding safeguards</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Clear boundaries for consent, pacing, and healthy implementation.</p>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Clear boundaries for consent, pacing, and healthy couple implementation.</p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
           <h4 className="font-body text-sm text-foreground">Cross-library links</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Related authors, reconnect tools, and next-step continuity.
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Related authors, reconnect tools, and next-step continuity for shared growth.
           </p>
         </article>
       </div>
@@ -710,12 +710,12 @@ const PremiumPathContent = ({ path }: { path: PathDetail }) => (
     <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.2),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
       <p className="text-xs uppercase tracking-[0.2em] text-amber-300">Premium Banner</p>
       <p className="mt-3 text-sm leading-7 text-foreground/90">
-        Premium opens complete path transmissions: deeper context, advanced techniques, and guided integration designed for lasting relational impact.
+        Premium opens complete path transmissions: deeper context, advanced techniques, and guided integration designed for lasting couple closeness and sacred love.
       </p>
       <div className="mt-4 grid gap-2 md:grid-cols-3">
         <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Master-level depth</div>
-        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Stepwise learning</div>
-        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Couple application</div>
+        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Use-now guidance</div>
+        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Sacred love progression</div>
       </div>
       <Link
         to="/pricing"
@@ -761,7 +761,7 @@ const Paths = () => {
 
       <section className={shellCardClass}>
         <p className="text-xs uppercase tracking-[0.22em] text-primary/80">Paths Overview</p>
-        <h2 className="mt-2 font-display text-3xl text-foreground">Choose a path for immediate practice and long-term growth</h2>
+        <h2 className="mt-2 font-display text-3xl text-foreground">Choose a path for immediate closeness and long-term sacred growth</h2>
 
         <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {pathDetails.map((path) => {
