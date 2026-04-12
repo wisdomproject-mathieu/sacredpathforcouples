@@ -4,6 +4,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Lock, ChevronRight, Check, Play } from "lucide-react";
 import { toast } from "sonner";
+import DoorwayShell from "@/components/space/DoorwayShell";
 
 interface Pathway {
   id: string;
@@ -22,9 +23,10 @@ interface Progress {
 
 interface Props {
   coupleId?: string;
+  onNavigate?: (tab: string) => void;
 }
 
-const Pathways = ({ coupleId }: Props) => {
+const Pathways = ({ coupleId, onNavigate }: Props) => {
   const { t } = useLanguage();
   const { user } = useAuth();
   const [pathways, setPathways] = useState<Pathway[]>([]);
@@ -87,17 +89,15 @@ const Pathways = ({ coupleId }: Props) => {
   };
 
   return (
-    <div className="px-5 py-6 max-w-xl mx-auto">
-      <div className="text-center mb-8">
-        <h3 className="font-heading text-2xl md:text-3xl text-foreground mb-2">
-          {t("pathways.title")}
-        </h3>
-        <p className="text-muted-foreground font-body text-base md:text-lg max-w-md mx-auto">
-          {t("pathways.subtitle")}
-        </p>
-      </div>
+    <DoorwayShell
+      label="Pathways"
+      title={t("pathways.title")}
+      description={t("pathways.subtitle")}
+      actionLabel="Open temple guide"
+      onAction={onNavigate ? () => onNavigate("guide") : undefined}
+    >
 
-      <div className="space-y-3">
+      <div className="space-y-3 px-5 max-w-xl mx-auto">
         {pathways.map((p) => {
           const prog = progress[p.id];
           const isSelected = selected === p.id;
@@ -171,7 +171,7 @@ const Pathways = ({ coupleId }: Props) => {
           );
         })}
       </div>
-    </div>
+    </DoorwayShell>
   );
 };
 

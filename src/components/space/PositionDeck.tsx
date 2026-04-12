@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Lock, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import DoorwayShell from "@/components/space/DoorwayShell";
 
 const practices = [
   { key: "seated_closeness", free: true, emoji: "🪷" },
@@ -14,22 +15,24 @@ const practices = [
   { key: "standing_embrace", free: false, emoji: "🫂" },
 ];
 
-const PositionDeck = () => {
+interface Props {
+  onNavigate?: (tab: string) => void;
+}
+
+const PositionDeck = ({ onNavigate }: Props) => {
   const { t } = useLanguage();
   const [expanded, setExpanded] = useState<number | null>(null);
 
   return (
-    <div className="px-4 py-6">
-      <div className="text-center mb-8">
-        <h3 className="font-heading text-2xl md:text-3xl text-foreground mb-2">
-          {t("position.title")}
-        </h3>
-        <p className="text-muted-foreground font-body text-sm md:text-base max-w-md mx-auto">
-          {t("position.subtitle")}
-        </p>
-      </div>
+    <DoorwayShell
+      label="Positions"
+      title={t("position.title")}
+      description={t("position.subtitle")}
+      actionLabel="Go to rituals"
+      onAction={onNavigate ? () => onNavigate("rituals") : undefined}
+    >
 
-      <div className="grid gap-3 max-w-lg mx-auto">
+      <div className="grid gap-3 max-w-lg mx-auto px-4">
         {practices.map((p, idx) => {
           const isOpen = expanded === idx;
           return (
@@ -80,7 +83,7 @@ const PositionDeck = () => {
           {t("position.unlock_all")}
         </Button>
       </div>
-    </div>
+    </DoorwayShell>
   );
 };
 

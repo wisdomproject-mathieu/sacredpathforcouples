@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Wind, Heart, MessageCircle, Hand, Sparkles, ChevronRight } from "lucide-react";
+import DoorwayShell from "@/components/space/DoorwayShell";
 
 const repairSteps = [
   { key: "breathe", icon: Wind, color: "text-sky-400" },
@@ -10,7 +11,11 @@ const repairSteps = [
   { key: "close", icon: Sparkles, color: "text-primary" },
 ];
 
-const RepairMode = () => {
+interface Props {
+  onNavigate?: (tab: string) => void;
+}
+
+const RepairMode = ({ onNavigate }: Props) => {
   const { t } = useLanguage();
   const [step, setStep] = useState<number | null>(null);
   const [started, setStarted] = useState(false);
@@ -24,18 +29,16 @@ const RepairMode = () => {
   const currentStep = step !== null ? repairSteps[step] : null;
 
   return (
-    <div className="px-4 py-6">
-      <div className="text-center mb-8">
-        <h3 className="font-heading text-2xl md:text-3xl text-foreground mb-2">
-          {t("repair.title")}
-        </h3>
-        <p className="text-muted-foreground font-body text-sm md:text-base max-w-md mx-auto">
-          {t("repair.subtitle")}
-        </p>
-      </div>
+    <DoorwayShell
+      label="Repair"
+      title={t("repair.title")}
+      description={t("repair.subtitle")}
+      actionLabel="Go to messages"
+      onAction={onNavigate ? () => onNavigate("messages") : undefined}
+    >
 
       {!started ? (
-        <div className="max-w-md mx-auto text-center">
+        <div className="max-w-md mx-auto px-4 text-center">
           {/* Overview of steps */}
           <div className="grid gap-3 mb-8">
             {repairSteps.map((s, idx) => {
@@ -67,7 +70,7 @@ const RepairMode = () => {
           </button>
         </div>
       ) : currentStep ? (
-        <div className="max-w-md mx-auto text-center animate-fade-in" key={step}>
+        <div className="max-w-md mx-auto px-4 text-center animate-fade-in" key={step}>
           {/* Progress */}
           <div className="flex gap-1.5 justify-center mb-8">
             {repairSteps.map((_, idx) => (
@@ -102,7 +105,7 @@ const RepairMode = () => {
           </button>
         </div>
       ) : null}
-    </div>
+    </DoorwayShell>
   );
 };
 

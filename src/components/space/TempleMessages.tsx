@@ -3,9 +3,11 @@ import { Heart, MessageCircleHeart, Send, Sparkles, Star } from "lucide-react";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import DoorwayShell from "@/components/space/DoorwayShell";
 
 interface Props {
   coupleId?: string;
+  onNavigate?: (tab: string) => void;
 }
 
 const messageStarters = [
@@ -16,7 +18,7 @@ const messageStarters = [
   "One small ritual I want with you this week is…",
 ];
 
-const TempleMessages = ({ coupleId }: Props) => {
+const TempleMessages = ({ coupleId, onNavigate }: Props) => {
   const { user } = useAuth();
   const isPreview = !coupleId;
   const [messages, setMessages] = useState<any[]>([]);
@@ -73,21 +75,17 @@ const TempleMessages = ({ coupleId }: Props) => {
   };
 
   return (
-    <div className="space-y-6">
-      <section className="rounded-[28px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-6 shadow-[0_26px_90px_-50px_rgba(255,173,70,0.42)]">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-xs uppercase tracking-[0.28em] text-primary/80">Temple Messages</p>
-            <h2 className="mt-3 font-display text-3xl text-foreground md:text-4xl">Send something that softens the distance</h2>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">
-              Small loving notes keep the temple alive. Keep it simple, true, and specific.
-            </p>
-          </div>
-          <div className="rounded-[22px] border border-border/30 bg-card/45 p-4">
-            <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Prompt for tonight</div>
-            <div className="mt-2 text-sm text-foreground">{featuredStarter}</div>
-          </div>
-        </div>
+    <DoorwayShell
+      label="Temple Messages"
+      title="Send something that softens the distance"
+      description="Small loving notes keep the temple alive. Keep it simple, true, and specific."
+      actionLabel="Open repair mode"
+      onAction={onNavigate ? () => onNavigate("repair") : undefined}
+    >
+
+      <section className="rounded-[24px] border border-border/30 bg-card/45 p-4">
+        <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Prompt for tonight</div>
+        <div className="mt-2 text-sm text-foreground">{featuredStarter}</div>
       </section>
 
       <section className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
@@ -170,7 +168,7 @@ const TempleMessages = ({ coupleId }: Props) => {
           </div>
         </div>
       </section>
-    </div>
+    </DoorwayShell>
   );
 };
 

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import {
+  Brain,
   Bookmark,
   Cloud,
   Compass,
@@ -23,9 +24,10 @@ import Pathways from "@/components/space/Pathways";
 import MemoryAltar from "@/components/space/MemoryAltar";
 import RepairMode from "@/components/space/RepairMode";
 import TempleGuide from "@/components/space/TempleGuide";
+import WisdomOracle from "@/components/space/WisdomOracle";
 
 type ToolKey = "weather" | "rituals" | "positions" | "messages" | "guide" | "repair" | "pathways" | "altar";
-type ViewMode = "doorways" | "journey";
+type ViewMode = "doorways" | "journey" | "oracle";
 
 type ActivityState = {
   partnerNote: string;
@@ -98,6 +100,36 @@ const tools: {
     title: "Altar",
     subtitle: "Keep the moments that should not disappear after the night is over.",
     iconClass: "text-orange-300",
+  },
+];
+
+const templeViews: {
+  key: ViewMode;
+  icon: typeof Home;
+  title: string;
+  subtitle: string;
+  iconClass: string;
+}[] = [
+  {
+    key: "doorways",
+    icon: Sparkles,
+    title: "Doorways",
+    subtitle: "Open all 8 Temple tools and practice now.",
+    iconClass: "text-fuchsia-300",
+  },
+  {
+    key: "journey",
+    icon: Route,
+    title: "Journey",
+    subtitle: "See where your relationship is, and what next.",
+    iconClass: "text-amber-300",
+  },
+  {
+    key: "oracle",
+    icon: Brain,
+    title: "Wisdom Oracle",
+    subtitle: "Get AI-guided next steps from your shared data.",
+    iconClass: "text-cyan-300",
   },
 ];
 
@@ -275,20 +307,33 @@ const PartnerSpace = () => {
           </div>
 
           <div className="mt-6 flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={() => setViewMode("doorways")}
-              className={`rounded-full border px-4 py-2 text-sm transition-all ${viewMode === "doorways" ? "border-primary/25 bg-primary/10 text-foreground" : "border-border/30 bg-background/45 text-muted-foreground hover:text-foreground"}`}
-            >
-              Doorways
-            </button>
-            <button
-              type="button"
-              onClick={() => setViewMode("journey")}
-              className={`rounded-full border px-4 py-2 text-sm transition-all ${viewMode === "journey" ? "border-primary/25 bg-primary/10 text-foreground" : "border-border/30 bg-background/45 text-muted-foreground hover:text-foreground"}`}
-            >
-              Our Journey
-            </button>
+            <div className="w-full rounded-[24px] border border-border/30 bg-card/45 p-4">
+              <div className="text-xs uppercase tracking-[0.22em] text-primary/80">Temple pages</div>
+              <div className="mt-3 grid gap-3 md:grid-cols-3">
+                {templeViews.map((view) => {
+                  const Icon = view.icon;
+                  const active = viewMode === view.key;
+                  return (
+                    <button
+                      key={view.key}
+                      type="button"
+                      onClick={() => setViewMode(view.key)}
+                      className={`rounded-[20px] border p-4 text-left transition-all ${
+                        active
+                          ? "border-primary/30 bg-primary/10 shadow-[0_18px_50px_-36px_rgba(255,173,70,0.42)]"
+                          : "border-border/30 bg-background/45 hover:border-primary/20 hover:bg-card/55"
+                      }`}
+                    >
+                      <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-2.5 ${view.iconClass}`}>
+                        <Icon className="h-4 w-4" />
+                      </div>
+                      <div className="mt-3 font-display text-xl text-foreground">{view.title}</div>
+                      <p className="mt-1 text-sm leading-6 text-muted-foreground">{view.subtitle}</p>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </section>
 
@@ -334,13 +379,13 @@ const PartnerSpace = () => {
 
             <section>
               {activeTool === "weather" && <IntimacyWeather coupleId={coupleId ?? undefined} onNavigate={navigateTool} />}
-              {activeTool === "rituals" && <RitualCards coupleId={coupleId ?? undefined} />}
-              {activeTool === "positions" && <PositionDeck />}
-              {activeTool === "messages" && <TempleMessages coupleId={coupleId ?? undefined} />}
-              {activeTool === "guide" && <TempleGuide />}
-              {activeTool === "repair" && <RepairMode />}
-              {activeTool === "pathways" && <Pathways coupleId={coupleId ?? undefined} />}
-              {activeTool === "altar" && <MemoryAltar coupleId={coupleId ?? undefined} />}
+              {activeTool === "rituals" && <RitualCards coupleId={coupleId ?? undefined} onNavigate={navigateTool} />}
+              {activeTool === "positions" && <PositionDeck onNavigate={navigateTool} />}
+              {activeTool === "messages" && <TempleMessages coupleId={coupleId ?? undefined} onNavigate={navigateTool} />}
+              {activeTool === "guide" && <TempleGuide onNavigate={navigateTool} />}
+              {activeTool === "repair" && <RepairMode onNavigate={navigateTool} />}
+              {activeTool === "pathways" && <Pathways coupleId={coupleId ?? undefined} onNavigate={navigateTool} />}
+              {activeTool === "altar" && <MemoryAltar coupleId={coupleId ?? undefined} onNavigate={navigateTool} />}
             </section>
           </>
         )}
@@ -415,6 +460,12 @@ const PartnerSpace = () => {
                 </p>
               </div>
             </div>
+          </section>
+        )}
+
+        {viewMode === "oracle" && (
+          <section>
+            <WisdomOracle coupleId={coupleId ?? undefined} onNavigate={navigateTool} />
           </section>
         )}
       </div>

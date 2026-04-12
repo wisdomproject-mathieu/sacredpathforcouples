@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Sparkles, Clock, Eye, Moon, Zap } from "lucide-react";
+import DoorwayShell from "@/components/space/DoorwayShell";
 
 const energyLevels = [
   { key: "low", emoji: "🌙", label: "guide.energy.low" },
@@ -50,7 +51,11 @@ const recommendations: Record<string, { titleKey: string; descKey: string; icon:
   ],
 };
 
-const TempleGuide = () => {
+interface Props {
+  onNavigate?: (tab: string) => void;
+}
+
+const TempleGuide = ({ onNavigate }: Props) => {
   const { t } = useLanguage();
   const [energy, setEnergy] = useState<string | null>(null);
   const [time, setTime] = useState<string | null>(null);
@@ -61,17 +66,15 @@ const TempleGuide = () => {
   const allSelected = energy && time && privacy;
 
   return (
-    <div className="px-4 py-6">
-      <div className="text-center mb-8">
-        <h3 className="font-heading text-2xl md:text-3xl text-foreground mb-2">
-          {t("guide.title")}
-        </h3>
-        <p className="text-muted-foreground font-body text-sm md:text-base max-w-md mx-auto">
-          {t("guide.subtitle")}
-        </p>
-      </div>
+    <DoorwayShell
+      label="Temple Guide"
+      title={t("guide.title")}
+      description={t("guide.subtitle")}
+      actionLabel="Open rituals"
+      onAction={onNavigate ? () => onNavigate("rituals") : undefined}
+    >
 
-      <div className="max-w-md mx-auto space-y-6">
+      <div className="max-w-md mx-auto space-y-6 px-4">
         {/* Energy */}
         <div>
           <p className="text-sm font-body text-muted-foreground mb-3 uppercase tracking-wider">
@@ -167,7 +170,7 @@ const TempleGuide = () => {
           </div>
         )}
       </div>
-    </div>
+    </DoorwayShell>
   );
 };
 

@@ -3,6 +3,7 @@ import { Cloud, Heart, MoonStar, Sparkles, SunMedium, Wind } from "lucide-react"
 
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import DoorwayShell from "@/components/space/DoorwayShell";
 
 interface Props {
   coupleId?: string;
@@ -113,25 +114,13 @@ const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
   };
 
   return (
-    <div className="space-y-6">
-      <section className="rounded-[28px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-6 shadow-[0_26px_90px_-50px_rgba(255,173,70,0.42)]">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-xs uppercase tracking-[0.28em] text-primary/80">Intimacy Weather</p>
-            <h2 className="mt-3 font-display text-3xl text-foreground md:text-4xl">Name the climate before choosing the ritual</h2>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">
-              Check in first. It makes the next step kinder, more accurate, and more connecting.
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => onNavigate("rituals")}
-            className="rounded-2xl border border-primary/25 bg-primary/12 px-4 py-3 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
-          >
-            Go to rituals
-          </button>
-        </div>
-      </section>
+    <DoorwayShell
+      label="Intimacy Weather"
+      title="Name the climate before choosing the ritual"
+      description="Check in first. It makes the next step kinder, more accurate, and more connecting."
+      actionLabel="Go to rituals"
+      onAction={() => onNavigate("rituals")}
+    >
 
       <section className="grid gap-4 lg:grid-cols-2">
         {renderCard("Your weather", myEntry, true)}
@@ -211,7 +200,7 @@ const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
           </button>
         </div>
       </section>
-    </div>
+    </DoorwayShell>
   );
 };
 

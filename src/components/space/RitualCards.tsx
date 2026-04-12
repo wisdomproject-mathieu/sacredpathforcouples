@@ -17,6 +17,7 @@ import {
   Zap,
 } from "lucide-react";
 import { toast } from "sonner";
+import DoorwayShell from "@/components/space/DoorwayShell";
 
 type CategoryKey =
   | "all"
@@ -43,6 +44,7 @@ interface RitualItem {
 
 interface Props {
   coupleId?: string;
+  onNavigate?: (tab: string) => void;
 }
 
 const categoryIcons: Record<string, typeof Sparkles> = {
@@ -66,7 +68,7 @@ const categoryFilters: CategoryKey[] = [
   "playful",
 ];
 
-const RitualCards = ({ coupleId }: Props) => {
+const RitualCards = ({ coupleId, onNavigate }: Props) => {
   const { t } = useLanguage();
   const { user } = useAuth();
 
@@ -126,11 +128,13 @@ const RitualCards = ({ coupleId }: Props) => {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h3 className="font-display text-2xl text-foreground">{t("ritual_cards.title")}</h3>
-        <p className="mt-2 font-body text-muted-foreground">{t("ritual_cards.subtitle")}</p>
-      </div>
+    <DoorwayShell
+      label="Rituals"
+      title={t("ritual_cards.title")}
+      description={t("ritual_cards.subtitle")}
+      actionLabel="Open temple guide"
+      onAction={onNavigate ? () => onNavigate("guide") : undefined}
+    >
 
       <div className="overflow-x-auto">
         <div className="flex gap-2 min-w-max">
@@ -291,7 +295,7 @@ const RitualCards = ({ coupleId }: Props) => {
           </div>
         )}
       </div>
-    </div>
+    </DoorwayShell>
   );
 };
 
