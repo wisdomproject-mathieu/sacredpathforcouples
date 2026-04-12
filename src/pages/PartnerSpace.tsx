@@ -371,9 +371,8 @@ const PartnerSpace = () => {
   const premiumGateCard = (title: string, description: string) => (
     <section className="rounded-[28px] border border-amber-300/30 bg-gradient-to-br from-amber-500/14 via-background to-background p-6 shadow-[0_26px_80px_-40px_rgba(251,191,36,0.45)]">
       <div className="max-w-3xl">
-        <div className="inline-flex items-center gap-2 rounded-full border border-amber-300/30 bg-amber-500/12 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-amber-200">
+        <div className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-amber-300/35 bg-amber-500/14 text-amber-200">
           <Lock className="h-3.5 w-3.5" />
-          Premium temple access
         </div>
         <h3 className="mt-4 font-display text-3xl text-foreground">{title}</h3>
         <p className="mt-3 text-sm leading-7 text-muted-foreground">{description}</p>
