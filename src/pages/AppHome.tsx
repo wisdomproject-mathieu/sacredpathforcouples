@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { BookOpen, Heart, Lock, MessageCircle, Sparkles, Stars, type LucideIcon } from "lucide-react";
 
 import { useAuth } from "@/contexts/AuthContext";
@@ -11,16 +10,11 @@ type Pathway = Tables<"pathways">;
 type PartnerMessage = Tables<"partner_messages">;
 type AltarItem = Tables<"altar_items">;
 
-type DailyFamily = "ritual" | "learning" | "position" | "quote" | "reconnect";
-
-type DailyFlowStep = {
+type DailyCard = {
   id: string;
-  family: DailyFamily;
   label: string;
   title: string;
   description: string;
-  cta: string;
-  route: string;
   icon: LucideIcon;
   accentClass: string;
 };
@@ -36,25 +30,21 @@ const quotes = [
     id: "quote-richardson",
     author: "Diana Richardson",
     quote: "When slowness enters intimacy, the body starts telling a much deeper truth.",
-    note: "Let the pace itself become the practice.",
   },
   {
     id: "quote-deida",
     author: "David Deida",
     quote: "Love deepens when presence, truth, and attraction are all still welcome in the room.",
-    note: "Say one honest thing without losing tenderness.",
   },
   {
     id: "quote-chia",
     author: "Mantak Chia",
     quote: "Breath and awareness turn intensity into nourishment instead of depletion.",
-    note: "Slow the breath before you ask the body for more.",
   },
   {
     id: "quote-osho",
     author: "Osho",
     quote: "When lovers meet in awareness, even silence becomes intimate.",
-    note: "Let quietness do part of the work today.",
   },
 ] as const;
 
@@ -62,53 +52,45 @@ const positions = [
   {
     id: "position-hand-on-heart",
     title: "Hand on heart",
-    description: "Start with chest-to-chest stillness and let safety arrive before intensity.",
-    route: "/app/space?tool=positions",
+    description: "Start chest-to-chest and let safety arrive before intensity.",
   },
   {
     id: "position-back-to-back",
     title: "Back to back",
-    description: "Share breath without pressure and let your nervous systems meet first.",
-    route: "/app/space?tool=positions",
+    description: "Share breath without pressure and let your nervous systems settle together.",
   },
   {
     id: "position-seated-closeness",
     title: "Seated closeness",
     description: "Face each other, stay near, and allow desire to grow from presence.",
-    route: "/app/space?tool=positions",
   },
   {
     id: "position-synchronized-exhale",
     title: "Synchronized exhale",
-    description: "Use a shared exhale to soften the room and open one clear next step.",
-    route: "/app/space?tool=positions",
+    description: "Use a shared exhale to soften the room and open one clear next move.",
   },
 ] as const;
 
-const reconnectPrompts = [
+const templePulses = [
   {
-    id: "reconnect-soft-checkin",
-    title: "Soft check-in",
-    description: "Ask: “What would help you feel cherished tonight?” Then mirror the answer in one sentence.",
-    route: "/app/reconnect",
+    id: "temple-soft",
+    title: "Soft and receptive",
+    description: "Tonight favors tenderness, gentle touch, and slow eye contact.",
   },
   {
-    id: "reconnect-90-second-repair",
-    title: "90-second repair",
-    description: "Hold hands, breathe for 90 seconds, then each share one thing you appreciate right now.",
-    route: "/app/reconnect",
+    id: "temple-playful",
+    title: "Playful and alive",
+    description: "Bring laughter, curiosity, and one light sensual invitation.",
   },
   {
-    id: "reconnect-sensual-pause",
-    title: "Sensual pause",
-    description: "Pause all logistics for five minutes. Stay close, breathe together, and let the body lead.",
-    route: "/app/reconnect",
+    id: "temple-devotional",
+    title: "Devotional and deep",
+    description: "Less noise, more reverence. Stay with breath and heart-led words.",
   },
   {
-    id: "reconnect-devotion-line",
-    title: "Devotion line",
-    description: "Whisper one line of devotion to your partner and ask for one line back.",
-    route: "/app/reconnect",
+    id: "temple-magnetic",
+    title: "Magnetic and erotic",
+    description: "Build anticipation slowly and let polarity unfold without rushing.",
   },
 ] as const;
 
@@ -135,7 +117,7 @@ const hashString = (value: string) =>
 
 const pickBySeed = <T,>(items: readonly T[], seed: string): T => items[hashString(seed) % items.length];
 
-const clipText = (value: string, max = 108) => {
+const clipText = (value: string, max = 96) => {
   if (value.length <= max) return value;
   return `${value.slice(0, max).trimEnd()}...`;
 };
@@ -148,11 +130,9 @@ const localDayKey = (date: Date) => {
 };
 
 const AppHome = () => {
-  const navigate = useNavigate();
   const { user } = useAuth();
 
   const [loading, setLoading] = useState(true);
-  const [hasConnectedPartner, setHasConnectedPartner] = useState(false);
   const [messages, setMessages] = useState<PartnerMessage[]>([]);
   const [altarItems, setAltarItems] = useState<AltarItem[]>([]);
   const [rituals, setRituals] = useState<RitualItem[]>([]);
@@ -186,14 +166,11 @@ const AppHome = () => {
       setPathways(pathwayData ?? []);
 
       if (!couple) {
-        setHasConnectedPartner(false);
         setMessages([]);
         setAltarItems([]);
         setLoading(false);
         return;
       }
-
-      setHasConnectedPartner(Boolean(couple.partner_a && couple.partner_b));
 
       const [{ data: messageData }, { data: altarData }] = await Promise.all([
         supabase
@@ -225,8 +202,8 @@ const AppHome = () => {
 
   const latestSharedMessage = messages[0] ?? null;
   const latestMemory = altarItems[0] ?? null;
-  const todayKey = useMemo(() => localDayKey(new Date()), []);
 
+  const todayKey = useMemo(() => localDayKey(new Date()), []);
   const todayLabel = useMemo(
     () =>
       new Intl.DateTimeFormat("en-US", {
@@ -260,18 +237,14 @@ const AppHome = () => {
     }
 
     return {
-      title: hasConnectedPartner ? "Shared rhythm" : "Daily rhythm",
-      detail: hasConnectedPartner
-        ? "No strong fresh signal yet, so Sacred Path is drawing from your shared story."
-        : "A quiet daily sequence to help your love stay intentional.",
+      title: "Daily rhythm",
+      detail: "A gentle daily plan for modern couples who want depth without decision fatigue.",
     };
-  }, [hasConnectedPartner, latestMemory, latestPartnerMessage, latestSharedMessage]);
+  }, [latestMemory, latestPartnerMessage, latestSharedMessage]);
 
-  const dailySeed = useMemo(() => {
-    return `${todayKey}:${user?.id ?? "guest"}:${signal.detail}`;
-  }, [signal.detail, todayKey, user?.id]);
+  const dailySeed = useMemo(() => `${todayKey}:${user?.id ?? "guest"}:${signal.detail}`, [signal.detail, todayKey, user?.id]);
 
-  const dailyFlow = useMemo<DailyFlowStep[]>(() => {
+  const dailyCards = useMemo<DailyCard[]>(() => {
     const ritualChoice =
       rituals.length > 0
         ? pickBySeed(rituals, `${dailySeed}:ritual`)
@@ -279,77 +252,60 @@ const AppHome = () => {
             id: "ritual-fallback",
             title: "Soft arrival ritual",
             hook: "Begin with one minute of touch and one honest sentence.",
-            category: "presence",
           };
 
     const pathwayChoice =
       pathways.length > 0
-        ? pickBySeed(pathways, `${dailySeed}:learning`)
+        ? pickBySeed(pathways, `${dailySeed}:insight`)
         : {
-            id: "learning-fallback",
-            title: "Slow Down",
-            description: "Return to breath, touch, and presence for a few days in a row.",
-            duration_days: 7,
+            id: "insight-fallback",
+            title: "Slow down before intensity",
+            description: "Presence first, performance second. Let your nervous systems meet.",
           };
 
-    const positionChoice = pickBySeed(positions, `${dailySeed}:position`);
     const quoteChoice = pickBySeed(quotes, `${dailySeed}:quote`);
-    const reconnectChoice = pickBySeed(reconnectPrompts, `${dailySeed}:reconnect`);
+    const positionChoice = pickBySeed(positions, `${dailySeed}:position`);
+    const templePulse = pickBySeed(templePulses, `${dailySeed}:temple`);
 
     return [
       {
         id: `ritual-${ritualChoice.id}`,
-        family: "ritual" as const,
-        label: "Ritual",
+        label: "Today Ritual",
         title: ritualChoice.title,
-        description: ritualChoice.hook || "A guided move to soften the threshold between you.",
-        cta: "Open ritual",
-        route: "/app/space?tool=rituals",
+        description: ritualChoice.hook || "A grounded opening for emotional and sensual closeness.",
         icon: Sparkles,
         accentClass: "text-amber-300",
       },
       {
         id: quoteChoice.id,
-        family: "quote" as const,
-        label: "Author quote",
-        title: `A line from ${quoteChoice.author}`,
+        label: "Today Quote",
+        title: `From ${quoteChoice.author}`,
         description: `“${quoteChoice.quote}”`,
-        cta: "Open quotes",
-        route: "/app/authors",
         icon: Stars,
         accentClass: "text-sky-300",
       },
       {
-        id: positionChoice.id,
-        family: "position" as const,
-        label: "Position",
-        title: positionChoice.title,
-        description: positionChoice.description,
-        cta: "Open positions",
-        route: positionChoice.route,
-        icon: Heart,
-        accentClass: "text-rose-300",
-      },
-      {
-        id: `learning-${pathwayChoice.id}`,
-        family: "learning" as const,
-        label: "Quick learning insight",
+        id: `insight-${pathwayChoice.id}`,
+        label: "Today Insight",
         title: pathwayChoice.title,
         description:
-          pathwayChoice.description || `${pathwayChoice.duration_days} days of guided relationship practice.`,
-        cta: "Open learning",
-        route: "/app/paths",
+          pathwayChoice.description || "One practical learning insight for couples building lasting intimacy.",
         icon: BookOpen,
         accentClass: "text-violet-300",
       },
       {
-        id: reconnectChoice.id,
-        family: "reconnect" as const,
-        label: "Reconnect move",
-        title: reconnectChoice.title,
-        description: reconnectChoice.description,
-        cta: "Open reconnect",
-        route: reconnectChoice.route,
+        id: positionChoice.id,
+        label: "Today Position",
+        title: positionChoice.title,
+        description: positionChoice.description,
+        icon: Heart,
+        accentClass: "text-rose-300",
+      },
+      {
+        id: templePulse.id,
+        label: "Today Temple Pulse",
+        title: templePulse.title,
+        description: templePulse.description,
         icon: MessageCircle,
         accentClass: "text-teal-300",
       },
@@ -361,74 +317,64 @@ const AppHome = () => {
       <section className="rounded-[28px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-6 shadow-[0_24px_80px_-40px_rgba(255,170,70,0.35)] md:p-8">
         <div className="max-w-4xl">
           <p className="text-xs uppercase tracking-[0.28em] text-primary/80">{todayLabel}</p>
-          <h1 className="mt-3 font-display text-4xl leading-tight text-foreground md:text-5xl">Your daily sacred flow is ready.</h1>
+          <h1 className="mt-3 font-display text-4xl leading-tight text-foreground md:text-5xl">Daily Sacred Starter for Modern Couples</h1>
           <p className="mt-4 max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
-            Sacred Path now chooses the day for you. Five guided moves. One clear rhythm. One devotion to infinite love.
+            Five preselected cards. Calm direction. Shared intimacy momentum. This page renews every day to support your path toward infinite love.
           </p>
         </div>
 
-        <div className="mt-8 grid gap-4 lg:grid-cols-[1.12fr_0.88fr]">
-          <div>
-            <p className="text-xs uppercase tracking-[0.22em] text-primary/80">Today&apos;s promise</p>
-            <h2 className="mt-3 font-display text-3xl text-foreground md:text-4xl">
-              One ritual. One quote. One position. One insight. One reconnect move.
-            </h2>
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">
-              {loading
-                ? "Gathering your shared rhythm and selecting today’s sequence."
-                : "This sequence stays fixed all day, then returns tomorrow as a fresh sacred page."}
-            </p>
+        <div className="mt-6 rounded-[22px] border border-border/30 bg-card/40 p-4">
+          <div className="flex items-center gap-2 text-violet-300">
+            <MessageCircle className="h-4 w-4" />
+            <span className="text-xs uppercase tracking-[0.18em]">{signal.title}</span>
           </div>
+          <p className="mt-3 text-sm leading-6 text-foreground/90">{loading ? "Preparing today’s flow..." : signal.detail}</p>
+        </div>
+      </section>
 
-          <div className="space-y-3">
-            <div className="rounded-[22px] border border-border/30 bg-card/40 p-4">
-              <div className="flex items-center gap-2 text-violet-300">
-                <MessageCircle className="h-4 w-4" />
-                <span className="text-xs uppercase tracking-[0.18em]">{signal.title}</span>
+      <section>
+        <div className="mb-4">
+          <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Today&apos;s fixed flow</p>
+          <h2 className="mt-2 font-display text-3xl text-foreground">5 cards selected for your relationship today</h2>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {dailyCards.map((card) => {
+            const Icon = card.icon;
+
+            return (
+              <div key={card.id} className="rounded-[24px] border border-border/30 bg-card/45 p-5">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{card.label}</p>
+                    <h3 className="mt-3 font-display text-2xl text-foreground">{loading ? "Selecting..." : card.title}</h3>
+                  </div>
+                  <div className={`inline-flex rounded-2xl border border-border/30 bg-background/45 p-3 ${card.accentClass}`}>
+                    <Icon className="h-5 w-5" />
+                  </div>
+                </div>
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                  {loading ? "Calibrating your daily relationship guidance." : card.description}
+                </p>
               </div>
-              <p className="mt-3 text-sm leading-6 text-foreground/90">{signal.detail}</p>
-            </div>
-
-            <div className="rounded-[22px] border border-border/30 bg-card/40 p-4">
-              <div className="text-xs uppercase tracking-[0.18em] text-primary/80">Daily cadence</div>
-              <p className="mt-3 font-display text-2xl text-foreground">{loading ? "Tuning..." : "Preselected for you"}</p>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                {loading
-                  ? "The page is drawing your five moves."
-                  : "Open each card in order, share what resonates, and let your journey carry the continuity."}
-              </p>
-            </div>
-          </div>
+            );
+          })}
         </div>
       </section>
 
       <section className="rounded-[24px] border border-amber-400/35 bg-gradient-to-br from-amber-500/12 via-card/65 to-card/35 p-5">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-amber-200">Locked Premium Expansion</p>
-            <h2 className="mt-2 font-display text-2xl text-foreground">15 additional daily cards across the entire app</h2>
-          </div>
-          <button
-            type="button"
-            onClick={() => navigate("/pricing")}
-            className="rounded-2xl border border-amber-300/45 bg-amber-500/15 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-200/70 hover:bg-amber-500/20"
-          >
-            Unlock plans
-          </button>
+        <div className="flex items-center gap-2">
+          <Lock className="h-4 w-4 text-amber-100" />
+          <p className="text-xs uppercase tracking-[0.2em] text-amber-200">Premium Expansion</p>
         </div>
-
+        <h2 className="mt-2 font-display text-2xl text-foreground">15 more daily cards across Temple, Library, Reconnect, Oracle, and Journey</h2>
         <p className="mt-3 text-sm leading-6 text-muted-foreground">
-          Expand your daily rhythm with deeper Temple moments, richer Sacred Library wisdom, advanced reconnect guidance, and Wisdom Oracle precision for next-step intimacy.
+          Premium unlocks deeper daily guidance for modern couples ready to move from good moments to a true sacred relationship lifestyle.
         </p>
 
         <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {premiumDailyCards.map((card) => (
-            <button
-              key={card.id}
-              type="button"
-              onClick={() => navigate("/pricing")}
-              className="w-full rounded-2xl border border-amber-300/30 bg-amber-500/8 p-4 text-left transition-all hover:border-amber-200/60 hover:bg-amber-500/12"
-            >
+            <div key={card.id} className="rounded-2xl border border-amber-300/30 bg-amber-500/8 p-4 text-left">
               <div className="flex items-start gap-3">
                 <span className="mt-0.5 inline-flex rounded-full border border-amber-300/45 bg-amber-400/15 p-1.5 text-amber-100">
                   <Lock className="h-3.5 w-3.5" />
@@ -438,44 +384,8 @@ const AppHome = () => {
                   <p className="mt-1 text-sm leading-5 text-foreground/95">{card.title}</p>
                 </div>
               </div>
-            </button>
+            </div>
           ))}
-        </div>
-      </section>
-
-      <section>
-        <div className="mb-4">
-          <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Preselected daily sequence</p>
-          <h2 className="mt-2 font-display text-3xl text-foreground">Follow today&apos;s five sacred moves</h2>
-        </div>
-
-        <div className="grid gap-4">
-          {dailyFlow.map((step, index) => {
-            const Icon = step.icon;
-
-            return (
-              <button
-                key={step.id}
-                type="button"
-                onClick={() => navigate(step.route)}
-                className="w-full rounded-[24px] border border-border/30 bg-card/45 p-5 text-left transition-all hover:border-primary/25 hover:bg-card/60"
-              >
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.2em] text-primary/80">
-                      Step {index + 1} · {step.label}
-                    </p>
-                    <h3 className="mt-3 font-display text-2xl text-foreground">{step.title}</h3>
-                  </div>
-                  <div className={`inline-flex rounded-2xl border border-border/30 bg-background/45 p-3 ${step.accentClass}`}>
-                    <Icon className="h-5 w-5" />
-                  </div>
-                </div>
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">{step.description}</p>
-                <div className="mt-4 text-sm text-foreground/90">{step.cta}</div>
-              </button>
-            );
-          })}
         </div>
       </section>
     </div>
