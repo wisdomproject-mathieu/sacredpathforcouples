@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { BookOpen, Home, LogOut, Sparkles } from "lucide-react";
+import { BookOpen, HeartHandshake, Home, LogOut, Sparkles } from "lucide-react";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ const AppLayout = () => {
   const navItems = useMemo(
     () => [
       { to: "/app", icon: Home, label: "Home", iconClass: "text-amber-300" },
+      { to: "/app/connect", icon: HeartHandshake, label: "Connect with Partner", iconClass: "text-rose-300" },
       { to: "/app/paths", icon: BookOpen, label: "Sacred Library", iconClass: "text-violet-300" },
       { to: "/app/space", icon: Sparkles, label: "Sacred Temple", iconClass: "text-fuchsia-300" },
     ],

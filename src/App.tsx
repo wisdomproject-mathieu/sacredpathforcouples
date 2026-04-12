@@ -13,6 +13,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import AppHome from "./pages/AppHome";
 import Connect from "./pages/Connect";
+import ConnectLanding from "./pages/ConnectLanding";
 import Reconnect from "./pages/Reconnect";
 import Rituals from "./pages/Rituals";
 import Paths from "./pages/Paths";
@@ -70,6 +71,16 @@ const RouteSeoDefaults = () => {
       };
     }
 
+    if (location.pathname === "/connect") {
+      return {
+        title: "Connect with Partner",
+        description: "Create a shared code and activate your couple experience in Sacred Path for Couples.",
+        path: "/connect",
+        surface: "marketing" as const,
+        noIndex: false,
+      };
+    }
+
     if (location.pathname.startsWith("/app/paths") || location.pathname.startsWith("/app/authors") || location.pathname.startsWith("/app/reconnect")) {
       return {
         title: "Sacred Path Library",
@@ -117,6 +128,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/connect" element={<ConnectLanding />} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route

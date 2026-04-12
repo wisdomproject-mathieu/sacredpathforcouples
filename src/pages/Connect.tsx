@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { Copy, HeartHandshake, Link as LinkIcon, Sparkles, Users, Wand2 } from "lucide-react";
+import { Copy, HeartHandshake, Link as LinkIcon, MessageCircleHeart, Sparkles, Users, Wand2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -137,10 +138,24 @@ const Connect = () => {
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.28em] text-primary/80">Connect</p>
-            <h1 className="mt-3 font-display text-4xl text-foreground md:text-5xl">Invite your partner into the temple</h1>
+            <h1 className="mt-3 font-display text-4xl text-foreground md:text-5xl">Connect with Partner</h1>
             <p className="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">
-              Make Sacred Path shared, private, and alive. Connect once, then check in, send messages, walk pathways, and save memories together.
+              Shared code. Shared rituals. Shared emotional state. Difficult truth. Gratitude thread. Connect once and keep your couple flow alive every day.
             </p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link
+                to="/app/space"
+                className="inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-2 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
+              >
+                Enter Sacred Temple
+              </Link>
+              <Link
+                to="/"
+                className="inline-flex items-center gap-2 rounded-2xl border border-border/35 bg-card/45 px-4 py-2 text-sm text-foreground transition-all hover:border-border/55 hover:bg-card/60"
+              >
+                Continue without account
+              </Link>
+            </div>
           </div>
           <div className="rounded-[22px] border border-border/30 bg-card/45 p-4">
             <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Status</div>
@@ -161,9 +176,9 @@ const Connect = () => {
         <div className="rounded-[28px] border border-border/30 bg-card/45 p-6">
           <div className="flex items-center gap-2 text-cyan-300">
             <Wand2 className="h-5 w-5" />
-            <span className="text-xs uppercase tracking-[0.22em]">Create an invite</span>
+            <span className="text-xs uppercase tracking-[0.22em]">Your Couple Code</span>
           </div>
-          <h2 className="mt-4 font-display text-2xl text-foreground">Open a shared doorway</h2>
+          <h2 className="mt-4 font-display text-2xl text-foreground">Create your shared code</h2>
           <p className="mt-3 text-sm leading-7 text-muted-foreground">
             Generate a private code and send it to your partner. Once they enter it, your couple temple becomes active.
           </p>
@@ -203,7 +218,7 @@ const Connect = () => {
         <div className="rounded-[28px] border border-border/30 bg-card/45 p-6">
           <div className="flex items-center gap-2 text-fuchsia-300">
             <Users className="h-5 w-5" />
-            <span className="text-xs uppercase tracking-[0.22em]">Join with a code</span>
+            <span className="text-xs uppercase tracking-[0.22em]">Join Partner</span>
           </div>
           <h2 className="mt-4 font-display text-2xl text-foreground">Enter your partner’s invite</h2>
           <p className="mt-3 text-sm leading-7 text-muted-foreground">
@@ -233,21 +248,21 @@ const Connect = () => {
         {[
           {
             icon: Sparkles,
-            iconClass: "text-amber-300",
-            title: "Check in daily",
-            desc: "Use Intimacy Weather to name the energy you bring tonight.",
+            iconClass: "text-cyan-300",
+            title: "Intimacy Weather",
+            desc: "Name your emotional state first so touch, words, and pace match the reality of tonight.",
           },
           {
-            icon: HeartHandshake,
-            iconClass: "text-rose-300",
-            title: "Reconnect faster",
-            desc: "Send a soft message, choose a ritual, or open a pathway together.",
+            icon: MessageCircleHeart,
+            iconClass: "text-violet-300",
+            title: "The Unsaid",
+            desc: "Write what feels difficult before it hardens into distance, then share with care.",
           },
           {
             icon: Users,
             iconClass: "text-emerald-300",
-            title: "Build shared memory",
-            desc: "Save moments in your altar and let the app become your living couple space.",
+            title: "The Thread",
+            desc: "Leave one gratitude line each day and let tenderness accumulate over time.",
           },
         ].map((item) => {
           const Icon = item.icon;
