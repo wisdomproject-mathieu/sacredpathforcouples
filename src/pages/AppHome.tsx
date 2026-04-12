@@ -89,6 +89,29 @@ const templePulses = [
   },
 ] as const;
 
+const reconnectMoves = [
+  {
+    id: "reconnect-soft-checkin",
+    title: "Soft check-in",
+    description: "Ask: “What would help you feel cherished tonight?” and mirror the answer with warmth.",
+  },
+  {
+    id: "reconnect-90-second-reset",
+    title: "90-second reset",
+    description: "Hold hands, breathe together, and each share one appreciation before anything else.",
+  },
+  {
+    id: "reconnect-devotion-line",
+    title: "Devotion line",
+    description: "Whisper one line of love and one desire for deeper closeness tonight.",
+  },
+  {
+    id: "reconnect-sensual-pause",
+    title: "Sensual pause",
+    description: "Pause logistics for five minutes and let touch lead before words.",
+  },
+] as const;
+
 const hashString = (value: string) =>
   Array.from(value).reduce((acc, char) => (acc * 31 + char.charCodeAt(0)) >>> 0, 7);
 
@@ -243,6 +266,7 @@ const AppHome = () => {
     const quoteChoice = pickBySeed(quotes, `${dailySeed}:quote`);
     const positionChoice = pickBySeed(positions, `${dailySeed}:position`);
     const templePulse = pickBySeed(templePulses, `${dailySeed}:temple`);
+    const reconnectMove = pickBySeed(reconnectMoves, `${dailySeed}:reconnect`);
 
     return [
       {
@@ -286,6 +310,14 @@ const AppHome = () => {
         icon: MessageCircle,
         accentClass: "text-teal-300",
       },
+      {
+        id: reconnectMove.id,
+        label: "Today Reconnect Move",
+        title: reconnectMove.title,
+        description: reconnectMove.description,
+        icon: Heart,
+        accentClass: "text-rose-300",
+      },
     ];
   }, [dailySeed, pathways, rituals]);
 
@@ -296,7 +328,7 @@ const AppHome = () => {
           <p className="text-xs uppercase tracking-[0.28em] text-primary/80">{todayLabel}</p>
           <h1 className="mt-3 font-display text-4xl leading-tight text-foreground md:text-5xl">Daily Sacred Starter for Modern Couples</h1>
           <p className="mt-4 max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
-            Five preselected cards. Calm direction. Shared intimacy momentum. This page renews every day to support your path toward infinite love.
+            Six preselected cards. Calm direction. Shared intimacy momentum. This page renews every day to support your path toward infinite love.
           </p>
         </div>
 
@@ -312,7 +344,7 @@ const AppHome = () => {
       <section>
         <div className="mb-4">
           <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Today&apos;s fixed flow</p>
-          <h2 className="mt-2 font-display text-3xl text-foreground">5 cards selected for your relationship today</h2>
+          <h2 className="mt-2 font-display text-3xl text-foreground">6 cards selected for your relationship today</h2>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -345,12 +377,12 @@ const AppHome = () => {
             <Lock className="h-4 w-4" />
             <span className="text-xs uppercase tracking-[0.16em]">Locked Daily Expansion</span>
           </div>
-          <h3 className="mt-2 font-display text-xl text-foreground">More of this page: 15 extra daily cards</h3>
+          <h3 className="mt-2 font-display text-xl text-foreground">More of this page: 14 extra daily cards</h3>
           <p className="mt-3 text-sm leading-6 text-foreground/90">
             Keep your daily rhythm fresh with additional rituals, quotes, insights, positions, and temple pulses shaped for modern couples.
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
-            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">15 Extra Cards</span>
+            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">14 Extra Cards</span>
             <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Daily Refresh</span>
             <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Sensual Guidance</span>
           </div>

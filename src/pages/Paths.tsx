@@ -64,10 +64,28 @@ type PathDetail = {
   teaser?: string[];
 };
 
-const libraryTabs = [
-  { to: "/app/paths", label: "Paths" },
-  { to: "/app/authors", label: "Authors" },
-  { to: "/app/reconnect", label: "Reconnect" },
+const libraryPages = [
+  {
+    to: "/app/paths",
+    label: "Paths",
+    subtitle: "Ancient pathways for modern love",
+    icon: Sparkles,
+    iconClass: "text-violet-300",
+  },
+  {
+    to: "/app/authors",
+    label: "Authors",
+    subtitle: "Voices that guide intimacy",
+    icon: Heart,
+    iconClass: "text-rose-300",
+  },
+  {
+    to: "/app/reconnect",
+    label: "Reconnect",
+    subtitle: "Repair and return to closeness",
+    icon: Flame,
+    iconClass: "text-amber-300",
+  },
 ];
 
 const pathDetails: PathDetail[] = [
@@ -403,9 +421,6 @@ const pathDetails: PathDetail[] = [
   },
 ];
 
-const subNavClass =
-  "inline-flex items-center rounded-full border border-border/30 bg-background/45 px-4 py-2 text-sm text-muted-foreground transition-all hover:border-primary/20 hover:text-foreground";
-
 const shellCardClass =
   "rounded-[28px] border border-border/30 bg-card/45 p-5 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.46)]";
 
@@ -680,16 +695,31 @@ const Paths = () => {
           </p>
         </div>
 
-        <div className="mt-6 flex flex-wrap gap-3">
-          {libraryTabs.map((tab) => (
-            <Link
-              key={tab.to}
-              to={tab.to}
-              className={`${subNavClass} ${tab.to === "/app/paths" ? "border-primary/25 bg-primary/10 text-foreground" : ""}`}
-            >
-              {tab.label}
-            </Link>
-          ))}
+        <div className="mt-6 w-full rounded-[24px] border border-border/30 bg-card/45 p-4">
+          <div className="text-xs uppercase tracking-[0.22em] text-primary/80">Sacred pages</div>
+          <div className="mt-3 grid gap-3 md:grid-cols-3">
+            {libraryPages.map((page) => {
+              const Icon = page.icon;
+              const active = page.to === "/app/paths";
+              return (
+                <Link
+                  key={page.to}
+                  to={page.to}
+                  className={`rounded-[20px] border p-4 text-left transition-all ${
+                    active
+                      ? "border-primary/30 bg-primary/10 shadow-[0_18px_50px_-36px_rgba(255,173,70,0.42)]"
+                      : "border-border/30 bg-background/45 hover:border-primary/20 hover:bg-card/55"
+                  }`}
+                >
+                  <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-2.5 ${page.iconClass}`}>
+                    <Icon className="h-4 w-4" />
+                  </div>
+                  <div className="mt-3 font-display text-xl text-foreground">{page.label}</div>
+                  <p className="mt-1 text-sm leading-6 text-muted-foreground">{page.subtitle}</p>
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </section>
 
