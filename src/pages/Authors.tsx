@@ -693,20 +693,8 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
         </div>
       </section>
 
-      <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">8. Related Paths</p>
-        <div className="mt-4 grid gap-3 md:grid-cols-3">
-          {data.relatedPaths.map((path) => (
-            <article key={path.name} className="rounded-2xl border border-border/25 bg-card/35 p-4">
-              <h4 className="font-body text-sm text-foreground">{path.name}</h4>
-              <p className="mt-2 text-xs leading-6 text-muted-foreground">{path.note}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
       <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
-        <p className="text-xs uppercase tracking-[0.2em] text-amber-300">9. Premium Library Expansion</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-amber-300">8. Premium Library Expansion</p>
         <p className="mt-3 text-sm leading-7 text-foreground/90">{data.premiumBanner}</p>
         <div className="mt-4 grid gap-2 md:grid-cols-3">
           <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Advanced author maps</div>
