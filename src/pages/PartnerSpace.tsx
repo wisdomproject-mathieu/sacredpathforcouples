@@ -211,6 +211,11 @@ const computeStreak = (dates: string[]) => {
   return streak;
 };
 
+const truncateText = (value: string, max = 132) => {
+  if (value.length <= max) return value;
+  return `${value.slice(0, max).trimEnd()}...`;
+};
+
 const PartnerSpace = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -399,6 +404,164 @@ const PartnerSpace = () => {
     </section>
   );
 
+  const premiumPreviewBanner = (eyebrow: string, title: string, description: string, tags: string[]) => (
+    <section className="rounded-[28px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.12))] p-5 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.5)]">
+      <div className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-amber-300/35 bg-amber-500/14 text-amber-200">
+        <Lock className="h-3.5 w-3.5" />
+      </div>
+      <p className="mt-3 text-xs uppercase tracking-[0.2em] text-amber-200">{eyebrow}</p>
+      <h3 className="mt-2 font-display text-3xl text-foreground">{title}</h3>
+      <p className="mt-3 text-sm leading-7 text-foreground/90">{description}</p>
+      <div className="mt-4 flex flex-wrap gap-2">
+        {tags.map((tag) => (
+          <span key={tag} className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">
+            {tag}
+          </span>
+        ))}
+      </div>
+      <div className="mt-5 flex flex-wrap gap-3">
+        <Link
+          to="/pricing"
+          className="rounded-2xl border border-amber-300/35 bg-amber-500/14 px-5 py-3 text-sm text-foreground transition-all hover:border-amber-300/55 hover:bg-amber-500/20"
+        >
+          View plans
+        </Link>
+        <button
+          type="button"
+          onClick={() => setViewMode("doorways")}
+          className="rounded-2xl border border-border/35 bg-card/45 px-5 py-3 text-sm text-foreground transition-all hover:border-border/55 hover:bg-card/60"
+        >
+          Continue with free flow
+        </button>
+      </div>
+    </section>
+  );
+
+  const journeyPreview = (
+    <section className="space-y-4">
+      <div>
+        <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Our Journey Preview</p>
+        <h2 className="mt-2 font-display text-3xl text-foreground">A living map of your shared love story</h2>
+        <p className="mt-2 max-w-3xl text-sm leading-7 text-muted-foreground">
+          See where your closeness is growing, what your partner offered most recently, and what Sacred Temple suggests next for your couple rhythm.
+        </p>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="rounded-[26px] border border-border/30 bg-card/45 p-5">
+          <div className="text-xs uppercase tracking-[0.18em] text-primary/80">Rhythm snapshot</div>
+          <div className="mt-3 font-display text-4xl text-foreground">{activity.rhythmCount}</div>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Shared temple days detected in your recent connection cycle.</p>
+        </div>
+
+        <div className="rounded-[26px] border border-border/30 bg-card/45 p-5">
+          <div className="text-xs uppercase tracking-[0.18em] text-primary/80">Continuity streak</div>
+          <div className="mt-3 font-display text-4xl text-foreground">{activity.streakCount}</div>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Consecutive days of emotional and sensual movement together.</p>
+        </div>
+
+        <div className="rounded-[26px] border border-border/30 bg-card/45 p-5">
+          <div className="text-xs uppercase tracking-[0.18em] text-primary/80">Beloved signal</div>
+          <p className="mt-3 text-sm leading-7 text-foreground/90">{truncateText(activity.partnerNote)}</p>
+        </div>
+
+        <div className="rounded-[26px] border border-border/30 bg-card/45 p-5">
+          <div className="text-xs uppercase tracking-[0.18em] text-primary/80">Suggested next move</div>
+          <p className="mt-3 text-sm leading-7 text-foreground/90">{truncateText(activity.nextSuggestion)}</p>
+        </div>
+      </div>
+
+      <div className="rounded-[28px] border border-border/30 bg-card/45 p-5">
+        <div className="flex items-center gap-2 text-violet-300">
+          <MessageCircle className="h-4 w-4" />
+          <span className="text-xs uppercase tracking-[0.18em]">Timeline preview</span>
+        </div>
+        <p className="mt-2 text-sm leading-6 text-muted-foreground">
+          In premium, every shared doorway and oracle offering becomes a visible timeline with context and relational momentum.
+        </p>
+        <div className="mt-4 space-y-3">
+          {journeyFeed.length === 0 ? (
+            <div className="rounded-[22px] border border-border/30 bg-background/45 p-4 text-sm text-muted-foreground">
+              No shared offerings yet. Journey preview will populate as soon as you share doorway and oracle cards.
+            </div>
+          ) : (
+            journeyFeed.slice(0, 2).map((item) => (
+              <div key={item.id} className="rounded-[22px] border border-border/30 bg-background/45 p-4">
+                <div className="inline-flex rounded-full border border-border/35 bg-card/45 px-2.5 py-1 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
+                  {messageTypeLabel(item.message_type)}
+                </div>
+                <p className="mt-3 text-sm leading-6 text-foreground/90">{truncateText(item.content, 168)}</p>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+
+      {premiumPreviewBanner(
+        "Journey Premium",
+        "Unlock full couple timeline intelligence",
+        "Track your shared patterns, offerings, devotion notes, and next-step momentum so your relationship keeps evolving with clarity and sensual depth.",
+        ["Timeline Memory", "Couple Patterns", "Next-Step Guidance"],
+      )}
+    </section>
+  );
+
+  const oraclePreview = (
+    <section className="space-y-4">
+      <div>
+        <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Wisdom Oracle Preview</p>
+        <h2 className="mt-2 font-display text-3xl text-foreground">Relationship intelligence for what opens next</h2>
+        <p className="mt-2 max-w-3xl text-sm leading-7 text-muted-foreground">
+          The Oracle reads your couple data, emotional weather, and sacred history to propose a personalized next move with romantic and sensual precision.
+        </p>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="rounded-[26px] border border-border/30 bg-card/45 p-5">
+          <div className="text-xs uppercase tracking-[0.18em] text-primary/80">Oracle tones</div>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {["Romantic", "Erotic", "Playful", "Repair"].map((tone) => (
+              <span key={tone} className="rounded-full border border-border/30 bg-background/45 px-2.5 py-1 text-[11px] text-foreground/90">
+                {tone}
+              </span>
+            ))}
+          </div>
+          <p className="mt-3 text-sm leading-6 text-muted-foreground">Pre-configure the Oracle to match your couple intention each day.</p>
+        </div>
+
+        <div className="rounded-[26px] border border-border/30 bg-card/45 p-5">
+          <div className="text-xs uppercase tracking-[0.18em] text-primary/80">Signal blend</div>
+          <p className="mt-3 text-sm leading-7 text-foreground/90">
+            Oracle blends Intimacy Weather, shared messages, altar memory, and rhythm history before generating guidance.
+          </p>
+        </div>
+
+        <div className="rounded-[26px] border border-border/30 bg-card/45 p-5">
+          <div className="text-xs uppercase tracking-[0.18em] text-primary/80">3-step oracle flow</div>
+          <ol className="mt-3 space-y-2 text-sm leading-6 text-foreground/90">
+            <li>1. Read the current couple state</li>
+            <li>2. Offer one exact opening move</li>
+            <li>3. Sequence the next two intimacy steps</li>
+          </ol>
+        </div>
+
+        <div className="rounded-[26px] border border-border/30 bg-card/45 p-5">
+          <div className="text-xs uppercase tracking-[0.18em] text-primary/80">What couples receive</div>
+          <p className="mt-3 text-sm leading-7 text-foreground/90">
+            Romantic guidance, sensual pacing, erotic bridge suggestions, and friction-to-closeness moves tailored for your relationship.
+          </p>
+        </div>
+      </div>
+
+      {premiumPreviewBanner(
+        "Oracle Premium",
+        "Unlock full Wisdom Oracle innovation",
+        "Get personalized next-step coaching, sequence-level recommendations, and sharable oracle cards that flow directly into your Journey page.",
+        ["Personalized Oracle", "Sharable Moves", "Journey Sync"],
+      )}
+    </section>
+  );
+
   if (loading) {
     return <div className="min-h-screen bg-background" />;
   }
@@ -473,11 +636,7 @@ const PartnerSpace = () => {
                           <Lock className="h-3.5 w-3.5" />
                         </button>
                       )}
-                      <button
-                        type="button"
-                        onClick={() => (locked ? navigate("/pricing") : setViewMode(view.key))}
-                        className="w-full text-left"
-                      >
+                      <button type="button" onClick={() => setViewMode(view.key)} className="w-full text-left">
                       <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-2.5 ${view.iconClass}`}>
                         <Icon className="h-4 w-4" />
                       </div>
@@ -698,10 +857,7 @@ const PartnerSpace = () => {
             </div>
             </section>
           ) : (
-            premiumGateCard(
-              "Our Journey is currently locked",
-              "Track your shared story, offerings, and intimate rhythm over time with full partner timeline intelligence."
-            )
+            journeyPreview
           ))}
 
         {viewMode === "oracle" &&
@@ -710,10 +866,7 @@ const PartnerSpace = () => {
               <WisdomOracle coupleId={coupleId ?? undefined} onNavigate={navigateTool} />
             </section>
           ) : (
-            premiumGateCard(
-              "Wisdom Oracle is currently locked",
-              "Unlock tailored relationship intelligence, personalized romantic guidance, and data-shaped next steps built for your couple."
-            )
+            oraclePreview
           ))}
 
         {showClosingPremiumBanner && (
