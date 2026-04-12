@@ -1,6 +1,19 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, BookOpen, Heart, Lock, MessageCircle, Sparkles, Stars, type LucideIcon } from "lucide-react";
+import {
+  ArrowRight,
+  BookOpen,
+  ChevronDown,
+  ChevronUp,
+  Heart,
+  Lock,
+  MessageCircle,
+  Sparkles,
+  Stars,
+  ThumbsDown,
+  ThumbsUp,
+  type LucideIcon,
+} from "lucide-react";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,9 +29,15 @@ type DailyCard = {
   label: string;
   title: string;
   description: string;
+  quickInsight: string;
+  steps: string[];
   icon: LucideIcon;
   accentClass: string;
 };
+
+type ReactionType = "up" | "down" | null;
+type ReactionMap = Record<string, ReactionType>;
+type FeedbackTotals = Record<string, { up: number; down: number }>;
 
 const quotes = [
   {
@@ -129,6 +148,52 @@ const localDayKey = (date: Date) => {
   return `${year}-${month}-${day}`;
 };
 
+const FEEDBACK_TOTALS_KEY = "sacredpath_home_card_feedback_totals_v1";
+const feedbackDailyKey = (dayKey: string) => `sacredpath_home_card_feedback_daily_v1_${dayKey}`;
+
+const readFeedbackTotals = (): FeedbackTotals => {
+  try {
+    const raw = window.localStorage.getItem(FEEDBACK_TOTALS_KEY);
+    return raw ? (JSON.parse(raw) as FeedbackTotals) : {};
+  } catch {
+    return {};
+  }
+};
+
+const readDailyReactions = (dayKey: string): ReactionMap => {
+  try {
+    const raw = window.localStorage.getItem(feedbackDailyKey(dayKey));
+    return raw ? (JSON.parse(raw) as ReactionMap) : {};
+  } catch {
+    return {};
+  }
+};
+
+const writeFeedbackTotals = (value: FeedbackTotals) => {
+  window.localStorage.setItem(FEEDBACK_TOTALS_KEY, JSON.stringify(value));
+};
+
+const writeDailyReactions = (dayKey: string, value: ReactionMap) => {
+  window.localStorage.setItem(feedbackDailyKey(dayKey), JSON.stringify(value));
+};
+
+const parseRitualSteps = (steps: RitualItem["steps"]): string[] => {
+  if (!Array.isArray(steps)) return [];
+  const parsed = steps
+    .map((item) => {
+      if (typeof item === "string") return item.trim();
+      if (!item || typeof item !== "object") return "";
+      const value = (item as { instruction?: string; step?: string; title?: string; body?: string }).instruction
+        ?? (item as { instruction?: string; step?: string; title?: string; body?: string }).step
+        ?? (item as { instruction?: string; step?: string; title?: string; body?: string }).title
+        ?? (item as { instruction?: string; step?: string; title?: string; body?: string }).body;
+      return typeof value === "string" ? value.trim() : "";
+    })
+    .filter(Boolean);
+
+  return parsed.slice(0, 3);
+};
+
 const AppHome = () => {
   const { user } = useAuth();
 
@@ -137,6 +202,9 @@ const AppHome = () => {
   const [altarItems, setAltarItems] = useState<AltarItem[]>([]);
   const [rituals, setRituals] = useState<RitualItem[]>([]);
   const [pathways, setPathways] = useState<Pathway[]>([]);
+  const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
+  const [feedbackTotals, setFeedbackTotals] = useState<FeedbackTotals>({});
+  const [dailyReactions, setDailyReactions] = useState<ReactionMap>({});
 
   useEffect(() => {
     if (!user) return;
@@ -267,6 +335,7 @@ const AppHome = () => {
     const positionChoice = pickBySeed(positions, `${dailySeed}:position`);
     const templePulse = pickBySeed(templePulses, `${dailySeed}:temple`);
     const reconnectMove = pickBySeed(reconnectMoves, `${dailySeed}:reconnect`);
+    const ritualSteps = parseRitualSteps("steps" in ritualChoice ? ritualChoice.steps : null);
 
     return [
       {
@@ -274,6 +343,10 @@ const AppHome = () => {
         label: "Today Ritual",
         title: ritualChoice.title,
         description: ritualChoice.hook || "A grounded opening for emotional and sensual closeness.",
+        quickInsight: "A short ritual lowers stress and raises emotional and erotic safety in minutes.",
+        steps: ritualSteps.length > 0
+          ? ritualSteps
+          : ["Take three synchronized breaths.", "Share one feeling each.", "Close with one intentional touch."],
         icon: Sparkles,
         accentClass: "text-amber-300",
       },
@@ -282,6 +355,8 @@ const AppHome = () => {
         label: "Today Quote",
         title: `From ${quoteChoice.author}`,
         description: `“${quoteChoice.quote}”`,
+        quickInsight: "Use one line of wisdom as tonight's shared intention.",
+        steps: ["Read the quote aloud slowly.", "Each partner shares one sentence it awakens.", "Choose one action to embody it tonight."],
         icon: Stars,
         accentClass: "text-sky-300",
       },
@@ -291,6 +366,8 @@ const AppHome = () => {
         title: pathwayChoice.title,
         description:
           pathwayChoice.description || "One practical learning insight for couples building lasting intimacy.",
+        quickInsight: "Tiny daily learning loops create long-term relational transformation.",
+        steps: ["Name the one insight that matters most today.", "Apply it in one 5-minute moment.", "Reflect together tonight: what shifted?"],
         icon: BookOpen,
         accentClass: "text-violet-300",
       },
@@ -299,6 +376,8 @@ const AppHome = () => {
         label: "Today Position",
         title: positionChoice.title,
         description: positionChoice.description,
+        quickInsight: "Body-led connection can reopen closeness faster than long conversations.",
+        steps: ["Set a gentle timer for 3-5 minutes.", "Stay in position and track breath together.", "Share one word each before moving on."],
         icon: Heart,
         accentClass: "text-rose-300",
       },
@@ -307,6 +386,8 @@ const AppHome = () => {
         label: "Today Temple Pulse",
         title: templePulse.title,
         description: templePulse.description,
+        quickInsight: "Match the mood of your connection before asking for more intensity.",
+        steps: ["Name tonight's emotional tone.", "Choose touch and words that fit that tone.", "Re-check in after five minutes."],
         icon: MessageCircle,
         accentClass: "text-teal-300",
       },
@@ -315,11 +396,53 @@ const AppHome = () => {
         label: "Today Reconnect Move",
         title: reconnectMove.title,
         description: reconnectMove.description,
+        quickInsight: "One repair micro-move protects trust and attraction over time.",
+        steps: ["Pause everything for a brief reconnection.", "Offer one appreciation and one need.", "Close with warmth, not analysis."],
         icon: Heart,
         accentClass: "text-rose-300",
       },
     ];
   }, [dailySeed, pathways, rituals]);
+
+  useEffect(() => {
+    if (dailyCards.length === 0) return;
+    setExpandedCardId((current) => current ?? dailyCards[0].id);
+  }, [dailyCards]);
+
+  useEffect(() => {
+    const totals = readFeedbackTotals();
+    const reactions = readDailyReactions(todayKey);
+    setFeedbackTotals(totals);
+    setDailyReactions(reactions);
+  }, [todayKey]);
+
+  const handleCardReaction = (cardId: string, incoming: Exclude<ReactionType, null>) => {
+    const previous = dailyReactions[cardId] ?? null;
+    const next = previous === incoming ? null : incoming;
+
+    const nextTotals: FeedbackTotals = {
+      ...feedbackTotals,
+      [cardId]: {
+        up: feedbackTotals[cardId]?.up ?? 0,
+        down: feedbackTotals[cardId]?.down ?? 0,
+      },
+    };
+
+    if (previous === "up") nextTotals[cardId].up = Math.max(0, nextTotals[cardId].up - 1);
+    if (previous === "down") nextTotals[cardId].down = Math.max(0, nextTotals[cardId].down - 1);
+    if (next === "up") nextTotals[cardId].up += 1;
+    if (next === "down") nextTotals[cardId].down += 1;
+
+    const nextReactions: ReactionMap = {
+      ...dailyReactions,
+      [cardId]: next,
+    };
+
+    setFeedbackTotals(nextTotals);
+    setDailyReactions(nextReactions);
+    writeFeedbackTotals(nextTotals);
+    writeDailyReactions(todayKey, nextReactions);
+  };
 
   return (
     <div className="space-y-5">
@@ -350,21 +473,84 @@ const AppHome = () => {
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {dailyCards.map((card) => {
             const Icon = card.icon;
+            const expanded = expandedCardId === card.id;
+            const reaction = dailyReactions[card.id] ?? null;
+            const totals = feedbackTotals[card.id] ?? { up: 0, down: 0 };
 
             return (
               <div key={card.id} className="rounded-[24px] border border-border/30 bg-card/45 p-5">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{card.label}</p>
-                    <h3 className="mt-3 font-display text-2xl text-foreground">{loading ? "Selecting..." : card.title}</h3>
+                <button type="button" onClick={() => setExpandedCardId(expanded ? null : card.id)} className="w-full text-left">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{card.label}</p>
+                      <h3 className="mt-3 font-display text-2xl text-foreground">{loading ? "Selecting..." : card.title}</h3>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className={`inline-flex rounded-2xl border border-border/30 bg-background/45 p-3 ${card.accentClass}`}>
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <div className="inline-flex rounded-xl border border-border/30 bg-background/45 p-2 text-muted-foreground">
+                        {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                      </div>
+                    </div>
                   </div>
-                  <div className={`inline-flex rounded-2xl border border-border/30 bg-background/45 p-3 ${card.accentClass}`}>
-                    <Icon className="h-5 w-5" />
+                  <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                    {loading ? "Calibrating your daily relationship guidance." : card.description}
+                  </p>
+                </button>
+
+                {!loading && expanded && (
+                  <div className="mt-4 space-y-4 rounded-2xl border border-border/30 bg-background/45 p-4">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.16em] text-primary/80">Quick insight</p>
+                      <p className="mt-2 text-sm leading-6 text-foreground/90">{card.quickInsight}</p>
+                    </div>
+
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.16em] text-primary/80">Step by step</p>
+                      <ol className="mt-2 space-y-2 text-sm leading-6 text-foreground/90">
+                        {card.steps.map((step, index) => (
+                          <li key={step}>
+                            {index + 1}. {step}
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+
+                    <div className="rounded-xl border border-amber-300/30 bg-amber-500/8 p-3">
+                      <p className="text-xs uppercase tracking-[0.14em] text-amber-200">Go deeper</p>
+                      <p className="mt-1 text-sm leading-6 text-foreground/90">
+                        Unlock 14 additional daily cards built from your couple rhythm for richer sensual progression.
+                      </p>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-3">
+                      <span className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Was this useful?</span>
+                      <button
+                        type="button"
+                        onClick={() => handleCardReaction(card.id, "up")}
+                        className={`inline-flex items-center gap-1 rounded-xl border px-2.5 py-1.5 text-xs transition-all ${
+                          reaction === "up"
+                            ? "border-emerald-300/45 bg-emerald-500/15 text-emerald-100"
+                            : "border-border/30 bg-card/45 text-foreground hover:border-emerald-300/35"
+                        }`}
+                      >
+                        <ThumbsUp className="h-3.5 w-3.5" /> {totals.up}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleCardReaction(card.id, "down")}
+                        className={`inline-flex items-center gap-1 rounded-xl border px-2.5 py-1.5 text-xs transition-all ${
+                          reaction === "down"
+                            ? "border-rose-300/45 bg-rose-500/15 text-rose-100"
+                            : "border-border/30 bg-card/45 text-foreground hover:border-rose-300/35"
+                        }`}
+                      >
+                        <ThumbsDown className="h-3.5 w-3.5" /> {totals.down}
+                      </button>
+                    </div>
                   </div>
-                </div>
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                  {loading ? "Calibrating your daily relationship guidance." : card.description}
-                </p>
+                )}
               </div>
             );
           })}

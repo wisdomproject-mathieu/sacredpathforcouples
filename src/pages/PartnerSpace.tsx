@@ -11,6 +11,7 @@ import {
   Heart,
   Home,
   Lock,
+  LockOpen,
   MessageCircle,
   Route,
   Shield,
@@ -383,7 +384,7 @@ const PartnerSpace = () => {
         <h3 className="mt-4 font-display text-3xl text-foreground">{title}</h3>
         <p className="mt-3 text-sm leading-7 text-muted-foreground">{description}</p>
         <p className="mt-3 text-sm leading-7 text-foreground/90">
-          Free temple includes full Intimacy Weather and one guided ritual per category. Premium opens every doorway, every ritual, and the full couple intelligence experience.
+          Open-access temple includes full Intimacy Weather and one guided ritual per category. Premium opens every doorway, every ritual, and the full couple intelligence experience.
         </p>
         <div className="mt-5 flex flex-wrap gap-3">
           <Link
@@ -395,9 +396,10 @@ const PartnerSpace = () => {
           <button
             type="button"
             onClick={() => activateTool("weather")}
-            className="rounded-2xl border border-border/35 bg-card/45 px-5 py-3 text-sm text-foreground transition-all hover:border-border/55 hover:bg-card/60"
+            className="inline-flex items-center gap-2 rounded-2xl border border-border/35 bg-card/45 px-5 py-3 text-sm text-foreground transition-all hover:border-border/55 hover:bg-card/60"
           >
-            Continue with Intimacy Weather
+            <LockOpen className="h-4 w-4 text-amber-300" />
+            Continue with open access
           </button>
         </div>
       </div>
@@ -429,9 +431,10 @@ const PartnerSpace = () => {
         <button
           type="button"
           onClick={() => setViewMode("doorways")}
-          className="rounded-2xl border border-border/35 bg-card/45 px-5 py-3 text-sm text-foreground transition-all hover:border-border/55 hover:bg-card/60"
+          className="inline-flex items-center gap-2 rounded-2xl border border-border/35 bg-card/45 px-5 py-3 text-sm text-foreground transition-all hover:border-border/55 hover:bg-card/60"
         >
-          Continue with free flow
+          <LockOpen className="h-4 w-4 text-amber-300" />
+          Continue with open access
         </button>
       </div>
     </section>
@@ -586,27 +589,12 @@ const PartnerSpace = () => {
         )}
 
         <section className="rounded-[30px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-6 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] md:p-7">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-[0.28em] text-primary/80">Sacred Temple</p>
-              <h1 className="mt-3 font-display text-3xl text-foreground md:text-5xl">A private sanctuary for modern lovers</h1>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">
-                Ancient wisdom meets living intimacy: read your inner weather, open sensual ritual, repair gently, and weave a shared rhythm that deepens over time.
-              </p>
-            </div>
-
-            <div className="rounded-[24px] border border-border/30 bg-card/45 p-4">
-              <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Current doorway</div>
-              <div className="mt-2 flex items-center gap-3">
-                <div className={`rounded-2xl border border-border/30 bg-background/45 p-3 ${activeMeta.iconClass}`}>
-                  <activeMeta.icon className="h-5 w-5" />
-                </div>
-                <div>
-                  <div className="font-display text-xl text-foreground">{activeMeta.title}</div>
-                  <div className="text-sm text-muted-foreground">{activeMeta.subtitle}</div>
-                </div>
-              </div>
-            </div>
+          <div className="max-w-4xl">
+            <p className="text-xs uppercase tracking-[0.28em] text-primary/80">Sacred Temple</p>
+            <h1 className="mt-3 font-display text-3xl text-foreground md:text-5xl">A private sanctuary for modern lovers</h1>
+            <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">
+              Ancient wisdom meets living intimacy: read your inner weather, open sensual ritual, repair gently, and weave a shared rhythm that deepens over time.
+            </p>
           </div>
 
           <div className="mt-6 flex flex-wrap gap-3">
@@ -874,7 +862,7 @@ const PartnerSpace = () => {
             <p className="text-xs uppercase tracking-[0.24em] text-amber-200">Temple Premium</p>
             <h2 className="mt-3 font-display text-3xl text-foreground md:text-4xl">Bring the full sanctuary online</h2>
             <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
-              Free gives your couple Intimacy Weather plus one ritual per category. Premium unlocks every ritual, all eight doorways, Our Journey analytics, and full Wisdom Oracle innovation for your next shared chapter.
+              Open access gives your couple Intimacy Weather plus one ritual per category. Premium unlocks every ritual, all eight doorways, Our Journey analytics, and full Wisdom Oracle innovation for your next shared chapter.
             </p>
             <div className="mt-5 flex flex-wrap gap-3">
               <Link
@@ -886,9 +874,10 @@ const PartnerSpace = () => {
               <button
                 type="button"
                 onClick={() => activateTool("weather")}
-                className="rounded-2xl border border-border/35 bg-card/45 px-5 py-3 text-sm text-foreground transition-all hover:border-border/55 hover:bg-card/60"
+                className="inline-flex items-center gap-2 rounded-2xl border border-border/35 bg-card/45 px-5 py-3 text-sm text-foreground transition-all hover:border-border/55 hover:bg-card/60"
               >
-                Continue with free flow
+                <LockOpen className="h-4 w-4 text-amber-300" />
+                Continue with open access
               </button>
             </div>
           </section>
