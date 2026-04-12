@@ -6,6 +6,7 @@ import {
   Flame,
   Heart,
   Lock,
+  LockOpen,
   Sparkles,
   Waves,
   type LucideIcon,
@@ -425,13 +426,13 @@ const shellCardClass =
   "rounded-[28px] border border-border/30 bg-card/45 p-5 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.46)]";
 
 const tierBadgeClass: Record<Tier, string> = {
-  free: "border-emerald-400/30 bg-emerald-500/12 text-emerald-200",
+  free: "border-amber-400/30 bg-amber-500/12 text-amber-200",
   premium: "border-amber-400/30 bg-amber-500/12 text-amber-200",
 };
 
 const TierBadge = ({ tier }: { tier: Tier }) => (
   <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] ${tierBadgeClass[tier]}`}>
-    {tier === "free" ? "Free" : <Lock className="h-3.5 w-3.5" aria-label="Locked" />}
+    {tier === "free" ? <LockOpen className="h-3.5 w-3.5" aria-label="Open access" /> : <Lock className="h-3.5 w-3.5" aria-label="Locked" />}
   </span>
 );
 
@@ -757,7 +758,7 @@ const Paths = () => {
 
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           <div className="rounded-2xl border border-emerald-400/25 bg-emerald-500/8 p-4">
-            <p className="text-xs uppercase tracking-[0.14em] text-emerald-200">Free Paths</p>
+            <p className="text-xs uppercase tracking-[0.14em] text-emerald-200">Open-access Paths</p>
             <p className="mt-2 text-sm leading-6 text-foreground/90">{freeCount} fully open paths so couples can apply wisdom now and reconnect in the same moment.</p>
           </div>
           <div className="rounded-2xl border border-amber-400/25 bg-amber-500/8 p-4">

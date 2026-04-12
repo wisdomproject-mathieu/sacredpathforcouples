@@ -383,7 +383,7 @@ const AppHome = () => {
       },
       {
         id: templePulse.id,
-        label: "Today Temple Pulse",
+        label: "Temple Pulse",
         title: templePulse.title,
         description: templePulse.description,
         quickInsight: "Match the mood of your connection before asking for more intensity.",
@@ -393,7 +393,7 @@ const AppHome = () => {
       },
       {
         id: reconnectMove.id,
-        label: "Today Reconnect Move",
+        label: "Reconnect Move",
         title: reconnectMove.title,
         description: reconnectMove.description,
         quickInsight: "One repair micro-move protects trust and attraction over time.",
@@ -478,9 +478,9 @@ const AppHome = () => {
             const totals = feedbackTotals[card.id] ?? { up: 0, down: 0 };
 
             return (
-              <div key={card.id} className="rounded-[24px] border border-border/30 bg-card/45 p-5">
-                <button type="button" onClick={() => setExpandedCardId(expanded ? null : card.id)} className="w-full text-left">
-                  <div className="flex flex-wrap items-start justify-between gap-3">
+              <div key={card.id} className="h-full rounded-[24px] border border-border/30 bg-card/45 p-5">
+                <button type="button" onClick={() => setExpandedCardId(expanded ? null : card.id)} className="flex w-full flex-col text-left">
+                  <div className="flex min-h-[96px] flex-wrap items-start justify-between gap-3">
                     <div>
                       <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{card.label}</p>
                       <h3 className="mt-3 font-display text-2xl text-foreground">{loading ? "Selecting..." : card.title}</h3>
@@ -494,7 +494,7 @@ const AppHome = () => {
                       </div>
                     </div>
                   </div>
-                  <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                  <p className="mt-3 min-h-[48px] text-sm leading-6 text-muted-foreground">
                     {loading ? "Calibrating your daily relationship guidance." : card.description}
                   </p>
                 </button>

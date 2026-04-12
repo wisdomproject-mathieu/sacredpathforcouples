@@ -10,6 +10,7 @@ import {
   Hand,
   Heart,
   Lock,
+  LockOpen,
   Moon,
   Send,
   Sparkles,
@@ -152,7 +153,10 @@ const RitualCards = ({ coupleId, onNavigate, isPremium = false }: Props) => {
     >
       {!isPremium && (
         <div className="rounded-2xl border border-emerald-300/25 bg-emerald-500/10 p-4">
-          <p className="text-xs uppercase tracking-[0.18em] text-emerald-200">Free ritual flow</p>
+          <p className="inline-flex items-center gap-1 text-xs uppercase tracking-[0.18em] text-emerald-200">
+            <LockOpen className="h-3.5 w-3.5 text-amber-200" />
+            Open-access ritual flow
+          </p>
           <p className="mt-2 text-sm leading-6 text-foreground/90">
             You can open one ritual in each category after Intimacy Weather. Everything else unlocks in premium.
           </p>
@@ -246,7 +250,8 @@ const RitualCards = ({ coupleId, onNavigate, isPremium = false }: Props) => {
                   )}
                   {isFreePreview && (
                     <div className="inline-flex items-center gap-1 rounded-full border border-emerald-300/30 bg-emerald-500/10 px-2.5 py-1 text-xs text-emerald-200">
-                      Free ritual
+                      <LockOpen className="h-3.5 w-3.5 text-amber-200" />
+                      Open-access ritual
                     </div>
                   )}
                 </div>
