@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BookOpen, Heart, MessageCircle, Sparkles, Stars } from "lucide-react";
+import { BookOpen, Heart, MessageCircle, Sparkles, Stars, type LucideIcon } from "lucide-react";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,9 +11,9 @@ type Pathway = Tables<"pathways">;
 type PartnerMessage = Tables<"partner_messages">;
 type AltarItem = Tables<"altar_items">;
 
-type DailyFamily = "ritual" | "learning" | "position" | "quote";
+type DailyFamily = "ritual" | "learning" | "position" | "quote" | "reconnect";
 
-type DailyChoice = {
+type DailyFlowStep = {
   id: string;
   family: DailyFamily;
   label: string;
@@ -21,6 +21,8 @@ type DailyChoice = {
   description: string;
   cta: string;
   route: string;
+  icon: LucideIcon;
+  accentClass: string;
 };
 
 const quotes = [
@@ -77,7 +79,32 @@ const positions = [
   },
 ] as const;
 
-const fullFamilySet: DailyFamily[] = ["ritual", "learning", "position", "quote"];
+const reconnectPrompts = [
+  {
+    id: "reconnect-soft-checkin",
+    title: "Soft check-in",
+    description: "Ask: “What would help you feel cherished tonight?” Then mirror the answer in one sentence.",
+    route: "/app/reconnect",
+  },
+  {
+    id: "reconnect-90-second-repair",
+    title: "90-second repair",
+    description: "Hold hands, breathe for 90 seconds, then each share one thing you appreciate right now.",
+    route: "/app/reconnect",
+  },
+  {
+    id: "reconnect-sensual-pause",
+    title: "Sensual pause",
+    description: "Pause all logistics for five minutes. Stay close, breathe together, and let the body lead.",
+    route: "/app/reconnect",
+  },
+  {
+    id: "reconnect-devotion-line",
+    title: "Devotion line",
+    description: "Whisper one line of devotion to your partner and ask for one line back.",
+    route: "/app/reconnect",
+  },
+] as const;
 
 const hashString = (value: string) =>
   Array.from(value).reduce((acc, char) => (acc * 31 + char.charCodeAt(0)) >>> 0, 7);
@@ -89,23 +116,11 @@ const clipText = (value: string, max = 108) => {
   return `${value.slice(0, max).trimEnd()}...`;
 };
 
-const familiesFromMessageType = (messageType?: string | null): DailyFamily[] => {
-  if (!messageType) return fullFamilySet;
-  if (messageType.includes("ritual")) return ["ritual"];
-  if (messageType.includes("position")) return ["position"];
-  if (messageType.includes("pathway")) return ["learning"];
-  if (messageType.includes("guide") || messageType.includes("weather")) return ["ritual", "position"];
-  if (messageType.includes("message")) return ["quote", "ritual"];
-  return fullFamilySet;
-};
-
-const familiesFromAltarType = (itemType?: string | null): DailyFamily[] => {
-  if (!itemType) return fullFamilySet;
-  if (itemType.includes("ritual")) return ["ritual"];
-  if (itemType.includes("path")) return ["learning"];
-  if (itemType.includes("position")) return ["position"];
-  if (itemType.includes("quote") || itemType.includes("wisdom")) return ["quote"];
-  return ["quote", "ritual", "learning"];
+const localDayKey = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 };
 
 const AppHome = () => {
@@ -186,10 +201,12 @@ const AppHome = () => {
 
   const latestSharedMessage = messages[0] ?? null;
   const latestMemory = altarItems[0] ?? null;
+  const todayKey = useMemo(() => localDayKey(new Date()), []);
 
   const todayLabel = useMemo(
     () =>
       new Intl.DateTimeFormat("en-US", {
+        weekday: "long",
         month: "long",
         day: "numeric",
       }).format(new Date()),
@@ -199,9 +216,8 @@ const AppHome = () => {
   const signal = useMemo(() => {
     if (latestPartnerMessage) {
       return {
-        title: "Partner signal",
+        title: "Partner pulse",
         detail: clipText(latestPartnerMessage.content),
-        families: familiesFromMessageType(latestPartnerMessage.message_type),
       };
     }
 
@@ -209,7 +225,6 @@ const AppHome = () => {
       return {
         title: "Saved memory",
         detail: clipText(latestMemory.note || latestMemory.title),
-        families: familiesFromAltarType(latestMemory.item_type),
       };
     }
 
@@ -217,25 +232,22 @@ const AppHome = () => {
       return {
         title: "Shared thread",
         detail: clipText(latestSharedMessage.content),
-        families: familiesFromMessageType(latestSharedMessage.message_type),
       };
     }
 
     return {
-      title: hasConnectedPartner ? "Shared rhythm" : "Daily draw",
+      title: hasConnectedPartner ? "Shared rhythm" : "Daily rhythm",
       detail: hasConnectedPartner
-        ? "No strong fresh signal yet, so Sacred Path is drawing from your shared library."
-        : "A quiet daily draw from learning, rituals, positions, and quotes.",
-      families: fullFamilySet,
+        ? "No strong fresh signal yet, so Sacred Path is drawing from your shared story."
+        : "A quiet daily sequence to help your love stay intentional.",
     };
   }, [hasConnectedPartner, latestMemory, latestPartnerMessage, latestSharedMessage]);
 
   const dailySeed = useMemo(() => {
-    const todayKey = new Date().toISOString().slice(0, 10);
     return `${todayKey}:${user?.id ?? "guest"}:${signal.detail}`;
-  }, [signal.detail, user?.id]);
+  }, [signal.detail, todayKey, user?.id]);
 
-  const spotlightChoices = useMemo(() => {
+  const dailyFlow = useMemo<DailyFlowStep[]>(() => {
     const ritualChoice =
       rituals.length > 0
         ? pickBySeed(rituals, `${dailySeed}:ritual`)
@@ -258,28 +270,32 @@ const AppHome = () => {
 
     const positionChoice = pickBySeed(positions, `${dailySeed}:position`);
     const quoteChoice = pickBySeed(quotes, `${dailySeed}:quote`);
+    const reconnectChoice = pickBySeed(reconnectPrompts, `${dailySeed}:reconnect`);
 
-    return {
-      ritual: {
+    return [
+      {
         id: `ritual-${ritualChoice.id}`,
         family: "ritual" as const,
         label: "Ritual",
         title: ritualChoice.title,
         description: ritualChoice.hook || "A guided move to soften the threshold between you.",
-        cta: "Open rituals",
+        cta: "Open ritual",
         route: "/app/space?tool=rituals",
+        icon: Sparkles,
+        accentClass: "text-amber-300",
       },
-      learning: {
-        id: `learning-${pathwayChoice.id}`,
-        family: "learning" as const,
-        label: "Learning",
-        title: pathwayChoice.title,
-        description:
-          pathwayChoice.description || `${pathwayChoice.duration_days} days of guided relationship practice.`,
-        cta: "Open learning",
-        route: "/app/paths",
+      {
+        id: quoteChoice.id,
+        family: "quote" as const,
+        label: "Author quote",
+        title: `A line from ${quoteChoice.author}`,
+        description: `“${quoteChoice.quote}”`,
+        cta: "Open quotes",
+        route: "/app/authors",
+        icon: Stars,
+        accentClass: "text-sky-300",
       },
-      position: {
+      {
         id: positionChoice.id,
         family: "position" as const,
         label: "Position",
@@ -287,99 +303,57 @@ const AppHome = () => {
         description: positionChoice.description,
         cta: "Open positions",
         route: positionChoice.route,
-      },
-      quote: {
-        id: quoteChoice.id,
-        family: "quote" as const,
-        label: "Quote",
-        title: `A line from ${quoteChoice.author}`,
-        description: `“${quoteChoice.quote}”`,
-        cta: "Open quotes",
-        route: "/app/authors",
-      },
-    };
-  }, [dailySeed, pathways, rituals]);
-
-  const dailyAction = useMemo(() => {
-    const preferredChoices = signal.families
-      .map((family) => spotlightChoices[family])
-      .filter(Boolean) as DailyChoice[];
-
-    return pickBySeed(preferredChoices.length > 0 ? preferredChoices : Object.values(spotlightChoices), `${dailySeed}:daily`);
-  }, [dailySeed, signal.families, spotlightChoices]);
-
-  const choiceCards = useMemo(
-    () => [
-      {
-        title: "Learning",
-        description: "Go deeper through pathways and teachings when you want context, not only a quick spark.",
-        note: spotlightChoices.learning.title,
-        route: "/app/paths",
-        cta: "Choose learning",
-        icon: BookOpen,
-        iconClass: "text-violet-300",
-      },
-      {
-        title: "Rituals",
-        description: "Let a guided practice decide the pace, tone, and first movement of the moment.",
-        note: spotlightChoices.ritual.title,
-        route: "/app/space?tool=rituals",
-        cta: "Choose rituals",
-        icon: Sparkles,
-        iconClass: "text-amber-300",
-      },
-      {
-        title: "Positions",
-        description: "Enter through the body when words feel too slow or too much.",
-        note: spotlightChoices.position.title,
-        route: "/app/space?tool=positions",
-        cta: "Choose positions",
         icon: Heart,
-        iconClass: "text-rose-300",
+        accentClass: "text-rose-300",
       },
       {
-        title: "Quotes",
-        description: "Take one line of wisdom into the day and let it shape how you touch, speak, or wait.",
-        note: clipText(spotlightChoices.quote.description, 72),
-        route: "/app/authors",
-        cta: "Choose quotes",
-        icon: Stars,
-        iconClass: "text-sky-300",
+        id: `learning-${pathwayChoice.id}`,
+        family: "learning" as const,
+        label: "Quick learning insight",
+        title: pathwayChoice.title,
+        description:
+          pathwayChoice.description || `${pathwayChoice.duration_days} days of guided relationship practice.`,
+        cta: "Open learning",
+        route: "/app/paths",
+        icon: BookOpen,
+        accentClass: "text-violet-300",
       },
-    ],
-    [spotlightChoices]
-  );
+      {
+        id: reconnectChoice.id,
+        family: "reconnect" as const,
+        label: "Reconnect move",
+        title: reconnectChoice.title,
+        description: reconnectChoice.description,
+        cta: "Open reconnect",
+        route: reconnectChoice.route,
+        icon: MessageCircle,
+        accentClass: "text-teal-300",
+      },
+    ];
+  }, [dailySeed, pathways, rituals]);
 
   return (
     <div className="space-y-5">
       <section className="rounded-[28px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-6 shadow-[0_24px_80px_-40px_rgba(255,170,70,0.35)] md:p-8">
         <div className="max-w-4xl">
           <p className="text-xs uppercase tracking-[0.28em] text-primary/80">{todayLabel}</p>
-          <h1 className="mt-3 font-display text-4xl leading-tight text-foreground md:text-5xl">One day. One sacred action.</h1>
+          <h1 className="mt-3 font-display text-4xl leading-tight text-foreground md:text-5xl">Your daily sacred flow is ready.</h1>
           <p className="mt-4 max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
-            One step toward infinite love with Sacred Path for Couples. The app chooses from your saved memory, your latest shared signals, and the living library below.
+            Sacred Path now chooses the day for you. Five guided moves. No decision fatigue. One clear rhythm for couples moving toward infinite love.
           </p>
         </div>
 
         <div className="mt-8 grid gap-4 lg:grid-cols-[1.12fr_0.88fr]">
           <div>
-            <p className="text-xs uppercase tracking-[0.22em] text-primary/80">Today&apos;s sacred action</p>
+            <p className="text-xs uppercase tracking-[0.22em] text-primary/80">Today&apos;s promise</p>
             <h2 className="mt-3 font-display text-3xl text-foreground md:text-4xl">
-              {loading ? "Listening for the next move..." : dailyAction.title}
+              One ritual. One quote. One position. One insight. One reconnect move.
             </h2>
             <p className="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">
               {loading
-                ? "Gathering your rhythm, memory, and shared signals."
-                : dailyAction.description}
+                ? "Gathering your shared rhythm and selecting today’s sequence."
+                : "This sequence stays fixed all day, then refreshes tomorrow with a new guided page."}
             </p>
-
-            <button
-              type="button"
-              onClick={() => navigate(dailyAction.route)}
-              className="mt-6 rounded-2xl border border-primary/20 bg-primary/10 px-5 py-3 text-sm text-foreground transition-all hover:border-primary/35 hover:bg-primary/14"
-            >
-              {dailyAction.cta}
-            </button>
           </div>
 
           <div className="space-y-3">
@@ -392,12 +366,12 @@ const AppHome = () => {
             </div>
 
             <div className="rounded-[22px] border border-border/30 bg-card/40 p-4">
-              <div className="text-xs uppercase tracking-[0.18em] text-primary/80">Today&apos;s direction</div>
-              <p className="mt-3 font-display text-2xl text-foreground">{loading ? "Waiting" : dailyAction.label}</p>
+              <div className="text-xs uppercase tracking-[0.18em] text-primary/80">Daily cadence</div>
+              <p className="mt-3 font-display text-2xl text-foreground">{loading ? "Tuning..." : "Preselected for you"}</p>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">
                 {loading
-                  ? "The page is drawing your recommendation."
-                  : "If you do not want to decide today, let this be enough."}
+                  ? "The page is drawing your five moves."
+                  : "Open each card in order, share what resonates, and let your journey page carry the continuity."}
               </p>
             </div>
           </div>
@@ -406,28 +380,34 @@ const AppHome = () => {
 
       <section>
         <div className="mb-4">
-          <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Choose your own sacred action</p>
-          <h2 className="mt-2 font-display text-3xl text-foreground">Simple boxes. Clear direction.</h2>
+          <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Preselected daily sequence</p>
+          <h2 className="mt-2 font-display text-3xl text-foreground">Follow today&apos;s five sacred moves</h2>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {choiceCards.map((card) => {
-            const Icon = card.icon;
+        <div className="grid gap-4">
+          {dailyFlow.map((step, index) => {
+            const Icon = step.icon;
 
             return (
               <button
-                key={card.title}
+                key={step.id}
                 type="button"
-                onClick={() => navigate(card.route)}
-                className="rounded-[24px] border border-border/30 bg-card/45 p-5 text-left transition-all hover:border-primary/25 hover:bg-card/60"
+                onClick={() => navigate(step.route)}
+                className="w-full rounded-[24px] border border-border/30 bg-card/45 p-5 text-left transition-all hover:border-primary/25 hover:bg-card/60"
               >
-                <div className={`inline-flex rounded-2xl border border-border/30 bg-background/45 p-3 ${card.iconClass}`}>
-                  <Icon className="h-5 w-5" />
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.2em] text-primary/80">
+                      Step {index + 1} · {step.label}
+                    </p>
+                    <h3 className="mt-3 font-display text-2xl text-foreground">{step.title}</h3>
+                  </div>
+                  <div className={`inline-flex rounded-2xl border border-border/30 bg-background/45 p-3 ${step.accentClass}`}>
+                    <Icon className="h-5 w-5" />
+                  </div>
                 </div>
-                <h3 className="mt-4 font-display text-2xl text-foreground">{card.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">{card.description}</p>
-                <div className="mt-4 text-xs uppercase tracking-[0.16em] text-primary/80">Today: {card.note}</div>
-                <div className="mt-4 text-sm text-foreground/90">{card.cta}</div>
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">{step.description}</p>
+                <div className="mt-4 text-sm text-foreground/90">{step.cta}</div>
               </button>
             );
           })}
