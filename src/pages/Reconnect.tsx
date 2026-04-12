@@ -2,8 +2,6 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowRight,
-  BookOpen,
-  ChevronRight,
   Flame,
   Heart,
   Lock,
@@ -415,7 +413,7 @@ const tierBadgeClass: Record<Tier, string> = {
 
 const TierBadge = ({ tier }: { tier: Tier }) => (
   <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] ${tierBadgeClass[tier]}`}>
-    {tier}
+    {tier === "free" ? "Free" : <Lock className="h-3.5 w-3.5" aria-label="Locked" />}
   </span>
 );
 
@@ -446,63 +444,14 @@ const ReconnectHeroCard = ({ tool }: { tool: ReconnectTool }) => {
   );
 };
 
-const MoreReconnectCard = ({
-  selectedSlug,
-  onSelect,
-}: {
-  selectedSlug: string;
-  onSelect: (slug: string) => void;
-}) => (
-  <section className={shellCardClass}>
-    <div className="flex items-center justify-between gap-3">
-      <h3 className="font-display text-xl text-foreground">More Reconnect Tools</h3>
-      <BookOpen className="h-4 w-4 text-primary/80" />
-    </div>
-    <p className="mt-2 text-sm leading-6 text-muted-foreground">Choose the fastest way to reconnect now, then explore deeper tools together when you have more space.</p>
-
-    <div className="mt-4 space-y-2">
-      {reconnectTools.map((tool) => {
-        const isSelected = tool.slug === selectedSlug;
-        return (
-          <button
-            key={tool.slug}
-            type="button"
-            onClick={() => onSelect(tool.slug)}
-            className={`w-full rounded-2xl border p-3 text-left transition-all ${
-              isSelected
-                ? "border-primary/30 bg-primary/10"
-                : "border-border/25 bg-background/45 hover:border-primary/20 hover:bg-card/55"
-            }`}
-          >
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <div className="font-body text-sm text-foreground">{tool.title}</div>
-                <div className="mt-1 text-xs leading-5 text-muted-foreground">{tool.overviewLine}</div>
-              </div>
-              <div className="flex items-center gap-2">
-                <TierBadge tier={tool.tier} />
-                {tool.tier === "free" ? (
-                  <ChevronRight className="h-4 w-4 text-primary/70" />
-                ) : (
-                  <Lock className="h-4 w-4 text-amber-300/90" />
-                )}
-              </div>
-            </div>
-          </button>
-        );
-      })}
-    </div>
-  </section>
-);
-
 const PremiumMiniCard = () => (
   <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.24),transparent_55%),linear-gradient(135deg,rgba(245,158,11,0.18),rgba(15,23,42,0.15))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.62)]">
     <div className="flex items-center gap-2 text-amber-200">
       <Lock className="h-4 w-4" />
-      <span className="text-xs uppercase tracking-[0.16em]">Premium</span>
+      <span className="text-xs uppercase tracking-[0.16em]">Locked</span>
     </div>
     <p className="mt-3 text-sm leading-6 text-foreground/90">
-      Unlock premium reconnect systems with high-impact scripts, guided pacing, and advanced recovery pathways that move couples toward sacred love.
+      Unlock reconnect systems with high-impact scripts, guided pacing, and advanced recovery pathways that move couples toward sacred love.
     </p>
     <div className="mt-3 flex flex-wrap gap-2">
       <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Guided Scripts</span>
@@ -621,21 +570,8 @@ const FreeReconnectContent = ({ tool }: { tool: ReconnectTool }) => {
         </div>
       </section>
 
-      <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">8. Related Paths & Authors</p>
-        <div className="mt-4 grid gap-3 md:grid-cols-3">
-          {data.related.map((entry) => (
-            <article key={`${entry.kind}-${entry.name}`} className="rounded-2xl border border-border/25 bg-card/35 p-4">
-              <p className="text-[11px] uppercase tracking-[0.14em] text-primary/80">{entry.kind}</p>
-              <h4 className="mt-2 font-body text-sm text-foreground">{entry.name}</h4>
-              <p className="mt-2 text-xs leading-6 text-muted-foreground">{entry.note}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
       <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
-        <p className="text-xs uppercase tracking-[0.2em] text-amber-300">9. Premium Banner</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-amber-300">8. Locked Banner</p>
         <p className="mt-3 text-sm leading-7 text-foreground/90">{data.premiumBanner}</p>
         <div className="mt-4 grid gap-2 md:grid-cols-3">
           <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Repair scripts</div>
@@ -675,12 +611,12 @@ const PremiumReconnectContent = ({ tool }: { tool: ReconnectTool }) => (
         className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-2 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/18"
       >
         <Lock className="h-4 w-4" />
-        Unlock this reconnect track in premium
+        Unlock this reconnect track
       </Link>
     </section>
 
     <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">What premium unlocks for your relationship</p>
+      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">What unlocks for your relationship</p>
       <div className="mt-4 grid gap-3 md:grid-cols-2">
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
           <h4 className="font-body text-sm text-foreground">Structured scripts</h4>
@@ -704,9 +640,9 @@ const PremiumReconnectContent = ({ tool }: { tool: ReconnectTool }) => (
     </section>
 
     <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.2),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
-      <p className="text-xs uppercase tracking-[0.2em] text-amber-300">Premium Banner</p>
+      <p className="text-xs uppercase tracking-[0.2em] text-amber-300">Locked Banner</p>
       <p className="mt-3 text-sm leading-7 text-foreground/90">
-        Premium turns reconnect tracks into complete transformation systems, with guided structure from rupture to trust and from distance to sacred closeness.
+        Unlock reconnect tracks into complete transformation systems, with guided structure from rupture to trust and from distance to sacred closeness.
       </p>
       <div className="mt-4 grid gap-2 md:grid-cols-3">
         <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Structured recovery</div>
@@ -796,8 +732,8 @@ const Reconnect = () => {
             <p className="mt-2 text-sm leading-6 text-foreground/90">{freeCount} fully open guides so couples can shift from distance to connection in minutes.</p>
           </div>
           <div className="rounded-2xl border border-amber-400/25 bg-amber-500/8 p-4">
-            <p className="text-xs uppercase tracking-[0.14em] text-amber-200">Premium Reconnect Tracks</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">{premiumCount} premium tracks with deeper support, richer wisdom, and guided progression toward sacred partnership.</p>
+            <p className="text-xs uppercase tracking-[0.14em] text-amber-200">Locked Reconnect Tracks</p>
+            <p className="mt-2 text-sm leading-6 text-foreground/90">{premiumCount} locked tracks with deeper support, richer wisdom, and guided progression toward sacred partnership.</p>
           </div>
         </div>
       </section>
@@ -805,7 +741,6 @@ const Reconnect = () => {
       <section className="grid items-start gap-8 lg:grid-cols-[320px_minmax(0,1fr)]">
         <aside className="space-y-4 lg:sticky lg:top-24">
           <ReconnectHeroCard tool={selected} />
-          <MoreReconnectCard selectedSlug={selectedSlug} onSelect={setSelectedSlug} />
           <PremiumMiniCard />
         </aside>
 

@@ -2,8 +2,6 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowRight,
-  BookOpen,
-  ChevronRight,
   Compass,
   Feather,
   Flame,
@@ -62,13 +60,6 @@ type Author = {
   iconClass: string;
   teaser?: string[];
   content?: FreeAuthorContent;
-};
-
-type MoreAuthorRow = {
-  slug: string;
-  name: string;
-  line: string;
-  tier: Tier;
 };
 
 const libraryTabs = [
@@ -444,33 +435,6 @@ const authors: Author[] = [
   },
 ];
 
-const moreAuthorsRows: MoreAuthorRow[] = [
-  {
-    slug: "osho",
-    name: "Osho",
-    line: "Meditative awareness and emotional freedom couples can apply tonight.",
-    tier: "free",
-  },
-  {
-    slug: "mantak-chia",
-    name: "Mantak Chia",
-    line: "Taoist alchemy, breath, and sensual longevity for lasting partnership.",
-    tier: "premium",
-  },
-  {
-    slug: "margot-anand",
-    name: "Margot Anand",
-    line: "Ecstatic sacred sensuality and ceremony for modern couples.",
-    tier: "premium",
-  },
-  {
-    slug: "daniel-odier",
-    name: "Daniel Odier",
-    line: "Subtle Tantra and non-dual presence that deepens couple closeness.",
-    tier: "premium",
-  },
-];
-
 const subNavClass =
   "inline-flex items-center rounded-full border border-border/30 bg-background/45 px-4 py-2 text-sm text-muted-foreground transition-all hover:border-primary/20 hover:text-foreground";
 
@@ -484,7 +448,7 @@ const badgeByTier: Record<Tier, string> = {
 
 const TierBadge = ({ tier }: { tier: Tier }) => (
   <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] ${badgeByTier[tier]}`}>
-    {tier === "free" ? "Free" : "Premium"}
+    {tier === "free" ? "Free" : <Lock className="h-3.5 w-3.5" aria-label="Locked" />}
   </span>
 );
 
@@ -517,60 +481,11 @@ const AuthorHeroCard = ({ author }: { author: Author }) => {
   );
 };
 
-const MoreAuthorsCard = ({
-  selectedSlug,
-  onSelect,
-}: {
-  selectedSlug: string;
-  onSelect: (slug: string) => void;
-}) => (
-  <section className={shellCardClass}>
-    <div className="flex items-center justify-between gap-3">
-      <h3 className="font-display text-xl text-foreground">More Authors</h3>
-      <BookOpen className="h-4 w-4 text-primary/80" />
-    </div>
-    <p className="mt-2 text-sm leading-6 text-muted-foreground">Take a quick insight now, then move deeper as a couple when you have more space.</p>
-
-    <div className="mt-4 space-y-2">
-      {moreAuthorsRows.map((row) => {
-        const isSelected = row.slug === selectedSlug;
-        return (
-          <button
-            key={row.slug}
-            type="button"
-            onClick={() => onSelect(row.slug)}
-            className={`w-full rounded-2xl border p-3 text-left transition-all ${
-              isSelected
-                ? "border-primary/30 bg-primary/10"
-                : "border-border/25 bg-background/45 hover:border-primary/20 hover:bg-card/55"
-            }`}
-          >
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <div className="font-body text-sm text-foreground">{row.name}</div>
-                <div className="mt-1 text-xs leading-5 text-muted-foreground">{row.line}</div>
-              </div>
-              <div className="flex flex-col items-end gap-2">
-                <TierBadge tier={row.tier} />
-                {row.tier === "free" ? (
-                  <ChevronRight className="h-4 w-4 text-primary/70" />
-                ) : (
-                  <Lock className="h-4 w-4 text-amber-300/90" />
-                )}
-              </div>
-            </div>
-          </button>
-        );
-      })}
-    </div>
-  </section>
-);
-
 const PremiumMiniCard = () => (
   <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.24),transparent_55%),linear-gradient(135deg,rgba(245,158,11,0.18),rgba(15,23,42,0.15))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.62)]">
     <div className="flex items-center gap-2 text-amber-200">
       <Lock className="h-4 w-4" />
-      <span className="text-xs uppercase tracking-[0.16em]">Premium</span>
+      <span className="text-xs uppercase tracking-[0.16em]">Locked</span>
     </div>
     <p className="mt-3 text-sm leading-6 text-foreground/90">
       Unlock deeper author journeys with guided partner practices, integration maps, and sacred-love pathways built for real couples.
@@ -694,7 +609,7 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
       </section>
 
       <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
-        <p className="text-xs uppercase tracking-[0.2em] text-amber-300">8. Premium Library Expansion</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-amber-300">8. Locked Library Expansion</p>
         <p className="mt-3 text-sm leading-7 text-foreground/90">{data.premiumBanner}</p>
         <div className="mt-4 grid gap-2 md:grid-cols-3">
           <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Advanced author maps</div>
@@ -734,12 +649,12 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => (
         className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-2 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/18"
       >
         <Lock className="h-4 w-4" />
-        Unlock this author journey in premium
+        Unlock this author journey
       </Link>
     </section>
 
     <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">What premium unlocks for your relationship</p>
+      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">What unlocks for your relationship</p>
       <div className="mt-4 grid gap-3 md:grid-cols-2">
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
           <h4 className="font-body text-sm text-foreground">Deep educational modules</h4>
@@ -761,9 +676,9 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => (
     </section>
 
     <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.2),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
-      <p className="text-xs uppercase tracking-[0.2em] text-amber-300">Premium Banner</p>
+      <p className="text-xs uppercase tracking-[0.2em] text-amber-300">Locked Banner</p>
       <p className="mt-3 text-sm leading-7 text-foreground/90">
-        Premium unlocks full author transmissions with depth, warmth, and practical implementation so your relationship can keep moving toward sacred love.
+        Unlock full author transmissions with depth, warmth, and practical implementation so your relationship can keep moving toward sacred love.
       </p>
       <div className="mt-4 grid gap-2 md:grid-cols-3">
         <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Deep wisdom tracks</div>
@@ -857,8 +772,8 @@ const Authors = () => {
             <p className="mt-2 text-sm leading-6 text-foreground/90">{freeAuthors.map((author) => author.name).join(" and ")} are fully open so couples can apply ancient wisdom immediately and feel closer today.</p>
           </div>
           <div className="rounded-2xl border border-amber-400/25 bg-amber-500/8 p-4">
-            <p className="text-xs uppercase tracking-[0.14em] text-amber-200">Premium Authors</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">{premiumAuthors.length} premium voices for couples who want more inspiration, deeper wisdom, and a guided path toward sacred love.</p>
+            <p className="text-xs uppercase tracking-[0.14em] text-amber-200">Locked Authors</p>
+            <p className="mt-2 text-sm leading-6 text-foreground/90">{premiumAuthors.length} locked voices for couples who want more inspiration, deeper wisdom, and a guided path toward sacred love.</p>
           </div>
         </div>
       </section>
@@ -866,7 +781,6 @@ const Authors = () => {
       <section className="grid items-start gap-8 lg:grid-cols-[320px_minmax(0,1fr)]">
         <aside className="space-y-4 lg:sticky lg:top-24">
           <AuthorHeroCard author={selected} />
-          <MoreAuthorsCard selectedSlug={selectedSlug} onSelect={setSelectedSlug} />
           <PremiumMiniCard />
         </aside>
 
