@@ -370,6 +370,36 @@ const reconnectTools: ReconnectTool[] = [
       "Premium includes repair flows and follow-up integration prompts.",
     ],
   },
+  {
+    slug: "polarity-reset",
+    title: "Polarity Reset",
+    tier: "premium",
+    icon: Flame,
+    iconClass: "text-rose-300",
+    descriptor: "A premium reconnect protocol for rebuilding erotic edge after emotional flattening.",
+    oneLiner: "For couples who still love each other but miss charge, anticipation, and directional tension.",
+    overviewLine: "Premium edge-restoration track for long-term chemistry renewal.",
+    teaser: [
+      "Reintroduce conscious leading/receiving dynamics with precision and care.",
+      "Use structured polarity drills that preserve consent and emotional safety.",
+      "Premium includes step-by-step charge recovery scripts and integration prompts.",
+    ],
+  },
+  {
+    slug: "ritual-aftercare",
+    title: "Ritual Aftercare",
+    tier: "premium",
+    icon: MoonStar,
+    iconClass: "text-cyan-300",
+    descriptor: "A premium post-intimacy and post-conflict integration track that protects relational trust.",
+    oneLiner: "For couples who want closeness to stay stable after big emotional or erotic moments.",
+    overviewLine: "Premium aftercare system for emotional safety, bonding, and continuity.",
+    teaser: [
+      "Transform intense moments into secure attachment rather than confusion or crash.",
+      "Practice debrief, reassurance, and body-led recovery in a structured format.",
+      "Premium includes aftercare templates, check-ins, and next-day integration maps.",
+    ],
+  },
 ];
 
 const subNavClass =
@@ -466,19 +496,24 @@ const MoreReconnectCard = ({
 );
 
 const PremiumMiniCard = () => (
-  <section className="rounded-[24px] border border-amber-400/20 bg-gradient-to-br from-amber-500/14 via-background to-background p-4">
+  <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.24),transparent_55%),linear-gradient(135deg,rgba(245,158,11,0.18),rgba(15,23,42,0.15))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.62)]">
     <div className="flex items-center gap-2 text-amber-200">
       <Lock className="h-4 w-4" />
       <span className="text-xs uppercase tracking-[0.16em]">Premium</span>
     </div>
     <p className="mt-3 text-sm leading-6 text-foreground/90">
-      Unlock deeper reconnect frameworks, guided scripts, and advanced intimacy bridges.
+      Unlock premium reconnect systems with high-impact scripts, guided pacing, and advanced relationship recovery pathways.
     </p>
+    <div className="mt-3 flex flex-wrap gap-2">
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Guided Scripts</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Repair Tools</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Intimacy Bridges</span>
+    </div>
     <Link
       to="/pricing"
       className="mt-4 inline-flex items-center gap-2 rounded-xl border border-amber-300/30 bg-amber-500/14 px-3 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
     >
-      View premium
+      View plans and trial
       <ArrowRight className="h-4 w-4" />
     </Link>
   </section>
@@ -599,14 +634,19 @@ const FreeReconnectContent = ({ tool }: { tool: ReconnectTool }) => {
         </div>
       </section>
 
-      <section className="rounded-[24px] border border-amber-400/20 bg-amber-500/8 p-5">
+      <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
         <p className="text-xs uppercase tracking-[0.2em] text-amber-300">9. Premium Banner</p>
         <p className="mt-3 text-sm leading-7 text-foreground/90">{data.premiumBanner}</p>
+        <div className="mt-4 grid gap-2 md:grid-cols-3">
+          <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Repair scripts</div>
+          <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Guided progression</div>
+          <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Daily integration</div>
+        </div>
         <Link
           to="/pricing"
           className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
         >
-          Unlock premium reconnect tools
+          See premium plans
           <ArrowRight className="h-4 w-4" />
         </Link>
       </section>
@@ -663,16 +703,21 @@ const PremiumReconnectContent = ({ tool }: { tool: ReconnectTool }) => (
       </div>
     </section>
 
-    <section className="rounded-[24px] border border-amber-400/20 bg-amber-500/8 p-5">
+    <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.2),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
       <p className="text-xs uppercase tracking-[0.2em] text-amber-300">Premium Banner</p>
       <p className="mt-3 text-sm leading-7 text-foreground/90">
-        Premium turns reconnect tools into complete practical systems, with layered scripts, guided pacing, and clear integration pathways.
+        Premium turns reconnect tracks into complete transformation systems, with guided structure from rupture to trust, and from distance to embodied closeness.
       </p>
+      <div className="mt-4 grid gap-2 md:grid-cols-3">
+        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Structured recovery</div>
+        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Expert guidance</div>
+        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Practical intimacy tools</div>
+      </div>
       <Link
         to="/pricing"
         className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
       >
-        View premium plans
+        View plans and start trial
         <ArrowRight className="h-4 w-4" />
       </Link>
     </section>

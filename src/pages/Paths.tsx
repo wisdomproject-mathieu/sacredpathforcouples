@@ -389,6 +389,20 @@ const pathDetails: PathDetail[] = [
       "Premium includes contemplative partner protocols and integration frameworks.",
     ],
   },
+  {
+    slug: "vajrayana-kashmir-shaivism",
+    name: "Vajrayana & Kashmir Shaivism",
+    tier: "premium",
+    oneLine: "Diamond-vehicle energy transformation meets non-dual recognition of divine consciousness.",
+    overviewLine: "Premium path combining Tibetan Vajrayana methods with Kashmir Shaivism realization practice.",
+    icon: Crown,
+    iconClass: "text-indigo-300",
+    teaser: [
+      "Work with mantra, visualization, channels, winds, and meditative concentration responsibly.",
+      "Integrate recognition-based Kashmir Shaivism practice into modern relational intimacy.",
+      "Premium includes safety-aware energetic sequencing and deep integration maps.",
+    ],
+  },
 ];
 
 const subNavClass =
@@ -484,19 +498,24 @@ const RelatedPathsCard = ({
 );
 
 const PremiumMiniCard = () => (
-  <section className="rounded-[24px] border border-amber-400/20 bg-gradient-to-br from-amber-500/14 via-background to-background p-4">
+  <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.24),transparent_55%),linear-gradient(135deg,rgba(245,158,11,0.18),rgba(15,23,42,0.15))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.62)]">
     <div className="flex items-center gap-2 text-amber-200">
       <Lock className="h-4 w-4" />
       <span className="text-xs uppercase tracking-[0.16em]">Premium</span>
     </div>
     <p className="mt-3 text-sm leading-6 text-foreground/90">
-      Unlock deeper path libraries, guided practice arcs, and richer author cross-links.
+      Unlock full path mastery with advanced practices, richer context, and direct bridges into relationship transformation.
     </p>
+    <div className="mt-3 flex flex-wrap gap-2">
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Guided Tracks</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Energy Maps</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Expert Library</span>
+    </div>
     <Link
       to="/pricing"
       className="mt-4 inline-flex items-center gap-2 rounded-xl border border-amber-300/30 bg-amber-500/14 px-3 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
     >
-      View premium
+      View plans and trial
       <ArrowRight className="h-4 w-4" />
     </Link>
   </section>
@@ -620,14 +639,19 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
         </div>
       </section>
 
-      <section className="rounded-[24px] border border-amber-400/20 bg-amber-500/8 p-5">
+      <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
         <p className="text-xs uppercase tracking-[0.2em] text-amber-300">9. Premium Banner</p>
         <p className="mt-3 text-sm leading-7 text-foreground/90">{data.premiumBanner}</p>
+        <div className="mt-4 grid gap-2 md:grid-cols-3">
+          <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Advanced teachings</div>
+          <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Practice progression</div>
+          <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Premium guidance</div>
+        </div>
         <Link
           to="/pricing"
           className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
         >
-          Unlock premium pathways
+          See premium plans
           <ArrowRight className="h-4 w-4" />
         </Link>
       </section>
@@ -683,16 +707,21 @@ const PremiumPathContent = ({ path }: { path: PathDetail }) => (
       </div>
     </section>
 
-    <section className="rounded-[24px] border border-amber-400/20 bg-amber-500/8 p-5">
+    <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.2),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
       <p className="text-xs uppercase tracking-[0.2em] text-amber-300">Premium Banner</p>
       <p className="mt-3 text-sm leading-7 text-foreground/90">
-        Premium turns locked paths into full mini-libraries with deep educational content, guided practices, and modern relationship translation.
+        Premium opens complete path transmissions: deeper context, advanced techniques, and guided integration designed for lasting relational impact.
       </p>
+      <div className="mt-4 grid gap-2 md:grid-cols-3">
+        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Master-level depth</div>
+        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Stepwise learning</div>
+        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Couple application</div>
+      </div>
       <Link
         to="/pricing"
         className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
       >
-        View premium plans
+        View plans and start trial
         <ArrowRight className="h-4 w-4" />
       </Link>
     </section>
@@ -713,7 +742,7 @@ const Paths = () => {
           <p className="text-xs uppercase tracking-[0.28em] text-primary/80">Sacred Library · Paths</p>
           <h1 className="mt-3 font-display text-4xl text-foreground md:text-5xl">Path pages rebuilt as mini-libraries</h1>
           <p className="mt-4 text-sm leading-7 text-muted-foreground md:text-base">
-            Free depth where you requested it (Tantra, Tao), premium lock architecture for the rest (Kama Sutra, Polarity, Sacred Desire), all in one consistent layout.
+            Free depth where you requested it (Tantra, Tao), plus a premium architecture for advanced traditions and specialized intimate pathways.
           </p>
         </div>
 

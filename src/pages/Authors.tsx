@@ -412,6 +412,36 @@ const authors: Author[] = [
       "Premium includes layered pathways for advanced couples.",
     ],
   },
+  {
+    slug: "charles-muir",
+    name: "Charles Muir",
+    tier: "premium",
+    descriptor: "Modern sacred intimacy facilitation, ritualized connection, and practical tantric partner work.",
+    oneLiner: "For couples who want usable ritual structure with grounded, modern language.",
+    overviewLine: "Applied Neo-Tantra and practical sacred intimacy sequencing.",
+    icon: Waves,
+    iconClass: "text-cyan-300",
+    teaser: [
+      "Learn modernized tantric partner rituals built for real relationship life.",
+      "Bridge sensual exploration, communication, and emotional safety in one arc.",
+      "Premium includes modular ritual scripts and progression tracks for couples.",
+    ],
+  },
+  {
+    slug: "sally-kempton",
+    name: "Sally Kempton",
+    tier: "premium",
+    descriptor: "Kashmir Shaivism-inspired contemplative practice and embodied recognition of divine awareness.",
+    oneLiner: "For couples drawn to heart-depth, non-dual intimacy, and subtle consciousness work.",
+    overviewLine: "Kashmir Shaivism contemplative depth translated for modern relational practice.",
+    icon: SunMoon,
+    iconClass: "text-violet-300",
+    teaser: [
+      "Work with recognition-based practice rather than performance-heavy spirituality.",
+      "Unify meditation, tenderness, and intimate presence through non-dual awareness.",
+      "Premium includes guided contemplations, partner prompts, and integration rituals.",
+    ],
+  },
 ];
 
 const moreAuthorsRows: MoreAuthorRow[] = [
@@ -537,19 +567,24 @@ const MoreAuthorsCard = ({
 );
 
 const PremiumMiniCard = () => (
-  <section className="rounded-[24px] border border-amber-400/20 bg-gradient-to-br from-amber-500/14 via-background/95 to-background p-4">
+  <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.24),transparent_55%),linear-gradient(135deg,rgba(245,158,11,0.18),rgba(15,23,42,0.15))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.62)]">
     <div className="flex items-center gap-2 text-amber-200">
       <Lock className="h-4 w-4" />
       <span className="text-xs uppercase tracking-[0.16em]">Premium</span>
     </div>
     <p className="mt-3 text-sm leading-6 text-foreground/90">
-      Unlock the full author library with guided practices, layered teachings, and integration maps.
+      Unlock the full author temple: deeper teachings, guided partner practices, and high-impact integration maps for lasting change.
     </p>
+    <div className="mt-3 flex flex-wrap gap-2">
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Guided Journeys</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Practice Scripts</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Expert Paths</span>
+    </div>
     <Link
       to="/pricing"
       className="mt-4 inline-flex items-center gap-2 rounded-xl border border-amber-300/30 bg-amber-500/14 px-3 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
     >
-      See premium
+      View plans and trial
       <ArrowRight className="h-4 w-4" />
     </Link>
   </section>
@@ -670,14 +705,19 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
         </div>
       </section>
 
-      <section className="rounded-[24px] border border-amber-400/20 bg-amber-500/8 p-5">
+      <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
         <p className="text-xs uppercase tracking-[0.2em] text-amber-300">9. Premium Library Expansion</p>
         <p className="mt-3 text-sm leading-7 text-foreground/90">{data.premiumBanner}</p>
+        <div className="mt-4 grid gap-2 md:grid-cols-3">
+          <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Advanced author maps</div>
+          <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Guided couple practices</div>
+          <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Direct Temple bridges</div>
+        </div>
         <Link
           to="/pricing"
           className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
         >
-          Unlock premium authors
+          See premium plans
           <ArrowRight className="h-4 w-4" />
         </Link>
       </section>
@@ -732,16 +772,21 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => (
       </div>
     </section>
 
-    <section className="rounded-[24px] border border-amber-400/20 bg-amber-500/8 p-5">
+    <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.2),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
       <p className="text-xs uppercase tracking-[0.2em] text-amber-300">Premium Banner</p>
       <p className="mt-3 text-sm leading-7 text-foreground/90">
-        Premium turns locked authors into full mini-libraries with educational depth, practical application, and guided progression.
+        Premium unlocks full author transmissions with depth, rigor, and practical intimacy implementation for real couples.
       </p>
+      <div className="mt-4 grid gap-2 md:grid-cols-3">
+        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Deep learning tracks</div>
+        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Practice prompts</div>
+        <div className="rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">Progressive modules</div>
+      </div>
       <Link
         to="/pricing"
         className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
       >
-        View premium plans
+        View plans and start trial
         <ArrowRight className="h-4 w-4" />
       </Link>
     </section>
