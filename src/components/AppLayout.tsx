@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { BookOpen, Heart, Home, LogOut, MessageCircle } from "lucide-react";
+import { BookOpen, Home, LogOut, Sparkles } from "lucide-react";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -15,8 +15,7 @@ const AppLayout = () => {
     () => [
       { to: "/app", icon: Home, label: "Home", iconClass: "text-amber-300" },
       { to: "/app/paths", icon: BookOpen, label: "Library", iconClass: "text-violet-300" },
-      { to: "/app/space", icon: MessageCircle, label: "Temple", iconClass: "text-fuchsia-300" },
-      { to: "/app/reconnect", icon: Heart, label: "Reconnect", iconClass: "text-rose-300" },
+      { to: "/app/space", icon: Sparkles, label: "Temple", iconClass: "text-fuchsia-300" },
     ],
     []
   );
@@ -43,7 +42,7 @@ const AppLayout = () => {
               </div>
 
               <p className="mt-4 text-sm leading-6 text-muted-foreground">
-                Temple for shared practice. Library for ancient wisdom. One living path for two.
+                Ancient wisdom translated for modern love. Home for orientation, Library for learning, Temple for shared practice.
               </p>
             </div>
 
@@ -71,7 +70,16 @@ const AppLayout = () => {
               })}
             </nav>
 
-            <div className="mt-5 flex items-center justify-between gap-3 rounded-2xl border border-border/30 bg-background/40 p-3">
+            <div className="mt-5 rounded-2xl border border-border/30 bg-background/40 p-3">
+              <div className="text-[11px] uppercase tracking-[0.18em] text-primary/80">Library map</div>
+              <div className="mt-3 space-y-2 text-sm text-muted-foreground">
+                <Link to="/app/paths" className="block hover:text-foreground transition-colors">Foundational Paths</Link>
+                <Link to="/app/authors" className="block hover:text-foreground transition-colors">Teacher Voices</Link>
+                <Link to="/app/reconnect" className="block hover:text-foreground transition-colors">Reconnect Tools</Link>
+              </div>
+            </div>
+
+            <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-border/30 bg-background/40 p-3">
               <LanguageSwitcher />
               <Button variant="ghost" size="icon" onClick={signOut} className="rounded-xl border border-border/30 bg-card/45 hover:bg-card/60">
                 <LogOut className="h-4 w-4" />

@@ -1,57 +1,34 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BookOpen, Heart, MessageCircle, Sparkles, Stars } from "lucide-react";
+import { BookOpen, HeartHandshake, MessageCircle, Sparkles, Stars } from "lucide-react";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-
-const homeCards = [
-  {
-    title: "Sacred Library",
-    subtitle: "Enter the wisdom that reshapes how two people soften, desire, repair, and return.",
-    icon: BookOpen,
-    iconClass: "text-violet-300",
-    to: "/app/paths",
-  },
-  {
-    title: "Temple",
-    subtitle: "Bring breath, truth, ritual, touch, and memory into lived shared practice.",
-    icon: MessageCircle,
-    iconClass: "text-fuchsia-300",
-    to: "/app/space",
-  },
-  {
-    title: "Reconnect",
-    subtitle: "Choose a lighter doorway when the relationship needs warmth, softness, or spark again.",
-    icon: Heart,
-    iconClass: "text-rose-300",
-    to: "/app/reconnect",
-  },
-];
 
 const AppHome = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [quoteIndex, setQuoteIndex] = useState(0);
-  const [connectionStatus, setConnectionStatus] = useState("Waiting to connect your sacred space.");
-  const [activityStatus, setActivityStatus] = useState("Nothing new yet. The temple begins to live when both of you enter it.");
+  const [connectionStatus, setConnectionStatus] = useState("You can begin alone in the Library and move into the Temple when the relationship is ready.");
+  const [activityStatus, setActivityStatus] = useState("No partner activity yet. Start with the Library to discover a path, then enter the Temple when you want to practice together.");
+  const [journeyPhase, setJourneyPhase] = useState("Arrival");
 
   const quotes = useMemo(
     () => [
       {
+        author: "Diana Richardson",
+        quote: "When slowness enters intimacy, the body starts telling a much deeper truth.",
+        note: "Softness · Sensitivity · Relaxed presence",
+      },
+      {
         author: "David Deida",
-        quote: "Love stays alive when truth, depth, and attraction are all still allowed to breathe.",
+        quote: "Love deepens when presence, truth, and attraction are all still welcome in the room.",
         note: "Polarity · Presence · Devotion",
       },
       {
-        author: "Diana Richardson",
-        quote: "The deepest intimacy often begins where effort softens and stillness starts speaking.",
-        note: "Softness · Slowness · Sensitivity",
-      },
-      {
-        author: "Margot Anand",
-        quote: "Pleasure becomes transformative when it is welcomed consciously and given a sacred container.",
-        note: "Ecstasy · Ritual · Awakening",
+        author: "Mantak Chia",
+        quote: "Breath and awareness turn intensity into nourishment instead of depletion.",
+        note: "Tao · Energy · Longevity",
       },
     ],
     []
@@ -60,7 +37,7 @@ const AppHome = () => {
   useEffect(() => {
     const timer = window.setInterval(() => {
       setQuoteIndex((prev) => (prev + 1) % quotes.length);
-    }, 4500);
+    }, 4600);
 
     return () => window.clearInterval(timer);
   }, [quotes.length]);
@@ -76,52 +53,64 @@ const AppHome = () => {
         .maybeSingle();
 
       if (!couple) {
-        setConnectionStatus("Waiting to connect your sacred space.");
-        setActivityStatus("Nothing new yet. The temple begins to live when both of you enter it.");
+        setConnectionStatus("You are not connected yet. Sacred Path still works beautifully for one: learn inside the Library, then invite your partner when you are ready.");
+        setActivityStatus("Begin with a foundational path, save a few favorites, and let the Temple become your shared space later.");
+        setJourneyPhase("Arrival");
         return;
       }
 
       const connected = Boolean(couple.partner_a && couple.partner_b);
-      setConnectionStatus(connected ? "You and your partner are inside the same temple." : "Your invitation is open. Your partner has not arrived yet.");
+      setConnectionStatus(
+        connected
+          ? "You and your partner are inside the same temple. Home now becomes a living dashboard for your shared rhythm."
+          : "Your invitation is open. While you wait, use the Library to gather the words, rituals, and wisdom you want to bring into the relationship."
+      );
 
-      if (!connected) return;
+      if (!connected) {
+        setActivityStatus("No shared activity yet. The moment your partner arrives, this page can start reflecting your real temple rhythm.");
+        setJourneyPhase("Invitation");
+        return;
+      }
 
       const [weatherRes, messageRes, altarRes] = await Promise.all([
         supabase
           .from("weather_entries")
-          .select("state, user_id, created_at")
+          .select("state, created_at, user_id")
           .eq("couple_id", couple.id)
-          .neq("user_id", user.id)
           .order("created_at", { ascending: false })
-          .limit(1),
+          .limit(4),
         supabase
           .from("partner_messages")
-          .select("content, sender_id, created_at")
+          .select("content, created_at, sender_id")
           .eq("couple_id", couple.id)
-          .neq("sender_id", user.id)
           .order("created_at", { ascending: false })
-          .limit(1),
+          .limit(4),
         supabase
           .from("altar_items")
           .select("title, created_at")
           .eq("couple_id", couple.id)
           .order("created_at", { ascending: false })
-          .limit(1),
+          .limit(4),
       ]);
 
-      const weather = weatherRes.data?.[0];
-      const message = messageRes.data?.[0];
-      const altar = altarRes.data?.[0];
+      const latestWeather = weatherRes.data?.[0];
+      const latestMessage = messageRes.data?.[0];
+      const latestAltar = altarRes.data?.[0];
 
-      if (message) {
-        setActivityStatus("Your partner left something in the temple recently. Open Messages and feel what they sent.");
-      } else if (weather) {
-        setActivityStatus(`Your partner checked in with a ${weather.state} atmosphere. Read the climate before choosing the next move.`);
-      } else if (altar) {
-        setActivityStatus("Something sacred has been saved in the altar. Return and see what the relationship wanted to remember.");
+      if (latestMessage) {
+        setActivityStatus("Your partner left something in the Temple recently. Open the Temple to read it and let the next move come from what was actually felt.");
+      } else if (latestWeather) {
+        setActivityStatus(`The latest shared climate was ${latestWeather.state}. Let that mood guide whether tonight needs softness, teasing, repair, or stillness.`);
+      } else if (latestAltar) {
+        setActivityStatus("A memory has already been saved in the altar. The relationship is beginning to leave traces you can return to.");
       } else {
-        setActivityStatus("Your shared temple is open. Begin with weather, one soft message, or a small ritual tonight.");
+        setActivityStatus("Your shared temple is open. Start with Intimacy Weather, one warm message, or a small ritual that asks very little and gives a lot.");
       }
+
+      const totalTouches = (weatherRes.data?.length || 0) + (messageRes.data?.length || 0) + (altarRes.data?.length || 0);
+      if (totalTouches >= 8) setJourneyPhase("Sacred Desire");
+      else if (totalTouches >= 4) setJourneyPhase("Rekindling");
+      else setJourneyPhase("Softening");
     };
 
     loadStatus();
@@ -131,21 +120,14 @@ const AppHome = () => {
     <div className="space-y-6">
       <section className="rounded-[30px] border border-primary/15 bg-gradient-to-br from-primary/14 via-background to-background p-6 shadow-[0_24px_80px_-40px_rgba(255,170,70,0.45)] md:p-8">
         <div className="max-w-4xl">
-          <p className="text-xs uppercase tracking-[0.28em] text-primary/80">Sanctuary</p>
-          <h1 className="mt-3 font-display text-4xl leading-tight text-foreground md:text-5xl">Sacred Path for Couples</h1>
+          <p className="text-xs uppercase tracking-[0.28em] text-primary/80">Home</p>
+          <h1 className="mt-3 font-display text-4xl leading-tight text-foreground md:text-5xl">Ancient wisdom for modern love</h1>
           <p className="mt-4 max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
-            A modern sanctuary rooted in ancient wisdom. Learn the sacred paths, then bring them alive in the Temple through breath, touch, truth, devotion, and desire.
+            Sacred Path is built for the quick moment, the long season, the single seeker, and the shared temple of two. Learn inside the Library, then bring what matters into living practice.
           </p>
         </div>
 
         <div className="mt-6 flex flex-wrap gap-3">
-          <button
-            type="button"
-            onClick={() => navigate("/app/space")}
-            className="rounded-2xl border border-primary/25 bg-primary/12 px-5 py-3 font-body text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
-          >
-            Enter the Temple
-          </button>
           <button
             type="button"
             onClick={() => navigate("/app/paths")}
@@ -156,16 +138,16 @@ const AppHome = () => {
           <button
             type="button"
             onClick={() => navigate("/app/space")}
-            className="rounded-2xl border border-amber-400/20 bg-amber-500/10 px-5 py-3 font-body text-sm text-foreground transition-all hover:border-amber-400/35 hover:bg-amber-500/14"
+            className="rounded-2xl border border-primary/25 bg-primary/12 px-5 py-3 font-body text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
           >
-            Rituals
+            Connect with your partner in Temple
           </button>
           <button
             type="button"
-            onClick={() => navigate("/app/connect")}
-            className="rounded-2xl border border-fuchsia-400/20 bg-fuchsia-500/10 px-5 py-3 font-body text-sm text-foreground transition-all hover:border-fuchsia-400/35 hover:bg-fuchsia-500/14"
+            onClick={() => navigate("/app/space")}
+            className="rounded-2xl border border-amber-400/20 bg-amber-500/10 px-5 py-3 font-body text-sm text-foreground transition-all hover:border-amber-400/35 hover:bg-amber-500/14"
           >
-            Connect with your partner in Temple
+            Rituals
           </button>
         </div>
       </section>
@@ -176,13 +158,13 @@ const AppHome = () => {
             <Stars className="h-4 w-4" />
             <span className="text-xs uppercase tracking-[0.22em]">Couple Journey</span>
           </div>
-          <h2 className="mt-3 font-display text-3xl text-foreground">Where the relationship is now</h2>
+          <h2 className="mt-3 font-display text-3xl text-foreground">Where things stand now</h2>
           <p className="mt-3 text-sm leading-7 text-muted-foreground">{connectionStatus}</p>
 
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
             <div className="rounded-[22px] border border-border/30 bg-background/45 p-4">
-              <div className="text-xs uppercase tracking-[0.18em] text-primary/80">Current status</div>
-              <p className="mt-2 text-sm leading-6 text-foreground/90">{connectionStatus}</p>
+              <div className="text-xs uppercase tracking-[0.18em] text-primary/80">Current phase</div>
+              <p className="mt-2 text-sm leading-6 text-foreground/90">{journeyPhase}</p>
             </div>
             <div className="rounded-[22px] border border-border/30 bg-background/45 p-4">
               <div className="text-xs uppercase tracking-[0.18em] text-primary/80">Temple news</div>
@@ -201,36 +183,35 @@ const AppHome = () => {
         </div>
       </section>
 
-      <section>
-        <div className="mb-4">
-          <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Three sacred worlds</p>
-          <h2 className="mt-2 font-display text-3xl text-foreground">Where to go next</h2>
+      <section className="grid gap-4 xl:grid-cols-3">
+        <div className="rounded-[28px] border border-border/30 bg-card/45 p-5">
+          <div className="inline-flex rounded-2xl border border-border/30 bg-background/45 p-3 text-violet-300">
+            <BookOpen className="h-5 w-5" />
+          </div>
+          <h2 className="mt-4 font-display text-3xl text-foreground">Library</h2>
+          <p className="mt-3 text-sm leading-7 text-muted-foreground">
+            Learn by path, deepen by teacher, and discover what serves a quick modern couple as well as a long devotional one.
+          </p>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {homeCards.map((card) => {
-            const Icon = card.icon;
-            return (
-              <button
-                key={card.title}
-                type="button"
-                onClick={() => navigate(card.to)}
-                className="relative overflow-hidden rounded-[26px] border border-border/30 bg-card/45 p-5 text-left transition-all hover:border-primary/25 hover:bg-card/60 hover:shadow-[0_20px_60px_-42px_rgba(255,170,70,0.45)]"
-              >
-                <div className="pointer-events-none absolute inset-0 opacity-60">
-                  <div className="absolute -right-8 top-0 h-24 w-24 rounded-full bg-primary/10 blur-2xl" />
-                  <div className="absolute bottom-0 left-0 h-20 w-20 rounded-full bg-violet-500/10 blur-2xl" />
-                </div>
-                <div className="relative">
-                  <div className={`inline-flex rounded-2xl border border-border/30 bg-background/45 p-3 ${card.iconClass}`}>
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <h3 className="mt-4 font-display text-xl text-foreground">{card.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">{card.subtitle}</p>
-                </div>
-              </button>
-            );
-          })}
+        <div className="rounded-[28px] border border-border/30 bg-card/45 p-5">
+          <div className="inline-flex rounded-2xl border border-border/30 bg-background/45 p-3 text-fuchsia-300">
+            <MessageCircle className="h-5 w-5" />
+          </div>
+          <h2 className="mt-4 font-display text-3xl text-foreground">Temple</h2>
+          <p className="mt-3 text-sm leading-7 text-muted-foreground">
+            Enter the shared sanctuary for weather, ritual, positions, teasing, messages, repair, memory, and the living rhythm of two people.
+          </p>
+        </div>
+
+        <div className="rounded-[28px] border border-border/30 bg-card/45 p-5">
+          <div className="inline-flex rounded-2xl border border-border/30 bg-background/45 p-3 text-rose-300">
+            <HeartHandshake className="h-5 w-5" />
+          </div>
+          <h2 className="mt-4 font-display text-3xl text-foreground">For one or for two</h2>
+          <p className="mt-3 text-sm leading-7 text-muted-foreground">
+            Home and Library work beautifully even before a partner joins. Temple becomes the shared field when the relationship is ready to practice together.
+          </p>
         </div>
       </section>
     </div>
