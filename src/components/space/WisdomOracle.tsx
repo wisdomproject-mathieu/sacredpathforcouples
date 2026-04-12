@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { Brain, Compass, Heart, Route, Shield, Sparkles, Stars } from "lucide-react";
+import { Brain, Compass, Flame, Heart, MessageCircle, Route, Shield, Sparkles, Stars } from "lucide-react";
 
 import DoorwayShell from "@/components/space/DoorwayShell";
+import ShareCardButton from "@/components/space/ShareCardButton";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
@@ -18,6 +19,10 @@ type PathwayProgress = Tables<"pathway_progress">;
 type Pathway = Tables<"pathways">;
 type Ritual = Tables<"ritual_items">;
 
+type OracleTone = "romantic" | "erotic" | "playful" | "healing" | "devotional";
+type HeatLevel = "soft" | "balanced" | "intense";
+type OracleFocus = "bonding" | "attraction" | "repair" | "growth";
+
 type OracleMove = {
   id: string;
   title: string;
@@ -26,6 +31,77 @@ type OracleMove = {
   target: string;
   iconClass: string;
 };
+
+type OracleStep = {
+  id: string;
+  title: string;
+  detail: string;
+  target: string;
+  iconClass: string;
+};
+
+const tonePresets: {
+  key: OracleTone;
+  title: string;
+  subtitle: string;
+  iconClass: string;
+  categories: string[];
+  openingTarget: string;
+}[] = [
+  {
+    key: "romantic",
+    title: "Romantic",
+    subtitle: "Tender atmosphere, appreciation, and emotional closeness.",
+    iconClass: "text-rose-300",
+    categories: ["presence", "touch", "reconnect"],
+    openingTarget: "messages",
+  },
+  {
+    key: "erotic",
+    title: "Erotic",
+    subtitle: "Magnetic charge, erotic pacing, and embodied polarity.",
+    iconClass: "text-orange-300",
+    categories: ["polarity", "touch", "playful"],
+    openingTarget: "positions",
+  },
+  {
+    key: "playful",
+    title: "Playful",
+    subtitle: "Lightness, novelty, teasing, and spontaneity.",
+    iconClass: "text-fuchsia-300",
+    categories: ["playful", "presence", "reconnect"],
+    openingTarget: "rituals",
+  },
+  {
+    key: "healing",
+    title: "Healing",
+    subtitle: "Regulation-first repair and nervous-system safety.",
+    iconClass: "text-sky-300",
+    categories: ["breath", "reconnect", "bedtime"],
+    openingTarget: "repair",
+  },
+  {
+    key: "devotional",
+    title: "Devotional",
+    subtitle: "Sacred intention, gratitude, and ceremony over speed.",
+    iconClass: "text-amber-300",
+    categories: ["presence", "reconnect", "touch"],
+    openingTarget: "guide",
+  },
+];
+
+const heatOptions: { key: HeatLevel; label: string; note: string }[] = [
+  { key: "soft", label: "Soft", note: "Slow pace and emotional safety first" },
+  { key: "balanced", label: "Balanced", note: "Warm connection with some charge" },
+  { key: "intense", label: "Intense", note: "High-energy intimacy with structure" },
+];
+
+const focusOptions: { key: OracleFocus; label: string; note: string }[] = [
+  { key: "bonding", label: "Bonding", note: "More emotional closeness tonight" },
+  { key: "attraction", label: "Attraction", note: "More playful/erotic momentum" },
+  { key: "repair", label: "Repair", note: "Clear tension and reconnect" },
+  { key: "growth", label: "Growth", note: "Invest in long-term pathway" },
+];
 
 const dayKey = (iso?: string | null) => (iso ? new Date(iso).toISOString().slice(0, 10) : null);
 
@@ -69,6 +145,46 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
   const [rituals, setRituals] = useState<Ritual[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshTick, setRefreshTick] = useState(0);
+
+  const [tone, setTone] = useState<OracleTone>("romantic");
+  const [heat, setHeat] = useState<HeatLevel>("balanced");
+  const [focus, setFocus] = useState<OracleFocus>("bonding");
+
+  const prefsKey = useMemo(() => {
+    const couplePart = coupleId || "solo";
+    const userPart = user?.id || "anon";
+    return `sacredpath_oracle_prefs_${couplePart}_${userPart}`;
+  }, [coupleId, user?.id]);
+
+  useEffect(() => {
+    const raw = localStorage.getItem(prefsKey);
+    if (!raw) return;
+
+    try {
+      const parsed = JSON.parse(raw) as {
+        tone?: OracleTone;
+        heat?: HeatLevel;
+        focus?: OracleFocus;
+      };
+
+      if (parsed.tone) setTone(parsed.tone);
+      if (parsed.heat) setHeat(parsed.heat);
+      if (parsed.focus) setFocus(parsed.focus);
+    } catch {
+      // ignore corrupted local preferences
+    }
+  }, [prefsKey]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      prefsKey,
+      JSON.stringify({
+        tone,
+        heat,
+        focus,
+      })
+    );
+  }, [focus, heat, prefsKey, tone]);
 
   useEffect(() => {
     if (!user) {
@@ -160,24 +276,6 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
       pathways[0] ??
       null;
 
-    const categoryHints: Record<string, string[]> = {
-      stressed: ["breath", "reconnect"],
-      reassurance: ["reconnect", "presence"],
-      tired: ["breath", "bedtime"],
-      longing: ["touch", "presence"],
-      tender: ["touch", "presence"],
-      open: ["presence", "reconnect"],
-      playful: ["playful", "polarity"],
-      erotic: ["polarity", "touch"],
-    };
-
-    const categories = latestWeather ? categoryHints[latestWeather.state] ?? ["presence"] : ["presence"];
-    const suggestedRitual =
-      rituals.find((ritual) => !ritual.premium_required && categories.includes(ritual.category)) ??
-      rituals.find((ritual) => !ritual.premium_required) ??
-      rituals[0] ??
-      null;
-
     return {
       latestWeather,
       latestMessage,
@@ -188,28 +286,112 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
       activeProgress,
       activePathway,
       nextPathway,
-      suggestedRitual,
     };
-  }, [altarItems, messages, pathways, progressRows, rituals, weatherEntries]);
+  }, [altarItems, messages, pathways, progressRows, weatherEntries]);
+
+  const selectedTone = useMemo(
+    () => tonePresets.find((preset) => preset.key === tone) ?? tonePresets[0],
+    [tone]
+  );
+
+  const tunedRitual = useMemo(() => {
+    const focusCategoryMap: Record<OracleFocus, string[]> = {
+      bonding: ["presence", "reconnect", "touch"],
+      attraction: ["playful", "polarity", "touch"],
+      repair: ["breath", "reconnect", "bedtime"],
+      growth: ["presence", "reconnect", "polarity"],
+    };
+
+    const weatherCategoryMap: Record<string, string[]> = {
+      stressed: ["breath", "reconnect"],
+      reassurance: ["reconnect", "presence"],
+      tired: ["breath", "bedtime"],
+      longing: ["touch", "presence"],
+      tender: ["touch", "presence"],
+      open: ["presence", "reconnect"],
+      playful: ["playful", "polarity"],
+      erotic: ["polarity", "touch"],
+    };
+
+    const desiredCategories = new Set<string>([
+      ...selectedTone.categories,
+      ...focusCategoryMap[focus],
+      ...(analytics.latestWeather ? weatherCategoryMap[analytics.latestWeather.state] ?? [] : []),
+    ]);
+
+    return (
+      rituals.find((ritual) => !ritual.premium_required && desiredCategories.has(ritual.category)) ??
+      rituals.find((ritual) => !ritual.premium_required) ??
+      rituals[0] ??
+      null
+    );
+  }, [analytics.latestWeather, focus, rituals, selectedTone.categories]);
+
+  const oraclePlan = useMemo(() => {
+    const entryTarget = focus === "repair" ? "repair" : selectedTone.openingTarget;
+
+    const entryStep: OracleStep = {
+      id: "entry",
+      title: "1. Arrival signal",
+      detail:
+        focus === "repair"
+          ? "Begin with one regulation move so both nervous systems feel safer before deeper content."
+          : "Open with one short emotional signal so you both enter the same field.",
+      target: entryTarget,
+      iconClass: "text-sky-300",
+    };
+
+    const deepenStep: OracleStep = {
+      id: "deepen",
+      title: "2. Deepen the moment",
+      detail: tunedRitual
+        ? `Use "${tunedRitual.title}" as your core practice tonight. Keep the pace ${heat}.`
+        : "Choose one guided ritual or position and let the body set the pace.",
+      target: tunedRitual ? "rituals" : "positions",
+      iconClass: heat === "intense" ? "text-orange-300" : "text-fuchsia-300",
+    };
+
+    const integrateStep: OracleStep = {
+      id: "integrate",
+      title: "3. Lock in continuity",
+      detail:
+        focus === "growth"
+          ? "Close by advancing one pathway day so tonight becomes long-term momentum."
+          : "Close with one message or altar memory so the emotional trace stays alive tomorrow.",
+      target: focus === "growth" ? "pathways" : "messages",
+      iconClass: "text-emerald-300",
+    };
+
+    return [entryStep, deepenStep, integrateStep];
+  }, [focus, heat, selectedTone.openingTarget, tunedRitual]);
 
   const oracleMoves = useMemo(() => {
     const moves: OracleMove[] = [];
 
+    moves.push({
+      id: "tone-directive",
+      title: `Tonight's Oracle Tone: ${selectedTone.title}`,
+      why: selectedTone.subtitle,
+      cta: "Open first doorway",
+      target: selectedTone.openingTarget,
+      iconClass: selectedTone.iconClass,
+    });
+
     if (!coupleId) {
       moves.push({
         id: "preview-start-weather",
-        title: "Start with one shared signal",
-        why: "Once your partner connects, one weather check-in each gives Oracle clean data to work from.",
+        title: "Set your first couple baseline",
+        why: "When your partner connects, two weather check-ins instantly improve Oracle precision.",
         cta: "Open weather",
         target: "weather",
         iconClass: "text-sky-300",
       });
 
-      if (analytics.suggestedRitual) {
+      if (tunedRitual) {
         moves.push({
           id: "preview-ritual",
-          title: `Try: ${analytics.suggestedRitual.title}`,
-          why: "This recommendation comes from your current Temple content and works as a simple first practice.",
+          title: `Try this first ritual: ${tunedRitual.title}`,
+          why: "This recommendation is matched to your selected tone and focus.",
           cta: "Open rituals",
           target: "rituals",
           iconClass: "text-fuchsia-300",
@@ -220,48 +402,32 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
         moves.push({
           id: "preview-pathway",
           title: `Prepare pathway: ${analytics.nextPathway.title}`,
-          why: "Choosing one pathway now makes couple onboarding smoother once both partners are in.",
+          why: "Pre-selecting your pathway avoids startup friction once you are both in.",
           cta: "Open pathways",
           target: "pathways",
           iconClass: "text-emerald-300",
         });
       }
 
-      return moves;
+      return moves.slice(0, 4);
     }
 
     if (!analytics.latestWeather) {
       moves.push({
         id: "check-weather",
-        title: "Name tonight's emotional climate",
-        why: "Oracle performs best when both partners check in at least once per day.",
+        title: "Name the emotional climate first",
+        why: "Without a fresh weather signal, couples often choose intensity mismatched to reality.",
         cta: "Open weather",
         target: "weather",
         iconClass: "text-sky-300",
       });
-    } else if (["stressed", "reassurance", "tired"].includes(analytics.latestWeather.state)) {
+    }
+
+    if (tunedRitual) {
       moves.push({
-        id: "repair-first",
-        title: "Lead with regulation before intensity",
-        why: `Latest shared climate is "${analytics.latestWeather.state}", which usually responds best to repair and soft pacing.`,
-        cta: "Open repair",
-        target: "repair",
-        iconClass: "text-red-300",
-      });
-    } else if (["playful", "erotic"].includes(analytics.latestWeather.state)) {
-      moves.push({
-        id: "channel-energy",
-        title: "Channel charge into a shaped ritual",
-        why: "Your current weather is high-energy; structure helps convert chemistry into connection.",
-        cta: "Open positions",
-        target: "positions",
-        iconClass: "text-rose-300",
-      });
-    } else {
-      moves.push({
-        id: "guided-step",
-        title: "Take one guided next step",
-        why: "The emotional field is open enough for a short guided ritual to deepen contact.",
+        id: "tuned-ritual",
+        title: `Run ritual: ${tunedRitual.title}`,
+        why: `Oracle selected this from your ${selectedTone.title.toLowerCase()} tone, ${focus} focus, and recent signals.`,
         cta: "Open rituals",
         target: "rituals",
         iconClass: "text-fuchsia-300",
@@ -271,8 +437,8 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
     if (!analytics.latestMessage || (analytics.silentDays !== null && analytics.silentDays >= 2)) {
       moves.push({
         id: "message-bridge",
-        title: "Bridge the silence with one warm sentence",
-        why: "A short message prevents drift and keeps momentum alive between rituals.",
+        title: "Close the gap with one precise message",
+        why: "A short shared note protects momentum between bigger rituals.",
         cta: "Open messages",
         target: "messages",
         iconClass: "text-violet-300",
@@ -283,7 +449,7 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
       moves.push({
         id: "continue-pathway",
         title: `Continue ${analytics.activePathway.title}`,
-        why: `You are on day ${analytics.activeProgress.current_day}. Continuity is your highest leverage move.`,
+        why: `You are on day ${analytics.activeProgress.current_day}. Continuity is your edge right now.`,
         cta: "Open pathways",
         target: "pathways",
         iconClass: "text-emerald-300",
@@ -292,29 +458,18 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
       moves.push({
         id: "start-pathway",
         title: `Start pathway: ${analytics.nextPathway.title}`,
-        why: "Oracle sees enough activity to support a longer arc, not just one-off moments.",
+        why: "Your current data suggests this is the right moment to move from one-off to progression.",
         cta: "Open pathways",
         target: "pathways",
         iconClass: "text-emerald-300",
       });
     }
 
-    if (analytics.rhythmDays >= 4 && !analytics.latestAltar) {
-      moves.push({
-        id: "save-altar",
-        title: "Capture one memory while it is still alive",
-        why: "You have meaningful rhythm. Saving a memory now reinforces emotional continuity.",
-        cta: "Open altar",
-        target: "altar",
-        iconClass: "text-orange-300",
-      });
-    }
-
     if (moves.length < 4) {
       moves.push({
         id: "oracle-guide",
-        title: "Let Temple Guide refine tonight's move",
-        why: "When multiple options are viable, Guide narrows to energy, time, and privacy constraints.",
+        title: "Use Temple Guide for micro-calibration",
+        why: "Guide helps when multiple options are valid and you want a faster decision.",
         cta: "Open guide",
         target: "guide",
         iconClass: "text-cyan-300",
@@ -322,7 +477,7 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
     }
 
     return moves.slice(0, 4);
-  }, [analytics, coupleId]);
+  }, [analytics, coupleId, focus, selectedTone, tunedRitual]);
 
   const signals = useMemo(
     () => [
@@ -353,12 +508,97 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
   return (
     <DoorwayShell
       label="Wisdom Oracle"
-      title="AI-guided next steps for your relationship rhythm"
-      description="Oracle reads your Temple data, then maps it to rituals, repair, pathways, and messaging moves so you always know what to do next."
+      title="Couple intelligence engine for what to do next"
+      description="Configure the tone you want tonight, then Oracle composes the next best sequence from your shared signals, saved memory, and Temple content." 
       actionLabel="Refresh oracle"
       onAction={() => setRefreshTick((value) => value + 1)}
       actionDisabled={loading}
     >
+      <section className="rounded-[28px] border border-border/30 bg-card/45 p-6">
+        <div className="flex items-center gap-2 text-primary/80">
+          <Stars className="h-4 w-4" />
+          <p className="text-xs uppercase tracking-[0.22em]">Oracle configuration</p>
+        </div>
+        <h3 className="mt-2 font-display text-3xl text-foreground">Pre-configure tonight together</h3>
+
+        <div className="mt-5 grid gap-3 md:grid-cols-5">
+          {tonePresets.map((preset) => {
+            const active = tone === preset.key;
+            return (
+              <button
+                key={preset.key}
+                type="button"
+                onClick={() => setTone(preset.key)}
+                className={`rounded-[20px] border p-4 text-left transition-all ${
+                  active
+                    ? "border-primary/30 bg-primary/10 shadow-[0_16px_42px_-34px_rgba(255,173,70,0.48)]"
+                    : "border-border/30 bg-background/45 hover:border-primary/20"
+                }`}
+              >
+                <div className={`inline-flex rounded-xl border border-border/30 bg-card/45 p-2 ${preset.iconClass}`}>
+                  {preset.key === "erotic" ? <Flame className="h-4 w-4" /> : <Heart className="h-4 w-4" />}
+                </div>
+                <div className="mt-3 font-display text-xl text-foreground">{preset.title}</div>
+                <p className="mt-1 text-xs leading-5 text-muted-foreground">{preset.subtitle}</p>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="mt-5 grid gap-4 lg:grid-cols-2">
+          <div className="rounded-[22px] border border-border/30 bg-background/45 p-4">
+            <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Intensity</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {heatOptions.map((option) => (
+                <button
+                  key={option.key}
+                  type="button"
+                  onClick={() => setHeat(option.key)}
+                  className={`rounded-full border px-3 py-1.5 text-xs transition-all ${
+                    heat === option.key
+                      ? "border-primary/30 bg-primary/10 text-foreground"
+                      : "border-border/30 bg-card/45 text-muted-foreground"
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground">{heatOptions.find((item) => item.key === heat)?.note}</p>
+          </div>
+
+          <div className="rounded-[22px] border border-border/30 bg-background/45 p-4">
+            <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Primary focus</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {focusOptions.map((option) => (
+                <button
+                  key={option.key}
+                  type="button"
+                  onClick={() => setFocus(option.key)}
+                  className={`rounded-full border px-3 py-1.5 text-xs transition-all ${
+                    focus === option.key
+                      ? "border-primary/30 bg-primary/10 text-foreground"
+                      : "border-border/30 bg-card/45 text-muted-foreground"
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground">{focusOptions.find((item) => item.key === focus)?.note}</p>
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <ShareCardButton
+            coupleId={coupleId}
+            messageType="oracle_config_share"
+            content={`Oracle configuration ✦ Tone: ${selectedTone.title}, Intensity: ${heat}, Focus: ${focus}.`}
+            label="Share oracle configuration"
+          />
+        </div>
+      </section>
+
       {loading ? (
         <section className="rounded-[24px] border border-border/30 bg-card/45 p-6">
           <p className="text-sm text-muted-foreground">Reading your latest temple data and composing next best moves…</p>
@@ -377,6 +617,41 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
 
           <section className="rounded-[28px] border border-border/30 bg-card/45 p-6">
             <div className="flex items-center gap-2 text-primary/80">
+              <Compass className="h-4 w-4" />
+              <p className="text-xs uppercase tracking-[0.22em]">Tonight sequence</p>
+            </div>
+            <h3 className="mt-2 font-display text-3xl text-foreground">Oracle sequence for tonight</h3>
+
+            <div className="mt-5 grid gap-4 md:grid-cols-3">
+              {oraclePlan.map((step) => (
+                <div key={step.id} className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+                  <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-3 ${step.iconClass}`}>
+                    <Sparkles className="h-4 w-4" />
+                  </div>
+                  <h4 className="mt-4 font-display text-2xl text-foreground">{step.title}</h4>
+                  <p className="mt-3 text-sm leading-7 text-muted-foreground">{step.detail}</p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => onNavigate(step.target)}
+                      className="rounded-2xl border border-primary/25 bg-primary/12 px-4 py-3 text-xs text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
+                    >
+                      Open step
+                    </button>
+                    <ShareCardButton
+                      coupleId={coupleId}
+                      messageType="oracle_sequence_share"
+                      content={`Oracle sequence card ✦ ${step.title} — ${step.detail}`}
+                      label="Share step"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-[28px] border border-border/30 bg-card/45 p-6">
+            <div className="flex items-center gap-2 text-primary/80">
               <Brain className="h-4 w-4" />
               <p className="text-xs uppercase tracking-[0.22em]">Oracle moves</p>
             </div>
@@ -390,13 +665,21 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
                   </div>
                   <h4 className="mt-4 font-display text-2xl text-foreground">{move.title}</h4>
                   <p className="mt-3 text-sm leading-7 text-muted-foreground">{move.why}</p>
-                  <button
-                    type="button"
-                    onClick={() => onNavigate(move.target)}
-                    className="mt-4 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-3 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
-                  >
-                    {move.cta}
-                  </button>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => onNavigate(move.target)}
+                      className="rounded-2xl border border-primary/25 bg-primary/12 px-4 py-3 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
+                    >
+                      {move.cta}
+                    </button>
+                    <ShareCardButton
+                      coupleId={coupleId}
+                      messageType="oracle_move_share"
+                      content={`Oracle move card ✦ ${move.title} — ${move.why}`}
+                      label="Share move"
+                    />
+                  </div>
                 </div>
               ))}
             </div>
@@ -405,33 +688,33 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
           <section className="rounded-[28px] border border-border/30 bg-card/45 p-6">
             <div className="flex items-center gap-2 text-amber-300">
               <Sparkles className="h-4 w-4" />
-              <p className="text-xs uppercase tracking-[0.22em]">Oracle innovations</p>
+              <p className="text-xs uppercase tracking-[0.22em]">Niche subscription features</p>
             </div>
-            <h3 className="mt-2 font-display text-3xl text-foreground">How Wisdom Oracle thinks</h3>
+            <h3 className="mt-2 font-display text-3xl text-foreground">Premium couple intelligence lovers ask for</h3>
 
             <div className="mt-5 grid gap-4 md:grid-cols-3">
               <div className="rounded-[22px] border border-border/30 bg-background/45 p-4">
-                <div className="inline-flex rounded-xl border border-border/30 bg-card/45 p-2 text-sky-300">
+                <div className="inline-flex rounded-xl border border-border/30 bg-card/45 p-2 text-rose-300">
                   <Heart className="h-4 w-4" />
                 </div>
-                <h4 className="mt-3 font-display text-xl text-foreground">Relationship signal weave</h4>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">Blends weather, messages, and altar memory into one live emotional map.</p>
+                <h4 className="mt-3 font-display text-xl text-foreground">Desire Synchrony Dial</h4>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">Tracks how often erotic and emotional tempos match, then proposes precise bridge rituals.</p>
+              </div>
+
+              <div className="rounded-[22px] border border-border/30 bg-background/45 p-4">
+                <div className="inline-flex rounded-xl border border-border/30 bg-card/45 p-2 text-violet-300">
+                  <MessageCircle className="h-4 w-4" />
+                </div>
+                <h4 className="mt-3 font-display text-xl text-foreground">Afterglow Debrief Engine</h4>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">Turns shared moments into post-ritual prompts that deepen trust instead of fading overnight.</p>
               </div>
 
               <div className="rounded-[22px] border border-border/30 bg-background/45 p-4">
                 <div className="inline-flex rounded-xl border border-border/30 bg-card/45 p-2 text-emerald-300">
                   <Route className="h-4 w-4" />
                 </div>
-                <h4 className="mt-3 font-display text-xl text-foreground">Progressive next-step logic</h4>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">Matches your saved rhythm with pathway progress and recommends the highest-leverage next move.</p>
-              </div>
-
-              <div className="rounded-[22px] border border-border/30 bg-background/45 p-4">
-                <div className="inline-flex rounded-xl border border-border/30 bg-card/45 p-2 text-violet-300">
-                  <Compass className="h-4 w-4" />
-                </div>
-                <h4 className="mt-3 font-display text-xl text-foreground">Content-aware guidance</h4>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">Uses live Temple content to route couples into rituals, repair, messages, and pathways that fit now.</p>
+                <h4 className="mt-3 font-display text-xl text-foreground">Seasonal Intimacy Forecast</h4>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">Predicts your next best relational season and suggests the exact pathway to maintain momentum.</p>
               </div>
             </div>
 
@@ -439,7 +722,7 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
               <div className="flex items-start gap-3">
                 <Shield className="h-4 w-4 text-primary mt-1" />
                 <p className="text-sm leading-6 text-muted-foreground">
-                  Oracle is advisory, not absolute. It gives a strong first move so couples avoid decision fatigue and stay connected to what matters most right now.
+                  Oracle stays advisory, never coercive. It gives a strong next move, while preserving emotional consent, pacing, and relational sovereignty.
                 </p>
               </div>
             </div>

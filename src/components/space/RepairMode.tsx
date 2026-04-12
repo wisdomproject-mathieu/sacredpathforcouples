@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Wind, Heart, MessageCircle, Hand, Sparkles, ChevronRight } from "lucide-react";
 import DoorwayShell from "@/components/space/DoorwayShell";
+import ShareCardButton from "@/components/space/ShareCardButton";
 
 const repairSteps = [
   { key: "breathe", icon: Wind, color: "text-sky-400" },
@@ -13,9 +14,10 @@ const repairSteps = [
 
 interface Props {
   onNavigate?: (tab: string) => void;
+  coupleId?: string;
 }
 
-const RepairMode = ({ onNavigate }: Props) => {
+const RepairMode = ({ onNavigate, coupleId }: Props) => {
   const { t } = useLanguage();
   const [step, setStep] = useState<number | null>(null);
   const [started, setStarted] = useState(false);
@@ -103,6 +105,14 @@ const RepairMode = ({ onNavigate }: Props) => {
             {step < repairSteps.length - 1 ? t("repair.next") : t("repair.finish")}
             <ChevronRight className="h-4 w-4" />
           </button>
+          <div className="mt-3">
+            <ShareCardButton
+              coupleId={coupleId}
+              messageType="repair_share"
+              content={`Repair card ✦ ${t(`repair.${currentStep.key}.title`)} — ${t(`repair.${currentStep.key}.instruction`)}`}
+              label="Share this repair card"
+            />
+          </div>
         </div>
       ) : null}
     </DoorwayShell>

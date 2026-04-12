@@ -120,11 +120,11 @@ const RitualCards = ({ coupleId, onNavigate }: Props) => {
     await supabase.from("partner_messages").insert({
       couple_id: coupleId,
       sender_id: user.id,
-      message_type: "invitation",
-      content: `✦ ${ritual.title} — ${ritual.hook || ""}`,
+      message_type: "ritual_share",
+      content: `Ritual card ✦ ${ritual.title}${ritual.hook ? ` — ${ritual.hook}` : ""}`,
     });
 
-    toast.success(t("ritual.send"));
+    toast.success("Shared ritual card to your partner.");
   };
 
   return (

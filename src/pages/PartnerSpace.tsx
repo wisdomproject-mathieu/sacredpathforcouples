@@ -25,6 +25,8 @@ import MemoryAltar from "@/components/space/MemoryAltar";
 import RepairMode from "@/components/space/RepairMode";
 import TempleGuide from "@/components/space/TempleGuide";
 import WisdomOracle from "@/components/space/WisdomOracle";
+import ShareCardButton from "@/components/space/ShareCardButton";
+import { Tables } from "@/integrations/supabase/types";
 
 type ToolKey = "weather" | "rituals" | "positions" | "messages" | "guide" | "repair" | "pathways" | "altar";
 type ViewMode = "doorways" | "journey" | "oracle";
@@ -38,6 +40,8 @@ type ActivityState = {
   nextSuggestion: string;
 };
 
+type JourneyItem = Pick<Tables<"partner_messages">, "id" | "content" | "created_at" | "sender_id" | "message_type">;
+
 const tools: {
   key: ToolKey;
   icon: typeof Home;
@@ -49,56 +53,56 @@ const tools: {
     key: "weather",
     icon: Cloud,
     title: "Intimacy Weather",
-    subtitle: "Read the emotional climate before choosing touch, truth, teasing, or repair.",
+    subtitle: "Name the emotional climate first so love lands with precision, not guesswork.",
     iconClass: "text-sky-300",
   },
   {
     key: "rituals",
     icon: Sparkles,
     title: "Rituals",
-    subtitle: "Open guided practices for softness, devotion, anticipation, and sacred presence.",
+    subtitle: "Choose guided practices that turn ordinary evenings into sacred connection.",
     iconClass: "text-fuchsia-300",
   },
   {
     key: "positions",
     icon: Heart,
     title: "Positions",
-    subtitle: "Explore embodied postures that carry tenderness, charge, intimacy, and depth.",
+    subtitle: "Use body-based doorways to restore tenderness, charge, and relational trust.",
     iconClass: "text-rose-300",
   },
   {
     key: "messages",
     icon: MessageCircle,
     title: "Teasing & Messages",
-    subtitle: "Send warmth, desire, gratitude, reassurance, play, or one honest sentence that matters.",
+    subtitle: "Send one true sentence of warmth, desire, gratitude, or repair at the right moment.",
     iconClass: "text-violet-300",
   },
   {
     key: "guide",
     icon: Compass,
     title: "Temple Guide",
-    subtitle: "Receive a wiser suggestion when you do not know what the relationship needs tonight.",
+    subtitle: "When you feel unsure, get a grounded next step aligned with your current reality.",
     iconClass: "text-cyan-300",
   },
   {
     key: "repair",
     icon: Shield,
     title: "Repair",
-    subtitle: "Return after distance or tension with less defensiveness and more care.",
+    subtitle: "Transform tension into closeness through safety-first repair you can actually complete.",
     iconClass: "text-red-300",
   },
   {
     key: "pathways",
     icon: Route,
     title: "Pathways",
-    subtitle: "Turn scattered moments into a longer journey the couple can actually feel growing.",
+    subtitle: "Move from random moments to a deliberate growth arc you both can feel.",
     iconClass: "text-emerald-300",
   },
   {
     key: "altar",
     icon: Bookmark,
     title: "Altar",
-    subtitle: "Keep the moments that should not disappear after the night is over.",
+    subtitle: "Save the moments, vows, and breakthroughs your relationship should never lose.",
     iconClass: "text-orange-300",
   },
 ];
@@ -135,6 +139,41 @@ const templeViews: {
 
 const dayKey = (iso?: string | null) => (iso ? new Date(iso).toISOString().slice(0, 10) : null);
 
+const messageTypeLabel = (messageType?: string | null) => {
+  switch (messageType) {
+    case "doorway_share":
+      return "Doorway card";
+    case "weather_share":
+      return "Weather card";
+    case "ritual_share":
+      return "Ritual card";
+    case "position_share":
+      return "Position card";
+    case "guide_share":
+      return "Guide card";
+    case "repair_share":
+      return "Repair card";
+    case "pathway_share":
+      return "Pathway card";
+    case "altar_share":
+      return "Altar card";
+    case "oracle_move_share":
+      return "Oracle move";
+    case "oracle_sequence_share":
+      return "Oracle sequence";
+    case "oracle_config_share":
+      return "Oracle config";
+    case "message_prompt_share":
+      return "Message starter";
+    case "message":
+      return "Message";
+    case "invitation":
+      return "Invitation";
+    default:
+      return "Shared note";
+  }
+};
+
 const computeStreak = (dates: string[]) => {
   const unique = Array.from(new Set(dates.filter(Boolean))).sort().reverse();
   if (!unique.length) return 0;
@@ -164,6 +203,7 @@ const PartnerSpace = () => {
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<ViewMode>("doorways");
   const [activeTool, setActiveTool] = useState<ToolKey>("weather");
+  const [activityTick, setActivityTick] = useState(0);
   const [activity, setActivity] = useState<ActivityState>({
     partnerNote: "No partner note yet. Once one of you leaves a message, this area becomes the emotional pulse of the temple.",
     lastMove: "No shared ritual or message yet. Begin with Weather or one warm message.",
@@ -172,6 +212,7 @@ const PartnerSpace = () => {
     altarNote: "Nothing has been saved in the altar yet.",
     nextSuggestion: "Start with Intimacy Weather. It is the cleanest first move for most couples.",
   });
+  const [journeyFeed, setJourneyFeed] = useState<JourneyItem[]>([]);
 
   useEffect(() => {
     if (!user) return;
@@ -209,10 +250,10 @@ const PartnerSpace = () => {
           .limit(20),
         supabase
           .from("partner_messages")
-          .select("content, created_at, sender_id")
+          .select("id, content, created_at, sender_id, message_type")
           .eq("couple_id", coupleId)
           .order("created_at", { ascending: false })
-          .limit(20),
+          .limit(40),
         supabase
           .from("altar_items")
           .select("title, created_at")
@@ -224,6 +265,7 @@ const PartnerSpace = () => {
       const latestWeather = weatherRes.data?.[0];
       const latestMessage = messageRes.data?.find((item) => item.sender_id !== user.id) ?? messageRes.data?.[0];
       const latestAltar = altarRes.data?.[0];
+      setJourneyFeed((messageRes.data ?? []).slice(0, 12));
 
       const allDates = [
         ...(weatherRes.data?.map((item) => dayKey(item.created_at)) ?? []),
@@ -250,7 +292,34 @@ const PartnerSpace = () => {
     };
 
     loadActivity();
-  }, [coupleId, user]);
+  }, [activityTick, coupleId, user]);
+
+  useEffect(() => {
+    if (!coupleId) return;
+
+    const channel = supabase
+      .channel(`temple_activity_${coupleId}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "partner_messages", filter: `couple_id=eq.${coupleId}` },
+        () => setActivityTick((value) => value + 1)
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "weather_entries", filter: `couple_id=eq.${coupleId}` },
+        () => setActivityTick((value) => value + 1)
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "altar_items", filter: `couple_id=eq.${coupleId}` },
+        () => setActivityTick((value) => value + 1)
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [coupleId]);
 
   const navigateTool = (tab: string) => {
     setViewMode("doorways");
@@ -350,10 +419,8 @@ const PartnerSpace = () => {
                   const Icon = tool.icon;
                   const active = activeTool === tool.key;
                   return (
-                    <button
+                    <div
                       key={tool.key}
-                      type="button"
-                      onClick={() => setActiveTool(tool.key)}
                       className={`relative overflow-hidden rounded-[26px] border p-5 text-left transition-all ${
                         active
                           ? "border-primary/30 bg-primary/10 shadow-[0_18px_50px_-36px_rgba(255,173,70,0.42)]"
@@ -364,14 +431,29 @@ const PartnerSpace = () => {
                         <div className="absolute -right-6 top-0 h-24 w-24 rounded-full bg-primary/10 blur-2xl" />
                         <div className="absolute bottom-0 left-0 h-20 w-20 rounded-full bg-violet-500/10 blur-2xl" />
                       </div>
-                      <div className="relative flex h-full flex-col">
+                      <button type="button" onClick={() => setActiveTool(tool.key)} className="relative flex h-full w-full flex-col text-left">
                         <div className={`inline-flex w-fit rounded-2xl border border-border/30 bg-background/45 p-3 ${tool.iconClass}`}>
                           <Icon className="h-5 w-5" />
                         </div>
                         <h3 className="mt-4 font-display text-2xl text-foreground">{tool.title}</h3>
                         <p className="mt-3 text-sm leading-7 text-muted-foreground">{tool.subtitle}</p>
+                      </button>
+                      <div className="relative mt-4 flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setActiveTool(tool.key)}
+                          className="rounded-2xl border border-primary/25 bg-primary/12 px-3 py-2 text-xs text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
+                        >
+                          Open doorway
+                        </button>
+                        <ShareCardButton
+                          coupleId={coupleId ?? undefined}
+                          messageType="doorway_share"
+                          content={`Doorway card ✦ ${tool.title} — ${tool.subtitle}`}
+                          label="Share doorway card"
+                        />
                       </div>
-                    </button>
+                    </div>
                   );
                 })}
               </div>
@@ -380,10 +462,10 @@ const PartnerSpace = () => {
             <section>
               {activeTool === "weather" && <IntimacyWeather coupleId={coupleId ?? undefined} onNavigate={navigateTool} />}
               {activeTool === "rituals" && <RitualCards coupleId={coupleId ?? undefined} onNavigate={navigateTool} />}
-              {activeTool === "positions" && <PositionDeck onNavigate={navigateTool} />}
+              {activeTool === "positions" && <PositionDeck onNavigate={navigateTool} coupleId={coupleId ?? undefined} />}
               {activeTool === "messages" && <TempleMessages coupleId={coupleId ?? undefined} onNavigate={navigateTool} />}
-              {activeTool === "guide" && <TempleGuide onNavigate={navigateTool} />}
-              {activeTool === "repair" && <RepairMode onNavigate={navigateTool} />}
+              {activeTool === "guide" && <TempleGuide onNavigate={navigateTool} coupleId={coupleId ?? undefined} />}
+              {activeTool === "repair" && <RepairMode onNavigate={navigateTool} coupleId={coupleId ?? undefined} />}
               {activeTool === "pathways" && <Pathways coupleId={coupleId ?? undefined} onNavigate={navigateTool} />}
               {activeTool === "altar" && <MemoryAltar coupleId={coupleId ?? undefined} onNavigate={navigateTool} />}
             </section>
@@ -412,6 +494,46 @@ const PartnerSpace = () => {
                   <span className="text-xs uppercase tracking-[0.18em]">Last temple movement</span>
                 </div>
                 <p className="mt-4 text-sm leading-7 text-foreground/90">{activity.lastMove}</p>
+              </div>
+            </div>
+
+            <div className="rounded-[28px] border border-border/30 bg-card/45 p-5">
+              <div className="flex items-center gap-2 text-cyan-300">
+                <Stars className="h-4 w-4" />
+                <span className="text-xs uppercase tracking-[0.18em]">Shared cards timeline</span>
+              </div>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                Every shared card from Doorways and Oracle appears here so your story becomes visible over time.
+              </p>
+
+              <div className="mt-4 space-y-3">
+                {journeyFeed.length === 0 ? (
+                  <div className="rounded-[22px] border border-border/30 bg-background/45 p-4 text-sm text-muted-foreground">
+                    No shared cards yet. Share one doorway card to start your couple timeline.
+                  </div>
+                ) : (
+                  journeyFeed.map((item) => {
+                    const mine = item.sender_id === user?.id;
+                    return (
+                      <div
+                        key={item.id}
+                        className={`rounded-[22px] border p-4 ${
+                          mine ? "border-primary/20 bg-primary/8" : "border-border/30 bg-background/45"
+                        }`}
+                      >
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <div className="inline-flex rounded-full border border-border/35 bg-card/45 px-2.5 py-1 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
+                            {messageTypeLabel(item.message_type)}
+                          </div>
+                          <div className="text-[11px] text-muted-foreground">
+                            {new Date(item.created_at).toLocaleDateString()} · {mine ? "You" : "Partner"}
+                          </div>
+                        </div>
+                        <p className="mt-3 text-sm leading-6 text-foreground/90">{item.content}</p>
+                      </div>
+                    );
+                  })
+                )}
               </div>
             </div>
 

@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Bookmark, Heart, Star, Sparkles, Plus, Trash2 } from "lucide-react";
 import DoorwayShell from "@/components/space/DoorwayShell";
+import ShareCardButton from "@/components/space/ShareCardButton";
 
 const memoryTypes = [
   { key: "all", icon: Star, label: "altar.all" },
@@ -160,6 +161,14 @@ const MemoryAltar = ({ coupleId, onNavigate }: Props) => {
                     <h4 className="font-heading text-base md:text-lg text-foreground">{item.title}</h4>
                     {item.note && <p className="text-sm font-body text-muted-foreground mt-1 leading-relaxed">{item.note}</p>}
                     <p className="text-xs text-muted-foreground/40 font-body mt-2">{new Date(item.created_at).toLocaleDateString()}</p>
+                    <div className="mt-3">
+                      <ShareCardButton
+                        coupleId={coupleId}
+                        messageType="altar_share"
+                        content={`Altar card ✦ ${item.title}${item.note ? ` — ${item.note}` : ""}`}
+                        label="Share this altar card"
+                      />
+                    </div>
                   </div>
                   {item.user_id === user?.id && (
                     <button onClick={() => deleteItem(item.id)} className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 rounded-lg flex items-center justify-center hover:bg-destructive/10 text-muted-foreground hover:text-destructive">

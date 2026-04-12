@@ -4,6 +4,7 @@ import { Cloud, Heart, MoonStar, Sparkles, SunMedium, Wind } from "lucide-react"
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import DoorwayShell from "@/components/space/DoorwayShell";
+import ShareCardButton from "@/components/space/ShareCardButton";
 
 interface Props {
   coupleId?: string;
@@ -198,6 +199,14 @@ const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
           >
             Send a message next
           </button>
+          {selectedState && (
+            <ShareCardButton
+              coupleId={coupleId}
+              messageType="weather_share"
+              content={`Weather card ✦ I am arriving as ${selectedState.label} ${selectedState.emoji}. ${selectedState.hint}`}
+              label="Share this weather card"
+            />
+          )}
         </div>
       </section>
     </DoorwayShell>

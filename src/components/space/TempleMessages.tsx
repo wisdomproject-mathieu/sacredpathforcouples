@@ -4,6 +4,7 @@ import { Heart, MessageCircleHeart, Send, Sparkles, Star } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import DoorwayShell from "@/components/space/DoorwayShell";
+import ShareCardButton from "@/components/space/ShareCardButton";
 
 interface Props {
   coupleId?: string;
@@ -67,6 +68,7 @@ const TempleMessages = ({ coupleId, onNavigate }: Props) => {
     const { error } = await supabase.from("partner_messages").insert({
       couple_id: coupleId,
       sender_id: user.id,
+      message_type: "message",
       content: draft.trim(),
     });
 
@@ -122,6 +124,12 @@ const TempleMessages = ({ coupleId, onNavigate }: Props) => {
               <Send className="h-4 w-4" />
               {isPreview ? "Connect to send" : sending ? "Sending..." : "Send message"}
             </button>
+            <ShareCardButton
+              coupleId={coupleId}
+              messageType="message_prompt_share"
+              content={`Message starter card ✦ ${featuredStarter}`}
+              label="Share starter card"
+            />
           </div>
         </div>
 

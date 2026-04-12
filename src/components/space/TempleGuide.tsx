@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Sparkles, Clock, Eye, Moon, Zap } from "lucide-react";
 import DoorwayShell from "@/components/space/DoorwayShell";
+import ShareCardButton from "@/components/space/ShareCardButton";
 
 const energyLevels = [
   { key: "low", emoji: "🌙", label: "guide.energy.low" },
@@ -53,9 +54,10 @@ const recommendations: Record<string, { titleKey: string; descKey: string; icon:
 
 interface Props {
   onNavigate?: (tab: string) => void;
+  coupleId?: string;
 }
 
-const TempleGuide = ({ onNavigate }: Props) => {
+const TempleGuide = ({ onNavigate, coupleId }: Props) => {
   const { t } = useLanguage();
   const [energy, setEnergy] = useState<string | null>(null);
   const [time, setTime] = useState<string | null>(null);
@@ -164,6 +166,15 @@ const TempleGuide = ({ onNavigate }: Props) => {
                   <button className="mt-5 w-full py-3 rounded-xl bg-primary text-primary-foreground font-body text-base font-medium hover:bg-primary/90 transition-colors">
                     {t("guide.start")}
                   </button>
+                  <div className="mt-3">
+                    <ShareCardButton
+                      coupleId={coupleId}
+                      messageType="guide_share"
+                      content={`Guide card ✦ ${t(rec.titleKey)} — ${t(rec.descKey)}`}
+                      label="Share this guide card"
+                      className="w-full justify-center"
+                    />
+                  </div>
                 </div>
               );
             })}

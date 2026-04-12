@@ -3,6 +3,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Lock, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DoorwayShell from "@/components/space/DoorwayShell";
+import ShareCardButton from "@/components/space/ShareCardButton";
 
 const practices = [
   { key: "seated_closeness", free: true, emoji: "🪷" },
@@ -17,9 +18,10 @@ const practices = [
 
 interface Props {
   onNavigate?: (tab: string) => void;
+  coupleId?: string;
 }
 
-const PositionDeck = ({ onNavigate }: Props) => {
+const PositionDeck = ({ onNavigate, coupleId }: Props) => {
   const { t } = useLanguage();
   const [expanded, setExpanded] = useState<number | null>(null);
 
@@ -64,6 +66,14 @@ const PositionDeck = ({ onNavigate }: Props) => {
                         </p>
                         <div className="flex items-center gap-2 text-xs text-primary font-body">
                           <span>⏱ {t(`position.${p.key}.duration`)}</span>
+                        </div>
+                        <div className="mt-3">
+                          <ShareCardButton
+                            coupleId={coupleId}
+                            messageType="position_share"
+                            content={`Position card ✦ ${t(`position.${p.key}.title`)} — ${t(`position.${p.key}.desc`)}`}
+                            label="Share this position card"
+                          />
                         </div>
                       </div>
                     ) : (

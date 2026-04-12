@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Lock, ChevronRight, Check, Play } from "lucide-react";
 import { toast } from "sonner";
 import DoorwayShell from "@/components/space/DoorwayShell";
+import ShareCardButton from "@/components/space/ShareCardButton";
 
 interface Pathway {
   id: string;
@@ -164,6 +165,14 @@ const Pathways = ({ coupleId, onNavigate }: Props) => {
                     ) : (
                       <p className="text-base font-body text-primary">✦ {t("pathways.journey_complete")}</p>
                     )}
+                    <div className="mt-3">
+                      <ShareCardButton
+                        coupleId={coupleId}
+                        messageType="pathway_share"
+                        content={`Pathway card ✦ ${p.title} — ${p.description || `${p.duration_days} days`}`}
+                        label="Share this pathway card"
+                      />
+                    </div>
                   </div>
                 )}
               </button>
