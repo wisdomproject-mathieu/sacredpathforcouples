@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -9,6 +10,7 @@ import {
   Flame,
   Heart,
   Home,
+  Lock,
   MessageCircle,
   Route,
   Shield,
@@ -27,6 +29,7 @@ import TempleGuide from "@/components/space/TempleGuide";
 import WisdomOracle from "@/components/space/WisdomOracle";
 import ShareCardButton from "@/components/space/ShareCardButton";
 import { Tables } from "@/integrations/supabase/types";
+import { isPremiumTier, MembershipTier } from "@/lib/Premium";
 
 type ToolKey = "weather" | "rituals" | "positions" | "messages" | "guide" | "repair" | "pathways" | "altar";
 type ViewMode = "doorways" | "journey" | "oracle";
@@ -113,6 +116,7 @@ const templeViews: {
   title: string;
   subtitle: string;
   iconClass: string;
+  premium: boolean;
 }[] = [
   {
     key: "doorways",
@@ -120,6 +124,7 @@ const templeViews: {
     title: "Sacred Doorways",
     subtitle: "Eight sensual tools for the exact moment you are in.",
     iconClass: "text-fuchsia-300",
+    premium: false,
   },
   {
     key: "journey",
@@ -127,6 +132,7 @@ const templeViews: {
     title: "Our Journey",
     subtitle: "See your shared pulse, patterns, and the next loving move.",
     iconClass: "text-amber-300",
+    premium: true,
   },
   {
     key: "oracle",
@@ -134,10 +140,16 @@ const templeViews: {
     title: "Wisdom Oracle",
     subtitle: "Personalized relationship intelligence for what opens next.",
     iconClass: "text-cyan-300",
+    premium: true,
   },
 ];
 
+const freeDoorways: ToolKey[] = ["weather", "rituals"];
+
 const dayKey = (iso?: string | null) => (iso ? new Date(iso).toISOString().slice(0, 10) : null);
+
+const isToolKey = (value?: string | null): value is ToolKey =>
+  Boolean(value && tools.some((tool) => tool.key === value));
 
 const messageTypeLabel = (messageType?: string | null) => {
   switch (messageType) {
@@ -198,6 +210,7 @@ const computeStreak = (dates: string[]) => {
 
 const PartnerSpace = () => {
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
   const [coupleId, setCoupleId] = useState<string | null>(null);
   const [hasConnectedPartner, setHasConnectedPartner] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -213,6 +226,19 @@ const PartnerSpace = () => {
     nextSuggestion: "Start with Intimacy Weather to meet each other where you truly are.",
   });
   const [journeyFeed, setJourneyFeed] = useState<JourneyItem[]>([]);
+  const membershipTier = (user?.user_metadata?.membership_tier ??
+    user?.app_metadata?.membership_tier ??
+    "free") as MembershipTier;
+  const hasPremiumAccess = isPremiumTier(membershipTier);
+
+  const isToolUnlocked = (tool: ToolKey) => hasPremiumAccess || freeDoorways.includes(tool);
+  const isViewUnlocked = (view: ViewMode) => hasPremiumAccess || view === "doorways";
+  const activeToolUnlocked = isToolUnlocked(activeTool);
+
+  const activateTool = (tool: ToolKey) => {
+    setViewMode("doorways");
+    setActiveTool(isToolUnlocked(tool) ? tool : "weather");
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -236,6 +262,12 @@ const PartnerSpace = () => {
 
     load();
   }, [user]);
+
+  useEffect(() => {
+    const toolParam = searchParams.get("tool");
+    if (!isToolKey(toolParam)) return;
+    activateTool(toolParam);
+  }, [searchParams, hasPremiumAccess]);
 
   useEffect(() => {
     if (!coupleId || !user) return;
@@ -322,11 +354,42 @@ const PartnerSpace = () => {
   }, [coupleId]);
 
   const navigateTool = (tab: string) => {
-    setViewMode("doorways");
-    setActiveTool(tab as ToolKey);
+    if (!isToolKey(tab)) return;
+    activateTool(tab);
   };
 
   const activeMeta = useMemo(() => tools.find((tool) => tool.key === activeTool) ?? tools[0], [activeTool]);
+
+  const premiumGateCard = (title: string, description: string) => (
+    <section className="rounded-[28px] border border-amber-300/30 bg-gradient-to-br from-amber-500/14 via-background to-background p-6 shadow-[0_26px_80px_-40px_rgba(251,191,36,0.45)]">
+      <div className="max-w-3xl">
+        <div className="inline-flex items-center gap-2 rounded-full border border-amber-300/30 bg-amber-500/12 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-amber-200">
+          <Lock className="h-3.5 w-3.5" />
+          Premium temple access
+        </div>
+        <h3 className="mt-4 font-display text-3xl text-foreground">{title}</h3>
+        <p className="mt-3 text-sm leading-7 text-muted-foreground">{description}</p>
+        <p className="mt-3 text-sm leading-7 text-foreground/90">
+          Free temple includes full Intimacy Weather and one guided ritual per category. Premium opens every doorway, every ritual, and the full couple intelligence experience.
+        </p>
+        <div className="mt-5 flex flex-wrap gap-3">
+          <Link
+            to="/pricing"
+            className="rounded-2xl border border-amber-300/35 bg-amber-500/14 px-5 py-3 text-sm text-foreground transition-all hover:border-amber-300/55 hover:bg-amber-500/20"
+          >
+            View premium plans
+          </Link>
+          <button
+            type="button"
+            onClick={() => activateTool("weather")}
+            className="rounded-2xl border border-border/35 bg-card/45 px-5 py-3 text-sm text-foreground transition-all hover:border-border/55 hover:bg-card/60"
+          >
+            Continue with Intimacy Weather
+          </button>
+        </div>
+      </div>
+    </section>
+  );
 
   if (loading) {
     return <div className="min-h-screen bg-background" />;
@@ -344,7 +407,7 @@ const PartnerSpace = () => {
               <div>
                 <h2 className="font-display text-2xl text-foreground">Sacred Temple preview</h2>
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  Explore every doorway now. Shared syncing awakens the moment both lovers are connected.
+                  Begin with Intimacy Weather and ritual previews now. Shared syncing awakens the moment both lovers are connected.
                 </p>
               </div>
             </div>
@@ -382,6 +445,7 @@ const PartnerSpace = () => {
                 {templeViews.map((view) => {
                   const Icon = view.icon;
                   const active = viewMode === view.key;
+                  const locked = !isViewUnlocked(view.key);
                   return (
                     <button
                       key={view.key}
@@ -391,13 +455,39 @@ const PartnerSpace = () => {
                         active
                           ? "border-primary/30 bg-primary/10 shadow-[0_18px_50px_-36px_rgba(255,173,70,0.42)]"
                           : "border-border/30 bg-background/45 hover:border-primary/20 hover:bg-card/55"
-                      }`}
+                      } ${locked ? "relative overflow-hidden" : ""}`}
                     >
-                      <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-2.5 ${view.iconClass}`}>
+                      {locked && (
+                        <div className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full border border-amber-300/30 bg-amber-500/12 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-amber-200">
+                          <Lock className="h-3 w-3" />
+                          Premium
+                        </div>
+                      )}
+                      <div
+                        className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-2.5 ${
+                          locked ? "text-amber-200" : view.iconClass
+                        }`}
+                      >
                         <Icon className="h-4 w-4" />
                       </div>
-                      <div className="mt-3 font-display text-xl text-foreground">{view.title}</div>
+                      <div className="mt-3 flex items-center gap-2">
+                        <div className="font-display text-xl text-foreground">{view.title}</div>
+                        <span
+                          className={`inline-flex rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] ${
+                            locked
+                              ? "border-amber-300/35 bg-amber-500/12 text-amber-200"
+                              : "border-emerald-300/35 bg-emerald-500/10 text-emerald-200"
+                          }`}
+                        >
+                          {locked ? "Premium" : "Free"}
+                        </span>
+                      </div>
                       <p className="mt-1 text-sm leading-6 text-muted-foreground">{view.subtitle}</p>
+                      {locked && (
+                        <p className="mt-2 text-xs leading-5 text-amber-100/85">
+                          Unlock premium to open this page and turn your shared data into next-step relationship guidance.
+                        </p>
+                      )}
                     </button>
                   );
                 })}
@@ -418,6 +508,7 @@ const PartnerSpace = () => {
                 {tools.map((tool) => {
                   const Icon = tool.icon;
                   const active = activeTool === tool.key;
+                  const locked = !isToolUnlocked(tool.key);
                   return (
                     <div
                       key={tool.key}
@@ -425,33 +516,60 @@ const PartnerSpace = () => {
                         active
                           ? "border-primary/30 bg-primary/10 shadow-[0_18px_50px_-36px_rgba(255,173,70,0.42)]"
                           : "border-border/30 bg-card/45 hover:border-primary/20 hover:bg-card/55"
-                      }`}
+                      } ${locked ? "border-amber-300/25 bg-amber-500/6" : ""}`}
                     >
                       <div className="pointer-events-none absolute inset-0 opacity-65">
                         <div className="absolute -right-6 top-0 h-24 w-24 rounded-full bg-primary/10 blur-2xl" />
                         <div className="absolute bottom-0 left-0 h-20 w-20 rounded-full bg-violet-500/10 blur-2xl" />
                       </div>
-                      <button type="button" onClick={() => setActiveTool(tool.key)} className="relative flex h-full w-full flex-col text-left">
+                      <button type="button" onClick={() => activateTool(tool.key)} className="relative flex h-full w-full flex-col text-left">
                         <div className={`inline-flex w-fit rounded-2xl border border-border/30 bg-background/45 p-3 ${tool.iconClass}`}>
                           <Icon className="h-5 w-5" />
                         </div>
-                        <h3 className="mt-4 font-display text-2xl text-foreground">{tool.title}</h3>
+                        <div className="mt-4 flex flex-wrap items-center gap-2">
+                          <h3 className="font-display text-2xl text-foreground">{tool.title}</h3>
+                          <span
+                            className={`inline-flex rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] ${
+                              locked
+                                ? "border-amber-300/35 bg-amber-500/12 text-amber-200"
+                                : "border-emerald-300/35 bg-emerald-500/10 text-emerald-200"
+                            }`}
+                          >
+                            {locked ? "Premium" : "Free"}
+                          </span>
+                        </div>
                         <p className="mt-3 text-sm leading-7 text-muted-foreground">{tool.subtitle}</p>
+                        {locked && (
+                          <p className="mt-2 text-xs leading-5 text-amber-100/85">
+                            Included in premium plan. Start with Intimacy Weather and ritual previews first.
+                          </p>
+                        )}
                       </button>
                       <div className="relative mt-4 flex flex-wrap gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setActiveTool(tool.key)}
-                          className="rounded-2xl border border-primary/25 bg-primary/12 px-3 py-2 text-xs text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
-                        >
-                          Enter doorway
-                        </button>
-                        <ShareCardButton
-                          coupleId={coupleId ?? undefined}
-                          messageType="doorway_share"
-                          content={`Doorway card ✦ ${tool.title} — ${tool.subtitle}`}
-                          label="Offer this doorway"
-                        />
+                        {locked ? (
+                          <Link
+                            to="/pricing"
+                            className="rounded-2xl border border-amber-300/30 bg-amber-500/12 px-3 py-2 text-xs text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/16"
+                          >
+                            Unlock premium
+                          </Link>
+                        ) : (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => activateTool(tool.key)}
+                              className="rounded-2xl border border-primary/25 bg-primary/12 px-3 py-2 text-xs text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
+                            >
+                              Enter doorway
+                            </button>
+                            <ShareCardButton
+                              coupleId={coupleId ?? undefined}
+                              messageType="doorway_share"
+                              content={`Doorway card ✦ ${tool.title} — ${tool.subtitle}`}
+                              label="Offer this doorway"
+                            />
+                          </>
+                        )}
                       </div>
                     </div>
                   );
@@ -460,14 +578,17 @@ const PartnerSpace = () => {
             </section>
 
             <section>
-              {activeTool === "weather" && <IntimacyWeather coupleId={coupleId ?? undefined} onNavigate={navigateTool} />}
-              {activeTool === "rituals" && <RitualCards coupleId={coupleId ?? undefined} onNavigate={navigateTool} />}
-              {activeTool === "positions" && <PositionDeck onNavigate={navigateTool} coupleId={coupleId ?? undefined} />}
-              {activeTool === "messages" && <TempleMessages coupleId={coupleId ?? undefined} onNavigate={navigateTool} />}
-              {activeTool === "guide" && <TempleGuide onNavigate={navigateTool} coupleId={coupleId ?? undefined} />}
-              {activeTool === "repair" && <RepairMode onNavigate={navigateTool} coupleId={coupleId ?? undefined} />}
-              {activeTool === "pathways" && <Pathways coupleId={coupleId ?? undefined} onNavigate={navigateTool} />}
-              {activeTool === "altar" && <MemoryAltar coupleId={coupleId ?? undefined} onNavigate={navigateTool} />}
+              {!activeToolUnlocked && premiumGateCard(activeMeta.title, activeMeta.subtitle)}
+              {activeToolUnlocked && activeTool === "weather" && <IntimacyWeather coupleId={coupleId ?? undefined} onNavigate={navigateTool} />}
+              {activeToolUnlocked && activeTool === "rituals" && (
+                <RitualCards coupleId={coupleId ?? undefined} onNavigate={navigateTool} isPremium={hasPremiumAccess} />
+              )}
+              {activeToolUnlocked && activeTool === "positions" && <PositionDeck onNavigate={navigateTool} coupleId={coupleId ?? undefined} />}
+              {activeToolUnlocked && activeTool === "messages" && <TempleMessages coupleId={coupleId ?? undefined} onNavigate={navigateTool} />}
+              {activeToolUnlocked && activeTool === "guide" && <TempleGuide onNavigate={navigateTool} coupleId={coupleId ?? undefined} />}
+              {activeToolUnlocked && activeTool === "repair" && <RepairMode onNavigate={navigateTool} coupleId={coupleId ?? undefined} />}
+              {activeToolUnlocked && activeTool === "pathways" && <Pathways coupleId={coupleId ?? undefined} onNavigate={navigateTool} />}
+              {activeToolUnlocked && activeTool === "altar" && <MemoryAltar coupleId={coupleId ?? undefined} onNavigate={navigateTool} />}
             </section>
           </>
         )}
