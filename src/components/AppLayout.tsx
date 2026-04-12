@@ -79,6 +79,36 @@ const AppLayout = () => {
               </div>
             </div>
 
+            <div className="mt-4 rounded-2xl border border-border/30 bg-background/40 p-3">
+              <div className="text-[11px] uppercase tracking-[0.18em] text-primary/80">Temple map</div>
+              <div className="mt-3 space-y-2 text-sm text-muted-foreground">
+                <Link to="/app/space?tool=weather" className="flex items-center justify-between hover:text-foreground transition-colors">
+                  <span>Intimacy Weather</span>
+                  <span className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.14em] text-emerald-300">Free</span>
+                </Link>
+                <Link to="/app/space?tool=rituals" className="flex items-center justify-between hover:text-foreground transition-colors">
+                  <span>Rituals</span>
+                  <span className="rounded-full border border-amber-400/30 bg-amber-500/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.14em] text-amber-300">Mixed</span>
+                </Link>
+                <Link to="/app/space?tool=positions" className="flex items-center justify-between hover:text-foreground transition-colors">
+                  <span>Positions</span>
+                  <span className="rounded-full border border-amber-400/30 bg-amber-500/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.14em] text-amber-300">Premium</span>
+                </Link>
+                <Link to="/app/space?tool=messages" className="flex items-center justify-between hover:text-foreground transition-colors">
+                  <span>Messages</span>
+                  <span className="rounded-full border border-amber-400/30 bg-amber-500/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.14em] text-amber-300">Premium</span>
+                </Link>
+                <Link to="/app/space?tool=guide" className="flex items-center justify-between hover:text-foreground transition-colors">
+                  <span>Sacred Guide</span>
+                  <span className="rounded-full border border-amber-400/30 bg-amber-500/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.14em] text-amber-300">Premium</span>
+                </Link>
+                <Link to="/app/space?tool=repair" className="flex items-center justify-between hover:text-foreground transition-colors">
+                  <span>Repair</span>
+                  <span className="rounded-full border border-amber-400/30 bg-amber-500/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.14em] text-amber-300">Premium</span>
+                </Link>
+              </div>
+            </div>
+
             <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-border/30 bg-background/40 p-3">
               <LanguageSwitcher />
               <Button variant="ghost" size="icon" onClick={signOut} className="rounded-xl border border-border/30 bg-card/45 hover:bg-card/60">
