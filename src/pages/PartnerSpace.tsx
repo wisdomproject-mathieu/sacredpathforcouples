@@ -151,6 +151,9 @@ const dayKey = (iso?: string | null) => (iso ? new Date(iso).toISOString().slice
 const isToolKey = (value?: string | null): value is ToolKey =>
   Boolean(value && tools.some((tool) => tool.key === value));
 
+const isViewKey = (value?: string | null): value is ViewMode =>
+  Boolean(value && templeViews.some((view) => view.key === value));
+
 const messageTypeLabel = (messageType?: string | null) => {
   switch (messageType) {
     case "doorway_share":
@@ -211,6 +214,8 @@ const computeStreak = (dates: string[]) => {
 const PartnerSpace = () => {
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
+  const toolParam = searchParams.get("tool");
+  const viewParam = searchParams.get("view");
   const [coupleId, setCoupleId] = useState<string | null>(null);
   const [hasConnectedPartner, setHasConnectedPartner] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -264,10 +269,12 @@ const PartnerSpace = () => {
   }, [user]);
 
   useEffect(() => {
-    const toolParam = searchParams.get("tool");
+    if (isViewKey(viewParam)) {
+      setViewMode(viewParam);
+    }
     if (!isToolKey(toolParam)) return;
     activateTool(toolParam);
-  }, [searchParams, hasPremiumAccess]);
+  }, [toolParam, viewParam, hasPremiumAccess]);
 
   useEffect(() => {
     if (!coupleId || !user) return;
@@ -446,6 +453,7 @@ const PartnerSpace = () => {
                   const Icon = view.icon;
                   const active = viewMode === view.key;
                   const locked = !isViewUnlocked(view.key);
+                  const isPremiumPage = view.premium;
                   return (
                     <button
                       key={view.key}
@@ -464,9 +472,7 @@ const PartnerSpace = () => {
                         </div>
                       )}
                       <div
-                        className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-2.5 ${
-                          locked ? "text-amber-200" : view.iconClass
-                        }`}
+                        className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-2.5 ${view.iconClass}`}
                       >
                         <Icon className="h-4 w-4" />
                       </div>
@@ -474,12 +480,12 @@ const PartnerSpace = () => {
                         <div className="font-display text-xl text-foreground">{view.title}</div>
                         <span
                           className={`inline-flex rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] ${
-                            locked
+                            isPremiumPage
                               ? "border-amber-300/35 bg-amber-500/12 text-amber-200"
                               : "border-emerald-300/35 bg-emerald-500/10 text-emerald-200"
                           }`}
                         >
-                          {locked ? "Premium" : "Free"}
+                          {isPremiumPage ? "Premium" : "Free"}
                         </span>
                       </div>
                       <p className="mt-1 text-sm leading-6 text-muted-foreground">{view.subtitle}</p>
@@ -509,6 +515,7 @@ const PartnerSpace = () => {
                   const Icon = tool.icon;
                   const active = activeTool === tool.key;
                   const locked = !isToolUnlocked(tool.key);
+                  const isFreeDoorway = freeDoorways.includes(tool.key);
                   return (
                     <div
                       key={tool.key}
@@ -530,12 +537,12 @@ const PartnerSpace = () => {
                           <h3 className="font-display text-2xl text-foreground">{tool.title}</h3>
                           <span
                             className={`inline-flex rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] ${
-                              locked
-                                ? "border-amber-300/35 bg-amber-500/12 text-amber-200"
-                                : "border-emerald-300/35 bg-emerald-500/10 text-emerald-200"
+                              isFreeDoorway
+                                ? "border-emerald-300/35 bg-emerald-500/10 text-emerald-200"
+                                : "border-amber-300/35 bg-amber-500/12 text-amber-200"
                             }`}
                           >
-                            {locked ? "Premium" : "Free"}
+                            {isFreeDoorway ? "Free" : "Premium"}
                           </span>
                         </div>
                         <p className="mt-3 text-sm leading-7 text-muted-foreground">{tool.subtitle}</p>
@@ -593,8 +600,9 @@ const PartnerSpace = () => {
           </>
         )}
 
-        {viewMode === "journey" && (
-          <section className="space-y-4">
+        {viewMode === "journey" &&
+          (isViewUnlocked("journey") ? (
+            <section className="space-y-4">
             <div>
               <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Our Journey</p>
               <h2 className="mt-2 font-display text-3xl text-foreground">The living story of your love</h2>
@@ -703,12 +711,48 @@ const PartnerSpace = () => {
                 </p>
               </div>
             </div>
-          </section>
-        )}
+            </section>
+          ) : (
+            premiumGateCard(
+              "Our Journey is a premium sacred page",
+              "Track your shared story, offerings, and intimate rhythm over time with full partner timeline intelligence."
+            )
+          ))}
 
-        {viewMode === "oracle" && (
-          <section>
-            <WisdomOracle coupleId={coupleId ?? undefined} onNavigate={navigateTool} />
+        {viewMode === "oracle" &&
+          (isViewUnlocked("oracle") ? (
+            <section>
+              <WisdomOracle coupleId={coupleId ?? undefined} onNavigate={navigateTool} />
+            </section>
+          ) : (
+            premiumGateCard(
+              "Wisdom Oracle is a premium sacred page",
+              "Unlock tailored relationship intelligence, personalized romantic guidance, and data-shaped next steps built for your couple."
+            )
+          ))}
+
+        {!hasPremiumAccess && (
+          <section className="rounded-[30px] border border-amber-300/30 bg-gradient-to-br from-amber-500/12 via-background to-background p-6 shadow-[0_28px_90px_-46px_rgba(251,191,36,0.45)] md:p-7">
+            <p className="text-xs uppercase tracking-[0.24em] text-amber-200">Temple Premium</p>
+            <h2 className="mt-3 font-display text-3xl text-foreground md:text-4xl">Bring the full sanctuary online</h2>
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
+              Free gives your couple Intimacy Weather plus one ritual per category. Premium unlocks every ritual, all eight doorways, Our Journey analytics, and full Wisdom Oracle innovation for your next shared chapter.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link
+                to="/pricing"
+                className="rounded-2xl border border-amber-300/35 bg-amber-500/14 px-5 py-3 text-sm text-foreground transition-all hover:border-amber-300/55 hover:bg-amber-500/20"
+              >
+                View plans
+              </Link>
+              <button
+                type="button"
+                onClick={() => activateTool("weather")}
+                className="rounded-2xl border border-border/35 bg-card/45 px-5 py-3 text-sm text-foreground transition-all hover:border-border/55 hover:bg-card/60"
+              >
+                Continue with free flow
+              </button>
+            </div>
           </section>
         )}
       </div>

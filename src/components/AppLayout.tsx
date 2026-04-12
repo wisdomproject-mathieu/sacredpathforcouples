@@ -106,6 +106,22 @@ const AppLayout = () => {
                   <span>Repair</span>
                   <span className="rounded-full border border-amber-400/30 bg-amber-500/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.14em] text-amber-300">Premium</span>
                 </Link>
+                <Link to="/app/space?tool=pathways" className="flex items-center justify-between hover:text-foreground transition-colors">
+                  <span>Pathways</span>
+                  <span className="rounded-full border border-amber-400/30 bg-amber-500/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.14em] text-amber-300">Premium</span>
+                </Link>
+                <Link to="/app/space?tool=altar" className="flex items-center justify-between hover:text-foreground transition-colors">
+                  <span>Altar</span>
+                  <span className="rounded-full border border-amber-400/30 bg-amber-500/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.14em] text-amber-300">Premium</span>
+                </Link>
+                <Link to="/app/space?view=journey" className="flex items-center justify-between hover:text-foreground transition-colors">
+                  <span>Our Journey</span>
+                  <span className="rounded-full border border-amber-400/30 bg-amber-500/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.14em] text-amber-300">Premium</span>
+                </Link>
+                <Link to="/app/space?view=oracle" className="flex items-center justify-between hover:text-foreground transition-colors">
+                  <span>Wisdom Oracle</span>
+                  <span className="rounded-full border border-amber-400/30 bg-amber-500/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.14em] text-amber-300">Premium</span>
+                </Link>
               </div>
             </div>
 

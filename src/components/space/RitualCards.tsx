@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,7 +10,6 @@ import {
   Hand,
   Heart,
   Lock,
-  MessageCircle,
   Moon,
   Send,
   Sparkles,
@@ -45,6 +45,7 @@ interface RitualItem {
 interface Props {
   coupleId?: string;
   onNavigate?: (tab: string) => void;
+  isPremium?: boolean;
 }
 
 const categoryIcons: Record<string, typeof Sparkles> = {
@@ -68,7 +69,7 @@ const categoryFilters: CategoryKey[] = [
   "playful",
 ];
 
-const RitualCards = ({ coupleId, onNavigate }: Props) => {
+const RitualCards = ({ coupleId, onNavigate, isPremium = false }: Props) => {
   const { t } = useLanguage();
   const { user } = useAuth();
 
@@ -99,6 +100,20 @@ const RitualCards = ({ coupleId, onNavigate }: Props) => {
   }, []);
 
   const filtered = rituals.filter((r) => filter === "all" || r.category === filter);
+  const freePreviewIds = useMemo(() => {
+    if (isPremium) return new Set<string>();
+
+    const firstByCategory = new Map<string, string>();
+    for (const ritual of rituals) {
+      const category = ritual.category || "presence";
+      if (!firstByCategory.has(category)) {
+        firstByCategory.set(category, ritual.id);
+      }
+    }
+
+    return new Set(Array.from(firstByCategory.values()));
+  }, [isPremium, rituals]);
+  const freeCategoryCount = freePreviewIds.size;
 
   const saveToAltar = async (ritual: RitualItem) => {
     if (!user || !coupleId) return;
@@ -135,6 +150,14 @@ const RitualCards = ({ coupleId, onNavigate }: Props) => {
       actionLabel="Enter temple guide"
       onAction={onNavigate ? () => onNavigate("guide") : undefined}
     >
+      {!isPremium && (
+        <div className="rounded-2xl border border-emerald-300/25 bg-emerald-500/10 p-4">
+          <p className="text-xs uppercase tracking-[0.18em] text-emerald-200">Free ritual flow</p>
+          <p className="mt-2 text-sm leading-6 text-foreground/90">
+            You can open one ritual in each category after Intimacy Weather. Everything else unlocks in premium.
+          </p>
+        </div>
+      )}
 
       <div className="overflow-x-auto">
         <div className="flex gap-2 min-w-max">
@@ -171,6 +194,8 @@ const RitualCards = ({ coupleId, onNavigate }: Props) => {
           const Icon = categoryIcons[ritual.category] || Sparkles;
           const safeSteps = ritual.steps?.length ? ritual.steps : [ritual.hook || ritual.title];
           const intensity = Math.max(0, Math.min(4, ritual.intensity ?? 1));
+          const isLocked = !isPremium && !freePreviewIds.has(ritual.id);
+          const isFreePreview = !isPremium && freePreviewIds.has(ritual.id);
 
           return (
             <div
@@ -179,11 +204,11 @@ const RitualCards = ({ coupleId, onNavigate }: Props) => {
                 isExpanded
                   ? "bg-primary/5 border-primary/30"
                   : "bg-card/50 border-border/30 hover:border-border/60"
-              } ${ritual.premium_required ? "opacity-70" : ""}`}
+              } ${isLocked ? "opacity-70" : ""}`}
             >
               <button
                 type="button"
-                disabled={ritual.premium_required}
+                disabled={isLocked}
                 onClick={() => {
                   setExpanded(isExpanded ? null : ritual.id);
                   setActiveStep(0);
@@ -213,16 +238,21 @@ const RitualCards = ({ coupleId, onNavigate }: Props) => {
                     </div>
                   </div>
 
-                  {ritual.premium_required && (
+                  {isLocked && (
                     <div className="inline-flex items-center gap-1 rounded-full border border-border/30 px-2.5 py-1 text-xs text-muted-foreground">
                       <Lock className="h-3.5 w-3.5" />
                       {t("premium.unlock")}
                     </div>
                   )}
+                  {isFreePreview && (
+                    <div className="inline-flex items-center gap-1 rounded-full border border-emerald-300/30 bg-emerald-500/10 px-2.5 py-1 text-xs text-emerald-200">
+                      Free ritual
+                    </div>
+                  )}
                 </div>
               </button>
 
-              {isExpanded && !ritual.premium_required && (
+              {isExpanded && !isLocked && (
                 <div className="px-5 pb-5">
                   <div className="rounded-2xl border border-border/30 bg-background/40 p-4">
                     <div className="mb-3 text-xs font-body text-muted-foreground">
@@ -292,6 +322,22 @@ const RitualCards = ({ coupleId, onNavigate }: Props) => {
         {filtered.length === 0 && (
           <div className="rounded-2xl border border-border/30 bg-card/40 p-5 text-center">
             <p className="font-body text-muted-foreground">{t("ritual_cards.empty")}</p>
+          </div>
+        )}
+
+        {!isPremium && (
+          <div className="rounded-2xl border border-amber-300/30 bg-gradient-to-br from-amber-500/12 via-background to-background p-5">
+            <p className="text-xs uppercase tracking-[0.18em] text-amber-200">Premium rituals</p>
+            <h3 className="mt-2 font-display text-2xl text-foreground">Unlock the full ritual sanctuary</h3>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">
+              You currently have {freeCategoryCount} category previews in the free temple. Premium opens every ritual variation, deeper progression, and full couple sequencing.
+            </p>
+            <Link
+              to="/pricing"
+              className="mt-4 inline-flex rounded-xl border border-amber-300/35 bg-amber-500/12 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/55 hover:bg-amber-500/18"
+            >
+              View plans
+            </Link>
           </div>
         )}
       </div>
