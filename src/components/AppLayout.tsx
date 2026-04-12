@@ -14,7 +14,7 @@ const AppLayout = () => {
   const navItems = useMemo(
     () => [
       { to: "/app", icon: Home, label: "Home", iconClass: "text-amber-300" },
-      { to: "/app/paths", icon: BookOpen, label: "Library", iconClass: "text-violet-300" },
+      { to: "/app/paths", icon: BookOpen, label: "Sacred Library", iconClass: "text-violet-300" },
       { to: "/app/space", icon: Sparkles, label: "Sacred Temple", iconClass: "text-fuchsia-300" },
     ],
     []
@@ -42,7 +42,7 @@ const AppLayout = () => {
               </div>
 
               <p className="mt-4 text-sm leading-6 text-muted-foreground">
-                Ancient wisdom for modern love. Home for orientation, Library for insight, Sacred Temple for embodied shared practice.
+                Ancient wisdom for modern love. Home for orientation, Sacred Library for insight, Sacred Temple for embodied shared practice.
               </p>
             </div>
 
@@ -71,11 +71,21 @@ const AppLayout = () => {
             </nav>
 
             <div className="mt-5 rounded-2xl border border-border/30 bg-background/40 p-3">
-              <div className="text-[11px] uppercase tracking-[0.18em] text-primary/80">Library map</div>
+              <div className="text-[11px] uppercase tracking-[0.18em] text-primary/80">Sacred Library map</div>
+              <div className="mt-3 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Sacred pages</div>
               <div className="mt-3 space-y-2 text-sm text-muted-foreground">
-                <Link to="/app/paths" className="block hover:text-foreground transition-colors">Foundational Paths</Link>
-                <Link to="/app/authors" className="block hover:text-foreground transition-colors">Teacher Voices</Link>
-                <Link to="/app/reconnect" className="block hover:text-foreground transition-colors">Reconnect Tools</Link>
+                <Link to="/app/paths" className="flex items-center justify-between hover:text-foreground transition-colors">
+                  <span>Foundational Paths</span>
+                  <span className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.14em] text-emerald-300">Free</span>
+                </Link>
+                <Link to="/app/authors" className="flex items-center justify-between hover:text-foreground transition-colors">
+                  <span>Teacher Voices</span>
+                  <span className="rounded-full border border-amber-400/30 bg-amber-500/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.14em] text-amber-300">Mixed</span>
+                </Link>
+                <Link to="/app/reconnect" className="flex items-center justify-between hover:text-foreground transition-colors">
+                  <span>Reconnect Tools</span>
+                  <span className="rounded-full border border-amber-400/30 bg-amber-500/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.14em] text-amber-300">Mixed</span>
+                </Link>
               </div>
             </div>
 

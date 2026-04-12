@@ -9,8 +9,8 @@ const AppHome = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [quoteIndex, setQuoteIndex] = useState(0);
-  const [connectionStatus, setConnectionStatus] = useState("You can begin in the Library and move into Sacred Temple when the relationship is ready.");
-  const [activityStatus, setActivityStatus] = useState("No partner activity yet. Begin in the Library, then enter Sacred Temple when you are ready to practice together.");
+  const [connectionStatus, setConnectionStatus] = useState("You can begin in the Sacred Library and move into Sacred Temple when the relationship is ready.");
+  const [activityStatus, setActivityStatus] = useState("No partner activity yet. Begin in the Sacred Library, then enter Sacred Temple when you are ready to practice together.");
   const [journeyPhase, setJourneyPhase] = useState("Arrival");
 
   const quotes = useMemo(
@@ -53,7 +53,7 @@ const AppHome = () => {
         .maybeSingle();
 
       if (!couple) {
-        setConnectionStatus("You are not connected yet. Sacred Path still works beautifully for one: learn in the Library, then invite your beloved when you are ready.");
+        setConnectionStatus("You are not connected yet. Sacred Path still works beautifully for one: learn in the Sacred Library, then invite your beloved when you are ready.");
         setActivityStatus("Begin with a foundational path, save a few favorites, and let Sacred Temple become your shared space later.");
         setJourneyPhase("Arrival");
         return;
@@ -63,7 +63,7 @@ const AppHome = () => {
       setConnectionStatus(
         connected
           ? "You and your partner are inside Sacred Temple together. Home now becomes a living dashboard for your shared rhythm."
-          : "Your invitation is open. While you wait, use the Library to gather the words, rituals, and wisdom you want to bring into the relationship."
+          : "Your invitation is open. While you wait, use the Sacred Library to gather the words, rituals, and wisdom you want to bring into the relationship."
       );
 
       if (!connected) {
@@ -123,7 +123,7 @@ const AppHome = () => {
           <p className="text-xs uppercase tracking-[0.28em] text-primary/80">Home</p>
           <h1 className="mt-3 font-display text-4xl leading-tight text-foreground md:text-5xl">Ancient wisdom for modern love</h1>
           <p className="mt-4 max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
-            Sacred Path is built for the quick moment, the long season, the single seeker, and the shared temple of two. Learn inside the Library, then bring what matters into living practice.
+            Sacred Path is built for the quick moment, the long season, the single seeker, and the shared temple of two. Learn inside the Sacred Library, then bring what matters into living practice.
           </p>
         </div>
 
@@ -188,7 +188,7 @@ const AppHome = () => {
           <div className="inline-flex rounded-2xl border border-border/30 bg-background/45 p-3 text-violet-300">
             <BookOpen className="h-5 w-5" />
           </div>
-          <h2 className="mt-4 font-display text-3xl text-foreground">Library</h2>
+          <h2 className="mt-4 font-display text-3xl text-foreground">Sacred Library</h2>
           <p className="mt-3 text-sm leading-7 text-muted-foreground">
             Learn by path, deepen by teacher, and discover what serves a quick modern couple as well as a long devotional one.
           </p>
@@ -210,7 +210,7 @@ const AppHome = () => {
           </div>
           <h2 className="mt-4 font-display text-3xl text-foreground">For one or for two</h2>
           <p className="mt-3 text-sm leading-7 text-muted-foreground">
-            Home and Library work beautifully before partner connection. Sacred Temple becomes your shared field when love is ready for embodied practice.
+            Home and Sacred Library work beautifully before partner connection. Sacred Temple becomes your shared field when love is ready for embodied practice.
           </p>
         </div>
       </section>
