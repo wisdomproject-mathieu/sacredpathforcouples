@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { HeartHandshake, Menu, MessageCircleHeart, Sparkles, X } from "lucide-react";
 
@@ -16,6 +16,24 @@ import { useLanguage } from "@/contexts/LanguageContext";
 const Index = () => {
   const { t } = useLanguage();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    const scrollToHashTarget = () => {
+      const hash = window.location.hash;
+      if (!hash) return;
+      const target = document.getElementById(hash.slice(1));
+      if (!target) return;
+      target.scrollIntoView({ behavior: "auto", block: "start" });
+    };
+
+    const frame = window.requestAnimationFrame(scrollToHashTarget);
+    window.addEventListener("hashchange", scrollToHashTarget);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("hashchange", scrollToHashTarget);
+    };
+  }, []);
 
   const features = [
     { icon: YinYangIcon, title: "Your Couple Code", desc: "Create one shared code and connect your relationship in a private couple space." },
