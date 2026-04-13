@@ -79,6 +79,10 @@ type ReconnectTool = {
   content?: FreeReconnectContent;
 };
 
+type ReconnectLocalizationOverrides = Partial<Omit<ReconnectTool, "content">> & {
+  content?: Partial<FreeReconnectContent>;
+};
+
 const libraryPages = [
   {
     to: "/app/paths",
@@ -603,6 +607,249 @@ const reconnectTools: ReconnectTool[] = [
     ],
   },
 ];
+
+const localizedReconnectOverrides: Partial<Record<Exclude<Language, "en">, Record<string, ReconnectLocalizationOverrides>>> = {
+  fr: {
+    "soft-landing": {
+      descriptor: "Une séquence douce pour se poser, respirer et revenir l'un vers l'autre rapidement.",
+      oneLiner: "Idéal quand vous voulez la proximité mais que vos systèmes sont surchargés.",
+      overviewLine: "Reconnexion orientée système nerveux pour les journées de stress réel.",
+      content: {
+        heroIntro: [
+          "Soft Landing est conçu pour les soirées saturées: baisser la température émotionnelle sans éteindre la possibilité érotique.",
+          "Au lieu de forcer la profondeur, l'outil crée un pont crédible entre stress et présence relationnelle.",
+        ],
+        quote: {
+          text: "Quand le corps se sent plus en sécurité, l'amour devient plus facile à ressentir et à offrir.",
+          source: "Synthèse éditoriale Sacred Path · Reconnect",
+        },
+        useWhen: [
+          "Après journées denses, charge parentale, voyage ou surcharge numérique.",
+          "Quand l'amour est là mais l'arrivée émotionnelle manque.",
+          "Quand une grande discussion risquerait d'échouer ce soir.",
+        ],
+        whyItWorks: [
+          {
+            title: "Faible effort, grand retour",
+            body: "Peu d'énergie demandée, beaucoup de détente relationnelle.",
+            beginnerReframe: "Débutant: faites-le même en version 5 minutes.",
+            advancedReframe: "Avancé: insérez des micro-resets en conversation difficile.",
+          },
+          {
+            title: "Réguler avant d'interpréter",
+            body: "Une fois le corps apaisé, la communication devient naturellement plus propre.",
+            beginnerReframe: "Débutant: attendre le souffle lent avant d'entrer dans le fond.",
+            advancedReframe: "Avancé: suivre les signaux partenaire et recalibrer en direct.",
+          },
+        ],
+        modernUse: [
+          { title: "Transition de soirée", body: "10 minutes avant dîner ou coucher pour éviter la friction résiduelle." },
+          { title: "Après tension", body: "Faire Soft Landing avant langage de réparation." },
+          { title: "Calme favorable au désir", body: "Le calme peut redevenir terrain d'ouverture sensuelle." },
+        ],
+        whatToAvoid: [
+          {
+            title: "Transformer l'outil en performance",
+            body: "La simplicité fait l'efficacité; sur-optimiser casse l'effet.",
+            beginnerReframe: "Débutant: répéter la même structure courte.",
+            advancedReframe: "Avancé: changer une variable à la fois.",
+          },
+          {
+            title: "Forcer le dévoilement",
+            body: "Le but est l'arrivée, pas l'excavation émotionnelle immédiate.",
+            beginnerReframe: "Débutant: un ressenti, pas toute l'histoire.",
+            advancedReframe: "Avancé: séquencer la profondeur après régulation.",
+          },
+        ],
+        exercises: [
+          {
+            title: "Arrivée en 3 souffles",
+            setup: "Genoux face à face, un point de contact des mains.",
+            steps: [
+              "Trois longues expirations synchronisées.",
+              "Chacun: « mon corps se sent… »",
+              "Chacun: un besoin simple pour ce soir.",
+            ],
+            integration: "Micro-rituel quotidien.",
+            beginnerNote: "Réponses courtes et concrètes.",
+            advancedNote: "Ajouter une intention relationnelle claire.",
+          },
+          {
+            title: "Reset épaules",
+            setup: "Debout face à face.",
+            steps: [
+              "Inspirez ensemble en montant les épaules.",
+              "Expirez en relâchant vers les pieds.",
+              "Cinq cycles avec regard doux.",
+            ],
+            integration: "Très efficace au retour à la maison.",
+            beginnerNote: "À faire dès l'arrivée pour éviter le report de tension.",
+            advancedNote: "Associer le dernier cycle à une phrase d'appréciation.",
+          },
+        ],
+        reflectionPrompts: [
+          "Qu'est-ce qui rend mon corps émotionnellement accessible ?",
+          "Quel est notre reset de 5 minutes le plus fiable ?",
+          "Où créons-nous de la friction de transition dans notre quotidien ?",
+        ],
+        premiumBanner:
+          "Débloquez des séquences de co-régulation guidées, des scripts de reconnexion avancés et des rituels de transition pour les saisons de forte pression.",
+      },
+    },
+    "heart-opening": {
+      descriptor: "Une voie chaleureuse vers l'appréciation, la tendresse et la proximité émotionnelle.",
+      oneLiner: "Idéal quand l'amour est présent mais que le nourrissement émotionnel s'est aminci.",
+      overviewLine: "Réparation douce par gratitude et reassurance utilisable ce soir.",
+      content: {
+        heroIntro: [
+          "Heart Opening aide à passer d'un partenariat fonctionnel à un lien ressenti.",
+          "Ce n'est pas une réparation dramatique, c'est une remise en chaleur émotionnelle.",
+        ],
+        premiumBanner:
+          "Débloquez des protocoles avancés d'ouverture du cœur, des scripts de reassurance et des séquences guidées pour transformer l'affection en attachement sécurisé.",
+      },
+    },
+    "playful-spark": {
+      descriptor: "Une reconnexion ludique qui réintroduit légèreté, curiosité et désir complice.",
+      oneLiner: "Quand la relation est trop sérieuse et que la spontanéité a disparu.",
+      overviewLine: "Ramener jeu et attraction sans perdre sécurité émotionnelle.",
+      content: {
+        heroIntro: [
+          "Playful Spark réactive la complicité quand la relation devient purement logistique.",
+          "Le jeu bien cadré peut faire revenir le désir sans pression de performance.",
+        ],
+        premiumBanner:
+          "Débloquez des jeux de reconnexion guidés, des scripts de flirt conscient et des parcours progressifs pour restaurer spontanéité et charge érotique.",
+      },
+    },
+  },
+  cs: {
+    "soft-landing": {
+      descriptor: "Jemná sekvence pro zklidnění, dech a rychlý návrat k sobě navzájem.",
+      oneLiner: "Ideální, když chcete blízkost, ale oba systémy jsou přetížené.",
+      overviewLine: "Nervový systém na prvním místě: reconnect pro reálné stresové dny.",
+      content: {
+        heroIntro: [
+          "Soft Landing je pro přetížené večery: sníží emoční teplotu bez ztráty erotického potenciálu.",
+          "Místo tlačení do hloubky vytváří bezpečný most mezi stresem a vzájemnou přítomností.",
+        ],
+        quote: {
+          text: "Když se tělo cítí bezpečněji, láska se snáz cítí i dává.",
+          source: "Redakční syntéza Sacred Path · Reconnect",
+        },
+        useWhen: [
+          "Po náročném dni, cestování, rodičovské zátěži nebo digitálním přehlcení.",
+          "Když péče existuje, ale emoční příchod chybí.",
+          "Když by velký rozhovor dnes večer pravděpodobně selhal.",
+        ],
+        whyItWorks: [
+          {
+            title: "Nízký nárok, vysoký efekt",
+            body: "Minimum energie, rychlé změkčení vztahové atmosféry.",
+            beginnerReframe: "Začátečník: udělej to i v 5minutové verzi.",
+            advancedReframe: "Pokročilý: vkládej mikro-reset i během těžkých rozhovorů.",
+          },
+          {
+            title: "Nejdřív regulace, pak interpretace",
+            body: "Po zklidnění těla se kvalita komunikace zvedá přirozeně.",
+            beginnerReframe: "Začátečník: počkej na pomalejší dech, pak teprve obsah.",
+            advancedReframe: "Pokročilý: čti signály partnera a kalibruj tempo.",
+          },
+        ],
+        modernUse: [
+          { title: "Večerní přechod", body: "10 minut před večeří nebo spaním pro snížení tření." },
+          { title: "Po napětí", body: "Nejprve Soft Landing, potom opravný jazyk." },
+          { title: "Klid podporující touhu", body: "Klid může být vstupem k něze i otevřenosti." },
+        ],
+        whatToAvoid: [
+          {
+            title: "Udělání z praxe výkonu",
+            body: "Jednoduchost je síla, překomplikování efekt oslabí.",
+            beginnerReframe: "Začátečník: opakuj stejnou krátkou strukturu.",
+            advancedReframe: "Pokročilý: měň vždy jen jednu proměnnou.",
+          },
+          {
+            title: "Nucené odhalení",
+            body: "Cíl je příchod, ne okamžitá hluboká psychoanalýza.",
+            beginnerReframe: "Začátečník: sdílej jeden pocit, ne celý příběh.",
+            advancedReframe: "Pokročilý: hloubku řaď až po stabilní regulaci.",
+          },
+        ],
+        exercises: [
+          {
+            title: "Příchod ve 3 deších",
+            setup: "Kolena proti sobě, jeden bod kontaktu rukou.",
+            steps: [
+              "Tři dlouhé synchronní výdechy.",
+              "Každý: „moje tělo teď cítí…“",
+              "Každý: jedna jednoduchá potřeba na dnešní večer.",
+            ],
+            integration: "Denní mikro-rituál.",
+            beginnerNote: "Odpovědi krátké a konkrétní.",
+            advancedNote: "Přidej jednu jasnou vztahovou intenci.",
+          },
+          {
+            title: "Reset ramen",
+            setup: "Ve stoje čelem k sobě.",
+            steps: [
+              "Nádech společně se zdvižením ramen.",
+              "Výdech a uvolnění až do chodidel.",
+              "Pět kol s měkkým pohledem.",
+            ],
+            integration: "Skvělé hned po příchodu domů.",
+            beginnerNote: "Použijte jako přechod po příchodu.",
+            advancedNote: "Poslední kolo spojte s větou ocenění.",
+          },
+        ],
+        reflectionPrompts: [
+          "Co dělá moje tělo emočně dostupným?",
+          "Jaký 5minutový reconnect funguje nejspolehlivěji?",
+          "Kde v běžném dni vytváříme přechodové tření?",
+        ],
+        premiumBanner:
+          "Odemkněte vedené co-regulační sekvence, pokročilé reconnect skripty a přechodové rituály pro období vysokého tlaku.",
+      },
+    },
+    "heart-opening": {
+      descriptor: "Teplá cesta k ocenění, něze a emoční blízkosti.",
+      oneLiner: "Ideální, když láska je přítomná, ale emoční výživa se ztenčila.",
+      overviewLine: "Jemná obnova blízkosti skrze vděčnost a ujištění.",
+      content: {
+        heroIntro: [
+          "Heart Opening vrací pár z funkčního režimu do skutečně cítěné blízkosti.",
+          "Nejde o dramatickou opravu, ale o postupné znovu-zahřátí vztahu.",
+        ],
+        premiumBanner:
+          "Odemkněte pokročilé heart-opening protokoly, ujišťovací skripty a vedené sekvence pro bezpečnější citovou vazbu.",
+      },
+    },
+    "playful-spark": {
+      descriptor: "Hravý reconnect, který vrací lehkost, zvědavost a partnerskou jiskru.",
+      oneLiner: "Když je vztah příliš vážný a spontánnost zmizela.",
+      overviewLine: "Vrátit hru a přitažlivost bez ztráty emoční bezpečnosti.",
+      content: {
+        heroIntro: [
+          "Playful Spark oživuje hravost tam, kde převládla logistika a rutina.",
+          "Dobře vedená hra může vrátit touhu bez výkonového tlaku.",
+        ],
+        premiumBanner:
+          "Odemkněte vedené hravé reconnect cesty, skripty vědomého flirtu a progresivní mapy pro obnovu spontánnosti.",
+      },
+    },
+  },
+};
+
+const applyReconnectLocalization = (tool: ReconnectTool, lang: Language): ReconnectTool => {
+  if (lang === "en") return tool;
+  const override = localizedReconnectOverrides[lang]?.[tool.slug];
+  if (!override) return tool;
+
+  return {
+    ...tool,
+    ...override,
+    content: override.content ? { ...tool.content, ...override.content } : tool.content,
+  };
+};
 
 const reconnectUpgradeCopy: Record<
   string,
@@ -1304,16 +1551,20 @@ const Reconnect = () => {
   const { lang } = useLanguage();
   const ui = reconnectUiCopy[lang];
   const isMobile = useIsMobile();
+  const localizedReconnectTools = useMemo(
+    () => reconnectTools.map((tool) => applyReconnectLocalization(tool, lang)),
+    [lang],
+  );
   const [selectedSlug, setSelectedSlug] = useState("soft-landing");
   const [mobileDetailMode, setMobileDetailMode] = useState(false);
   const selected = useMemo(
-    () => reconnectTools.find((tool) => tool.slug === selectedSlug) ?? reconnectTools[0],
-    [selectedSlug],
+    () => localizedReconnectTools.find((tool) => tool.slug === selectedSlug) ?? localizedReconnectTools[0],
+    [localizedReconnectTools, selectedSlug],
   );
 
-  const freeCount = reconnectTools.filter((tool) => tool.tier === "free").length;
-  const premiumCount = reconnectTools.filter((tool) => tool.tier === "premium").length;
-  const relatedTools = reconnectTools.filter((tool) => tool.slug !== selectedSlug).slice(0, 6);
+  const freeCount = localizedReconnectTools.filter((tool) => tool.tier === "free").length;
+  const premiumCount = localizedReconnectTools.filter((tool) => tool.tier === "premium").length;
+  const relatedTools = localizedReconnectTools.filter((tool) => tool.slug !== selectedSlug).slice(0, 6);
   const showBrowse = !isMobile || !mobileDetailMode;
   const showDetail = !isMobile || mobileDetailMode;
 
@@ -1386,7 +1637,7 @@ const Reconnect = () => {
         <h2 className="mt-2 font-display text-3xl text-foreground">{ui.overviewTitle}</h2>
 
         <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-          {reconnectTools.map((tool) => {
+          {localizedReconnectTools.map((tool) => {
             const Icon = tool.icon;
             const isSelected = selectedSlug === tool.slug;
             return (

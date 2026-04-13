@@ -89,6 +89,10 @@ type PathDetail = {
   teaser?: string[];
 };
 
+type PathLocalizationOverrides = Partial<Omit<PathDetail, "content">> & {
+  content?: Partial<PathContent>;
+};
+
 const libraryPages = [
   {
     to: "/app/paths",
@@ -683,6 +687,653 @@ const pathDetails: PathDetail[] = [
     ],
   },
 ];
+
+const localizedPathOverrides: Partial<Record<Exclude<Language, "en">, Record<string, PathLocalizationOverrides>>> = {
+  fr: {
+    tantra: {
+      name: "Sagesse tantrique",
+      oneLine: "Une voie ancienne traduite pour les couples modernes à travers souffle, présence, polarité et dévotion.",
+      overviewLine: "Pour les couples qui veulent une intimité consciente ce soir et une croissance spirituelle durable.",
+      content: {
+        hero: [
+          "Le Tantra historique est une voie spirituelle qui inclut pleinement le corps: souffle, attention, rituel, mantra et présence.",
+          "Pour un couple moderne, la traduction est simple: ne pas séparer désir, conscience et lien émotionnel.",
+          "Le rythme tantrique aide à réguler d'abord, s'ouvrir ensuite, puis intensifier seulement quand les deux corps sont prêts.",
+          "On passe d'une logique de performance à une pratique répétable où eros, tendresse, vérité et révérence grandissent ensemble.",
+        ],
+        whyMatters: [
+          "Offre un cadre concret pour approfondir l'érotisme sans sacrifier la sécurité émotionnelle.",
+          "Aide quand un partenaire veut plus d'intensité et l'autre a besoin d'ancrage.",
+          "Transforme le souffle en outil de co-régulation avant les conversations sensibles.",
+          "Redonne de la qualité relationnelle aux couples efficaces mais émotionnellement asséchés.",
+          "Crée des rituels reproductibles pour ne plus dépendre d'un « moment parfait ». ",
+        ],
+        whoItsFor: [
+          {
+            title: "Couples loyaux avec une charge érotique en baisse",
+            body: "Réactiver le désir sans pression grâce au rythme et au consentement explicite.",
+          },
+          {
+            title: "Couples pris dans des boucles de stress",
+            body: "Réapprendre l'arrivée dans le corps avant le toucher.",
+          },
+          {
+            title: "Couples en reconstruction de confiance",
+            body: "Poser des repères clairs de sécurité, de langage et de progression.",
+          },
+          {
+            title: "Couples attirés par une intimité sacrée",
+            body: "Ancrer une pratique hebdomadaire qui relie amour et profondeur spirituelle.",
+          },
+        ],
+        practicePreview: {
+          title: "Séquence d'arrivée tantrique",
+          body: "Une entrée douce pour passer du stress à la présence partagée.",
+          steps: [
+            "Asseyez-vous face à face et synchronisez le souffle pendant 2 minutes.",
+            "Nommez chacun un état présent et une intention relationnelle pour ce soir.",
+            "Faites 3 minutes de toucher dévotionnel non orienté vers la performance.",
+            "Avant d'aller plus loin: « plus, pareil, plus lent, pause ou stop ? »",
+          ],
+        },
+        beginnerTrack: {
+          title: "Parcours débutant: sécurité et constance",
+          body: "Pendant 2 à 3 semaines, privilégiez la répétition simple. La confiance corporelle précède l'intensité.",
+          steps: [
+            "Rituel d'arrivée de 6 à 10 minutes, trois fois par semaine.",
+            "Utilisez à chaque tour un langage de consentement explicite.",
+            "Restez sous une intensité 6/10 et terminez en état régulé.",
+            "Clôturez avec gratitude + une demande concrète pour la prochaine fois.",
+          ],
+        },
+        advancedTrack: {
+          title: "Parcours avancé: approfondir sans perdre la cohérence",
+          body: "Quand la base est stable, ajoutez polarité, profondeur de souffle et vérité dévotionnelle sans sacrifier la clarté.",
+          steps: [
+            "Alternez 2 minutes de polarité dirigée et 1 minute d'immobilité.",
+            "Utilisez une progression en vagues: monter, intégrer, reprendre.",
+            "Avant le toucher: une vérité de bord + une offrande dévotionnelle.",
+            "Debrief: qu'est-ce qui a ouvert, saturé, et que calibrer ensuite.",
+          ],
+        },
+        quote: {
+          text: "L'intimité tantrique grandit quand attention, consentement et dévotion respirent ensemble.",
+          source: "Synthèse éditoriale Sacred Path · Tantra",
+        },
+        whatItIsNot: [
+          "Ce n'est pas une esthétique spirituelle posée sur de la déconnexion.",
+          "Ce n'est pas une quête d'intensité permanente.",
+          "Ce n'est pas un contournement du consentement ni de la responsabilité.",
+          "Ce n'est pas un raccourci qui évite réparation et communication honnête.",
+          "Ce n'est pas une nouveauté exotique: c'est une discipline de présence.",
+        ],
+        pillars: [
+          { name: "Présence", body: "Revenir à ce qui est vivant maintenant." },
+          { name: "Souffle", body: "Réguler émotion, arousal et sécurité." },
+          { name: "Polarité", body: "Créer un contraste conscient qui remet du mouvement." },
+          { name: "Dévotion", body: "Tenir l'intimité avec respect et intention." },
+          { name: "Conscience incarnée", body: "Lire la vérité du corps avant l'analyse." },
+          { name: "Langage du consentement", body: "Rendre chaque étape explicite et ajustable." },
+          { name: "Intégration", body: "Clôturer pour que la confiance s'accumule." },
+        ],
+        modernCouples: [
+          { title: "Amour présent, intimité mécanique", body: "Instaurer des transitions courtes vers la présence." },
+          { title: "Un veut de la profondeur, l'autre se sent pressé", body: "Le rythme tantrique permet d'ouvrir sans forcer." },
+          { title: "Stress chronique et désir en baisse", body: "Le souffle partagé rouvre l'accès relationnel." },
+          { title: "Résidus de conflit", body: "Associer réparation verbale et contact apaisant." },
+          { title: "Déconnexion entre quotidien et intimité", body: "Ancrer un rituel hebdomadaire non négociable." },
+        ],
+        misunderstandings: [
+          {
+            title: "Le Tantra = intensité constante",
+            body: "La vraie pratique alterne activation et apaisement. Sans intégration, le système sature.",
+            beginnerReframe: "Débutant: sessions courtes, terminer avant surcharge.",
+            advancedReframe: "Avancé: rythmer volontairement intensité et silence.",
+          },
+          {
+            title: "Le Tantra = technique",
+            body: "La technique aide, mais la qualité d'attention et la clarté du consentement font la différence.",
+            beginnerReframe: "Débutant: un seul rituel, exécuté avec présence.",
+            advancedReframe: "Avancé: ajuster le rythme en temps réel selon les signaux.",
+          },
+          {
+            title: "Le Tantra remplace la communication",
+            body: "Sans langage relationnel clair, la pratique corporelle devient floue.",
+            beginnerReframe: "Débutant: nommer un ressenti et un besoin avant le toucher.",
+            advancedReframe: "Avancé: debrief structuré après chaque session.",
+          },
+        ],
+        practices: [
+          {
+            title: "Rituel d'arrivée (6 minutes)",
+            setup: "Face à face, un point de contact des mains.",
+            steps: [
+              "Dix respirations synchronisées.",
+              "Un ressenti présent chacun.",
+              "Une intention pour la soirée chacun.",
+            ],
+            integration: "À utiliser avant intimité ou conversation de réparation.",
+            beginnerNote: "Gardez exactement cette structure les deux premières semaines.",
+            advancedNote: "Ajoutez une minute de silence regard dans les yeux.",
+          },
+          {
+            title: "Souffle en trois phases (8 minutes)",
+            setup: "Assis ou allongés côte à côte.",
+            steps: [
+              "Respiration bas-ventre pour réguler.",
+              "Respiration thoracique pour ouvrir l'émotion.",
+              "Respiration corps entier avec regard doux.",
+            ],
+            integration: "Crée rapidement de la cohérence à deux.",
+            beginnerNote: "Restez plus longtemps en phase 1 si surcharge.",
+            advancedNote: "Ajoutez un son léger à l'expiration.",
+          },
+          {
+            title: "Tour de toucher dévotionnel (10 minutes)",
+            setup: "Un donne, un reçoit, puis inversion.",
+            steps: [
+              "Toucher lent en zones non génitales.",
+              "Le receveur guide avec « plus/pareil/pause ».",
+              "Inversion après cinq minutes.",
+            ],
+            integration: "Renforce confiance, consentement et accordage.",
+            beginnerNote: "Restez non-performatif et non-génital.",
+            advancedNote: "Ajoutez un changement de polarité avant l'inversion.",
+          },
+        ],
+        reflections: [
+          "Où accélérons-nous au lieu d'arriver vraiment ?",
+          "Quel pilier est déjà fort chez nous ?",
+          "Quel rituel pouvons-nous répéter deux fois cette semaine ?",
+          "Où la performance remplace encore la présence ?",
+          "Qu'est-ce qui nous fait sentir désir et sécurité en même temps ?",
+        ],
+        relatedAuthors: [
+          { name: "Osho", tier: "free", note: "Présence et conscience incarnée." },
+          { name: "David Deida", tier: "free", note: "Polarité et vérité dévotionnelle." },
+          { name: "Margot Anand", tier: "premium", note: "Cérémonial et sensualité sacrée." },
+          { name: "Sally Kempton", tier: "premium", note: "Reconnaissance intime et non-dualité." },
+        ],
+        premiumBanner:
+          "Débloquez les parcours tantriques complets avec audio guidé, progressions consent-first et modules avancés pour transformer l'alchimie en pratique de couple durable.",
+      },
+    },
+    tao: {
+      name: "Tao",
+      oneLine: "Flux, souffle et longévité sensuelle des pratiques taoïstes pour les couples modernes.",
+      overviewLine: "Pour les couples qui veulent une intensité calme maintenant et une énergie durable dans le temps.",
+      content: {
+        hero: [
+          "Le Tao intime repose sur l'harmonie, la non-forçance (wu wei) et la circulation de l'énergie.",
+          "En pratique de couple: plus de douceur, moins de pression, plus de continuité.",
+          "Au lieu de courir après des pics, on apprend à nourrir le lien sans épuisement.",
+          "Le calme et la passion cessent d'être opposés: ils deviennent un même rythme partagé.",
+        ],
+        whyMatters: [
+          "Utile les jours de fatigue où l'intensité brutale couperait la connexion.",
+          "Aide à gérer les décalages de désir sans honte ni retrait.",
+          "Réduit l'épuisement post-intimité grâce à la conservation et à la récupération.",
+          "Rend le toucher plus sûr pour les systèmes nerveux sensibles.",
+          "Construit une vitalité érotique soutenable sur des années.",
+        ],
+        whoItsFor: [
+          { title: "Couples en saison de forte charge", body: "Se reconnecter malgré travail, parentalité et fatigue." },
+          { title: "Couples avec rythmes différents", body: "Rester reliés sans forcer la chimie." },
+          { title: "Couples en sortie de burnout", body: "Rebâtir l'énergie et la confiance corporelle." },
+          { title: "Couples visant la longévité sensuelle", body: "Cultiver une intimité nourrissante et durable." },
+        ],
+        practicePreview: {
+          title: "Reset tao du soir",
+          body: "Une séquence compatible avec les journées lourdes.",
+          steps: [
+            "Allongés côte à côte, une main sur le bas-ventre de l'autre.",
+            "Inspire 4, expire 6, cinq cycles.",
+            "Chacun nomme un endroit du corps qui s'est adouci.",
+            "Trois minutes de toucher doux sous intensité 6/10.",
+          ],
+        },
+        beginnerTrack: {
+          title: "Parcours débutant: restaurer rythme et sécurité",
+          body: "Le premier mois, priorité à la régulation et à la répétition simple.",
+          steps: [
+            "Reset Tao 5 à 8 minutes les soirs de semaine.",
+            "Expiration plus longue que l'inspiration.",
+            "Noter un signal d'apaisement et un signal de surcharge.",
+            "Clôturer par une courte vérification de nourrissement.",
+          ],
+        },
+        advancedTrack: {
+          title: "Parcours avancé: flow et longévité",
+          body: "Quand la base est stable, raffiner circulation, précision du rythme et récupération.",
+          steps: [
+            "Sessions de circulation de 12 à 18 minutes.",
+            "Utiliser le souffle partagé comme régulateur principal d'intensité.",
+            "Réchauffer tout le corps avant les zones de haute charge.",
+            "Vérifier la vitalité du lendemain pour ajuster la dose.",
+          ],
+        },
+        quote: {
+          text: "L'intimité tao se mesure à la qualité de nourishment, de stabilité et de connexion que vous pouvez maintenir.",
+          source: "Synthèse éditoriale Sacred Path · Tao",
+        },
+        whatItIsNot: [
+          "Ce n'est pas de la répression.",
+          "Ce n'est pas de la distance émotionnelle déguisée en calme.",
+          "Ce n'est pas une pratique uniquement solo.",
+          "Ce n'est pas l'évitement du désir.",
+          "Ce n'est pas une lenteur infinie: le rythme monte quand le corps est prêt.",
+        ],
+        pillars: [
+          { name: "Douceur", body: "La détente augmente la sensibilité." },
+          { name: "Rythme respiratoire", body: "Le souffle règle la cadence." },
+          { name: "Conservation", body: "Préserver l'énergie soutient la durée." },
+          { name: "Circulation", body: "Distribuer la chaleur réduit l'épuisement." },
+          { name: "Nourrissement", body: "L'objectif est réparateur pour les deux." },
+          { name: "Ancrage", body: "Rester présent au bas du corps diminue la réactivité." },
+          { name: "Récupération", body: "Clôturer pour sortir plus clairs, pas plus vides." },
+        ],
+        modernCouples: [
+          { title: "Semaines sous pression", body: "Le Tao baisse l'activation et garde le lien accessible." },
+          { title: "Désir désynchronisé", body: "Le rythme partagé évite la pression." },
+          { title: "Après conflit", body: "Utiliser un reset doux avant un contact plus intense." },
+          { title: "Seuils de toucher différents", body: "Cadencer explicitement pour respecter les limites." },
+          { title: "Fatigue accumulée", body: "Favoriser les pratiques qui laissent les deux partenaires nourris." },
+        ],
+        misunderstandings: [
+          {
+            title: "Lent = ennuyeux",
+            body: "Le ralentissement augmente souvent finesse, anticipation et sensibilité.",
+            beginnerReframe: "Débutant: un pattern lent de 3 minutes sans accélérer.",
+            advancedReframe: "Avancé: alterner lent et moyen pour créer du contraste.",
+          },
+          {
+            title: "Conserver = se retenir",
+            body: "La conservation n'est pas fermeture: c'est orienter l'énergie pour qu'elle nourrisse.",
+            beginnerReframe: "Débutant: privilégier les sessions qui laissent clarté et chaleur.",
+            advancedReframe: "Avancé: suivre l'état énergétique sur 24 heures.",
+          },
+          {
+            title: "Le Tao tue la passion",
+            body: "Le Tao stabilise la passion pour la rendre durable.",
+            beginnerReframe: "Débutant: désir doux mais continu dans la semaine.",
+            advancedReframe: "Avancé: construire des arcs d'anticipation plus longs.",
+          },
+        ],
+        practices: [
+          {
+            title: "Synchronisation bas-ventre (5 minutes)",
+            setup: "Allongés côte à côte, main sur l'abdomen inférieur.",
+            steps: [
+              "Inspire 4 temps dans le bas-ventre.",
+              "Expire 6 temps.",
+              "Moins de mots, plus de ressenti.",
+            ],
+            integration: "Reset rapide après une journée dense.",
+            beginnerNote: "Utiliser dès qu'un partenaire se sent saturé mentalement.",
+            advancedNote: "Ajouter relâchement du plancher pelvien à l'expiration.",
+          },
+          {
+            title: "Orbites de chaleur (8 minutes)",
+            setup: "Assis en contact doux.",
+            steps: [
+              "Faire circuler l'attention poitrine, ventre, bassin, dos.",
+              "Trois respirations par zone.",
+              "Partager la zone la plus adoucie.",
+            ],
+            integration: "Renforce la sensibilité érotique globale.",
+            beginnerNote: "Commencez simplement: poitrine, ventre, bassin.",
+            advancedNote: "Ajoutez colonne et gorge pour affiner la circulation.",
+          },
+          {
+            title: "Échange de rythme doux (10 minutes)",
+            setup: "Choisir un seul motif de toucher non-performatif.",
+            steps: [
+              "Partenaire A mène 5 minutes.",
+              "Partenaire B reflète exactement, puis inversion.",
+              "Rester sous intensité 6/10.",
+            ],
+            integration: "Entraîne la co-régulation et la précision du tempo.",
+            beginnerNote: "Utilisez un minuteur pour alléger la charge mentale.",
+            advancedNote: "Ajoutez des micro-pauses toutes les 60 secondes.",
+          },
+        ],
+        reflections: [
+          "Où notre intimité nous épuise-t-elle encore ?",
+          "Quel rythme nous recharge le plus ?",
+          "Quel signal corporel dit « ralentis » chez chacun ?",
+          "Que pouvons-nous instaurer comme reconnect par défaut en semaine ?",
+          "Comment garder la passion tout en réduisant la pression ?",
+        ],
+        relatedAuthors: [
+          { name: "Mantak Chia", tier: "premium", note: "Circulation taoïste et alchimie interne." },
+          { name: "Osho", tier: "free", note: "Présence et régulation incarnée." },
+          { name: "Michaela Boehm", tier: "premium", note: "Ancrage somatique relationnel." },
+          { name: "Barry Long", tier: "premium", note: "Simplicité et intégrité intime." },
+        ],
+        premiumBanner:
+          "Débloquez les parcours Tao avancés avec cartes respiratoires à deux, exercices de circulation et séquences de longévité sensuelle qui protègent votre énergie et votre attraction.",
+      },
+    },
+  },
+  cs: {
+    tantra: {
+      name: "Tantrická moudrost",
+      oneLine: "Starověká cesta přeložená pro moderní páry skrze dech, přítomnost, polaritu a oddanost.",
+      overviewLine: "Pro páry, které chtějí vědomou intimitu už dnes večer a duchovní růst v čase.",
+      content: {
+        hero: [
+          "Historická tantra je tělem zahrnující duchovní cesta: dech, pozornost, rituál, mantra a vědomí.",
+          "Pro moderní pár to znamená nesdělovat touhu od vědomí a emoční blízkosti.",
+          "Tantrické tempo vede k tomu, že nejdřív regulujeme, potom otevíráme a až pak zesilujeme.",
+          "Místo výkonu vzniká opakovatelná praxe, kde spolu rostou eros, něha, pravda i úcta.",
+        ],
+        whyMatters: [
+          "Dává jasný rámec pro erotickou hloubku bez ztráty emočního bezpečí.",
+          "Pomáhá při rozdílných potřebách intenzity mezi partnery.",
+          "Dělá z dechu nástroj společné regulace před náročným rozhovorem.",
+          "Vrací živost do vztahů, které jsou funkční, ale vnitřně vyschlé.",
+          "Vytváří opakovatelné rituály místo čekání na dokonalý moment.",
+        ],
+        whoItsFor: [
+          { title: "Páry s věrností, ale slabší erotickou jiskrou", body: "Obnovit přitažlivost bez tlaku a přetížení." },
+          { title: "Páry ve stresových smyčkách", body: "Nejprve návrat do těla, potom dotek." },
+          { title: "Páry obnovující důvěru", body: "Jasná pravidla bezpečí, jazyka a tempa." },
+          { title: "Páry hledající posvátnou hloubku", body: "Ukotvit týdenní praxi, která drží lásku živou." },
+        ],
+        practicePreview: {
+          title: "Tantrická příchozí sekvence",
+          body: "Jemný vstup ze stresu do sdílené přítomnosti.",
+          steps: [
+            "Sedněte si čelem k sobě a 2 minuty dýchejte synchronně.",
+            "Každý pojmenuje jeden aktuální pocit a jeden záměr na večer.",
+            "3 minuty ne-výkonového oddaného doteku.",
+            "Před pokračováním: více, stejně, pomaleji, pauza nebo stop?",
+          ],
+        },
+        beginnerTrack: {
+          title: "Začátečnická cesta: bezpečí a konzistence",
+          body: "První 2-3 týdny je klíčová jednoduchá opakovatelnost, ne intenzita.",
+          steps: [
+            "Rituál příjezdu 6-10 minut, třikrát týdně.",
+            "Každé kolo s explicitním jazykem souhlasu.",
+            "Zůstaňte pod intenzitou 6/10 a končete v regulaci.",
+            "Závěr: vděčnost + jedna konkrétní prosba na příště.",
+          ],
+        },
+        advancedTrack: {
+          title: "Pokročilá cesta: prohloubit bez ztráty soudržnosti",
+          body: "Když je základ stabilní, přidejte polaritu, hlubší dech a pravdu bez ztráty jasnosti.",
+          steps: [
+            "Střídejte 2 minuty vedené polarity a 1 minutu ticha.",
+            "Pracujte ve vlnách: zvýšit, integrovat, znovu vstoupit.",
+            "Před dotekem: jedna hraniční pravda + jedna oddaná nabídka.",
+            "Debrief: co otevřelo, co zahltilo, co upravit příště.",
+          ],
+        },
+        quote: {
+          text: "Tantrická intimita roste, když jsou pozornost, souhlas a oddanost živé v jednom dechu.",
+          source: "Redakční syntéza Sacred Path · Tantra",
+        },
+        whatItIsNot: [
+          "Není to spirituální estetika překrývající odpojení.",
+          "Není to tlak na trvalou intenzitu.",
+          "Není to obejití souhlasu ani odpovědnosti.",
+          "Není to zkratka bez oprav a otevřené komunikace.",
+          "Není to exotická novinka, ale disciplína přítomnosti.",
+        ],
+        pillars: [
+          { name: "Přítomnost", body: "Návrat k tomu, co je teď živé." },
+          { name: "Dech", body: "Regulace emocí, vzrušení a bezpečí." },
+          { name: "Polarita", body: "Vědomý kontrast, který vrací proudění." },
+          { name: "Oddanost", body: "Úcta a záměr v intimním prostoru." },
+          { name: "Vtělené uvědomění", body: "Nejdřív číst tělo, potom analyzovat." },
+          { name: "Jazyk souhlasu", body: "Každý krok je explicitní a upravitelný." },
+          { name: "Integrace", body: "Uzavírat tak, aby důvěra rostla." },
+        ],
+        modernCouples: [
+          { title: "Láska je, ale intimita je mechanická", body: "Krátké přechody do přítomnosti před dotekem." },
+          { title: "Jeden chce hloubku, druhý cítí tlak", body: "Tantrické tempo otevírá bez nátlaku." },
+          { title: "Stres tlumí touhu", body: "Sdílený dech vrací kontakt bez nucení chemie." },
+          { title: "Po konfliktu zůstává napětí", body: "Spojit opravný jazyk s uklidňujícím dotekem." },
+          { title: "Intimita je oddělená od běžného života", body: "Ukotvit jeden týdenní rituál, který se drží." },
+        ],
+        misunderstandings: [
+          {
+            title: "Tantra = stálá intenzita",
+            body: "Skutečná praxe střídá aktivaci a zklidnění. Bez integrace systém přetížíte.",
+            beginnerReframe: "Začátečník: krátké sezení, konec před zahlcením.",
+            advancedReframe: "Pokročilý: vědomě střídat intenzitu a ticho.",
+          },
+          {
+            title: "Tantra = technika",
+            body: "Technika pomáhá, ale rozhoduje kvalita pozornosti a jasnost souhlasu.",
+            beginnerReframe: "Začátečník: jeden jednoduchý rituál s plnou přítomností.",
+            advancedReframe: "Pokročilý: ladit tempo podle signálů v reálném čase.",
+          },
+          {
+            title: "Tantra nahrazuje komunikaci",
+            body: "Bez jasného vztahového jazyka je tělesná praxe nejasná.",
+            beginnerReframe: "Začátečník: před dotekem pojmenuj pocit a potřebu.",
+            advancedReframe: "Pokročilý: strukturovaný debrief po každé praxi.",
+          },
+        ],
+        practices: [
+          {
+            title: "Příchodový rituál (6 minut)",
+            setup: "Čelem k sobě, jeden bod kontaktu rukou.",
+            steps: ["Deset synchronních dechů.", "Každý pojmenuje aktuální pocit.", "Každý pojmenuje záměr pro večer."],
+            integration: "Používejte před intimitou i před opravnými rozhovory.",
+            beginnerNote: "První dva týdny držte přesně tuto strukturu.",
+            advancedNote: "Přidejte minutu tichého očního kontaktu.",
+          },
+          {
+            title: "Třífázový dech (8 minut)",
+            setup: "Vsedě nebo vleže vedle sebe.",
+            steps: [
+              "Dolní břicho pro regulaci.",
+              "Hrudník pro emoční otevření.",
+              "Celé tělo s měkkým pohledem.",
+            ],
+            integration: "Rychle vytváří společnou koherenci.",
+            beginnerNote: "Při přetížení zůstaňte déle ve fázi 1.",
+            advancedNote: "Přidejte jemný zvuk na výdechu.",
+          },
+          {
+            title: "Oddaný dotek (10 minut)",
+            setup: "Jeden dává, druhý přijímá, pak výměna.",
+            steps: [
+              "Pomalý dotek v negentilních zónách.",
+              "Přijímající vede přes více/stejně/pauza.",
+              "Po pěti minutách výměna rolí.",
+            ],
+            integration: "Posiluje důvěru, souhlas a naladění.",
+            beginnerNote: "Zůstaňte ne-výkonově, bez cíle.",
+            advancedNote: "Před výměnou přidejte jeden posun polarity.",
+          },
+        ],
+        reflections: [
+          "Kde zrychlujeme místo opravdového příchodu?",
+          "Který pilíř je u nás teď nejsilnější?",
+          "Jaký rituál zvládneme tento týden zopakovat alespoň dvakrát?",
+          "Kde ještě upřednostňujeme výkon před přítomností?",
+          "Co nám dává zároveň bezpečí i touhu?",
+        ],
+        relatedAuthors: [
+          { name: "Osho", tier: "free", note: "Přítomnost a vtělené uvědomění." },
+          { name: "David Deida", tier: "free", note: "Polarita a oddaná pravda." },
+          { name: "Margot Anand", tier: "premium", note: "Ceremoniální smyslnost." },
+          { name: "Sally Kempton", tier: "premium", note: "Rozpoznání a intimní nedualita." },
+        ],
+        premiumBanner:
+          "Odemkněte plné tantrické cesty s vedeným audiem, consent-first progresí a pokročilými moduly, které mění chemii v dlouhodobou párovou praxi.",
+      },
+    },
+    tao: {
+      name: "Tao",
+      oneLine: "Proudění, dech a smyslná dlouhověkost z taoistické praxe pro moderní páry.",
+      overviewLine: "Pro páry, které chtějí klidnou intenzitu teď a udržitelnou energii dlouhodobě.",
+      content: {
+        hero: [
+          "Tao v intimitě stojí na harmonii, ne-vynucování (wu wei) a citlivém vedení energie.",
+          "V praxi to znamená méně tlaku, více jemnosti a lepší kontinuitu.",
+          "Místo lovení vrcholů se učíte udržet kontakt bez vyčerpání.",
+          "Klid a vášeň přestávají soupeřit a začínají se podporovat.",
+        ],
+        whyMatters: [
+          "Pomáhá ve dnech s nízkou energií, kdy by tlak vše zhoršil.",
+          "Dává tempo při rozdílném libidu bez studu a uzavření.",
+          "Snižuje vyčerpání po intimitě díky konzervaci a obnově.",
+          "Zvyšuje bezpečí doteku pro citlivější nervové systémy.",
+          "Buduje erotickou vitalitu, která vydrží roky.",
+        ],
+        whoItsFor: [
+          { title: "Páry v náročném životním období", body: "Zůstat propojení i při vysoké zátěži." },
+          { title: "Páry s rozdílným tempem touhy", body: "Zachovat blízkost bez nátlaku." },
+          { title: "Páry po vyhoření", body: "Obnovit energii i důvěru v těle krok za krokem." },
+          { title: "Páry zaměřené na dlouhodobou intimitu", body: "Pěstovat živost, která je vyživující, ne vyčerpávající." },
+        ],
+        practicePreview: {
+          title: "Večerní tao reset",
+          body: "Sekvence vhodná i po těžkém dni.",
+          steps: [
+            "Lehněte si vedle sebe, ruka na spodním břiše partnera.",
+            "Nádech 4, výdech 6, pět kol.",
+            "Každý pojmenuje, kde se tělo změkčilo.",
+            "Tři minuty jemného doteku pod intenzitou 6/10.",
+          ],
+        },
+        beginnerTrack: {
+          title: "Začátečnická cesta: rytmus a bezpečí",
+          body: "První měsíc je hlavní cíl regulace a konzistence.",
+          steps: [
+            "Tao reset 5-8 minut ve všední dny.",
+            "Výdech delší než nádech.",
+            "Po každé praxi zaznamenat 1 signál uvolnění a 1 přetížení.",
+            "Krátký závěr: co bylo vyživující, co příště zpomalit.",
+          ],
+        },
+        advancedTrack: {
+          title: "Pokročilá cesta: flow a dlouhověkost",
+          body: "Když je základ stabilní, rozvíjejte cirkulaci, přesnost tempa a následnou obnovu.",
+          steps: [
+            "Cirkulační praxe 12-18 minut se střídáním pohybu a klidu.",
+            "Sdílený dech jako hlavní regulátor intenzity.",
+            "Zahřát celé tělo před vysokou intenzitou.",
+            "Kontrola vitality další den a úprava dávky.",
+          ],
+        },
+        quote: {
+          text: "Tao intimita se pozná podle výživy, stability a kvality spojení, kterou dokážete udržet.",
+          source: "Redakční syntéza Sacred Path · Tao",
+        },
+        whatItIsNot: [
+          "Není to potlačení vášně.",
+          "Není to emoční odstup maskovaný klidem.",
+          "Není to jen solo energetika.",
+          "Není to vyhýbání touze.",
+          "Není to nekonečné zpomalování: tempo roste, když je tělo připravené.",
+        ],
+        pillars: [
+          { name: "Jemnost", body: "Uvolnění zvyšuje citlivost a proudění." },
+          { name: "Dechový rytmus", body: "Dech nastavuje bezpečné tempo." },
+          { name: "Konzervace", body: "Šetření energie podporuje dlouhodobost." },
+          { name: "Cirkulace", body: "Rozvedení tepla snižuje vyčerpání." },
+          { name: "Výživa", body: "Cíl je obnovující kontakt pro oba." },
+          { name: "Uzemnění", body: "Spodní tělo tlumí reaktivitu." },
+          { name: "Obnova", body: "Dobré uzavření chrání následující den." },
+        ],
+        modernCouples: [
+          { title: "Vysoký pracovní tlak", body: "Tao snižuje aktivaci a zpřístupní blízkost." },
+          { title: "Nesladěné libido", body: "Sdílené tempo snižuje tlak, ne blízkost." },
+          { title: "Po konfliktu", body: "Nejprve jemný reset, potom hlubší kontakt." },
+          { title: "Různé prahy doteku", body: "Explicitní tempo drží respekt i propojení." },
+          { title: "Kumulovaná únava", body: "Volte praxe, které oba po setkání posílí." },
+        ],
+        misunderstandings: [
+          {
+            title: "Pomalé = nudné",
+            body: "Pomalost často zvyšuje citlivost, očekávání i jemné vzrušení.",
+            beginnerReframe: "Začátečník: 3 minuty jednoho pomalého vzorce bez zrychlení.",
+            advancedReframe: "Pokročilý: střídat pomalé a střední tempo pro kontrast.",
+          },
+          {
+            title: "Konzervace = zadržování",
+            body: "Nejde o stažení, ale o vedení energie tak, aby oba zůstali vyživení.",
+            beginnerReframe: "Začátečník: volit praxe, po kterých přichází více jasnosti.",
+            advancedReframe: "Pokročilý: sledovat efekt na energii během 24 hodin.",
+          },
+          {
+            title: "Tao zabíjí vášeň",
+            body: "Tao vášeň stabilizuje, aby nevzplála a nevyhasla v krátkých špičkách.",
+            beginnerReframe: "Začátečník: jemná, ale pravidelná touha během týdne.",
+            advancedReframe: "Pokročilý: delší oblouky očekávání před vrcholem.",
+          },
+        ],
+        practices: [
+          {
+            title: "Synchronizace spodního břicha (5 minut)",
+            setup: "Ležte vedle sebe, ruka na podbřišku partnera.",
+            steps: ["Nádech 4 do podbřišku.", "Výdech 6.", "Méně slov, více vjemu."],
+            integration: "Rychlý reset po náročném dni.",
+            beginnerNote: "Použijte vždy, když je někdo mentálně přehlcený.",
+            advancedNote: "Přidejte uvolnění pánevního dna při výdechu.",
+          },
+          {
+            title: "Oběžnice tepla (8 minut)",
+            setup: "Sed v jemném kontaktu.",
+            steps: [
+              "Vést pozornost: hrudník, břicho, pánev, záda.",
+              "Tři dechy v každé oblasti.",
+              "Sdílet, kde přišlo největší změknutí.",
+            ],
+            integration: "Posiluje celotělovou smyslovou citlivost.",
+            beginnerNote: "Začněte jednoduše: hrudník, břicho, pánev.",
+            advancedNote: "Přidejte páteř a krk pro jemnější cirkulaci.",
+          },
+          {
+            title: "Výměna jemného rytmu (10 minut)",
+            setup: "Zvolte jeden ne-výkonový vzorec doteku.",
+            steps: [
+              "Partner A vede 5 minut.",
+              "Partner B přesně zrcadlí, potom výměna.",
+              "Držte intenzitu pod 6/10.",
+            ],
+            integration: "Trénuje tempo a společnou regulaci.",
+            beginnerNote: "Použijte časovač, ať mysl nemusí hlídat čas.",
+            advancedNote: "Vkládejte mikro-pauzu každých 60 sekund.",
+          },
+        ],
+        reflections: [
+          "Kde nás intimita ještě vyčerpává?",
+          "Jaké tempo nás nejvíc vyživuje?",
+          "Jaké tělesné signály říkají „zpomal“?",
+          "Jaký reconnect rituál uděláme výchozím ve všední den?",
+          "Jak držet vášeň bez zbytečného tlaku?",
+        ],
+        relatedAuthors: [
+          { name: "Mantak Chia", tier: "premium", note: "Taoistická cirkulace a vnitřní alchymie." },
+          { name: "Osho", tier: "free", note: "Přítomnost a vtělená regulace." },
+          { name: "Michaela Boehm", tier: "premium", note: "Somatické vztahové ukotvení." },
+          { name: "Barry Long", tier: "premium", note: "Jednoduchost a integrita intimní praxe." },
+        ],
+        premiumBanner:
+          "Odemkněte pokročilé Tao cesty s párovými dechovými mapami, cirkulačními drill-y a sekvencemi smyslné dlouhověkosti, které chrání energii i přitažlivost.",
+      },
+    },
+  },
+};
+
+const applyPathLocalization = (path: PathDetail, lang: Language): PathDetail => {
+  if (lang === "en") return path;
+  const override = localizedPathOverrides[lang]?.[path.slug];
+  if (!override) return path;
+
+  return {
+    ...path,
+    ...override,
+    content: override.content ? { ...path.content, ...override.content } : path.content,
+  };
+};
 
 const pathUpgradeCopy: Record<
   string,
@@ -1552,13 +2203,20 @@ const Paths = () => {
   const { lang } = useLanguage();
   const ui = pathsUiCopy[lang];
   const isMobile = useIsMobile();
+  const localizedPathDetails = useMemo(
+    () => pathDetails.map((path) => applyPathLocalization(path, lang)),
+    [lang],
+  );
   const [selectedSlug, setSelectedSlug] = useState(pathDetails[0].slug);
   const [mobileDetailMode, setMobileDetailMode] = useState(false);
-  const selected = useMemo(() => pathDetails.find((path) => path.slug === selectedSlug) ?? pathDetails[0], [selectedSlug]);
+  const selected = useMemo(
+    () => localizedPathDetails.find((path) => path.slug === selectedSlug) ?? localizedPathDetails[0],
+    [localizedPathDetails, selectedSlug],
+  );
 
-  const freeCount = pathDetails.filter((path) => path.tier === "free").length;
-  const premiumCount = pathDetails.filter((path) => path.tier === "premium").length;
-  const relatedPaths = pathDetails.filter((path) => path.slug !== selectedSlug).slice(0, 6);
+  const freeCount = localizedPathDetails.filter((path) => path.tier === "free").length;
+  const premiumCount = localizedPathDetails.filter((path) => path.tier === "premium").length;
+  const relatedPaths = localizedPathDetails.filter((path) => path.slug !== selectedSlug).slice(0, 6);
   const showBrowse = !isMobile || !mobileDetailMode;
   const showDetail = !isMobile || mobileDetailMode;
 
@@ -1631,7 +2289,7 @@ const Paths = () => {
         <h2 className="mt-2 font-display text-3xl text-foreground">{ui.overviewTitle}</h2>
 
         <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-          {pathDetails.map((path) => {
+          {localizedPathDetails.map((path) => {
             const Icon = path.icon;
             const isSelected = selectedSlug === path.slug;
             return (

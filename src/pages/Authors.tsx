@@ -86,6 +86,10 @@ type Author = {
   content?: FreeAuthorContent;
 };
 
+type AuthorLocalizationOverrides = Partial<Omit<Author, "content">> & {
+  content?: Partial<FreeAuthorContent>;
+};
+
 const libraryPages = [
   {
     to: "/app/paths",
@@ -639,6 +643,389 @@ const authors: Author[] = [
     ],
   },
 ];
+
+const localizedAuthorOverrides: Partial<Record<Exclude<Language, "en">, Record<string, AuthorLocalizationOverrides>>> = {
+  fr: {
+    deida: {
+      descriptor: "Sagesse de polarité traduite en intimité concrète pour les couples modernes.",
+      oneLiner: "Aide les couples à raviver la charge quand l'amour est stable mais le désir s'est aplati.",
+      overviewLine: "À utiliser dès ce soir pour retrouver clarté érotique, vérité et dévotion incarnée.",
+      content: {
+        heroIntro: [
+          "Deida est particulièrement utile quand le couple reste loyal et tendre, mais que la vie érotique a perdu sa vivacité.",
+          "L'approche la plus saine n'est pas le stéréotype, mais la présence dirigée, la vérité relationnelle et le consentement clair.",
+          "Traduit en pratique: courts rituels de vérité, alternance lead/receive, puis intégration concrète dans la semaine.",
+        ],
+        whoItsFor: [
+          { title: "Couples proches émotionnellement mais plats érotiquement", body: "Réintroduire tension vivante sans perdre la tendresse." },
+          { title: "Couples en boucle mentale", body: "Passer du débat infini au corps régulé et directionnel." },
+          { title: "Couples avec ressentiment discret", body: "Nettoyer l'évitement qui éteint l'attraction." },
+          { title: "Couples prêts à une croissance dévotionnelle", body: "Pratiquer présence, contraste et engagement réel." },
+        ],
+        practicePreview: {
+          title: "Check-in de polarité Deida",
+          body: "Séquence courte avant intimité pour reconnecter désir et intégrité.",
+          steps: [
+            "Nommer une vérité relationnelle évitée cette semaine.",
+            "Nommer une action dévotionnelle pour ce soir.",
+            "Faire 2 minutes de souffle lead/receive, puis inversion.",
+            "Conclure avec plus/pareil/plus lent/pause selon le consentement.",
+          ],
+        },
+        beginnerTrack: {
+          title: "Parcours débutant: remettre du mouvement sans surcharge",
+          body: "Sessions courtes, claires, répétées. La sécurité émotionnelle reste la base.",
+          steps: [
+            "Un check-in de 8 minutes, trois fois par semaine.",
+            "Intensité sous 6/10, priorité à la clarté.",
+            "Une phrase de vérité + une phrase de dévotion par tour.",
+            "Finir avec une action concrète pour les 24h suivantes.",
+          ],
+        },
+        advancedTrack: {
+          title: "Parcours avancé: polarité, vérité, dévotion",
+          body: "Quand la base est stable, approfondir la charge sans perdre consentement et chaleur.",
+          steps: [
+            "2 minutes dirigées + 1 minute de réceptivité, 4 cycles.",
+            "Check-ins système nerveux à chaque cycle.",
+            "Parler vrai avec écoute non défensive.",
+            "Debrief: ce qui augmente l'attraction et ce qui réduit la confiance.",
+          ],
+        },
+        quote: {
+          text: "L'attraction revient souvent quand les partenaires cessent de se gérer et se rencontrent avec une présence aimante et orientée.",
+          source: "Synthèse éditoriale Sacred Path · Deida",
+        },
+        whyMatters: [
+          "Nommer l'écart entre amour compagnon et charge érotique sans culpabiliser.",
+          "Donner un langage utilisable pour leadership, réceptivité et vérité.",
+          "Réintroduire anticipation et tension saine dans les relations longues.",
+          "Transformer les micro-bids en moments de connexion incarnée.",
+        ],
+        coreTeachings: [
+          {
+            title: "La présence est érotique",
+            body: "Le corps sent la direction de l'attention avant l'analyse mentale.",
+            beginnerReframe: "Débutant: 20 secondes de regard avant de parler.",
+            advancedReframe: "Avancé: garder la présence pendant une vérité difficile.",
+          },
+          {
+            title: "La différence consciente crée du magnétisme",
+            body: "Trop de similarité peut aplatir la chimie; le contraste conscient la relance.",
+            beginnerReframe: "Débutant: un round lead/receive avec consentement explicite.",
+            advancedReframe: "Avancé: alterner les qualités de leadership sans perdre l'accordage.",
+          },
+          {
+            title: "Vérité + dévotion",
+            body: "La vérité sans cœur blesse; la dévotion sans vérité s'épuise.",
+            beginnerReframe: "Débutant: une petite vérité + une offrande concrète.",
+            advancedReframe: "Avancé: rounds de vérité chronométrés avec fermeture réparatrice.",
+          },
+        ],
+        modernUse: [
+          { title: "Routine qui tue l'anticipation", body: "Créer un passage logistique -> amoureux avant le toucher." },
+          { title: "Communication correcte mais chimie faible", body: "Introduire des rounds incarnés au lieu de plus d'analyse." },
+          { title: "Sur-fonctionnement d'un partenaire", body: "Rééquilibrer dynamique et responsabilité en sécurité." },
+        ],
+        shadowToAvoid: [
+          {
+            title: "Stéréotypes déguisés en spiritualité",
+            body: "La polarité est dynamique, pas une identité rigide.",
+            beginnerReframe: "Débutant: définir des rôles temporaires et consentis.",
+            advancedReframe: "Avancé: jouer la fluidité tout en gardant le contraste.",
+          },
+          {
+            title: "Intensité sans consentement",
+            body: "Le bord n'a de valeur que s'il reste dialogué et régulé.",
+            beginnerReframe: "Débutant: ralentir au premier signe de fermeture.",
+            advancedReframe: "Avancé: utiliser des paliers d'intensité avec checkpoints.",
+          },
+        ],
+        exercises: [
+          {
+            title: "Cadre respiratoire directionnel (8 minutes)",
+            setup: "Un mène le rythme, l'autre reçoit, puis inversion.",
+            steps: [
+              "Définir un tempo de souffle commun.",
+              "Maintenir deux minutes de direction claire.",
+              "Inverser les rôles et conclure par un partage bref.",
+            ],
+            integration: "À répéter deux fois par semaine.",
+            beginnerNote: "Voix calme, direction claire, zéro domination.",
+            advancedNote: "Ajouter une phrase de vérité à mi-parcours.",
+          },
+          {
+            title: "Vérité et dévotion (10 minutes)",
+            setup: "Assis côte à côte, un point de contact.",
+            steps: [
+              "A partage vérité + engagement dévotionnel.",
+              "B reflète mot à mot.",
+              "Inversion puis clôture avec prochaine micro-action.",
+            ],
+            integration: "Excellent pour les tensions invisibles.",
+            beginnerNote: "Commencer par une vérité à faible enjeu.",
+            advancedNote: "Monter progressivement en enjeu avec intention réparatrice.",
+          },
+        ],
+        reflectionPrompts: [
+          "Où sommes-nous devenus sûrs mais énergétiquement neutres ?",
+          "Quelle forme de polarité nous semble vraie, pas théâtrale ?",
+          "Quelle vérité évitée coûte actuellement notre désir ?",
+          "Quel geste dévotionnel ferait sentir mon partenaire choisi cette semaine ?",
+        ],
+        relatedPaths: [
+          { name: "Polarity", note: "Contraste conscient et dévotion active." },
+          { name: "Tantra", note: "Souffle et présence pour tenir la charge." },
+          { name: "Kama Sutra", note: "Architecture du désir et anticipation." },
+        ],
+        premiumBanner:
+          "Débloquez les modules Deida avancés avec scripts de polarité, séquences vérité-dévotion et progression guidée pour raviver la charge en sécurité.",
+      },
+    },
+    osho: {
+      descriptor: "Intimité méditative issue des enseignements de présence, adaptée aux couples modernes.",
+      oneLiner: "Aide à reconnecter rapidement quand le couple se sent figé, mentalisé ou émotionnellement bloqué.",
+      overviewLine: "Outils de conscience utilisables immédiatement puis approfondis à deux.",
+      content: {
+        heroIntro: [
+          "La force d'Osho est méthodologique: revenir au corps et à l'observation avant la réaction.",
+          "L'idée n'est ni de se contrôler ni de se déverser, mais de témoigner avec souffle et présence.",
+          "Pour les couples: réguler, nommer le réel, puis reparler depuis un système nerveux plus ouvert.",
+        ],
+        quote: {
+          text: "L'amour s'approfondit quand les partenaires cessent de contrôler le climat intérieur et apprennent à le traverser ensemble.",
+          source: "Synthèse éditoriale Sacred Path · Osho",
+        },
+        whyMatters: [
+          "Autorise l'émotion sans dramatisation automatique.",
+          "Réduit les boucles verbales en revenant au corps.",
+          "Transforme l'intimité en pratique de conscience quotidienne.",
+          "Favorise la présence partagée, socle du désir durable.",
+        ],
+        coreTeachings: [
+          {
+            title: "L'observation transforme l'intensité",
+            body: "Une sensation observée devient information plutôt que menace.",
+            beginnerReframe: "Débutant: nommer sensation avant interprétation.",
+            advancedReframe: "Avancé: rester présent même en charge émotionnelle forte.",
+          },
+          {
+            title: "Le corps est la porte",
+            body: "Souffle, son et mouvement débloquent ce que la discussion seule ne résout pas.",
+            beginnerReframe: "Débutant: 2 minutes de souffle synchronisé avant un sujet sensible.",
+            advancedReframe: "Avancé: recalibrer le rythme selon les micro-signaux corporels.",
+          },
+          {
+            title: "Authenticité + accordage",
+            body: "Dire vrai sans perdre le soin relationnel.",
+            beginnerReframe: "Débutant: une émotion honnête + une intention de soin.",
+            advancedReframe: "Avancé: maintenir la sécurité du partenaire en parlant direct.",
+          },
+        ],
+        exercises: [
+          {
+            title: "Souffle témoin (7 minutes)",
+            setup: "Dos à dos puis face à face.",
+            steps: [
+              "Observer les rythmes respiratoires sans corriger.",
+              "Synchroniser progressivement l'expiration.",
+              "Tourner face à face et tenir 3 minutes.",
+            ],
+            integration: "Avant conversation sensible.",
+            beginnerNote: "Si tension, revenir 1 minute dos à dos.",
+            advancedNote: "Ajouter 1 minute de regard silencieux.",
+          },
+          {
+            title: "Secousse et silence (9 minutes)",
+            setup: "Debout, pieds ancrés.",
+            steps: [
+              "3 minutes de secousse douce.",
+              "2 minutes de souffle + son.",
+              "4 minutes d'immobilité.",
+            ],
+            integration: "Très utile les jours anxieux.",
+            beginnerNote: "Priorité à l'ancrage, pas à l'intensité.",
+            advancedNote: "Allonger le son à l'expiration pour réguler davantage.",
+          },
+        ],
+        reflectionPrompts: [
+          "Qu'est-ce que je supprime dans l'intimité et à quel prix ?",
+          "Qu'est-ce qui m'aide à rester présent quand la sensation monte ?",
+          "Quel mini-rituel de 5 minutes nous serait le plus utile chaque jour ?",
+          "À quelle vitesse revenons-nous au contact après le premier signal de stress ?",
+        ],
+        premiumBanner:
+          "Débloquez des parcours Osho approfondis avec séquences guidées de witnessing et protocoles d'intégration pour convertir le stress quotidien en intimité consciente.",
+      },
+    },
+  },
+  cs: {
+    deida: {
+      descriptor: "Moudrost polarity převedená do praktické intimity pro moderní páry.",
+      oneLiner: "Pomáhá obnovit erotickou jiskru tam, kde láska drží, ale touha se zploštila.",
+      overviewLine: "Použitelné hned dnes večer: jasnost, pravda, oddanost a bezpečné tempo.",
+      content: {
+        heroIntro: [
+          "Deida je užitečný hlavně tam, kde je loajalita a péče, ale méně živosti v přitažlivosti.",
+          "Zdravé čtení není o stereotypech, ale o směrované přítomnosti, pravdě a jasném souhlasu.",
+          "V praxi jde o krátké rituály: pravda, lead/receive kolo a konkrétní integrace do týdne.",
+        ],
+        quote: {
+          text: "Přitažlivost se často vrací, když se partneři přestanou řídit navzájem a setkají se v láskyplné, směrované přítomnosti.",
+          source: "Redakční syntéza Sacred Path · Deida",
+        },
+        whyMatters: [
+          "Pojmenuje rozdíl mezi partnerskou láskou a erotickou jiskrou bez studu.",
+          "Dává použitelný jazyk pro vedení, receptivitu a pravdu.",
+          "Vrací očekávání a zdravé napětí do dlouhodobých vztahů.",
+          "Mění malé spojovací momenty v vtělenou blízkost.",
+        ],
+        coreTeachings: [
+          {
+            title: "Přítomnost je erotická",
+            body: "Tělo cítí kvalitu pozornosti dřív než mysl dokončí analýzu.",
+            beginnerReframe: "Začátečník: 20 sekund očního kontaktu před mluvením.",
+            advancedReframe: "Pokročilý: udržet přítomnost i při těžké pravdě.",
+          },
+          {
+            title: "Vědomý rozdíl vytváří magnetismus",
+            body: "Přílišná stejnost může chemii zploštit; vědomý kontrast ji oživí.",
+            beginnerReframe: "Začátečník: jedno lead/receive kolo s explicitním souhlasem.",
+            advancedReframe: "Pokročilý: střídat kvality vedení bez ztráty naladění.",
+          },
+          {
+            title: "Pravda + oddanost",
+            body: "Pravda bez srdce zraňuje, oddanost bez pravdy vysychá.",
+            beginnerReframe: "Začátečník: malá pravda + jeden konkrétní oddaný krok.",
+            advancedReframe: "Pokročilý: časovaná kola pravdy s opravnou závěrečnou fází.",
+          },
+        ],
+        exercises: [
+          {
+            title: "Směrovaný dechový rámec (8 minut)",
+            setup: "Jeden vede dech, druhý přijímá, pak výměna.",
+            steps: [
+              "Nastavte jednoduché společné tempo dechu.",
+              "Dvě minuty držte jasné vedení.",
+              "Výměna rolí a krátké sdílení závěrem.",
+            ],
+            integration: "Dvakrát týdně pro stabilní kontrast a důvěru.",
+            beginnerNote: "Klidný hlas, jasné vedení, bez dominance.",
+            advancedNote: "V polovině přidejte jednu pravdivou větu.",
+          },
+          {
+            title: "Pravda a oddanost (10 minut)",
+            setup: "Sed vedle sebe s jedním bodem kontaktu.",
+            steps: [
+              "A sdílí pravdu + oddaný závazek.",
+              "B zrcadlí doslova.",
+              "Výměna a závěr s jedním dalším krokem.",
+            ],
+            integration: "Vhodné pro skryté napětí.",
+            beginnerNote: "Začněte nízkým rizikem pro bezpečí.",
+            advancedNote: "Postupně zvyšujte náročnost s opravnou intencí.",
+          },
+        ],
+        reflectionPrompts: [
+          "Kde jsme bezpeční, ale energeticky neutrální?",
+          "Jaká forma polarity je pro nás živá a pravdivá?",
+          "Jaká neřčená pravda nás stojí touhu?",
+          "Jaký oddaný krok by partnerovi ukázal, že je volený?",
+        ],
+        premiumBanner:
+          "Odemkněte pokročilé Deida moduly se skripty polarity, pravda-oddanost sekvencemi a vedenou progresí pro obnovu jiskry v bezpečí.",
+      },
+    },
+    osho: {
+      descriptor: "Meditativní intimita z učení vědomé přítomnosti, adaptovaná pro moderní páry.",
+      oneLiner: "Pomáhá rychle obnovit kontakt, když pár cítí otupění, přemýšlení nebo emoční blok.",
+      overviewLine: "Nástroje vědomí použitelné hned teď a prohlubitelné v čase.",
+      content: {
+        heroIntro: [
+          "Síla Osha je v metodě: návrat k tělu a pozorování dřív než reakce.",
+          "Nejde o potlačení ani vybití, ale o svědčení s dechem a přítomností.",
+          "Pro páry: nejdřív regulace, potom pojmenování reality, pak teprve dialog.",
+        ],
+        quote: {
+          text: "Láska se prohlubuje, když partneři přestanou řídit vnitřní počasí a naučí se jím procházet spolu.",
+          source: "Redakční syntéza Sacred Path · Osho",
+        },
+        whyMatters: [
+          "Umožňuje emoci bez automatické dramatizace.",
+          "Snižuje slovní smyčky návratem do těla.",
+          "Mění intimitu na každodenní praxi vědomí.",
+          "Podporuje sdílenou přítomnost, základ dlouhodobé touhy.",
+        ],
+        coreTeachings: [
+          {
+            title: "Pozorování mění intenzitu",
+            body: "Pozorovaný pocit je informace, ne hrozba.",
+            beginnerReframe: "Začátečník: pojmenuj vjem před interpretací.",
+            advancedReframe: "Pokročilý: zůstaň přítomný i v silné emoční náloži.",
+          },
+          {
+            title: "Tělo je vstupní brána",
+            body: "Dech, zvuk a pohyb otevřou to, co samotná debata nedokáže.",
+            beginnerReframe: "Začátečník: 2 minuty synchronního dechu před citlivým tématem.",
+            advancedReframe: "Pokročilý: ladit tempo podle mikro-signálů těla.",
+          },
+          {
+            title: "Autenticita + naladění",
+            body: "Říct pravdu a zároveň držet vztahovou péči.",
+            beginnerReframe: "Začátečník: jedna upřímná emoce + jedna pečující intence.",
+            advancedReframe: "Pokročilý: mluvit přímo bez ztráty bezpečí partnera.",
+          },
+        ],
+        exercises: [
+          {
+            title: "Svědecký dech (7 minut)",
+            setup: "Zády k sobě, pak čelem k sobě.",
+            steps: [
+              "Pozorujte rozdíly v dechu bez opravování.",
+              "Postupně slaďujte výdech.",
+              "Otočte se čelem a držte 3 minuty.",
+            ],
+            integration: "Před citlivým rozhovorem.",
+            beginnerNote: "Při napětí se na minutu vraťte zády k sobě.",
+            advancedNote: "Přidejte minutu tichého očního kontaktu.",
+          },
+          {
+            title: "Třes a ticho (9 minut)",
+            setup: "Ve stoje, chodidla uzemněná.",
+            steps: [
+              "3 minuty jemného třesu.",
+              "2 minuty dech + zvuk.",
+              "4 minuty nehybnosti.",
+            ],
+            integration: "Výborné ve dnech úzkosti nebo podráždění.",
+            beginnerNote: "Priorita je uzemnění, ne síla.",
+            advancedNote: "Prodlouž výdechový zvuk pro hlubší zklidnění.",
+          },
+        ],
+        reflectionPrompts: [
+          "Co v intimitě potlačuji a co to stojí nás oba?",
+          "Co mi pomáhá zůstat přítomný, když roste intenzita?",
+          "Který 5minutový denní rituál by nám nejvíc pomohl?",
+          "Jak rychle se vracíme ke kontaktu po prvním signálu stresu?",
+        ],
+        premiumBanner:
+          "Odemkněte hlubší Osho cesty s vedeným witnessingem a integračními protokoly, které mění denní stres na vědomou intimitu.",
+      },
+    },
+  },
+};
+
+const applyAuthorLocalization = (author: Author, lang: Language): Author => {
+  if (lang === "en") return author;
+  const override = localizedAuthorOverrides[lang]?.[author.slug];
+  if (!override) return author;
+
+  return {
+    ...author,
+    ...override,
+    content: override.content ? { ...author.content, ...override.content } : author.content,
+  };
+};
 
 const authorUpgradeCopy: Record<
   string,
@@ -1496,13 +1883,20 @@ const Authors = () => {
   const ui = authorsUiCopy[lang];
   const authorJoinWord = lang === "fr" ? " et " : lang === "cs" ? " a " : " and ";
   const isMobile = useIsMobile();
+  const localizedAuthors = useMemo(
+    () => authors.map((author) => applyAuthorLocalization(author, lang)),
+    [lang],
+  );
   const [selectedSlug, setSelectedSlug] = useState("deida");
   const [mobileDetailMode, setMobileDetailMode] = useState(false);
-  const selected = useMemo(() => authors.find((author) => author.slug === selectedSlug) ?? authors[0], [selectedSlug]);
+  const selected = useMemo(
+    () => localizedAuthors.find((author) => author.slug === selectedSlug) ?? localizedAuthors[0],
+    [localizedAuthors, selectedSlug],
+  );
 
-  const freeAuthors = authors.filter((author) => author.tier === "free");
-  const premiumAuthors = authors.filter((author) => author.tier === "premium");
-  const relatedAuthors = authors.filter((author) => author.slug !== selectedSlug).slice(0, 6);
+  const freeAuthors = localizedAuthors.filter((author) => author.tier === "free");
+  const premiumAuthors = localizedAuthors.filter((author) => author.tier === "premium");
+  const relatedAuthors = localizedAuthors.filter((author) => author.slug !== selectedSlug).slice(0, 6);
   const showBrowse = !isMobile || !mobileDetailMode;
   const showDetail = !isMobile || mobileDetailMode;
 
@@ -1575,7 +1969,7 @@ const Authors = () => {
         <h2 className="mt-2 font-display text-3xl text-foreground">{ui.overviewTitle}</h2>
 
         <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-          {authors.map((author) => {
+          {localizedAuthors.map((author) => {
             const Icon = author.icon;
             const isSelected = selectedSlug === author.slug;
             return (
