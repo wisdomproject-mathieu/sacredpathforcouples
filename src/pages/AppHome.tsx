@@ -5,14 +5,13 @@ import {
   BookOpen,
   ChevronDown,
   ChevronUp,
+  Cloud,
   Heart,
   HeartHandshake,
   Lock,
   MessageCircle,
   Sparkles,
   Stars,
-  ThumbsDown,
-  ThumbsUp,
   type LucideIcon,
 } from "lucide-react";
 
@@ -39,9 +38,7 @@ type DailyCard = {
   accentClass: string;
 };
 
-type ReactionType = "up" | "down" | null;
-type ReactionMap = Record<string, ReactionType>;
-type FeedbackTotals = Record<string, { up: number; down: number }>;
+type SavedMap = Record<string, boolean>;
 
 const quoteSets: Record<Language, Array<{ id: string; author: string; quote: string }>> = {
   en: [
@@ -390,33 +387,19 @@ const localDayKey = (date: Date) => {
   return `${year}-${month}-${day}`;
 };
 
-const FEEDBACK_TOTALS_KEY = "sacredpath_home_card_feedback_totals_v1";
-const feedbackDailyKey = (dayKey: string) => `sacredpath_home_card_feedback_daily_v1_${dayKey}`;
+const SAVED_CARDS_KEY = "sacredpath_home_saved_cards_v1";
 
-const readFeedbackTotals = (): FeedbackTotals => {
+const readSavedCards = (): SavedMap => {
   try {
-    const raw = window.localStorage.getItem(FEEDBACK_TOTALS_KEY);
-    return raw ? (JSON.parse(raw) as FeedbackTotals) : {};
+    const raw = window.localStorage.getItem(SAVED_CARDS_KEY);
+    return raw ? (JSON.parse(raw) as SavedMap) : {};
   } catch {
     return {};
   }
 };
 
-const readDailyReactions = (dayKey: string): ReactionMap => {
-  try {
-    const raw = window.localStorage.getItem(feedbackDailyKey(dayKey));
-    return raw ? (JSON.parse(raw) as ReactionMap) : {};
-  } catch {
-    return {};
-  }
-};
-
-const writeFeedbackTotals = (value: FeedbackTotals) => {
-  window.localStorage.setItem(FEEDBACK_TOTALS_KEY, JSON.stringify(value));
-};
-
-const writeDailyReactions = (dayKey: string, value: ReactionMap) => {
-  window.localStorage.setItem(feedbackDailyKey(dayKey), JSON.stringify(value));
+const writeSavedCards = (value: SavedMap) => {
+  window.localStorage.setItem(SAVED_CARDS_KEY, JSON.stringify(value));
 };
 
 const parseRitualSteps = (steps: RitualItem["steps"]): string[] => {
@@ -455,8 +438,7 @@ const AppHome = () => {
   const [rituals, setRituals] = useState<RitualItem[]>([]);
   const [pathways, setPathways] = useState<Pathway[]>([]);
   const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
-  const [feedbackTotals, setFeedbackTotals] = useState<FeedbackTotals>({});
-  const [dailyReactions, setDailyReactions] = useState<ReactionMap>({});
+  const [savedCards, setSavedCards] = useState<SavedMap>({});
 
   const resolvePreferredName = (profile: Pick<Profile, "display_name"> | null, fallbackUser = user) => {
     const profileName = profile?.display_name?.trim();
@@ -704,38 +686,13 @@ const AppHome = () => {
   }, [dailyCards]);
 
   useEffect(() => {
-    const totals = readFeedbackTotals();
-    const reactions = readDailyReactions(todayKey);
-    setFeedbackTotals(totals);
-    setDailyReactions(reactions);
+    setSavedCards(readSavedCards());
   }, [todayKey]);
 
-  const handleCardReaction = (cardId: string, incoming: Exclude<ReactionType, null>) => {
-    const previous = dailyReactions[cardId] ?? null;
-    const next = previous === incoming ? null : incoming;
-
-    const nextTotals: FeedbackTotals = {
-      ...feedbackTotals,
-      [cardId]: {
-        up: feedbackTotals[cardId]?.up ?? 0,
-        down: feedbackTotals[cardId]?.down ?? 0,
-      },
-    };
-
-    if (previous === "up") nextTotals[cardId].up = Math.max(0, nextTotals[cardId].up - 1);
-    if (previous === "down") nextTotals[cardId].down = Math.max(0, nextTotals[cardId].down - 1);
-    if (next === "up") nextTotals[cardId].up += 1;
-    if (next === "down") nextTotals[cardId].down += 1;
-
-    const nextReactions: ReactionMap = {
-      ...dailyReactions,
-      [cardId]: next,
-    };
-
-    setFeedbackTotals(nextTotals);
-    setDailyReactions(nextReactions);
-    writeFeedbackTotals(nextTotals);
-    writeDailyReactions(todayKey, nextReactions);
+  const handleSaveCard = (cardId: string) => {
+    const next = { ...savedCards, [cardId]: !savedCards[cardId] };
+    setSavedCards(next);
+    writeSavedCards(next);
   };
 
   return (
@@ -780,6 +737,17 @@ const AppHome = () => {
           </div>
           <p className="mt-3 text-sm leading-6 text-foreground/90">{loading ? copy.signalPreparing : signal.detail}</p>
         </div>
+
+        {relationshipConnected && (
+          <Link
+            to="/app/space?tab=weather"
+            className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/10 px-4 py-2.5 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
+          >
+            <Cloud className="h-4 w-4 text-primary/80" />
+            <span>Check your intimacy weather</span>
+            <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
+          </Link>
+        )}
       </section>
 
       <section>
@@ -792,8 +760,7 @@ const AppHome = () => {
           {dailyCards.map((card) => {
             const Icon = card.icon;
             const expanded = expandedCardId === card.id;
-            const reaction = dailyReactions[card.id] ?? null;
-            const totals = feedbackTotals[card.id] ?? { up: 0, down: 0 };
+            const saved = savedCards[card.id] ?? false;
 
             return (
               <div key={card.id} className="h-full rounded-[24px] border border-border/30 bg-card/45 p-5">
@@ -842,31 +809,18 @@ const AppHome = () => {
                       </p>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-3">
-                      <span className="text-xs uppercase tracking-[0.14em] text-muted-foreground">{copy.useful}</span>
-                      <button
-                        type="button"
-                        onClick={() => handleCardReaction(card.id, "up")}
-                        className={`inline-flex items-center gap-1 rounded-xl border px-2.5 py-1.5 text-xs transition-all ${
-                          reaction === "up"
-                            ? "border-emerald-300/45 bg-emerald-500/15 text-emerald-100"
-                            : "border-border/30 bg-card/45 text-foreground hover:border-emerald-300/35"
-                        }`}
-                      >
-                        <ThumbsUp className="h-3.5 w-3.5" /> {totals.up}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleCardReaction(card.id, "down")}
-                        className={`inline-flex items-center gap-1 rounded-xl border px-2.5 py-1.5 text-xs transition-all ${
-                          reaction === "down"
-                            ? "border-rose-300/45 bg-rose-500/15 text-rose-100"
-                            : "border-border/30 bg-card/45 text-foreground hover:border-rose-300/35"
-                        }`}
-                      >
-                        <ThumbsDown className="h-3.5 w-3.5" /> {totals.down}
-                      </button>
-                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleSaveCard(card.id)}
+                      className={`inline-flex items-center gap-2 rounded-xl border px-3 py-1.5 text-xs transition-all ${
+                        saved
+                          ? "border-rose-300/45 bg-rose-500/15 text-rose-200"
+                          : "border-border/30 bg-card/45 text-muted-foreground hover:border-rose-300/35 hover:text-rose-200"
+                      }`}
+                    >
+                      <Heart className={`h-3.5 w-3.5 ${saved ? "fill-current" : ""}`} />
+                      {saved ? "Saved to your path" : "Save this practice"}
+                    </button>
                   </div>
                 )}
               </div>
