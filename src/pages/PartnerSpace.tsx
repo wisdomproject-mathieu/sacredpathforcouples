@@ -31,7 +31,13 @@ import TempleGuide from "@/components/space/TempleGuide";
 import WisdomOracle from "@/components/space/WisdomOracle";
 import ShareCardButton from "@/components/space/ShareCardButton";
 import { Tables } from "@/integrations/supabase/types";
-import { fetchCoupleStateForUser } from "@/lib/couples";
+import {
+  fetchCoupleStateForUser,
+  markEverConnected,
+  readConnectedCoupleId,
+  readEverConnected,
+  storeConnectedCoupleId,
+} from "@/lib/couples";
 import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -395,12 +401,20 @@ const PartnerSpace = () => {
 
     const load = async () => {
       const resolved = await fetchCoupleStateForUser(supabase, user.id);
+      const stickyConnected = readEverConnected(user.id);
+      const stickyCoupleId = readConnectedCoupleId(user.id);
+
+      if (resolved.connected && resolved.activeCouple?.id) {
+        markEverConnected(user.id);
+        storeConnectedCoupleId(user.id, resolved.activeCouple.id);
+      }
+
       if (resolved.activeCouple) {
         setCoupleId(resolved.activeCouple.id);
-        setHasConnectedPartner(resolved.connected);
+        setHasConnectedPartner(resolved.connected || stickyConnected || stickyCoupleId === resolved.activeCouple.id);
       } else {
-        setCoupleId(null);
-        setHasConnectedPartner(false);
+        setCoupleId(stickyCoupleId);
+        setHasConnectedPartner(stickyConnected);
       }
       setLoading(false);
     };

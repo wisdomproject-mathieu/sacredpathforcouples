@@ -17,6 +17,9 @@ export type FetchCoupleStateResult = ResolvedCoupleState & {
   rows: CoupleRow[];
 };
 
+const everConnectedStorageKey = (userId: string) => `sacred_path_ever_connected_${userId}`;
+const connectedCoupleIdStorageKey = (userId: string) => `sacred_path_connected_couple_id_${userId}`;
+
 const parseTime = (value?: string | null) => {
   if (!value) return 0;
   const parsed = Date.parse(value);
@@ -97,4 +100,25 @@ export const fetchCoupleStateForUser = async (
     ...state,
     rows: mergedRows,
   };
+};
+
+export const readEverConnected = (userId: string) => {
+  if (typeof window === "undefined") return false;
+  return window.localStorage.getItem(everConnectedStorageKey(userId)) === "1";
+};
+
+export const markEverConnected = (userId: string) => {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(everConnectedStorageKey(userId), "1");
+};
+
+export const readConnectedCoupleId = (userId: string) => {
+  if (typeof window === "undefined") return null;
+  const value = window.localStorage.getItem(connectedCoupleIdStorageKey(userId));
+  return value?.trim() ? value : null;
+};
+
+export const storeConnectedCoupleId = (userId: string, coupleId: string) => {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(connectedCoupleIdStorageKey(userId), coupleId);
 };

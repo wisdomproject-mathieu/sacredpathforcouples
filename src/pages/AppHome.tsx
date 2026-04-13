@@ -19,7 +19,13 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
-import { fetchCoupleStateForUser } from "@/lib/couples";
+import {
+  fetchCoupleStateForUser,
+  markEverConnected,
+  readConnectedCoupleId,
+  readEverConnected,
+  storeConnectedCoupleId,
+} from "@/lib/couples";
 import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
 
 type RitualItem = Tables<"ritual_items">;
@@ -508,10 +514,12 @@ const AppHome = () => {
       setPathways(pathwayData ?? []);
       setMyName(resolvePreferredName(ownProfile));
 
+      const stickyConnected = readEverConnected(user.id);
+      const stickyCoupleId = readConnectedCoupleId(user.id);
       const activeCouple = coupleState.activeCouple;
 
       if (!activeCouple) {
-        setRelationshipConnected(false);
+        setRelationshipConnected(stickyConnected);
         setPartnerName(null);
         setMessages([]);
         setAltarItems([]);
@@ -519,7 +527,11 @@ const AppHome = () => {
         return;
       }
 
-      const connected = coupleState.connected;
+      if (coupleState.connected) {
+        markEverConnected(user.id);
+        storeConnectedCoupleId(user.id, activeCouple.id);
+      }
+      const connected = coupleState.connected || stickyConnected || stickyCoupleId === activeCouple.id;
       setRelationshipConnected(connected);
 
       const partnerId = coupleState.partnerId;

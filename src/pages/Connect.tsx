@@ -5,7 +5,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
-import { fetchCoupleStateForUser } from "@/lib/couples";
+import { fetchCoupleStateForUser, markEverConnected, readEverConnected, storeConnectedCoupleId } from "@/lib/couples";
 
 const connectCopy: Record<Language, Record<string, string>> = {
   en: {
@@ -142,7 +142,14 @@ const Connect = () => {
     }
 
     const resolved = await fetchCoupleStateForUser(supabase, user.id);
-    setIsConnected(resolved.connected);
+    const stickyConnected = readEverConnected(user.id);
+    const effectiveConnected = resolved.connected || stickyConnected;
+    if (resolved.connected && resolved.activeCouple?.id) {
+      markEverConnected(user.id);
+      storeConnectedCoupleId(user.id, resolved.activeCouple.id);
+    }
+
+    setIsConnected(effectiveConnected);
     if (resolved.connected) {
       setInviteCode(resolved.activeCouple?.couple_code ?? null);
     } else {
