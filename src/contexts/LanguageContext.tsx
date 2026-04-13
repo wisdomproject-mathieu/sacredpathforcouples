@@ -1,6 +1,11 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 
 export type Language = "en" | "fr" | "cs";
+const supportedLanguages: Language[] = ["en", "fr", "cs"];
+
+const isLanguage = (value: string | null): value is Language => {
+  return value !== null && supportedLanguages.includes(value as Language);
+};
 
 interface LanguageContextType {
   lang: Language;
@@ -27,6 +32,19 @@ const translations: Record<string, Record<Language, string>> = {
   "nav.pricing": { en: "Pricing", fr: "Tarifs", cs: "Ceník" },
   "nav.login": { en: "Log In", fr: "Connexion", cs: "Přihlásit" },
   "nav.start_free": { en: "Start Free", fr: "Commencer", cs: "Začít zdarma" },
+  "nav.features": { en: "Features", fr: "Fonctionnalités", cs: "Funkce" },
+  "nav.connect_partner": { en: "Connect with Partner", fr: "Se connecter au partenaire", cs: "Propojit s partnerem" },
+  "nav.library": { en: "Sacred Library", fr: "Bibliothèque sacrée", cs: "Posvátná knihovna" },
+  "nav.temple": { en: "Sacred Temple", fr: "Chrám intimity", cs: "Posvátný chrám" },
+
+  // Shared actions
+  "cta.connect_partner": { en: "Connect with Partner", fr: "Se connecter au partenaire", cs: "Propojit s partnerem" },
+  "cta.join_partner": { en: "Join Partner", fr: "Rejoindre le partenaire", cs: "Připojit partnera" },
+  "cta.continue_without_account": { en: "Continue without account", fr: "Continuer sans compte", cs: "Pokračovat bez účtu" },
+  "cta.enter_app": { en: "Enter App", fr: "Entrer dans l'app", cs: "Vstoupit do aplikace" },
+  "cta.enter_app_account": { en: "Enter App Account", fr: "Entrer dans le compte", cs: "Vstoupit do účtu aplikace" },
+  "cta.enter_temple": { en: "Enter Sacred Temple", fr: "Entrer dans le temple sacré", cs: "Vstoupit do posvátného chrámu" },
+  "cta.view_plans": { en: "View Premium Plans", fr: "Voir les plans premium", cs: "Zobrazit premium plány" },
 
   // Landing page
   "landing.title_1": { en: "Sacred Path", fr: "Chemin Sacré", cs: "Posvátná Cesta" },
@@ -58,6 +76,66 @@ const translations: Record<string, Record<Language, string>> = {
   },
   "landing.start_trial": { en: "Start Free Trial", fr: "Essai Gratuit", cs: "Začít zkušební období" },
   "landing.privacy": { en: "Privacy Policy", fr: "Politique de Confidentialité", cs: "Zásady ochrany" },
+  "landing.brand": { en: "Sacred Path", fr: "Chemin Sacré", cs: "Posvátná Cesta" },
+  "landing.brand_full": { en: "Sacred Path for Couples", fr: "Chemin Sacré pour Couples", cs: "Posvátná Cesta pro Páry" },
+  "landing.features_title": { en: "Features", fr: "Fonctionnalités", cs: "Funkce" },
+  "landing.features_desc": {
+    en: "Sacred Path has two equal pillars: couple connection tools and sacred wisdom paths. Both are visible from first entry.",
+    fr: "Sacred Path a deux piliers égaux: les outils de connexion du couple et les voies de sagesse. Les deux sont visibles dès l'entrée.",
+    cs: "Sacred Path má dva rovnocenné pilíře: nástroje párového spojení a cesty moudrosti. Obojí je viditelné hned od začátku.",
+  },
+  "landing.feature.couple_code.title": { en: "Your Couple Code", fr: "Votre code de couple", cs: "Váš párový kód" },
+  "landing.feature.couple_code.desc": {
+    en: "Create one shared code and connect your relationship in a private couple space.",
+    fr: "Créez un code partagé et reliez votre relation dans un espace privé de couple.",
+    cs: "Vytvořte jeden sdílený kód a propojte svůj vztah v soukromém párovém prostoru.",
+  },
+  "landing.feature.join_partner.title": { en: "Join Partner", fr: "Rejoindre le partenaire", cs: "Připojit partnera" },
+  "landing.feature.join_partner.desc": {
+    en: "Enter your partner code and activate your shared path in seconds.",
+    fr: "Entrez le code de votre partenaire et activez votre parcours commun en quelques secondes.",
+    cs: "Zadejte kód partnera a během pár sekund aktivujte svou společnou cestu.",
+  },
+  "landing.feature.intimacy_weather.title": { en: "Intimacy Weather", fr: "Météo d'intimité", cs: "Počasí intimity" },
+  "landing.feature.intimacy_weather.desc": {
+    en: "Name your emotional climate before touch to reduce friction and reconnect faster.",
+    fr: "Nommez votre climat émotionnel avant le toucher pour réduire les frictions et se reconnecter plus vite.",
+    cs: "Pojmenujte své emoční klima před dotykem, ať je méně tření a rychlejší návrat k sobě.",
+  },
+  "landing.feature.unsaid.title": { en: "The Unsaid", fr: "Le non-dit", cs: "Nevyřčené" },
+  "landing.feature.unsaid.desc": {
+    en: "Write what is hard to say before it hardens into distance.",
+    fr: "Écrivez ce qui est difficile à dire avant que cela ne devienne de la distance.",
+    cs: "Napište to, co je těžké říct, dřív než se z toho stane odstup.",
+  },
+  "landing.feature.thread.title": { en: "The Thread", fr: "Le fil", cs: "Nit" },
+  "landing.feature.thread.desc": {
+    en: "Leave one gratitude line and keep tenderness alive day by day.",
+    fr: "Laissez une ligne de gratitude et gardez la tendresse vivante jour après jour.",
+    cs: "Zanechte jednu větu vděčnosti a udržujte něhu živou den po dni.",
+  },
+  "landing.feature.library.title": { en: "Sacred Wisdom Library", fr: "Bibliothèque de sagesse sacrée", cs: "Knihovna posvátné moudrosti" },
+  "landing.feature.library.desc": {
+    en: "Ancient paths and modern guidance from teachers, authors, and practical rituals.",
+    fr: "Voies anciennes et guidance moderne des enseignants, auteurs et rituels pratiques.",
+    cs: "Starodávné cesty a moderní vedení od učitelů, autorů a praktických rituálů.",
+  },
+  "landing.partner_block_title": { en: "Connect with Partner", fr: "Se connecter au partenaire", cs: "Propojit s partnerem" },
+  "landing.partner_block_desc": {
+    en: "Shared code, shared rituals, shared emotional state, difficult truth, and gratitude thread. This is core product flow, not an optional add-on.",
+    fr: "Code partagé, rituels partagés, état émotionnel partagé, vérité difficile et fil de gratitude. C'est un flux central du produit, pas un module optionnel.",
+    cs: "Sdílený kód, sdílené rituály, sdílený emoční stav, těžká pravda a nit vděčnosti. To je jádro produktu, ne volitelný doplněk.",
+  },
+  "landing.final_cta_title": {
+    en: "Start with partner connection, then deepen with wisdom",
+    fr: "Commencez par la connexion du couple, puis approfondissez avec la sagesse",
+    cs: "Začněte párovým propojením, pak se prohlubujte skrze moudrost",
+  },
+  "landing.final_cta_desc": {
+    en: "First reconnect together, then expand through paths, teachers, rituals, and daily guidance.",
+    fr: "Reconnectez-vous d'abord ensemble, puis développez-vous avec les voies, les enseignants, les rituels et la guidance quotidienne.",
+    cs: "Nejprve se spolu znovu propojte, pak se rozvíjejte skrze cesty, učitele, rituály a denní vedení.",
+  },
 
   // Features
   "feat.intimacy_weather": { en: "Intimacy Weather", fr: "Météo d'Intimité", cs: "Počasí intimity" },
@@ -268,6 +346,125 @@ const translations: Record<string, Record<Language, string>> = {
   "connect.invalid_code": { en: "Invalid or expired code", fr: "Code invalide ou expiré", cs: "Neplatný nebo expirovaný kód" },
   "connect.cant_self": { en: "You can't connect with yourself!", fr: "Vous ne pouvez pas vous connecter avec vous-même!", cs: "Nemůžete se propojit sami se sebou!" },
   "connect.failed_connect": { en: "Failed to connect", fr: "Échec de la connexion", cs: "Nepodařilo se připojit" },
+  "connect.partner_flow": { en: "Partner Flow", fr: "Flux partenaire", cs: "Párový tok" },
+  "connect.hero_desc": {
+    en: "Shared code. Shared rituals. Shared emotional state. Difficult truth. Gratitude thread. This is a core product pillar, not a side feature.",
+    fr: "Code partagé. Rituels partagés. État émotionnel partagé. Vérité difficile. Fil de gratitude. C'est un pilier central du produit, pas une option.",
+    cs: "Sdílený kód. Sdílené rituály. Sdílený emoční stav. Těžká pravda. Nit vděčnosti. To je klíčový pilíř produktu, ne vedlejší funkce.",
+  },
+  "connect.shared_experience": { en: "Shared Couple Experience", fr: "Expérience de couple partagée", cs: "Sdílený párový zážitek" },
+  "connect.module.1.title": { en: "1. Your Couple Code", fr: "1. Votre code de couple", cs: "1. Váš párový kód" },
+  "connect.module.1.body": {
+    en: "Create a shared code that links both partners into one private couple space.",
+    fr: "Créez un code partagé qui relie les deux partenaires dans un espace privé.",
+    cs: "Vytvořte sdílený kód, který propojí oba partnery do jednoho soukromého prostoru.",
+  },
+  "connect.module.2.title": { en: "2. Join Partner", fr: "2. Rejoindre le partenaire", cs: "2. Připojit partnera" },
+  "connect.module.2.body": {
+    en: "Enter your partner's code and activate your shared journey in seconds.",
+    fr: "Entrez le code de votre partenaire et activez votre parcours commun en quelques secondes.",
+    cs: "Zadejte kód partnera a během pár sekund aktivujte svou společnou cestu.",
+  },
+  "connect.module.3.title": { en: "3. Intimacy Weather", fr: "3. Météo d'intimité", cs: "3. Počasí intimity" },
+  "connect.module.3.body": {
+    en: "Name your emotional climate before touch so connection meets reality, not assumptions.",
+    fr: "Nommez votre climat émotionnel avant le toucher pour que la connexion rejoigne la réalité, pas les hypothèses.",
+    cs: "Pojmenujte své emoční klima před dotykem, aby spojení vycházelo z reality, ne z domněnek.",
+  },
+  "connect.module.4.title": { en: "4. The Unsaid", fr: "4. Le non-dit", cs: "4. Nevyřčené" },
+  "connect.module.4.body": {
+    en: "Write what feels difficult to say before it hardens into distance or resentment.",
+    fr: "Écrivez ce qui est difficile à dire avant que cela ne devienne distance ou ressentiment.",
+    cs: "Napište to, co je těžké říct, než to ztvrdne v odstup nebo křivdu.",
+  },
+  "connect.module.5.title": { en: "5. The Thread", fr: "5. Le fil", cs: "5. Nit" },
+  "connect.module.5.body": {
+    en: "Leave one gratitude, one truth, or one tenderness line and let connection compound daily.",
+    fr: "Laissez une gratitude, une vérité ou une ligne de tendresse et laissez la connexion grandir chaque jour.",
+    cs: "Zanechte jednu vděčnost, jednu pravdu nebo jednu větu něhy a nechte spojení růst každý den.",
+  },
+  "connect.shared_first_title": { en: "Shared first, premium after", fr: "Partagé d'abord, premium ensuite", cs: "Nejdřív sdílení, pak premium" },
+  "connect.shared_first_body": {
+    en: "The first connection experience is visible immediately. Premium deepens the journey, it does not hide entry.",
+    fr: "La première expérience de connexion est visible immédiatement. Le premium approfondit le parcours, il ne bloque pas l'entrée.",
+    cs: "První zážitek propojení je viditelný hned. Premium cestu prohlubuje, nevstup neschovává.",
+  },
+  "connect.unsaid_thread_title": { en: "The Unsaid and The Thread", fr: "Le non-dit et le fil", cs: "Nevyřčené a Nit" },
+  "connect.unsaid_thread_body": {
+    en: "Preserve difficult truth and daily gratitude so intimacy remains alive between major moments.",
+    fr: "Préservez la vérité difficile et la gratitude quotidienne pour garder l'intimité vivante entre les grands moments.",
+    cs: "Uchovávejte těžkou pravdu i denní vděčnost, aby intimita zůstala živá mezi velkými okamžiky.",
+  },
+  "connect.premium_title": { en: "Premium couple acceleration", fr: "Accélération premium du couple", cs: "Premium zrychlení pro pár" },
+  "connect.premium_body": {
+    en: "Upgrade for deeper shared pathways, expanded reconnect scripts, and richer couple intelligence over time.",
+    fr: "Passez en premium pour des cesty plus profondes, des scripts de reconnect plus riches et une intelligence de couple qui s'affine avec le temps.",
+    cs: "Upgradujte pro hlubší společné cesty, rozšířené reconnect scénáře a bohatší porozumění páru v čase.",
+  },
+  "connect.badge": { en: "Connect", fr: "Connexion", cs: "Propojení" },
+  "connect.headline": { en: "Connect with Partner", fr: "Se connecter au partenaire", cs: "Propojit s partnerem" },
+  "connect.subheadline": {
+    en: "Shared code. Shared rituals. Shared emotional state. Difficult truth. Gratitude thread. Connect once and keep your couple flow alive every day.",
+    fr: "Code partagé. Rituels partagés. État émotionnel partagé. Vérité difficile. Fil de gratitude. Connectez-vous une fois et gardez votre flow de couple vivant chaque jour.",
+    cs: "Sdílený kód. Sdílené rituály. Sdílený emoční stav. Těžká pravda. Nit vděčnosti. Propojte se jednou a udržujte párový flow živý každý den.",
+  },
+  "connect.status": { en: "Status", fr: "Statut", cs: "Stav" },
+  "connect.status.connected": { en: "Connected", fr: "Connecté", cs: "Propojeno" },
+  "connect.status.waiting": { en: "Waiting to connect", fr: "En attente de connexion", cs: "Čeká na propojení" },
+  "connect.status.shared": { en: "Your temple is shared.", fr: "Votre temple est partagé.", cs: "Váš chrám je sdílený." },
+  "connect.status.waiting_desc": { en: "Create an invite or enter a code.", fr: "Créez une invitation ou entrez un code.", cs: "Vytvořte pozvánku nebo zadejte kód." },
+  "connect.create_shared_code": { en: "Create your shared code", fr: "Créer votre code partagé", cs: "Vytvořit váš sdílený kód" },
+  "connect.create_shared_desc": {
+    en: "Generate a private code and send it to your partner. Once they enter it, your couple temple becomes active.",
+    fr: "Générez un code privé et envoyez-le à votre partenaire. Dès qu'il/elle l'entre, votre temple de couple s'active.",
+    cs: "Vygenerujte soukromý kód a pošlete ho partnerovi. Jakmile ho zadá, váš párový chrám se aktivuje.",
+  },
+  "connect.create_invite_code": { en: "Create invite code", fr: "Créer un code d'invitation", cs: "Vytvořit zvací kód" },
+  "connect.your_invite_code": { en: "Your invite code", fr: "Votre code d'invitation", cs: "Váš zvací kód" },
+  "connect.copy_invite": { en: "Copy invite", fr: "Copier l'invitation", cs: "Zkopírovat pozvánku" },
+  "connect.link_ready": { en: "Link ready", fr: "Lien prêt", cs: "Odkaz připraven" },
+  "connect.enter_partner_invite": { en: "Enter your partner's invite", fr: "Entrez l'invitation de votre partenaire", cs: "Zadejte partnerovu pozvánku" },
+  "connect.enter_partner_desc": { en: "Paste the code you received and step into the same shared space.", fr: "Collez le code reçu et entrez dans le même espace partagé.", cs: "Vložte přijatý kód a vstupte do stejného sdíleného prostoru." },
+  "connect.invite_code_label": { en: "Invite code", fr: "Code d'invitation", cs: "Zvací kód" },
+  "connect.join_temple": { en: "Join the temple", fr: "Rejoindre le temple", cs: "Připojit se do chrámu" },
+  "connect.card.weather.desc": { en: "Name your emotional state first so touch, words, and pace match the reality of tonight.", fr: "Nommez d'abord votre état émotionnel pour que le toucher, les mots et le rythme correspondent à la réalité de ce soir.", cs: "Nejprve pojmenujte svůj emoční stav, aby dotek, slova i tempo odpovídaly dnešní realitě." },
+  "connect.card.unsaid.desc": { en: "Write what feels difficult before it hardens into distance, then share with care.", fr: "Écrivez ce qui est difficile avant que cela ne durcisse en distance, puis partagez avec délicatesse.", cs: "Napište to, co je těžké, než to ztvrdne v odstup, a pak to sdílejte s péčí." },
+  "connect.card.thread.desc": { en: "Leave one gratitude line each day and let tenderness accumulate over time.", fr: "Laissez une ligne de gratitude par jour et laissez la tendresse s'accumuler.", cs: "Zanechte každý den jednu větu vděčnosti a nechte něhu postupně narůstat." },
+  "connect.msg.create_error": { en: "Could not create invite right now.", fr: "Impossible de créer une invitation pour le moment.", cs: "Pozvánku se teď nepodařilo vytvořit." },
+  "connect.msg.code_not_found": { en: "This invite code could not be found.", fr: "Ce code d'invitation est introuvable.", cs: "Tento zvací kód nebyl nalezen." },
+  "connect.msg.already_yours": { en: "This is already your invite code.", fr: "Ceci est déjà votre code d'invitation.", cs: "Tohle je už váš zvací kód." },
+  "connect.msg.join_error": { en: "Could not join this couple right now.", fr: "Impossible de rejoindre ce couple pour le moment.", cs: "K tomuto páru se teď nelze připojit." },
+  "connect.msg.connected_now": { en: "You are now connected.", fr: "Vous êtes maintenant connectés.", cs: "Teď jste propojeni." },
+  "connect.msg.invite_copied": { en: "Invite copied.", fr: "Invitation copiée.", cs: "Pozvánka zkopírována." },
+  "connect.msg.copy_failed": { en: "Copy failed. Please select and copy manually.", fr: "Échec de la copie. Veuillez copier manuellement.", cs: "Kopírování selhalo. Zkopírujte prosím ručně." },
+
+  // App fallback
+  "app_fallback.badge": { en: "Sacred Path App", fr: "App Sacred Path", cs: "Aplikace Sacred Path" },
+  "app_fallback.title": { en: "The app is live and ready", fr: "L'app est en ligne et prête", cs: "Aplikace je živá a připravená" },
+  "app_fallback.desc": {
+    en: "Enter the couple experience first, then move into Sacred Library and Temple tools. Connection is a core pillar of the product.",
+    fr: "Commencez par l'expérience de couple, puis passez à la bibliothèque sacrée et aux outils du temple. La connexion est un pilier central du produit.",
+    cs: "Nejprve vstupte do párového zážitku, pak pokračujte do Posvátné knihovny a nástrojů Chrámu. Propojení je klíčový pilíř produktu.",
+  },
+  "app_fallback.two_pillars_title": { en: "Two equal pillars", fr: "Deux piliers égaux", cs: "Dva rovnocenné pilíře" },
+  "app_fallback.two_pillars_desc": {
+    en: "Sacred wisdom library and couple connection tools now coexist at top level. Neither replaces the other.",
+    fr: "La bibliothèque de sagesse sacrée et les outils de connexion du couple coexistent désormais au premier niveau. Aucun ne remplace l'autre.",
+    cs: "Knihovna posvátné moudrosti a nástroje párového propojení nyní koexistují na hlavní úrovni. Ani jedno nenahrazuje druhé.",
+  },
+  "app_fallback.partner_first_title": { en: "Partner flow first", fr: "Flux partenaire en premier", cs: "Nejprve párový tok" },
+  "app_fallback.partner_first_desc": {
+    en: "Your Couple Code, shared emotional weather, The Unsaid, and The Thread are restored as first-class entry points.",
+    fr: "Votre code de couple, la météo émotionnelle partagée, le non-dit et le fil sont rétablis comme points d'entrée de premier plan.",
+    cs: "Váš párový kód, sdílené emoční počasí, Nevyřčené a Nit jsou obnoveny jako hlavní vstupní body.",
+  },
+
+  // App shell
+  "app.sidebar_desc": {
+    en: "Ancient wisdom for modern love. Home for orientation, Sacred Library for insight, Sacred Temple for embodied shared practice.",
+    fr: "Sagesse ancienne pour amour moderne. Accueil pour se poser, Bibliothèque sacrée pour comprendre, Temple sacré pour la pratique incarnée à deux.",
+    cs: "Starodávná moudrost pro moderní lásku. Domov pro orientaci, Posvátná knihovna pro vhled, Posvátný chrám pro ztělesněnou společnou praxi.",
+  },
 
   // Reconnect
   "reconnect.for_two": { en: "FOR TWO", fr: "POUR DEUX", cs: "PRO DVA" },
@@ -796,10 +993,11 @@ const translations: Record<string, Record<Language, string>> = {
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [lang, setLang] = useState<Language>(() => {
     const saved = localStorage.getItem("sacred-path-lang");
-    return (saved as Language) || "en";
+    return isLanguage(saved) ? saved : "en";
   });
 
   const handleSetLang = (newLang: Language) => {
+    if (!isLanguage(newLang)) return;
     setLang(newLang);
     localStorage.setItem("sacred-path-lang", newLang);
   };

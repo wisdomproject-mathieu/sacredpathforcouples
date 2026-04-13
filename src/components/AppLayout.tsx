@@ -3,22 +3,24 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 import { BookOpen, HeartHandshake, Home, LogOut, Sparkles } from "lucide-react";
 
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 
 const AppLayout = () => {
   const { signOut } = useAuth();
+  const { t } = useLanguage();
   const location = useLocation();
 
   const navItems = useMemo(
     () => [
-      { to: "/app", icon: Home, label: "Home", iconClass: "text-amber-300" },
-      { to: "/app/connect", icon: HeartHandshake, label: "Connect with Partner", iconClass: "text-rose-300" },
-      { to: "/app/paths", icon: BookOpen, label: "Sacred Library", iconClass: "text-violet-300" },
-      { to: "/app/space", icon: Sparkles, label: "Sacred Temple", iconClass: "text-fuchsia-300" },
+      { to: "/app", icon: Home, label: t("nav.home"), iconClass: "text-amber-300" },
+      { to: "/app/connect", icon: HeartHandshake, label: t("nav.connect_partner"), iconClass: "text-rose-300" },
+      { to: "/app/paths", icon: BookOpen, label: t("nav.library"), iconClass: "text-violet-300" },
+      { to: "/app/space", icon: Sparkles, label: t("nav.temple"), iconClass: "text-fuchsia-300" },
     ],
-    []
+    [t]
   );
 
   const isActive = (to: string) => {
@@ -43,7 +45,7 @@ const AppLayout = () => {
               </div>
 
               <p className="mt-4 text-sm leading-6 text-muted-foreground">
-                Ancient wisdom for modern love. Home for orientation, Sacred Library for insight, Sacred Temple for embodied shared practice.
+                {t("app.sidebar_desc")}
               </p>
             </div>
 

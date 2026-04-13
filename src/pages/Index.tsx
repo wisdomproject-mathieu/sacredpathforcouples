@@ -36,12 +36,12 @@ const Index = () => {
   }, []);
 
   const features = [
-    { icon: YinYangIcon, title: "Your Couple Code", desc: "Create one shared code and connect your relationship in a private couple space." },
-    { icon: FlameIcon, title: "Join Partner", desc: "Enter your partner code and activate your shared path in seconds." },
-    { icon: LotusIcon, title: "Intimacy Weather", desc: "Name your emotional climate before touch to reduce friction and reconnect faster." },
-    { icon: ChakraIcon, title: "The Unsaid", desc: "Write what is hard to say before it hardens into distance." },
-    { icon: BreathIcon, title: "The Thread", desc: "Leave one gratitude line and keep tenderness alive day by day." },
-    { icon: SacredGeometryIcon, title: "Sacred Wisdom Library", desc: "Ancient paths and modern guidance from teachers, authors, and practical rituals." },
+    { icon: YinYangIcon, title: t("landing.feature.couple_code.title"), desc: t("landing.feature.couple_code.desc") },
+    { icon: FlameIcon, title: t("landing.feature.join_partner.title"), desc: t("landing.feature.join_partner.desc") },
+    { icon: LotusIcon, title: t("landing.feature.intimacy_weather.title"), desc: t("landing.feature.intimacy_weather.desc") },
+    { icon: ChakraIcon, title: t("landing.feature.unsaid.title"), desc: t("landing.feature.unsaid.desc") },
+    { icon: BreathIcon, title: t("landing.feature.thread.title"), desc: t("landing.feature.thread.desc") },
+    { icon: SacredGeometryIcon, title: t("landing.feature.library.title"), desc: t("landing.feature.library.desc") },
   ];
 
   const teachers = [
@@ -59,7 +59,7 @@ const Index = () => {
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-3">
             <img src={shivaShaktiIcon} alt="Sacred Path" className="h-8 w-8" />
-            <span className="font-heading text-xl font-semibold text-foreground">Sacred Path</span>
+            <span className="font-heading text-xl font-semibold text-foreground">{t("landing.brand")}</span>
           </div>
 
           <button
@@ -73,10 +73,10 @@ const Index = () => {
 
           <div className="hidden items-center gap-4 md:flex">
             <a href="#features" className="text-sm text-muted-foreground transition-colors hover:text-foreground font-body">
-              Features
+              {t("nav.features")}
             </a>
             <Link to="/connect" className="text-sm text-muted-foreground transition-colors hover:text-foreground font-body">
-              Connect with Partner
+              {t("nav.connect_partner")}
             </Link>
             <Link to="/pricing" className="text-sm text-muted-foreground transition-colors hover:text-foreground font-body">
               {t("nav.pricing")}
@@ -89,7 +89,7 @@ const Index = () => {
             </Link>
             <Link to="/connect">
               <Button size="sm" className="font-body">
-                Connect with Partner
+                {t("cta.connect_partner")}
               </Button>
             </Link>
           </div>
@@ -103,14 +103,14 @@ const Index = () => {
                 onClick={() => setMobileOpen(false)}
                 className="rounded-xl border border-border/35 bg-card/45 px-3 py-2 text-sm text-foreground"
               >
-                Features
+                {t("nav.features")}
               </a>
               <Link
                 to="/connect"
                 onClick={() => setMobileOpen(false)}
                 className="rounded-xl border border-primary/30 bg-primary/12 px-3 py-2 text-sm text-foreground"
               >
-                Connect with Partner
+                {t("nav.connect_partner")}
               </Link>
               <Link
                 to="/pricing"
@@ -145,7 +145,7 @@ const Index = () => {
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
           <Link to="/connect">
             <Button size="lg" className="font-body text-base px-8">
-              Connect with Partner
+              {t("cta.connect_partner")}
             </Button>
           </Link>
           <a href="#features">
@@ -155,7 +155,7 @@ const Index = () => {
           </a>
           <Link to="/auth">
             <Button variant="outline" size="lg" className="font-body text-base px-8">
-              Continue without account
+              {t("cta.continue_without_account")}
             </Button>
           </Link>
         </div>
@@ -163,9 +163,9 @@ const Index = () => {
 
       <section id="features" className="scroll-mt-24 py-24 px-4">
         <div className="container">
-          <h2 className="text-center font-heading text-4xl font-semibold text-foreground mb-4">Features</h2>
+          <h2 className="text-center font-heading text-4xl font-semibold text-foreground mb-4">{t("landing.features_title")}</h2>
           <p className="text-center text-muted-foreground mb-16 max-w-3xl mx-auto font-body">
-            Sacred Path has two equal pillars: couple connection tools and sacred wisdom paths. Both are visible from first entry.
+            {t("landing.features_desc")}
           </p>
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {features.map((f) => (
@@ -185,19 +185,19 @@ const Index = () => {
             <div className="inline-flex rounded-2xl border border-border/30 bg-card/45 p-3 text-rose-300">
               <HeartHandshake className="h-6 w-6" />
             </div>
-            <h2 className="mt-4 font-heading text-3xl font-semibold text-foreground md:text-4xl">Connect with Partner</h2>
+            <h2 className="mt-4 font-heading text-3xl font-semibold text-foreground md:text-4xl">{t("landing.partner_block_title")}</h2>
             <p className="mt-3 text-sm leading-7 text-muted-foreground md:text-base">
-              Shared code, shared rituals, shared emotional state, difficult truth, and gratitude thread. This is core product flow, not an optional add-on.
+              {t("landing.partner_block_desc")}
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link to="/connect">
                 <Button size="lg" className="font-body text-base px-8">
-                  Connect with Partner
+                  {t("cta.connect_partner")}
                 </Button>
               </Link>
               <Link to="/app">
                 <Button variant="outline" size="lg" className="font-body text-base px-8">
-                  Enter App
+                  {t("cta.enter_app")}
                 </Button>
               </Link>
             </div>
@@ -226,14 +226,14 @@ const Index = () => {
       <section className="py-24 px-4 text-center">
         <div className="container max-w-2xl">
           <MessageCircleHeart className="text-primary mx-auto mb-6 h-16 w-16" />
-          <h2 className="font-heading text-4xl font-semibold text-foreground mb-4">Start with partner connection, then deepen with wisdom</h2>
+          <h2 className="font-heading text-4xl font-semibold text-foreground mb-4">{t("landing.final_cta_title")}</h2>
           <p className="text-muted-foreground mb-8 font-body">
-            First reconnect together, then expand through paths, teachers, rituals, and daily guidance.
+            {t("landing.final_cta_desc")}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Link to="/connect">
               <Button size="lg" className="font-body text-base px-10">
-                Connect with Partner
+                {t("cta.connect_partner")}
               </Button>
             </Link>
             <Link to="/auth">
@@ -249,7 +249,7 @@ const Index = () => {
         <div className="container flex flex-col items-center gap-4 md:flex-row md:justify-between">
           <div className="flex items-center gap-2">
             <img src={shivaShaktiIcon} alt="Sacred Path" className="h-6 w-6" />
-            <span className="font-heading text-sm text-muted-foreground">Sacred Path for Couples</span>
+            <span className="font-heading text-sm text-muted-foreground">{t("landing.brand_full")}</span>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-3 text-sm text-muted-foreground font-body">
             <Link to="/privacy" className="hover:text-foreground transition-colors">
@@ -259,11 +259,11 @@ const Index = () => {
               {t("nav.pricing")}
             </Link>
             <Link to="/connect" className="inline-flex items-center gap-2 rounded-xl border border-primary/30 bg-primary/10 px-3 py-2 text-foreground transition-all hover:border-primary/45 hover:bg-primary/15">
-              Connect with Partner
+              {t("cta.connect_partner")}
               <HeartHandshake className="h-4 w-4" />
             </Link>
             <Link to="/app" className="inline-flex items-center gap-2 rounded-xl border border-border/35 bg-card/45 px-3 py-2 text-foreground transition-all hover:border-border/55 hover:bg-card/60">
-              Enter App
+              {t("cta.enter_app")}
               <Sparkles className="h-4 w-4" />
             </Link>
           </div>

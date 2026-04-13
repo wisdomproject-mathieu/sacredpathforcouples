@@ -23,6 +23,7 @@ const LanguageSwitcher = () => {
 
   return (
     <Button
+      type="button"
       variant="ghost"
       size="sm"
       onClick={() => setLang(nextLang)}
