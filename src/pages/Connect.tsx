@@ -20,26 +20,26 @@ const Connect = () => {
     const load = async () => {
       const { data: connected } = await supabase
         .from("couples")
-        .select("id, invite_code, partner_b")
+        .select("id, couple_code, partner_b")
         .or(`partner_a.eq.${user.id},partner_b.eq.${user.id}`)
         .not("partner_b", "is", null)
         .maybeSingle();
 
       if (connected) {
         setIsConnected(true);
-        setInviteCode(connected.invite_code ?? null);
+        setInviteCode(connected.couple_code ?? null);
         setLoading(false);
         return;
       }
 
       const { data: pending } = await supabase
         .from("couples")
-        .select("id, invite_code")
+        .select("id, couple_code")
         .eq("partner_a", user.id)
         .is("partner_b", null)
         .maybeSingle();
 
-      if (pending?.invite_code) setInviteCode(pending.invite_code);
+      if (pending?.couple_code) setInviteCode(pending.couple_code);
       setLoading(false);
     };
 
@@ -62,7 +62,7 @@ const Connect = () => {
     const newCode = generateCode();
     const { error } = await supabase.from("couples").insert({
       partner_a: user.id,
-      invite_code: newCode,
+      couple_code: newCode,
     });
 
     if (error) {
@@ -85,7 +85,7 @@ const Connect = () => {
     const { data: target, error: fetchError } = await supabase
       .from("couples")
       .select("id, partner_a, partner_b")
-      .eq("invite_code", cleanCode)
+      .eq("couple_code", cleanCode)
       .is("partner_b", null)
       .maybeSingle();
 
