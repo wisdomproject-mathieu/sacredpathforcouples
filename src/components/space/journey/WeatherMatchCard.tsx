@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Lock } from "lucide-react";
 
 import NotificationBadge from "@/components/space/journey/NotificationBadge";
 import RitualRecommendationCard from "@/components/space/journey/RitualRecommendationCard";
@@ -17,6 +18,11 @@ type Props = {
   sourceHeadingLabel: string;
   sourceCtaLabel: string;
   whyFitsLabel: string;
+  hasPremiumAccess: boolean;
+  templeAccessLabel: string;
+  unlockDepthLabel: string;
+  unlockSourceLabel: string;
+  sourcePreviewLabel: string;
   newChipLabel: string;
   onEnterRitual: () => void;
   onReadEnergies: () => void;
@@ -34,11 +40,24 @@ const WeatherMatchCard = ({
   sourceHeadingLabel,
   sourceCtaLabel,
   whyFitsLabel,
+  hasPremiumAccess,
+  templeAccessLabel,
+  unlockDepthLabel,
+  unlockSourceLabel,
+  sourcePreviewLabel,
   newChipLabel,
   onEnterRitual,
   onReadEnergies,
 }: Props) => {
   const [showDrawer, setShowDrawer] = useState(false);
+  const freeRecommendations = result.recommendations.filter((item) => item.accessTier === "free");
+  const premiumRecommendations = result.recommendations.filter((item) => item.accessTier === "premium");
+  const visibleRecommendations = hasPremiumAccess
+    ? result.recommendations.slice(0, 4)
+    : (freeRecommendations.length ? freeRecommendations : result.recommendations.slice(0, 1)).slice(0, 1);
+  const lockedRecommendations = hasPremiumAccess
+    ? []
+    : (premiumRecommendations.length ? premiumRecommendations : result.recommendations.slice(1)).slice(0, 3);
 
   return (
     <article className="relative overflow-hidden rounded-[24px] border border-primary/25 bg-primary/10 p-5">
@@ -66,12 +85,13 @@ const WeatherMatchCard = ({
       <p className="mt-2 text-xs leading-5 text-muted-foreground">{result.lineageLine}</p>
 
       <div className="mt-4 grid gap-2 md:grid-cols-2">
-        {result.recommendations.slice(0, 4).map((item) => (
+        {visibleRecommendations.map((item) => (
           <RitualRecommendationCard
             key={item.id}
             title={item.title}
             subtitle={item.subtitle}
             description={item.description}
+            premiumTeaser={item.premiumTeaser}
             ritualDuration={item.ritualDuration}
             intimacyLevel={item.intimacyLevel}
             primaryNeed={item.primaryNeed}
@@ -84,7 +104,42 @@ const WeatherMatchCard = ({
             onAction={onEnterRitual}
           />
         ))}
+        {lockedRecommendations.map((item) => (
+          <RitualRecommendationCard
+            key={`locked-${item.id}`}
+            title={item.title}
+            subtitle={item.subtitle}
+            description={item.description}
+            premiumTeaser={item.premiumTeaser}
+            ritualDuration={item.ritualDuration}
+            intimacyLevel={item.intimacyLevel}
+            primaryNeed={item.primaryNeed}
+            sourceTraditions={item.sourceTraditions}
+            sourceAuthors={item.sourceAuthors}
+            sourceExplanation={item.sourceExplanation}
+            libraryLinks={item.libraryLinks}
+            sourceCtaLabel={sourceCtaLabel}
+            locked
+            unlockLabel={unlockDepthLabel}
+            unlockTo="/pricing?entry=deeper-ritual"
+          />
+        ))}
       </div>
+      {!hasPremiumAccess && lockedRecommendations.length ? (
+        <div className="mt-3 rounded-xl border border-amber-300/25 bg-amber-500/8 p-3">
+          <p className="text-xs uppercase tracking-[0.14em] text-amber-200">{templeAccessLabel}</p>
+          <p className="mt-1 text-sm leading-6 text-foreground/90">
+            {unlockDepthLabel}
+          </p>
+          <Link
+            to="/pricing?entry=match-unlock"
+            className="mt-2 inline-flex items-center gap-1.5 rounded-lg border border-amber-300/35 bg-amber-500/12 px-3 py-1.5 text-xs text-foreground transition-all hover:border-amber-300/55 hover:bg-amber-500/20"
+          >
+            <Lock className="h-3 w-3" />
+            {unlockDepthLabel}
+          </Link>
+        </div>
+      ) : null}
 
       <div className="mt-4 flex flex-wrap gap-2">
         <button
@@ -117,12 +172,27 @@ const WeatherMatchCard = ({
 
           <div className="rounded-xl border border-primary/20 bg-primary/8 p-3">
             <p className="text-[11px] uppercase tracking-[0.14em] text-primary/85">{sourceHeadingLabel}</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">{result.lineage.sourceNotes}</p>
-            <p className="mt-2 text-xs leading-5 text-muted-foreground">{whyFitsLabel}: {result.archetype.bestPath}</p>
+            {hasPremiumAccess ? (
+              <>
+                <p className="mt-2 text-sm leading-6 text-foreground/90">{result.lineage.sourceNotes}</p>
+                <p className="mt-2 text-xs leading-5 text-muted-foreground">{whyFitsLabel}: {result.archetype.bestPath}</p>
+              </>
+            ) : (
+              <>
+                <p className="mt-2 text-sm leading-6 text-foreground/90">{sourcePreviewLabel}</p>
+                <Link
+                  to="/pricing?entry=source-depth"
+                  className="mt-2 inline-flex items-center gap-1.5 rounded-lg border border-amber-300/35 bg-amber-500/12 px-3 py-1.5 text-xs text-foreground transition-all hover:border-amber-300/55 hover:bg-amber-500/20"
+                >
+                  <Lock className="h-3 w-3" />
+                  {unlockSourceLabel}
+                </Link>
+              </>
+            )}
           </div>
 
           <div className="flex flex-wrap gap-2">
-            {result.libraryLinks.slice(0, 3).map((link) => (
+            {(hasPremiumAccess ? result.libraryLinks.slice(0, 3) : result.libraryLinks.slice(0, 1)).map((link) => (
               <Link
                 key={`${link.to}-${link.label}`}
                 to={link.to}

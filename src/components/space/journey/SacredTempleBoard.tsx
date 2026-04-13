@@ -1,6 +1,7 @@
 import type { Language } from "@/contexts/LanguageContext";
 import NotificationBadge from "@/components/space/journey/NotificationBadge";
 import type { SacredComposerType } from "@/components/space/journey/SacredMessageComposer";
+import TempleUpgradeCard from "@/components/premium/TempleUpgradeCard";
 
 export type SacredBoardItem = {
   id: string;
@@ -18,6 +19,7 @@ type Props = {
   subtitle: string;
   summaryTitle: string;
   summaryBody: string;
+  isPremium: boolean;
   items: SacredBoardItem[];
   unreadCount: number;
   onOpen: () => void;
@@ -61,6 +63,7 @@ const SacredTempleBoard = ({
   subtitle,
   summaryTitle,
   summaryBody,
+  isPremium,
   items,
   unreadCount,
   onOpen,
@@ -76,12 +79,25 @@ const SacredTempleBoard = ({
         <button
           key={type}
           type="button"
-          onClick={() => onQuickCompose(type)}
+          onClick={(event) => {
+            event.stopPropagation();
+            onQuickCompose(type);
+          }}
           className="rounded-full border border-border/35 bg-background/45 px-2.5 py-1 text-[11px] uppercase tracking-[0.12em] text-foreground transition-all hover:border-border/55 hover:bg-background/60"
         >
           {typeLabels[lang][type]}
         </button>
       ))}
+      {!isPremium
+        ? ["temple ceremony", "archetype invitation"].map((label) => (
+            <span
+              key={label}
+              className="inline-flex items-center gap-1 rounded-full border border-amber-300/25 bg-amber-500/8 px-2.5 py-1 text-[11px] uppercase tracking-[0.12em] text-amber-100/90"
+            >
+              <span>{lang === "fr" ? "Premium" : lang === "cs" ? "Premium" : "Premium"}</span>
+            </span>
+          ))
+        : null}
     </div>
 
     <div className="mt-4 rounded-[16px] border border-primary/20 bg-primary/8 p-3">
@@ -129,6 +145,25 @@ const SacredTempleBoard = ({
         ))
       )}
     </div>
+
+    {!isPremium ? (
+      <div className="mt-4" onClick={(event) => event.stopPropagation()}>
+        <TempleUpgradeCard
+          eyebrow={lang === "fr" ? "Accès Temple" : lang === "cs" ? "Chrámový přístup" : "Temple Access"}
+          title={lang === "fr" ? "Déverrouiller les séquences du Temple" : lang === "cs" ? "Odemknout chrámové sekvence" : "Unlock temple sequence invitations"}
+          body={
+            lang === "fr"
+              ? "Ajoutez des invitations guidées par archétype, des cérémonies et des modèles de messages sacrés."
+              : lang === "cs"
+              ? "Přidejte pozvánky podle archetypu, chrámové ceremonie a posvátné šablony zpráv."
+              : "Add archetype-based invitations, temple ceremonies, and sacred message templates."
+          }
+          ctaLabel={lang === "fr" ? "Ouvrir Accès Temple" : lang === "cs" ? "Otevřít Chrámový přístup" : "Open Temple Access"}
+          to="/pricing?entry=temple-board"
+          compact
+        />
+      </div>
+    ) : null}
 
     <NotificationBadge show={unreadCount > 0} count={unreadCount} />
   </section>

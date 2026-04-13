@@ -1,4 +1,6 @@
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { Lock } from "lucide-react";
 
 import type { Language } from "@/contexts/LanguageContext";
 import NotificationBadge from "@/components/space/journey/NotificationBadge";
@@ -12,6 +14,10 @@ type Props = {
   subtitle: string;
   items: JourneyTimelineItem[];
   unreadCount: number;
+  hiddenCount?: number;
+  upgradeLabel?: string;
+  upgradeBody?: string;
+  upgradeCtaLabel?: string;
   onOpen: () => void;
 };
 
@@ -35,7 +41,18 @@ const filterMatch = (filter: TimelineFilter, type: JourneyTimelineItem["type"]) 
   return type === "offering" || type === "oracle" || type === "intention";
 };
 
-const SharedTimeline = ({ lang, title, subtitle, items, unreadCount, onOpen }: Props) => {
+const SharedTimeline = ({
+  lang,
+  title,
+  subtitle,
+  items,
+  unreadCount,
+  hiddenCount = 0,
+  upgradeLabel,
+  upgradeBody,
+  upgradeCtaLabel,
+  onOpen,
+}: Props) => {
   const [filter, setFilter] = useState<TimelineFilter>("all");
 
   const filtered = useMemo(
@@ -85,6 +102,39 @@ const SharedTimeline = ({ lang, title, subtitle, items, unreadCount, onOpen }: P
           ))
         )}
       </div>
+
+      {hiddenCount > 0 ? (
+        <div className="mt-3 rounded-[16px] border border-amber-300/25 bg-amber-500/8 p-3">
+          <p className="text-xs uppercase tracking-[0.14em] text-amber-200">
+            {upgradeLabel ??
+              (lang === "fr"
+                ? "Mémoire premium"
+                : lang === "cs"
+                ? "Premium paměť"
+                : "Premium memory")}
+          </p>
+          <p className="mt-1 text-sm leading-6 text-foreground/90">
+            {upgradeBody ??
+              (lang === "fr"
+                ? `${hiddenCount} événements plus anciens sont disponibles dans Accès Temple.`
+                : lang === "cs"
+                ? `${hiddenCount} starších událostí je dostupných v Chrámovém přístupu.`
+                : `${hiddenCount} older events are available in Temple Access.`)}
+          </p>
+          <Link
+            to="/pricing?entry=journey-memory"
+            className="mt-2 inline-flex items-center gap-1.5 rounded-lg border border-amber-300/35 bg-amber-500/12 px-3 py-1.5 text-xs text-foreground transition-all hover:border-amber-300/55 hover:bg-amber-500/20"
+          >
+            <Lock className="h-3 w-3" />
+            {upgradeCtaLabel ??
+              (lang === "fr"
+                ? "Ouvrir Accès Temple"
+                : lang === "cs"
+                ? "Otevřít Chrámový přístup"
+                : "Open Temple Access")}
+          </Link>
+        </div>
+      ) : null}
 
       <NotificationBadge show={unreadCount > 0} count={unreadCount} />
     </section>

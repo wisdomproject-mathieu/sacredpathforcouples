@@ -28,6 +28,7 @@ import RepairMode from "@/components/space/RepairMode";
 import TempleGuide from "@/components/space/TempleGuide";
 import WisdomOracle from "@/components/space/WisdomOracle";
 import ShareCardButton from "@/components/space/ShareCardButton";
+import TempleUpgradeCard from "@/components/premium/TempleUpgradeCard";
 import EmptyStateCard from "@/components/space/journey/EmptyStateCard";
 import NotificationBadge from "@/components/space/journey/NotificationBadge";
 import PartnerWeatherCard from "@/components/space/journey/PartnerWeatherCard";
@@ -36,6 +37,7 @@ import SacredTempleBoard, { type SacredBoardItem } from "@/components/space/jour
 import SharedTimeline from "@/components/space/journey/SharedTimeline";
 import type { JourneyTimelineItem } from "@/components/space/journey/SharedTimelineItem";
 import SharedWeatherCard, { type WeatherCardData } from "@/components/space/journey/SharedWeatherCard";
+import TempleJourneysCard from "@/components/space/journey/TempleJourneysCard";
 import WaitingForPartnerCard from "@/components/space/journey/WaitingForPartnerCard";
 import WeatherMatchCard from "@/components/space/journey/WeatherMatchCard";
 import { Tables } from "@/integrations/supabase/types";
@@ -55,6 +57,7 @@ import {
   storeConnectedCoupleId,
 } from "@/lib/couples";
 import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
+import { getPremiumTriggerCopy, getTempleJourneys, getTempleMembershipName } from "@/lib/premiumArchitecture";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 type ToolKey = "weather" | "rituals" | "positions" | "messages" | "guide" | "repair" | "pathways" | "altar";
@@ -277,6 +280,11 @@ const PartnerSpace = () => {
   const [seenMap, setSeenMap] = useState<Partial<Record<JourneyNotificationSection, number>>>({});
   const membershipTier = getEffectiveMembershipTier(user);
   const hasPremiumAccess = isPremiumTier(membershipTier);
+  const templeAccessName = getTempleMembershipName(lang);
+  const matchTriggerCopy = getPremiumTriggerCopy(lang, "match_unlock");
+  const journeyProgramTriggerCopy = getPremiumTriggerCopy(lang, "journey_program");
+  const memoryTriggerCopy = getPremiumTriggerCopy(lang, "journey_memory");
+  const templeJourneys = useMemo(() => getTempleJourneys(lang), [lang]);
 
   const isToolUnlocked = (tool: ToolKey) => hasPremiumAccess || freeDoorways.includes(tool);
   const isViewUnlocked = (view: ViewMode) => (view === "oracle" ? hasPremiumAccess : true);
@@ -752,7 +760,7 @@ const PartnerSpace = () => {
       seen.add(signature);
       unique.push(item);
     }
-    return unique.slice(0, 22);
+    return unique.slice(0, 40);
   }, [
     altarEvents,
     curatedMessages,
@@ -765,6 +773,13 @@ const PartnerSpace = () => {
     weatherMatch,
   ]);
 
+  const timelineVisibleLimit = hasPremiumAccess ? 22 : 8;
+  const visibleTimelineItems = useMemo(
+    () => timelineItems.slice(0, timelineVisibleLimit),
+    [timelineItems, timelineVisibleLimit],
+  );
+  const hiddenTimelineCount = Math.max(0, timelineItems.length - visibleTimelineItems.length);
+
   const timelineUnreadCount = useMemo(
     () => unreadCountSince(belovedEventTimestamps, seenTimeline),
     [belovedEventTimestamps, seenTimeline],
@@ -772,6 +787,15 @@ const PartnerSpace = () => {
   const latestPartnerWeatherTimestamp = partnerWeatherTimestamps.length ? Math.max(...partnerWeatherTimestamps) : 0;
   const latestPartnerMessageTimestamp = partnerMessageTimestamps.length ? Math.max(...partnerMessageTimestamps) : 0;
   const latestBelovedTimestamp = belovedEventTimestamps.length ? Math.max(...belovedEventTimestamps) : 0;
+  const sharedMatchesThisWeek = useMemo(() => {
+    const threshold = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    const myCount = weatherEntries.filter((item) => item.user_id === user?.id && toTimestamp(item.created_at) >= threshold).length;
+    const belovedCount = weatherEntries.filter((item) =>
+      (partnerUserId ? item.user_id === partnerUserId : item.user_id !== user?.id) && toTimestamp(item.created_at) >= threshold
+    ).length;
+    return Math.min(myCount, belovedCount);
+  }, [partnerUserId, user?.id, weatherEntries]);
+  const shouldShowDepthUpgrade = Boolean(!hasPremiumAccess && weatherMatch && sharedMatchesThisWeek >= 3);
 
   const sendSacredMessage = async (type: SacredComposerType | "acknowledgement", body: string) => {
     if (!coupleId || !user || !body.trim()) return;
@@ -920,6 +944,36 @@ const PartnerSpace = () => {
             "Oracle čte vaše párová data, emoční počasí a posvátnou historii, aby navrhl personalizovaný další krok s romantickou i smyslnou přesností.",
           )}
         </p>
+      </div>
+
+      <div className="rounded-[24px] border border-border/30 bg-card/45 p-4">
+        <p className="text-xs uppercase tracking-[0.18em] text-primary/80">
+          {l("Light Oracle (free)", "Oracle léger (gratuit)", "Lehký Oracle (zdarma)")}
+        </p>
+        <p className="mt-2 text-sm leading-6 text-foreground/90">
+          {weatherMatch
+            ? `${weatherMatch.archetype.title}: ${weatherMatch.summary}`
+            : l(
+                "Share both weather states to receive a contextual oracle line.",
+                "Partagez les deux météos pour recevoir une ligne oracle contextuelle.",
+                "Sdílejte obě počasí, abyste získali kontextovou Oracle větu.",
+              )}
+        </p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => activateTool("weather")}
+            className="rounded-xl border border-border/35 bg-background/45 px-3 py-2 text-xs text-foreground transition-all hover:border-border/55 hover:bg-background/60"
+          >
+            {l("Refresh shared weather", "Actualiser la météo partagée", "Obnovit sdílené počasí")}
+          </button>
+          <Link
+            to="/pricing?entry=oracle-depth"
+            className="rounded-xl border border-amber-300/35 bg-amber-500/12 px-3 py-2 text-xs text-foreground transition-all hover:border-amber-300/55 hover:bg-amber-500/20"
+          >
+            {l("Unlock full oracle sequencing", "Débloquer le séquençage oracle complet", "Odemknout plné Oracle sekvenování")}
+          </Link>
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -1281,12 +1335,66 @@ const PartnerSpace = () => {
                 sourceHeadingLabel={l("Wisdom behind this", "Sagesse derrière cela", "Moudrost za tím")}
                 sourceCtaLabel={l("Open in library", "Ouvrir dans la bibliothèque", "Otevřít v knihovně")}
                 whyFitsLabel={l("Why this fits your match", "Pourquoi cela correspond à votre match", "Proč to sedí k vaší shodě")}
+                hasPremiumAccess={hasPremiumAccess}
+                templeAccessLabel={templeAccessName}
+                unlockDepthLabel={l("Open the deeper ritual path", "Ouvrir le rituel plus profond", "Otevřít hlubší rituální cestu")}
+                unlockSourceLabel={l("Open the wisdom behind this", "Ouvrir la sagesse derrière cela", "Otevřít moudrost za tím")}
+                sourcePreviewLabel={l(
+                  "You can already see the core lineage here. Temple Access reveals deeper source notes and cross-tradition pathways.",
+                  "Vous voyez déjà la lignée essentielle ici. Accès Temple révèle des notes de source plus profondes et les ponts entre traditions.",
+                  "Zde už vidíte základní linii. Chrámový přístup odemkne hlubší zdrojové poznámky a mosty mezi tradicemi.",
+                )}
                 newChipLabel={l("new", "nouveau", "nové")}
                 onEnterRitual={() => {
                   openMatchSection();
                   activateTool("rituals");
                 }}
                 onReadEnergies={openMatchSection}
+              />
+            ) : null}
+
+            {shouldShowDepthUpgrade ? (
+              <TempleUpgradeCard
+                eyebrow={templeAccessName}
+                title={matchTriggerCopy.title}
+                body={
+                  `${matchTriggerCopy.body} ` +
+                  l(
+                    "One Temple Access membership extends the deeper couple experience across your shared space.",
+                    "Un abonnement Accès Temple étend l'expérience profonde du couple dans tout votre espace partagé.",
+                    "Jedno členství Chrámový přístup rozšíří hlubší párový zážitek napříč vaším sdíleným prostorem.",
+                  )
+                }
+                bullets={[
+                  l("More rituals for this exact weather match", "Plus de rituels pour ce match précis", "Více rituálů pro tuto přesnou shodu"),
+                  l("Expanded source lineage and wisdom links", "Lignée de sagesse étendue et liens", "Rozšířená zdrojová linie a odkazy"),
+                  l("Guided journeys built for two", "Parcours guidés conçus pour deux", "Vedené cesty navržené pro dva"),
+                ]}
+                ctaLabel={l("Enter the deeper temple", "Entrer dans le temple profond", "Vstoupit do hlubšího chrámu")}
+                to="/pricing?entry=match-unlock"
+              />
+            ) : null}
+
+            <TempleJourneysCard
+              lang={lang}
+              title={l("Guided Temple Journeys", "Parcours guidés du Temple", "Vedené chrámové cesty")}
+              subtitle={l(
+                "Move from one-off rituals into coherent multi-day couple practice.",
+                "Passez des rituels ponctuels à une pratique de couple cohérente sur plusieurs jours.",
+                "Přejděte od jednorázových rituálů k ucelené vícedenní párové praxi.",
+              )}
+              journeys={templeJourneys}
+              isPremium={hasPremiumAccess}
+            />
+
+            {!hasPremiumAccess ? (
+              <TempleUpgradeCard
+                eyebrow={templeAccessName}
+                title={journeyProgramTriggerCopy.title}
+                body={journeyProgramTriggerCopy.body}
+                ctaLabel={l("Go deeper together", "Aller plus loin ensemble", "Jít hlouběji spolu")}
+                to="/pricing?entry=journey-program"
+                compact
               />
             ) : null}
 
@@ -1348,6 +1456,7 @@ const PartnerSpace = () => {
                 )}
                 summaryTitle={templeBoardSummary.title}
                 summaryBody={templeBoardSummary.body}
+                isPremium={hasPremiumAccess}
                 items={boardItems}
                 unreadCount={templeBoardUnreadCount}
                 onOpen={openTempleBoardSection}
@@ -1382,8 +1491,12 @@ const PartnerSpace = () => {
                 "Vos météos partagées, invitations, rituels et offrandes dans une histoire vivante.",
                 "Vaše sdílené počasí, pozvání, rituály a nabídky v jednom živém příběhu.",
               )}
-              items={timelineItems}
+              items={visibleTimelineItems}
               unreadCount={timelineUnreadCount}
+              hiddenCount={!hasPremiumAccess ? hiddenTimelineCount : 0}
+              upgradeLabel={templeAccessName}
+              upgradeBody={memoryTriggerCopy.body}
+              upgradeCtaLabel={l("Open the full sanctuary", "Ouvrir le sanctuaire complet", "Otevřít plnou svatyni")}
               onOpen={openTimelineSection}
             />
           </section>

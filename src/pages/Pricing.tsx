@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { createCheckoutSession, createCustomerPortalSession, type BillingPlan } from "@/lib/billing";
 import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
+import { getFeatureSplit, getPremiumBuckets, getPremiumTriggerCopy, getTempleMembershipName, type PremiumTriggerKey } from "@/lib/premiumArchitecture";
 
 const pricingTiers = [
   {
@@ -200,6 +201,23 @@ const Pricing = () => {
   const membershipTier = getEffectiveMembershipTier(user);
   const hasPremiumAccess = isPremiumTier(membershipTier);
   const copy = pricingCopy[lang];
+  const templeAccessName = getTempleMembershipName(lang);
+  const premiumBuckets = getPremiumBuckets(lang);
+  const featureSplit = getFeatureSplit(lang);
+  const triggerByEntry: Partial<Record<string, PremiumTriggerKey>> = {
+    "match-unlock": "match_unlock",
+    "deeper-ritual": "deeper_ritual",
+    "source-depth": "source_depth",
+    "journey-memory": "journey_memory",
+    "journey-program": "journey_program",
+    "oracle-depth": "source_depth",
+    "temple-board": "journey_program",
+  };
+  const triggerKey = searchParams.get("entry");
+  const activeTrigger =
+    triggerKey && triggerByEntry[triggerKey]
+      ? getPremiumTriggerCopy(lang, triggerByEntry[triggerKey] as PremiumTriggerKey)
+      : null;
 
   useEffect(() => {
     const billingStatus = searchParams.get("billing");
@@ -274,9 +292,29 @@ const Pricing = () => {
         <section className="rounded-[32px] border border-primary/15 bg-gradient-to-br from-primary/14 via-background to-background p-6 shadow-[0_30px_100px_-48px_rgba(255,173,70,0.48)] md:p-8">
           <div className="max-w-3xl">
             <p className="text-xs uppercase tracking-[0.28em] text-primary/80">{copy.membership}</p>
-            <h1 className="mt-3 font-display text-4xl text-foreground md:text-5xl">{copy.heroTitle}</h1>
+            <h1 className="mt-3 font-display text-4xl text-foreground md:text-5xl">
+              {lang === "fr"
+                ? `${templeAccessName} · le sanctuaire complet`
+                : lang === "cs"
+                ? `${templeAccessName} · plná svatyně`
+                : `${templeAccessName} · the full sanctuary`}
+            </h1>
             <p className="mt-4 text-sm leading-7 text-muted-foreground md:text-base">
               {copy.heroDescription}
+            </p>
+            <p className="mt-3 text-sm leading-7 text-foreground/90">
+              {lang === "fr"
+                ? "La version gratuite reste utile et respectueuse. Accès Temple ouvre les chambres plus profondes: guidance, lignées de sagesse, mémoire et parcours."
+                : lang === "cs"
+                ? "Bezplatná verze zůstává užitečná a respektující. Chrámový přístup otevírá hlubší komnaty: vedení, zdrojové linie, paměť a cesty."
+                : "Free remains genuinely useful and respectful. Temple Access opens the deeper chambers: guidance, source lineage, memory, and journeys."}
+            </p>
+            <p className="mt-2 text-xs uppercase tracking-[0.16em] text-primary/85">
+              {lang === "fr"
+                ? "Conçu pour deux: un accès premium élève votre expérience de couple."
+                : lang === "cs"
+                ? "Navrženo pro dva: jeden premium přístup zvyšuje váš párový zážitek."
+                : "Built for two: one premium access elevates your couple experience."}
             </p>
             {hasPremiumAccess ? (
               <div className="mt-5 inline-flex rounded-full border border-emerald-300/35 bg-emerald-500/12 px-4 py-1.5 text-xs uppercase tracking-[0.14em] text-emerald-200">
@@ -285,6 +323,14 @@ const Pricing = () => {
             ) : null}
           </div>
         </section>
+
+        {activeTrigger ? (
+          <section className="rounded-[24px] border border-amber-300/30 bg-amber-500/8 p-4">
+            <p className="text-xs uppercase tracking-[0.2em] text-amber-200">{templeAccessName}</p>
+            <h2 className="mt-2 font-display text-2xl text-foreground">{activeTrigger.title}</h2>
+            <p className="mt-2 text-sm leading-7 text-foreground/90">{activeTrigger.body}</p>
+          </section>
+        ) : null}
 
         <section className="grid gap-4 xl:grid-cols-3">
           {pricingTiers.map((tier) => {
@@ -330,16 +376,18 @@ const Pricing = () => {
           })}
         </section>
 
-        <section className="grid gap-4 lg:grid-cols-[1fr_1fr]">
+        <section className="grid gap-4 lg:grid-cols-2">
           <div className="rounded-[28px] border border-border/30 bg-card/45 p-6">
             <div className="flex items-center gap-2 text-emerald-300">
               <HeartHandshake className="h-5 w-5" />
-              <span className="text-xs uppercase tracking-[0.22em]">{copy.includedPremium}</span>
+              <span className="text-xs uppercase tracking-[0.22em]">
+                {lang === "fr" ? "Ce que le gratuit vous offre" : lang === "cs" ? "Co nabízí zdarma" : "What free gives your couple"}
+              </span>
             </div>
 
             <div className="mt-5 space-y-3">
-              {copy.features.map((feature) => (
-                <div key={feature} className="flex items-start gap-3 rounded-[20px] border border-border/25 bg-background/40 p-4">
+              {featureSplit.free.map((feature) => (
+                <div key={`free-${feature}`} className="flex items-start gap-3 rounded-[20px] border border-border/25 bg-background/40 p-4">
                   <div className="mt-0.5 rounded-full border border-emerald-400/20 bg-emerald-400/10 p-1 text-emerald-300">
                     <Check className="h-3.5 w-3.5" />
                   </div>
@@ -349,23 +397,56 @@ const Pricing = () => {
             </div>
           </div>
 
-          <div className="rounded-[28px] border border-border/30 bg-card/45 p-6">
-            <div className="text-xs uppercase tracking-[0.22em] text-fuchsia-300">{copy.postureLabel}</div>
-            <h2 className="mt-3 font-display text-2xl text-foreground">{copy.postureTitle}</h2>
-            <p className="mt-3 text-sm leading-7 text-muted-foreground">
-              {copy.postureBody}
-            </p>
-
-            <div className="mt-5 rounded-[24px] border border-primary/15 bg-primary/8 p-5">
-              <div className="text-xs uppercase tracking-[0.18em] text-primary/80">{copy.launchGuidance}</div>
-              <p className="mt-2 text-sm leading-6 text-foreground/90">
-                {copy.launchGuidanceBody}
-              </p>
+          <div className="rounded-[28px] border border-primary/20 bg-primary/8 p-6 shadow-[0_24px_70px_-42px_rgba(255,173,70,0.5)]">
+            <div className="text-xs uppercase tracking-[0.22em] text-primary/80">{copy.includedPremium}</div>
+            <h2 className="mt-3 font-display text-2xl text-foreground">
+              {lang === "fr" ? "Ce que Accès Temple ouvre" : lang === "cs" ? "Co odemkne Chrámový přístup" : "What Temple Access unlocks"}
+            </h2>
+            <div className="mt-4 space-y-3">
+              {featureSplit.premium.map((feature) => (
+                <div key={`premium-${feature}`} className="flex items-start gap-3 rounded-[20px] border border-primary/20 bg-background/40 p-4">
+                  <div className="mt-0.5 rounded-full border border-primary/25 bg-primary/10 p-1 text-primary">
+                    <Check className="h-3.5 w-3.5" />
+                  </div>
+                  <p className="text-sm leading-6 text-foreground/90">{feature}</p>
+                </div>
+              ))}
             </div>
+          </div>
+        </section>
 
+        <section className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+          {premiumBuckets.map((bucket) => (
+            <article key={bucket.title} className="rounded-[24px] border border-border/30 bg-card/45 p-5">
+              <p className="text-xs uppercase tracking-[0.16em] text-primary/80">{bucket.title}</p>
+              <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                {lang === "fr" ? "Gratuit:" : lang === "cs" ? "Zdarma:" : "Free:"} {bucket.free}
+              </p>
+              <p className="mt-2 text-sm leading-6 text-foreground/90">
+                {lang === "fr" ? "Accès Temple:" : lang === "cs" ? "Chrámový přístup:" : "Temple Access:"} {bucket.premium}
+              </p>
+            </article>
+          ))}
+        </section>
+
+        <section className="rounded-[28px] border border-border/30 bg-card/45 p-6">
+          <div className="text-xs uppercase tracking-[0.22em] text-fuchsia-300">{copy.postureLabel}</div>
+          <h2 className="mt-3 font-display text-2xl text-foreground">{copy.postureTitle}</h2>
+          <p className="mt-3 text-sm leading-7 text-muted-foreground">
+            {copy.postureBody}
+          </p>
+
+          <div className="mt-5 rounded-[24px] border border-primary/15 bg-primary/8 p-5">
+            <div className="text-xs uppercase tracking-[0.18em] text-primary/80">{copy.launchGuidance}</div>
+            <p className="mt-2 text-sm leading-6 text-foreground/90">
+              {copy.launchGuidanceBody}
+            </p>
+          </div>
+
+          <div className="mt-5 flex flex-wrap gap-3">
             <Link
               to="/app"
-              className="mt-6 inline-flex items-center justify-center rounded-2xl border border-border/35 bg-card/45 px-5 py-3 text-sm text-foreground transition-all hover:border-border/55 hover:bg-card/60"
+              className="inline-flex items-center justify-center rounded-2xl border border-border/35 bg-card/45 px-5 py-3 text-sm text-foreground transition-all hover:border-border/55 hover:bg-card/60"
             >
               {copy.returnToApp}
             </Link>
@@ -375,7 +456,7 @@ const Pricing = () => {
                 type="button"
                 onClick={handleManageBilling}
                 disabled={openingPortal}
-                className="mt-3 inline-flex items-center justify-center rounded-2xl border border-primary/30 bg-primary/10 px-5 py-3 text-sm text-foreground transition-all hover:border-primary/45 hover:bg-primary/16 disabled:cursor-not-allowed disabled:opacity-65"
+                className="inline-flex items-center justify-center rounded-2xl border border-primary/30 bg-primary/10 px-5 py-3 text-sm text-foreground transition-all hover:border-primary/45 hover:bg-primary/16 disabled:cursor-not-allowed disabled:opacity-65"
               >
                 {openingPortal ? copy.openingBilling : copy.manageSubscription}
               </button>

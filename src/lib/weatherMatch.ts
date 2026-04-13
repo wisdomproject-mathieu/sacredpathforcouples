@@ -39,6 +39,8 @@ export type RitualRecommendation = {
   title: string;
   subtitle: string;
   description: string;
+  accessTier: "free" | "premium";
+  premiumTeaser: string;
   matchArchetypes: string[];
   energyProfiles: WeatherKey[];
   ritualDuration: string;
@@ -108,6 +110,7 @@ type RitualTemplate = {
   title: Localized;
   subtitle: Localized;
   description: Localized;
+  premiumTeaser?: Localized;
   matchArchetypes: string[];
   energyProfiles: WeatherKey[];
   ritualDuration: Localized;
@@ -773,11 +776,13 @@ const lineageLine = (traditions: string[], authors: string[], lang: Language) =>
   return `${intro}${tSegment}${aSegment}`;
 };
 
-const toRitualRecommendation = (template: RitualTemplate, lang: Language): RitualRecommendation => ({
+const toRitualRecommendation = (template: RitualTemplate, lang: Language, index: number): RitualRecommendation => ({
   id: template.id,
   title: t(template.title, lang),
   subtitle: t(template.subtitle, lang),
   description: t(template.description, lang),
+  accessTier: index === 0 ? "free" : "premium",
+  premiumTeaser: template.premiumTeaser ? t(template.premiumTeaser, lang) : t(template.subtitle, lang),
   matchArchetypes: template.matchArchetypes,
   energyProfiles: template.energyProfiles,
   ritualDuration: t(template.ritualDuration, lang),
@@ -821,7 +826,7 @@ export const buildWeatherMatchResult = (
   const archetypeKey = resolveArchetypeKey(first, second);
   const archetypeTemplate = archetypeTemplates[archetypeKey] ?? fallbackArchetype(first, second);
   const heroRef = heroImageByKey[archetypeTemplate.heroImageKey] ?? heroImageByKey["attuned-bridge"];
-  const recommendations = archetypeTemplate.rituals.map((item) => toRitualRecommendation(item, lang));
+  const recommendations = archetypeTemplate.rituals.map((item, index) => toRitualRecommendation(item, lang, index));
   const libraryLinks = Array.from(
     new Map(
       recommendations
