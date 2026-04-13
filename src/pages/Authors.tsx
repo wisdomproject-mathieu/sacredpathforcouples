@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import {
   ArrowRight,
   Compass,
@@ -1883,11 +1883,20 @@ const Authors = () => {
   const ui = authorsUiCopy[lang];
   const authorJoinWord = lang === "fr" ? " et " : lang === "cs" ? " a " : " and ";
   const isMobile = useIsMobile();
+  const [searchParams, setSearchParams] = useSearchParams();
   const localizedAuthors = useMemo(
     () => authors.map((author) => applyAuthorLocalization(author, lang)),
     [lang],
   );
-  const [selectedSlug, setSelectedSlug] = useState("deida");
+  const focusSlug = searchParams.get("focus")?.trim().toLowerCase();
+  const defaultSelectedSlug = useMemo(
+    () =>
+      localizedAuthors.find((author) => author.slug === focusSlug)?.slug ??
+      localizedAuthors[0]?.slug ??
+      "deida",
+    [focusSlug, localizedAuthors],
+  );
+  const [selectedSlug, setSelectedSlug] = useState(defaultSelectedSlug);
   const [mobileDetailMode, setMobileDetailMode] = useState(false);
   const selected = useMemo(
     () => localizedAuthors.find((author) => author.slug === selectedSlug) ?? localizedAuthors[0],
@@ -1914,8 +1923,27 @@ const Authors = () => {
     }
   }, [isMobile, mobileDetailMode]);
 
+  useEffect(() => {
+    if (!localizedAuthors.some((author) => author.slug === selectedSlug)) {
+      setSelectedSlug(localizedAuthors[0]?.slug ?? "deida");
+    }
+  }, [localizedAuthors, selectedSlug]);
+
+  useEffect(() => {
+    if (!focusSlug) return;
+    if (!localizedAuthors.some((author) => author.slug === focusSlug)) return;
+    setSelectedSlug(focusSlug);
+    if (isMobile) {
+      setMobileDetailMode(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [focusSlug, isMobile, localizedAuthors]);
+
   const handleSelectAuthor = (slug: string) => {
     setSelectedSlug(slug);
+    const next = new URLSearchParams(searchParams);
+    next.set("focus", slug);
+    setSearchParams(next, { replace: true });
     if (isMobile) {
       setMobileDetailMode(true);
       window.scrollTo({ top: 0, behavior: "smooth" });

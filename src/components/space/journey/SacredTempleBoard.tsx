@@ -16,6 +16,8 @@ type Props = {
   lang: Language;
   title: string;
   subtitle: string;
+  summaryTitle: string;
+  summaryBody: string;
   items: SacredBoardItem[];
   unreadCount: number;
   onOpen: () => void;
@@ -57,6 +59,8 @@ const SacredTempleBoard = ({
   lang,
   title,
   subtitle,
+  summaryTitle,
+  summaryBody,
   items,
   unreadCount,
   onOpen,
@@ -78,6 +82,11 @@ const SacredTempleBoard = ({
           {typeLabels[lang][type]}
         </button>
       ))}
+    </div>
+
+    <div className="mt-4 rounded-[16px] border border-primary/20 bg-primary/8 p-3">
+      <p className="text-[11px] uppercase tracking-[0.14em] text-primary/80">{summaryTitle}</p>
+      <p className="mt-2 text-sm leading-6 text-foreground/90">{summaryBody}</p>
     </div>
 
     <div className="mt-4 space-y-2">
@@ -107,7 +116,10 @@ const SacredTempleBoard = ({
             {!item.mine ? (
               <button
                 type="button"
-                onClick={() => onAcknowledge(item)}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onAcknowledge(item);
+                }}
                 className="mt-2 rounded-lg border border-primary/25 bg-primary/12 px-2.5 py-1 text-xs text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
               >
                 {lang === "fr" ? "Accuser réception" : lang === "cs" ? "Potvrdit" : "Acknowledge"}

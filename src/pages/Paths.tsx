@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import {
   ArrowRight,
   Crown,
@@ -2203,11 +2203,20 @@ const Paths = () => {
   const { lang } = useLanguage();
   const ui = pathsUiCopy[lang];
   const isMobile = useIsMobile();
+  const [searchParams, setSearchParams] = useSearchParams();
   const localizedPathDetails = useMemo(
     () => pathDetails.map((path) => applyPathLocalization(path, lang)),
     [lang],
   );
-  const [selectedSlug, setSelectedSlug] = useState(pathDetails[0].slug);
+  const focusSlug = searchParams.get("focus")?.trim().toLowerCase();
+  const defaultSelectedSlug = useMemo(
+    () =>
+      localizedPathDetails.find((path) => path.slug === focusSlug)?.slug ??
+      localizedPathDetails[0]?.slug ??
+      pathDetails[0].slug,
+    [focusSlug, localizedPathDetails],
+  );
+  const [selectedSlug, setSelectedSlug] = useState(defaultSelectedSlug);
   const [mobileDetailMode, setMobileDetailMode] = useState(false);
   const selected = useMemo(
     () => localizedPathDetails.find((path) => path.slug === selectedSlug) ?? localizedPathDetails[0],
@@ -2234,8 +2243,27 @@ const Paths = () => {
     }
   }, [isMobile, mobileDetailMode]);
 
+  useEffect(() => {
+    if (!localizedPathDetails.some((path) => path.slug === selectedSlug)) {
+      setSelectedSlug(localizedPathDetails[0]?.slug ?? pathDetails[0].slug);
+    }
+  }, [localizedPathDetails, selectedSlug]);
+
+  useEffect(() => {
+    if (!focusSlug) return;
+    if (!localizedPathDetails.some((path) => path.slug === focusSlug)) return;
+    setSelectedSlug(focusSlug);
+    if (isMobile) {
+      setMobileDetailMode(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [focusSlug, isMobile, localizedPathDetails]);
+
   const handleSelectPath = (slug: string) => {
     setSelectedSlug(slug);
+    const next = new URLSearchParams(searchParams);
+    next.set("focus", slug);
+    setSearchParams(next, { replace: true });
     if (isMobile) {
       setMobileDetailMode(true);
       window.scrollTo({ top: 0, behavior: "smooth" });

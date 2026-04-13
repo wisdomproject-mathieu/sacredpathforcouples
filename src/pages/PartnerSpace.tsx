@@ -63,6 +63,7 @@ type ViewMode = "doorways" | "journey" | "oracle";
 type JourneyItem = Pick<Tables<"partner_messages">, "id" | "content" | "created_at" | "sender_id" | "message_type">;
 type JourneyWeatherItem = Pick<Tables<"weather_entries">, "id" | "created_at" | "state" | "user_id" | "note">;
 type JourneyAltarItem = Pick<Tables<"altar_items">, "id" | "title" | "created_at" | "user_id" | "item_type" | "note">;
+type CuratedJourneyMessage = JourneyItem & { sanitizedContent: string };
 
 const toolDefs: {
   key: ToolKey;
@@ -195,6 +196,14 @@ const isToolKey = (value?: string | null): value is ToolKey =>
 
 const isViewKey = (value?: string | null): value is ViewMode =>
   Boolean(value && templeViewDefs.some((view) => view.key === value));
+
+const normalizeLegacyJourneyCopy = (value: string) =>
+  value
+    .replace(/I am arriving as/gi, "My weather is")
+    .replace(/arriving as/gi, "weather is")
+    .replace(/How are you arriving tonight\?/gi, "How is your weather tonight?")
+    .replace(/\s+/g, " ")
+    .trim();
 
 const DoorwayDetailBar = ({
   title,
@@ -463,9 +472,29 @@ const PartnerSpace = () => {
   const sharedWeatherUnreadCount = unreadCountSince(partnerWeatherTimestamps, seenSharedWeather);
   const combinedMatchUnreadCount = weatherMatch && matchTimestamp > seenCombinedMatch ? 1 : 0;
 
+  const curatedMessages = useMemo<CuratedJourneyMessage[]>(() => {
+    const deduped: CuratedJourneyMessage[] = [];
+    const seen = new Map<string, number>();
+
+    for (const item of journeyMessages) {
+      const sanitizedContent = normalizeLegacyJourneyCopy(item.content);
+      const key = `${item.sender_id}:${item.message_type ?? "message"}:${sanitizedContent.toLowerCase()}`;
+      const currentTs = toTimestamp(item.created_at);
+      const previousTs = seen.get(key);
+      if (previousTs && Math.abs(previousTs - currentTs) < 1000 * 60 * 45) continue;
+      seen.set(key, currentTs);
+      deduped.push({ ...item, sanitizedContent });
+    }
+
+    return deduped.slice(0, 36);
+  }, [journeyMessages]);
+
   const partnerMessages = useMemo(
-    () => journeyMessages.filter((item) => (partnerUserId ? item.sender_id === partnerUserId : item.sender_id !== user?.id)),
-    [journeyMessages, partnerUserId, user?.id],
+    () =>
+      curatedMessages.filter((item) =>
+        partnerUserId ? item.sender_id === partnerUserId : item.sender_id !== user?.id,
+      ),
+    [curatedMessages, partnerUserId, user?.id],
   );
   const partnerMessageTimestamps = useMemo(
     () => partnerMessages.map((item) => toTimestamp(item.created_at)),
@@ -491,16 +520,16 @@ const PartnerSpace = () => {
 
   const boardItems: SacredBoardItem[] = useMemo(
     () =>
-      journeyMessages.map((item) => ({
+      curatedMessages.map((item) => ({
         id: item.id,
         type: item.message_type ?? "note",
         authorLabel: item.sender_id === user?.id ? l("You", "Vous", "Ty") : l("Beloved", "Partenaire", "Milovaný protějšek"),
-        body: item.content,
+        body: item.sanitizedContent,
         createdAt: item.created_at,
         mine: item.sender_id === user?.id,
         unread: item.sender_id !== user?.id && toTimestamp(item.created_at) > seenTempleBoard,
       })),
-    [journeyMessages, l, seenTempleBoard, user?.id],
+    [curatedMessages, l, seenTempleBoard, user?.id],
   );
 
   const latestBelovedWeatherSignal = useMemo(() => {
@@ -520,7 +549,7 @@ const PartnerSpace = () => {
     return {
       id: latest.id,
       createdAt: latest.created_at,
-      preview: latest.content,
+      preview: latest.sanitizedContent,
     };
   }, [partnerMessages]);
 
@@ -545,6 +574,29 @@ const PartnerSpace = () => {
     if (!candidates.length) return null;
     return candidates.sort((a, b) => toTimestamp(b.createdAt) - toTimestamp(a.createdAt))[0];
   }, [latestBelovedMessageSignal, latestBelovedOfferingSignal, latestBelovedWeatherSignal]);
+
+  const templeBoardSummary = useMemo(() => {
+    if (latestFromBeloved) {
+      return {
+        title: l("Latest sacred signal", "Dernier signal sacré", "Poslední posvátný signál"),
+        body: latestFromBeloved.preview,
+      };
+    }
+    if (weatherMatch) {
+      return {
+        title: l("Current archetype", "Archétype actuel", "Aktuální archetyp"),
+        body: `${weatherMatch.archetype.title}. ${weatherMatch.summary}`,
+      };
+    }
+    return {
+      title: l("Temple board intent", "Intention du tableau", "Záměr chrámové nástěnky"),
+      body: l(
+        "Use this space for meaningful notes, ritual invitations, and gentle offerings.",
+        "Utilisez cet espace pour des notes importantes, des invitations rituelles et des offrandes douces.",
+        "Používejte tento prostor pro smysluplné vzkazy, rituální pozvání a jemná sdílení.",
+      ),
+    };
+  }, [l, latestFromBeloved, weatherMatch]);
 
   const timelineItems: JourneyTimelineItem[] = useMemo(() => {
     const typeLabels: Record<JourneyTimelineItem["type"], string> = {
@@ -608,7 +660,14 @@ const PartnerSpace = () => {
       return "message";
     };
 
-    const fromWeather: JourneyTimelineItem[] = weatherEntries.map((item) => {
+    const latestWeatherByUser = new Map<string, JourneyWeatherItem>();
+    for (const item of weatherEntries) {
+      if (!latestWeatherByUser.has(item.user_id)) {
+        latestWeatherByUser.set(item.user_id, item);
+      }
+    }
+
+    const fromWeather: JourneyTimelineItem[] = Array.from(latestWeatherByUser.values()).map((item) => {
       const weather = getWeatherPresentation(item.state, lang);
       const mine = item.user_id === user?.id;
       const action = getAction("weather");
@@ -626,7 +685,7 @@ const PartnerSpace = () => {
       };
     });
 
-    const fromMessages: JourneyTimelineItem[] = journeyMessages.map((item) => {
+    const fromMessages: JourneyTimelineItem[] = curatedMessages.map((item) => {
       const mine = item.sender_id === user?.id;
       const mappedType = messageToTimelineType(item.message_type);
       const action = getAction(mappedType);
@@ -635,7 +694,7 @@ const PartnerSpace = () => {
         type: mappedType,
         typeLabel: typeLabels[mappedType],
         authorLabel: mine ? l("You", "Vous", "Ty") : l("Beloved", "Partenaire", "Milovaný protějšek"),
-        preview: item.content,
+        preview: item.sanitizedContent,
         createdAt: item.created_at,
         unread: !mine && toTimestamp(item.created_at) > seenTimeline,
         ...action,
@@ -660,10 +719,51 @@ const PartnerSpace = () => {
       };
     });
 
-    return [...fromWeather, ...fromMessages, ...fromAltar].sort(
+    const matchEvent: JourneyTimelineItem[] =
+      weatherMatch && matchTimestamp
+        ? [
+            {
+              id: `match-${weatherMatch.matchKey}-${Math.floor(matchTimestamp / 60000)}`,
+              type: "ritual",
+              typeLabel: l("Match unlocked", "Match débloqué", "Shoda odemčena"),
+              authorLabel: l("Shared field", "Champ partagé", "Sdílené pole"),
+              preview: l(
+                "Shared weather unlocked: ",
+                "Météo partagée débloquée : ",
+                "Sdílené počasí odemčeno: ",
+              ) + `${weatherMatch.archetype.title}. ${weatherMatch.summary}`,
+              createdAt: new Date(matchTimestamp).toISOString(),
+              unread: matchTimestamp > seenTimeline,
+              actionLabel: l("Enter ritual", "Entrer dans le rituel", "Vstoupit do rituálu"),
+              onAction: () => activateTool("rituals"),
+            },
+          ]
+        : [];
+
+    const combined = [...matchEvent, ...fromMessages, ...fromAltar, ...fromWeather].sort(
       (a, b) => toTimestamp(b.createdAt) - toTimestamp(a.createdAt),
     );
-  }, [altarEvents, journeyMessages, lang, l, seenTimeline, user?.id, weatherEntries]);
+
+    const unique: JourneyTimelineItem[] = [];
+    const seen = new Set<string>();
+    for (const item of combined) {
+      const signature = `${item.type}:${item.authorLabel}:${item.preview.toLowerCase()}`;
+      if (seen.has(signature)) continue;
+      seen.add(signature);
+      unique.push(item);
+    }
+    return unique.slice(0, 22);
+  }, [
+    altarEvents,
+    curatedMessages,
+    lang,
+    l,
+    matchTimestamp,
+    seenTimeline,
+    user?.id,
+    weatherEntries,
+    weatherMatch,
+  ]);
 
   const timelineUnreadCount = useMemo(
     () => unreadCountSince(belovedEventTimestamps, seenTimeline),
@@ -1173,18 +1273,20 @@ const PartnerSpace = () => {
                 title={l("Your shared weather", "Votre météo partagée", "Vaše sdílené počasí")}
                 result={weatherMatch}
                 unreadCount={combinedMatchUnreadCount}
-                openRitualLabel={l("Open our ritual", "Ouvrir notre rituel", "Otevřít náš rituál")}
-                exploreLabel={l("Explore both energies", "Explorer les deux énergies", "Prozkoumat obě energie")}
+                enterRitualLabel={l("Open tonight's path", "Ouvrir la voie de ce soir", "Otevřít dnešní cestu")}
+                readEnergiesLabel={l("Read the energies", "Lire les énergies", "Přečíst energie")}
                 firstEnergyLabel={l("Your energy", "Votre énergie", "Vaše energie")}
                 secondEnergyLabel={l("Beloved's energy", "Énergie du partenaire", "Partnerova energie")}
                 combinedEnergyLabel={l("Combined meaning", "Sens combiné", "Společný význam")}
+                sourceHeadingLabel={l("Wisdom behind this", "Sagesse derrière cela", "Moudrost za tím")}
+                sourceCtaLabel={l("Open in library", "Ouvrir dans la bibliothèque", "Otevřít v knihovně")}
+                whyFitsLabel={l("Why this fits your match", "Pourquoi cela correspond à votre match", "Proč to sedí k vaší shodě")}
                 newChipLabel={l("new", "nouveau", "nové")}
-                recommendationActionLabel={l("Open ritual", "Ouvrir rituel", "Otevřít rituál")}
-                onOpenRitual={() => {
+                onEnterRitual={() => {
                   openMatchSection();
                   activateTool("rituals");
                 }}
-                onExplore={openMatchSection}
+                onReadEnergies={openMatchSection}
               />
             ) : null}
 
@@ -1244,6 +1346,8 @@ const PartnerSpace = () => {
                   "Un espace sacré pour vos notes, invitations, intentions et offrandes.",
                   "Posvátný prostor pro vzkazy, pozvání, záměry a sdílení mezi vámi.",
                 )}
+                summaryTitle={templeBoardSummary.title}
+                summaryBody={templeBoardSummary.body}
                 items={boardItems}
                 unreadCount={templeBoardUnreadCount}
                 onOpen={openTempleBoardSection}
