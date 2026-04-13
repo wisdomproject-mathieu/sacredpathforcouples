@@ -1,8 +1,14 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Check, Crown, HeartHandshake, Sparkles, Stars } from "lucide-react";
+import { toast } from "sonner";
+
+import { useAuth } from "@/contexts/AuthContext";
+import { createCheckoutSession, type BillingPlan } from "@/lib/billing";
 
 const pricingTiers = [
   {
+    plan: "monthly" as BillingPlan,
     name: "Monthly",
     price: "$5.99",
     subline: "per month",
@@ -13,6 +19,7 @@ const pricingTiers = [
     cta: "Choose monthly",
   },
   {
+    plan: "yearly" as BillingPlan,
     name: "Yearly",
     price: "$39.99",
     subline: "per year",
@@ -23,6 +30,7 @@ const pricingTiers = [
     cta: "Choose yearly",
   },
   {
+    plan: "founding" as BillingPlan,
     name: "Founding Offer",
     price: "$29.99",
     subline: "limited launch year",
@@ -43,6 +51,44 @@ const features = [
 ];
 
 const Pricing = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [activePlan, setActivePlan] = useState<BillingPlan | null>(null);
+
+  useEffect(() => {
+    const billingStatus = searchParams.get("billing");
+    if (billingStatus === "success") {
+      toast.success("Payment confirmed. Your premium access should update shortly.");
+    }
+    if (billingStatus === "canceled") {
+      toast.message("Checkout canceled.");
+    }
+  }, [searchParams]);
+
+  const handleCheckout = async (plan: BillingPlan) => {
+    if (!user) {
+      toast.message("Please log in to start your subscription.");
+      navigate("/auth");
+      return;
+    }
+
+    try {
+      setActivePlan(plan);
+      const checkoutUrl = await createCheckoutSession({
+        plan,
+        userId: user.id,
+        email: user.email ?? undefined,
+      });
+      window.location.assign(checkoutUrl);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unable to start checkout.";
+      toast.error(message);
+    } finally {
+      setActivePlan(null);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background px-4 py-8 text-foreground md:px-6">
       <div className="mx-auto max-w-6xl space-y-6">
@@ -85,13 +131,15 @@ const Pricing = () => {
 
                 <button
                   type="button"
+                  onClick={() => handleCheckout(tier.plan)}
+                  disabled={activePlan === tier.plan}
                   className={`mt-6 w-full rounded-2xl px-4 py-3 text-sm transition-all ${
                     tier.featured
                       ? "border border-primary/30 bg-primary/12 text-foreground hover:border-primary/40 hover:bg-primary/16"
                       : "border border-border/35 bg-card/45 text-foreground hover:border-border/55 hover:bg-card/60"
-                  }`}
+                  } disabled:cursor-not-allowed disabled:opacity-65`}
                 >
-                  {tier.cta}
+                  {activePlan === tier.plan ? "Redirecting..." : tier.cta}
                 </button>
               </div>
             );

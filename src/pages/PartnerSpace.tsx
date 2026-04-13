@@ -30,7 +30,7 @@ import TempleGuide from "@/components/space/TempleGuide";
 import WisdomOracle from "@/components/space/WisdomOracle";
 import ShareCardButton from "@/components/space/ShareCardButton";
 import { Tables } from "@/integrations/supabase/types";
-import { isPremiumTier, MembershipTier } from "@/lib/Premium";
+import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 type ToolKey = "weather" | "rituals" | "positions" | "messages" | "guide" | "repair" | "pathways" | "altar";
@@ -276,9 +276,7 @@ const PartnerSpace = () => {
     nextSuggestion: "Start with Intimacy Weather to meet each other where you truly are.",
   });
   const [journeyFeed, setJourneyFeed] = useState<JourneyItem[]>([]);
-  const membershipTier = (user?.user_metadata?.membership_tier ??
-    user?.app_metadata?.membership_tier ??
-    "free") as MembershipTier;
+  const membershipTier = getEffectiveMembershipTier(user);
   const hasPremiumAccess = isPremiumTier(membershipTier);
 
   const isToolUnlocked = (tool: ToolKey) => hasPremiumAccess || freeDoorways.includes(tool);
