@@ -25,9 +25,10 @@ interface Progress {
 interface Props {
   coupleId?: string;
   onNavigate?: (tab: string) => void;
+  isPremium?: boolean;
 }
 
-const Pathways = ({ coupleId, onNavigate }: Props) => {
+const Pathways = ({ coupleId, onNavigate, isPremium = false }: Props) => {
   const { t } = useLanguage();
   const { user } = useAuth();
   const [pathways, setPathways] = useState<Pathway[]>([]);
@@ -104,20 +105,21 @@ const Pathways = ({ coupleId, onNavigate }: Props) => {
           const isSelected = selected === p.id;
           const completedCount = prog?.completed_days?.length || 0;
           const progressPct = prog ? Math.min((completedCount / p.duration_days) * 100, 100) : 0;
+          const isLocked = p.premium_required && !isPremium;
 
           return (
             <div key={p.id} className="relative">
-              {p.premium_required && (
+              {isLocked && (
                 <div className="absolute inset-0 z-10 rounded-2xl bg-background/60 backdrop-blur-sm flex flex-col items-center justify-center gap-2">
                   <Lock className="h-5 w-5 text-primary/60" />
                   <span className="text-sm font-body text-muted-foreground">{t("premium.unlock")}</span>
                 </div>
               )}
               <button
-                onClick={() => !p.premium_required && setSelected(isSelected ? null : p.id)}
+                onClick={() => !isLocked && setSelected(isSelected ? null : p.id)}
                 className={`w-full text-left p-5 rounded-2xl border transition-all duration-300 ${
                   isSelected ? "bg-primary/5 border-primary/30" : "bg-card/50 border-border/30 hover:border-border/60"
-                } ${p.premium_required ? "opacity-50" : ""}`}
+                } ${isLocked ? "opacity-50" : ""}`}
               >
                 <div className="flex items-center gap-4">
                   <div className="flex-1 min-w-0">

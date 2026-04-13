@@ -794,11 +794,15 @@ const PartnerSpace = () => {
               {activeToolUnlocked && activeTool === "rituals" && (
                 <RitualCards coupleId={coupleId ?? undefined} onNavigate={navigateTool} isPremium={hasPremiumAccess} />
               )}
-              {activeToolUnlocked && activeTool === "positions" && <PositionDeck onNavigate={navigateTool} coupleId={coupleId ?? undefined} />}
+              {activeToolUnlocked && activeTool === "positions" && (
+                <PositionDeck onNavigate={navigateTool} coupleId={coupleId ?? undefined} isPremium={hasPremiumAccess} />
+              )}
               {activeToolUnlocked && activeTool === "messages" && <TempleMessages coupleId={coupleId ?? undefined} onNavigate={navigateTool} />}
               {activeToolUnlocked && activeTool === "guide" && <TempleGuide onNavigate={navigateTool} coupleId={coupleId ?? undefined} />}
               {activeToolUnlocked && activeTool === "repair" && <RepairMode onNavigate={navigateTool} coupleId={coupleId ?? undefined} />}
-              {activeToolUnlocked && activeTool === "pathways" && <Pathways coupleId={coupleId ?? undefined} onNavigate={navigateTool} />}
+              {activeToolUnlocked && activeTool === "pathways" && (
+                <Pathways coupleId={coupleId ?? undefined} onNavigate={navigateTool} isPremium={hasPremiumAccess} />
+              )}
               {activeToolUnlocked && activeTool === "altar" && <MemoryAltar coupleId={coupleId ?? undefined} onNavigate={navigateTool} />}
             </section>
             ) : null}

@@ -19,6 +19,10 @@ const decodeBody = (event: { body?: string | null; isBase64Encoded?: boolean }) 
   return event.isBase64Encoded ? Buffer.from(raw, "base64").toString("utf8") : raw;
 };
 
+export const config = {
+  path: "/api/stripe-webhook",
+};
+
 const findUserIdFromSubscription = async (
   supabaseAdmin: ReturnType<typeof createClient>,
   subscriptionId: string,

@@ -1,4 +1,5 @@
 import Stripe from "stripe";
+import { createClient } from "@supabase/supabase-js";
 
 import { billingPlanConfig, isBillingPlan } from "./_shared/billing";
 
@@ -26,6 +27,18 @@ const getOrigin = (rawUrl?: string, originHeader?: string) => {
   }
 };
 
+const extractBearerToken = (authorizationHeader?: string) => {
+  if (!authorizationHeader) return null;
+  const [type, token] = authorizationHeader.split(" ");
+  if (!type || !token) return null;
+  if (type.toLowerCase() !== "bearer") return null;
+  return token.trim();
+};
+
+export const config = {
+  path: "/api/create-checkout-session",
+};
+
 export const handler = async (event: {
   httpMethod?: string;
   body?: string | null;
@@ -37,8 +50,13 @@ export const handler = async (event: {
   }
 
   const secretKey = process.env.STRIPE_SECRET_KEY;
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!secretKey) {
     return json(500, { error: "Stripe secret key is missing." });
+  }
+  if (!supabaseUrl || !supabaseServiceRoleKey) {
+    return json(500, { error: "Supabase server env vars are missing." });
   }
 
   let parsedBody: { plan?: string; userId?: string; email?: string };
@@ -60,6 +78,26 @@ export const handler = async (event: {
     return json(400, { error: "User ID is required." });
   }
 
+  const token = extractBearerToken(event.headers?.authorization || event.headers?.Authorization);
+  if (!token) {
+    return json(401, { error: "Missing bearer token." });
+  }
+
+  const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  });
+  const authResult = await supabaseAdmin.auth.getUser(token);
+  const authenticatedUser = authResult.data.user;
+  if (!authenticatedUser) {
+    return json(401, { error: "Invalid session token." });
+  }
+  if (authenticatedUser.id !== userId) {
+    return json(403, { error: "User mismatch for checkout request." });
+  }
+
   const priceId = process.env[billingPlanConfig[plan].envPriceKey];
   if (!priceId) {
     return json(500, { error: `Missing price id for plan ${plan}.` });
@@ -77,7 +115,7 @@ export const handler = async (event: {
       success_url: successUrl,
       cancel_url: cancelUrl,
       allow_promotion_codes: true,
-      customer_email: email || undefined,
+      customer_email: authenticatedUser.email || email || undefined,
       client_reference_id: userId,
       metadata: {
         plan,

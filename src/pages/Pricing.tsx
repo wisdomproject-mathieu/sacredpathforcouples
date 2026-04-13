@@ -4,7 +4,8 @@ import { Check, Crown, HeartHandshake, Sparkles, Stars } from "lucide-react";
 import { toast } from "sonner";
 
 import { useAuth } from "@/contexts/AuthContext";
-import { createCheckoutSession, type BillingPlan } from "@/lib/billing";
+import { createCheckoutSession, createCustomerPortalSession, type BillingPlan } from "@/lib/billing";
+import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
 
 const pricingTiers = [
   {
@@ -51,10 +52,13 @@ const features = [
 ];
 
 const Pricing = () => {
-  const { user } = useAuth();
+  const { user, session } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [activePlan, setActivePlan] = useState<BillingPlan | null>(null);
+  const [openingPortal, setOpeningPortal] = useState(false);
+  const membershipTier = getEffectiveMembershipTier(user);
+  const hasPremiumAccess = isPremiumTier(membershipTier);
 
   useEffect(() => {
     const billingStatus = searchParams.get("billing");
@@ -72,12 +76,18 @@ const Pricing = () => {
       navigate("/auth");
       return;
     }
+    if (!session?.access_token) {
+      toast.error("Missing session token. Please log in again.");
+      navigate("/auth");
+      return;
+    }
 
     try {
       setActivePlan(plan);
       const checkoutUrl = await createCheckoutSession({
         plan,
         userId: user.id,
+        accessToken: session.access_token,
         email: user.email ?? undefined,
       });
       window.location.assign(checkoutUrl);
@@ -86,6 +96,34 @@ const Pricing = () => {
       toast.error(message);
     } finally {
       setActivePlan(null);
+    }
+  };
+
+  const handleManageBilling = async () => {
+    if (!user) {
+      toast.message("Please log in to manage billing.");
+      navigate("/auth");
+      return;
+    }
+    if (!session?.access_token) {
+      toast.error("Missing session token. Please log in again.");
+      navigate("/auth");
+      return;
+    }
+
+    try {
+      setOpeningPortal(true);
+      const portalUrl = await createCustomerPortalSession({
+        userId: user.id,
+        accessToken: session.access_token,
+        email: user.email ?? undefined,
+      });
+      window.location.assign(portalUrl);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unable to open billing portal.";
+      toast.error(message);
+    } finally {
+      setOpeningPortal(false);
     }
   };
 
@@ -99,6 +137,11 @@ const Pricing = () => {
             <p className="mt-4 text-sm leading-7 text-muted-foreground md:text-base">
               Position the app below the most expensive couples apps, while still honoring the depth, beauty, and originality of your temple experience.
             </p>
+            {hasPremiumAccess ? (
+              <div className="mt-5 inline-flex rounded-full border border-emerald-300/35 bg-emerald-500/12 px-4 py-1.5 text-xs uppercase tracking-[0.14em] text-emerald-200">
+                Premium active · {membershipTier === "sacred_yearly" ? "Yearly" : "Monthly"}
+              </div>
+            ) : null}
           </div>
         </section>
 
@@ -185,6 +228,17 @@ const Pricing = () => {
             >
               Return to Sacred Path
             </Link>
+
+            {user && hasPremiumAccess ? (
+              <button
+                type="button"
+                onClick={handleManageBilling}
+                disabled={openingPortal}
+                className="mt-3 inline-flex items-center justify-center rounded-2xl border border-primary/30 bg-primary/10 px-5 py-3 text-sm text-foreground transition-all hover:border-primary/45 hover:bg-primary/16 disabled:cursor-not-allowed disabled:opacity-65"
+              >
+                {openingPortal ? "Opening billing..." : "Manage subscription"}
+              </button>
+            ) : null}
           </div>
         </section>
       </div>

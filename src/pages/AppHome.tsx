@@ -20,6 +20,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
+import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
 
 type RitualItem = Tables<"ritual_items">;
 type Pathway = Tables<"pathways">;
@@ -183,6 +184,12 @@ const homeCopy: Record<Language, Record<string, string>> = {
     chipLibrary: "Sacred Library",
     chipOracle: "Wisdom Oracle",
     buttonFullPlans: "View full plans",
+    premiumActive: "Premium Active",
+    premiumActiveTitle: "Your full Sacred Path is unlocked",
+    premiumActiveDesc:
+      "You now have full access to all temple doorways, complete library depth, advanced reconnect tracks, and full Oracle intelligence.",
+    buttonOpenTemple: "Open Sacred Temple",
+    buttonOpenLibrary: "Open Sacred Library",
     stepRitual1: "Take three synchronized breaths.",
     stepRitual2: "Share one feeling each.",
     stepRitual3: "Close with one intentional touch.",
@@ -258,6 +265,12 @@ const homeCopy: Record<Language, Record<string, string>> = {
     chipLibrary: "Bibliothèque sacrée",
     chipOracle: "Oracle de sagesse",
     buttonFullPlans: "Voir les plans complets",
+    premiumActive: "Premium actif",
+    premiumActiveTitle: "Votre Sacred Path complet est débloqué",
+    premiumActiveDesc:
+      "Vous avez maintenant accès à toutes les portes du temple, à toute la profondeur de la bibliothèque, aux tracks reconnect avancés et à l'intelligence complète de l'Oracle.",
+    buttonOpenTemple: "Ouvrir le Temple Sacré",
+    buttonOpenLibrary: "Ouvrir la Bibliothèque Sacrée",
     stepRitual1: "Prenez trois respirations synchronisées.",
     stepRitual2: "Partagez chacun un ressenti.",
     stepRitual3: "Terminez par un toucher intentionnel.",
@@ -333,6 +346,12 @@ const homeCopy: Record<Language, Record<string, string>> = {
     chipLibrary: "Posvátná knihovna",
     chipOracle: "Oracle moudrosti",
     buttonFullPlans: "Zobrazit plné plány",
+    premiumActive: "Premium aktivní",
+    premiumActiveTitle: "Tvá plná Sacred Path je odemčená",
+    premiumActiveDesc:
+      "Nyní máš plný přístup ke všem chrámovým branám, kompletní hloubce knihovny, pokročilým reconnect trackům i plné inteligenci Orákula.",
+    buttonOpenTemple: "Otevřít Posvátný chrám",
+    buttonOpenLibrary: "Otevřít Posvátnou knihovnu",
     stepRitual1: "Dejte si tři synchronní nádechy a výdechy.",
     stepRitual2: "Každý sdílejte jeden pocit.",
     stepRitual3: "Uzavřete jedním záměrným dotekem.",
@@ -421,6 +440,7 @@ const AppHome = () => {
   const { user } = useAuth();
   const { lang } = useLanguage();
   const copy = homeCopy[lang];
+  const hasPremiumAccess = isPremiumTier(getEffectiveMembershipTier(user));
   const quotes = quoteSets[lang];
   const positions = positionSets[lang];
   const templePulses = templePulseSets[lang];
@@ -459,17 +479,23 @@ const AppHome = () => {
     const loadHome = async () => {
       setLoading(true);
 
+      const ritualsQuery = supabase
+        .from("ritual_items")
+        .select("*")
+        .order("created_at", { ascending: true });
+      const pathwaysQuery = supabase
+        .from("pathways")
+        .select("*")
+        .order("created_at", { ascending: true });
+
+      if (!hasPremiumAccess) {
+        ritualsQuery.eq("premium_required", false);
+        pathwaysQuery.eq("premium_required", false);
+      }
+
       const [{ data: ritualData }, { data: pathwayData }, { data: couple }, { data: ownProfile }] = await Promise.all([
-        supabase
-          .from("ritual_items")
-          .select("*")
-          .eq("premium_required", false)
-          .order("created_at", { ascending: true }),
-        supabase
-          .from("pathways")
-          .select("*")
-          .eq("premium_required", false)
-          .order("created_at", { ascending: true }),
+        ritualsQuery,
+        pathwaysQuery,
         supabase
           .from("couples")
           .select("id, partner_a, partner_b")
@@ -529,7 +555,7 @@ const AppHome = () => {
     };
 
     loadHome();
-  }, [user]);
+  }, [hasPremiumAccess, user]);
 
   const latestPartnerMessage = useMemo(
     () => messages.find((message) => message.sender_id !== user?.id) ?? null,
@@ -849,53 +875,78 @@ const AppHome = () => {
         </div>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-2">
-        <div className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.18),rgba(15,23,42,0.12))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.5)]">
-          <div className="flex items-center gap-2 text-amber-200">
-            <Lock className="h-4 w-4" />
-            <span className="text-xs uppercase tracking-[0.16em]">{copy.lockedDaily}</span>
+      {!hasPremiumAccess ? (
+        <section className="grid gap-4 md:grid-cols-2">
+          <div className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.18),rgba(15,23,42,0.12))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.5)]">
+            <div className="flex items-center gap-2 text-amber-200">
+              <Lock className="h-4 w-4" />
+              <span className="text-xs uppercase tracking-[0.16em]">{copy.lockedDaily}</span>
+            </div>
+            <h3 className="mt-2 font-display text-xl text-foreground">{copy.lockedDailyTitle}</h3>
+            <p className="mt-3 text-sm leading-6 text-foreground/90">
+              {copy.lockedDailyDesc}
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{copy.chipExtraCards}</span>
+              <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{copy.chipDailyRefresh}</span>
+              <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{copy.chipSensualGuidance}</span>
+            </div>
+            <Link
+              to="/pricing"
+              className="mt-4 inline-flex items-center gap-2 rounded-xl border border-amber-300/30 bg-amber-500/14 px-3 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
+            >
+              {copy.buttonDailyPlans}
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
-          <h3 className="mt-2 font-display text-xl text-foreground">{copy.lockedDailyTitle}</h3>
-          <p className="mt-3 text-sm leading-6 text-foreground/90">
-            {copy.lockedDailyDesc}
-          </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{copy.chipExtraCards}</span>
-            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{copy.chipDailyRefresh}</span>
-            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{copy.chipSensualGuidance}</span>
-          </div>
-          <Link
-            to="/pricing"
-            className="mt-4 inline-flex items-center gap-2 rounded-xl border border-amber-300/30 bg-amber-500/14 px-3 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
-          >
-            {copy.buttonDailyPlans}
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
 
-        <div className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(250,204,21,0.2),transparent_60%),linear-gradient(135deg,rgba(251,191,36,0.16),rgba(17,24,39,0.14))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.46)]">
-          <div className="flex items-center gap-2 text-amber-200">
-            <Lock className="h-4 w-4" />
-            <span className="text-xs uppercase tracking-[0.16em]">{copy.lockedFull}</span>
+          <div className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(250,204,21,0.2),transparent_60%),linear-gradient(135deg,rgba(251,191,36,0.16),rgba(17,24,39,0.14))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.46)]">
+            <div className="flex items-center gap-2 text-amber-200">
+              <Lock className="h-4 w-4" />
+              <span className="text-xs uppercase tracking-[0.16em]">{copy.lockedFull}</span>
+            </div>
+            <h3 className="mt-2 font-display text-xl text-foreground">{copy.lockedFullTitle}</h3>
+            <p className="mt-3 text-sm leading-6 text-foreground/90">
+              {copy.lockedFullDesc}
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{copy.chipTemple}</span>
+              <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{copy.chipLibrary}</span>
+              <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{copy.chipOracle}</span>
+            </div>
+            <Link
+              to="/pricing"
+              className="mt-4 inline-flex items-center gap-2 rounded-xl border border-amber-300/30 bg-amber-500/14 px-3 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
+            >
+              {copy.buttonFullPlans}
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
-          <h3 className="mt-2 font-display text-xl text-foreground">{copy.lockedFullTitle}</h3>
-          <p className="mt-3 text-sm leading-6 text-foreground/90">
-            {copy.lockedFullDesc}
-          </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{copy.chipTemple}</span>
-            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{copy.chipLibrary}</span>
-            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{copy.chipOracle}</span>
+        </section>
+      ) : (
+        <section className="rounded-[24px] border border-emerald-300/25 bg-[radial-gradient(circle_at_top_right,rgba(74,222,128,0.22),transparent_58%),linear-gradient(135deg,rgba(16,185,129,0.18),rgba(15,23,42,0.14))] p-5 shadow-[0_24px_70px_-45px_rgba(74,222,128,0.45)]">
+          <div className="flex items-center gap-2 text-emerald-200">
+            <HeartHandshake className="h-4 w-4" />
+            <span className="text-xs uppercase tracking-[0.16em]">{copy.premiumActive}</span>
           </div>
-          <Link
-            to="/pricing"
-            className="mt-4 inline-flex items-center gap-2 rounded-xl border border-amber-300/30 bg-amber-500/14 px-3 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
-          >
-            {copy.buttonFullPlans}
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-      </section>
+          <h3 className="mt-2 font-display text-2xl text-foreground">{copy.premiumActiveTitle}</h3>
+          <p className="mt-3 max-w-3xl text-sm leading-6 text-foreground/90">{copy.premiumActiveDesc}</p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Link
+              to="/app/space"
+              className="inline-flex items-center gap-2 rounded-xl border border-emerald-300/35 bg-emerald-500/14 px-3 py-2 text-sm text-foreground transition-all hover:border-emerald-300/50 hover:bg-emerald-500/20"
+            >
+              {copy.buttonOpenTemple}
+            </Link>
+            <Link
+              to="/app/paths"
+              className="inline-flex items-center gap-2 rounded-xl border border-border/35 bg-card/55 px-3 py-2 text-sm text-foreground transition-all hover:border-border/55 hover:bg-card/70"
+            >
+              {copy.buttonOpenLibrary}
+            </Link>
+          </div>
+        </section>
+      )}
     </div>
   );
 };
