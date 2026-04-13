@@ -550,12 +550,15 @@ const AppHome = () => {
   const todayKey = useMemo(() => localDayKey(new Date()), []);
   const todayLabel = useMemo(
     () =>
-      new Intl.DateTimeFormat("en-US", {
+      new Intl.DateTimeFormat(
+        lang === "fr" ? "fr-FR" : lang === "cs" ? "cs-CZ" : "en-US",
+        {
         weekday: "long",
         month: "long",
         day: "numeric",
-      }).format(new Date()),
-    []
+      }
+      ).format(new Date()),
+    [lang]
   );
 
   const signal = useMemo(() => {
@@ -701,9 +704,9 @@ const AppHome = () => {
         <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-4xl">
             <p className="text-xs uppercase tracking-[0.28em] text-primary/80">{todayLabel}</p>
-            <h1 className="mt-3 font-display text-4xl leading-tight text-foreground md:text-5xl">Daily Sacred Starter for Modern Couples</h1>
+            <h1 className="mt-3 font-display text-4xl leading-tight text-foreground md:text-5xl">{copy.heroTitle}</h1>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
-              Six preselected cards. Calm direction. Shared intimacy momentum. This page renews every day to support your path toward infinite love.
+              {copy.heroDesc}
             </p>
           </div>
 

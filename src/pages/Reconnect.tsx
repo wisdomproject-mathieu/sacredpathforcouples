@@ -15,6 +15,7 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useSeoMetadata } from "@/lib/seo";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
 
 type Tier = "free" | "premium";
@@ -81,22 +82,22 @@ type ReconnectTool = {
 const libraryPages = [
   {
     to: "/app/paths",
-    label: "Paths",
-    subtitle: "Ancient pathways for modern love",
+    labelKey: "pagePaths",
+    subtitleKey: "pagePathsSubtitle",
     icon: Waves,
     iconClass: "text-violet-300",
   },
   {
     to: "/app/authors",
-    label: "Authors",
-    subtitle: "Voices that guide intimacy",
+    labelKey: "pageAuthors",
+    subtitleKey: "pageAuthorsSubtitle",
     icon: Heart,
     iconClass: "text-rose-300",
   },
   {
     to: "/app/reconnect",
-    label: "Reconnect",
-    subtitle: "Repair and return to closeness",
+    labelKey: "pageReconnect",
+    subtitleKey: "pageReconnectSubtitle",
     icon: MessageCircleHeart,
     iconClass: "text-amber-300",
   },
@@ -697,6 +698,189 @@ const reconnectUpgradeCopy: Record<
 const shellCardClass =
   "rounded-[28px] border border-border/30 bg-card/45 p-5 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.46)]";
 
+const reconnectUiCopy: Record<Language, Record<string, string>> = {
+  en: {
+    pagePaths: "Paths",
+    pagePathsSubtitle: "Ancient pathways for modern love",
+    pageAuthors: "Authors",
+    pageAuthorsSubtitle: "Voices that guide intimacy",
+    pageReconnect: "Reconnect",
+    pageReconnectSubtitle: "Repair and return to closeness",
+    backToLibrary: "Back to Library",
+    lockedInPremium: "Locked in premium",
+    openAccess: "Open access",
+    relatedTracks: "Related Reconnect Tracks",
+    heroEyebrow: "Sacred Library · Reconnect",
+    heroTitle: "Ancient reconnect wisdom for modern relationship moments",
+    heroDesc:
+      "Read, apply, and feel closer right away. Then return for deeper tracks and premium guidance that help your relationship keep moving toward sacred love.",
+    sacredPages: "Sacred pages",
+    overviewEyebrow: "Reconnect Overview",
+    overviewTitle: "Choose the reconnect track your relationship needs right now",
+    practicePreview: "Practice preview",
+    practicePreviewFallback: "Guided reconnect practice",
+    premiumPreview: "Premium preview",
+    premiumPreviewFallback: "Expanded reconnect track",
+    openTracks: "Open-access Reconnect Tracks",
+    openTracksBody: "fully open guides so couples can shift from distance to connection in minutes.",
+    lockedTracks: "Locked Reconnect Tracks",
+    lockedTracksBody:
+      "locked tracks with deeper support, richer wisdom, and guided progression toward sacred partnership.",
+    unlockReconnectJourney: "Unlock this reconnect journey",
+    premiumActive: "Premium Active",
+    locked: "Locked",
+    guidedScripts: "Guided Scripts",
+    repairTools: "Repair Tools",
+    sacredLoveBridges: "Sacred Love Bridges",
+    viewPlansAndTrial: "View plans and trial",
+    premiumValue: "8. Premium Value",
+    heroIntro: "1. Hero Intro",
+    useItWhen: "2. Use It When",
+    whyThisToolWorks: "3. Why This Tool Works",
+    beginnerAndAdvancedRoute: "3.5 Beginner And Advanced Route",
+    modernApplication: "4. Modern Application",
+    misuseAvoid: "5. Misuse / What To Avoid",
+    practicalExercises: "6. 3 Practical Exercises",
+    reflectionPrompts: "7. Reflection Prompts",
+    practice: "Practice",
+    beginner: "Beginner",
+    advanced: "Advanced",
+    integration: "Integration",
+    premiumTool: "Premium Tool",
+    lockedTool: "Locked Tool",
+    unlockReconnectTrack: "Unlock this reconnect track",
+    unlocksForRelationship: "What unlocks for your relationship",
+    unlockCard1Title: "Structured scripts",
+    unlockCard1Body: "Turn emotional complexity into safe, guided communication flow couples can trust.",
+    unlockCard2Title: "Guided partner practices",
+    unlockCard2Body: "Audio-led reconnect sequences for difficult and high-intensity moments.",
+    unlockCard3Title: "Advanced progression",
+    unlockCard3Body: "Move from basic reconnect into deeper repair and intimacy renewal that lasts.",
+    unlockCard4Title: "Cross-library integration",
+    unlockCard4Body: "Linked Paths and Authors recommendations so partners keep growing together.",
+  },
+  fr: {
+    pagePaths: "Parcours",
+    pagePathsSubtitle: "Parcours anciens pour l'amour moderne",
+    pageAuthors: "Auteurs",
+    pageAuthorsSubtitle: "Voix qui guident l'intimité",
+    pageReconnect: "Reconnecter",
+    pageReconnectSubtitle: "Réparer et revenir à la proximité",
+    backToLibrary: "Retour à la bibliothèque",
+    lockedInPremium: "Verrouillé en premium",
+    openAccess: "Accès libre",
+    relatedTracks: "Parcours reconnect liés",
+    heroEyebrow: "Bibliothèque sacrée · Reconnect",
+    heroTitle: "Sagesse reconnect ancienne pour les moments relationnels modernes",
+    heroDesc:
+      "Lisez, appliquez et sentez-vous plus proches immédiatement. Revenez ensuite pour des parcours plus profonds et un guidage premium qui fait avancer votre relation vers l'amour sacré.",
+    sacredPages: "Pages sacrées",
+    overviewEyebrow: "Vue d'ensemble Reconnect",
+    overviewTitle: "Choisissez le parcours reconnect dont votre relation a besoin maintenant",
+    practicePreview: "Aperçu de pratique",
+    practicePreviewFallback: "Pratique reconnect guidée",
+    premiumPreview: "Aperçu premium",
+    premiumPreviewFallback: "Parcours reconnect enrichi",
+    openTracks: "Parcours Reconnect en accès libre",
+    openTracksBody: "guides entièrement ouverts pour passer de la distance à la connexion en quelques minutes.",
+    lockedTracks: "Parcours Reconnect verrouillés",
+    lockedTracksBody:
+      "parcours verrouillés avec plus de soutien, de sagesse et une progression guidée vers un partenariat sacré.",
+    unlockReconnectJourney: "Déverrouiller ce parcours reconnect",
+    premiumActive: "Premium actif",
+    locked: "Verrouillé",
+    guidedScripts: "Scripts guidés",
+    repairTools: "Outils de réparation",
+    sacredLoveBridges: "Ponts d'amour sacré",
+    viewPlansAndTrial: "Voir les plans et l'essai",
+    premiumValue: "8. Valeur Premium",
+    heroIntro: "1. Introduction",
+    useItWhen: "2. Quand l'utiliser",
+    whyThisToolWorks: "3. Pourquoi cet outil fonctionne",
+    beginnerAndAdvancedRoute: "3.5 Parcours débutant et avancé",
+    modernApplication: "4. Application moderne",
+    misuseAvoid: "5. Mauvais usage / à éviter",
+    practicalExercises: "6. 3 exercices pratiques",
+    reflectionPrompts: "7. Questions de réflexion",
+    practice: "Pratique",
+    beginner: "Débutant",
+    advanced: "Avancé",
+    integration: "Intégration",
+    premiumTool: "Outil premium",
+    lockedTool: "Outil verrouillé",
+    unlockReconnectTrack: "Déverrouiller ce parcours reconnect",
+    unlocksForRelationship: "Ce qui se débloque pour votre relation",
+    unlockCard1Title: "Scripts structurés",
+    unlockCard1Body: "Transformez la complexité émotionnelle en flux de communication sûr et guidé.",
+    unlockCard2Title: "Pratiques guidées en couple",
+    unlockCard2Body: "Séquences reconnect audio-guidées pour les moments difficiles et intenses.",
+    unlockCard3Title: "Progression avancée",
+    unlockCard3Body: "Passez du reconnect de base à une réparation plus profonde et à un renouvellement de l'intimité.",
+    unlockCard4Title: "Intégration inter-bibliothèque",
+    unlockCard4Body: "Recommandations liées de Parcours et Auteurs pour continuer à grandir ensemble.",
+  },
+  cs: {
+    pagePaths: "Cesty",
+    pagePathsSubtitle: "Starověké cesty pro moderní lásku",
+    pageAuthors: "Autoři",
+    pageAuthorsSubtitle: "Hlasy, které vedou intimitu",
+    pageReconnect: "Znovuspojení",
+    pageReconnectSubtitle: "Opravit a vrátit se k blízkosti",
+    backToLibrary: "Zpět do knihovny",
+    lockedInPremium: "Uzamčeno v premium",
+    openAccess: "Volný přístup",
+    relatedTracks: "Související reconnect cesty",
+    heroEyebrow: "Posvátná knihovna · Reconnect",
+    heroTitle: "Starověká reconnect moudrost pro moderní vztahové momenty",
+    heroDesc:
+      "Čti, použij a hned se cítíte blíž. Pak se vrať pro hlubší cesty a premium vedení, které drží váš vztah na cestě k posvátné lásce.",
+    sacredPages: "Posvátné stránky",
+    overviewEyebrow: "Přehled Reconnect",
+    overviewTitle: "Vyber reconnect cestu, kterou váš vztah potřebuje právě teď",
+    practicePreview: "Náhled praxe",
+    practicePreviewFallback: "Vedená reconnect praxe",
+    premiumPreview: "Náhled premium",
+    premiumPreviewFallback: "Rozšířená reconnect cesta",
+    openTracks: "Volně dostupné Reconnect cesty",
+    openTracksBody: "plně otevřené průvodce pro posun od odstupu k propojení během minut.",
+    lockedTracks: "Uzamčené Reconnect cesty",
+    lockedTracksBody:
+      "uzamčené cesty s hlubší podporou, bohatší moudrostí a vedenou progresí k posvátnému partnerství.",
+    unlockReconnectJourney: "Odemknout tuto reconnect cestu",
+    premiumActive: "Premium aktivní",
+    locked: "Uzamčeno",
+    guidedScripts: "Vedené skripty",
+    repairTools: "Nástroje opravy",
+    sacredLoveBridges: "Mosty posvátné lásky",
+    viewPlansAndTrial: "Zobrazit plány a zkušební verzi",
+    premiumValue: "8. Premium hodnota",
+    heroIntro: "1. Úvod",
+    useItWhen: "2. Kdy to použít",
+    whyThisToolWorks: "3. Proč tento nástroj funguje",
+    beginnerAndAdvancedRoute: "3.5 Začátečnická a pokročilá trasa",
+    modernApplication: "4. Moderní použití",
+    misuseAvoid: "5. Zneužití / čemu se vyhnout",
+    practicalExercises: "6. 3 praktická cvičení",
+    reflectionPrompts: "7. Otázky k zamyšlení",
+    practice: "Praxe",
+    beginner: "Začátečník",
+    advanced: "Pokročilý",
+    integration: "Integrace",
+    premiumTool: "Premium nástroj",
+    lockedTool: "Uzamčený nástroj",
+    unlockReconnectTrack: "Odemknout tuto reconnect trasu",
+    unlocksForRelationship: "Co se odemkne pro váš vztah",
+    unlockCard1Title: "Strukturované skripty",
+    unlockCard1Body: "Převeďte emoční složitost do bezpečného a vedeného komunikačního toku.",
+    unlockCard2Title: "Vedené párové praxe",
+    unlockCard2Body: "Audio-vedené reconnect sekvence pro náročné a vysoce intenzivní momenty.",
+    unlockCard3Title: "Pokročilý progres",
+    unlockCard3Body: "Posuňte se od základního reconnectu k hlubší opravě a obnově intimity, která vydrží.",
+    unlockCard4Title: "Křížová integrace knihovny",
+    unlockCard4Body: "Propojená doporučení Cest a Autorů, aby partneři mohli růst společně.",
+  },
+};
+
 const tierBadgeClass: Record<Tier, string> = {
   free: "border-amber-400/30 bg-amber-500/12 text-amber-200",
   premium: "border-amber-400/30 bg-amber-500/12 text-amber-200",
@@ -719,6 +903,8 @@ const TierBadge = ({ tier }: { tier: Tier }) => {
 };
 
 const ReconnectHeroCard = ({ tool }: { tool: ReconnectTool }) => {
+  const { lang } = useLanguage();
+  const ui = reconnectUiCopy[lang];
   const Icon = tool.icon;
   const hasPremiumAccess = usePremiumAccess();
   const isLocked = tool.tier === "premium" && !hasPremiumAccess;
@@ -740,7 +926,7 @@ const ReconnectHeroCard = ({ tool }: { tool: ReconnectTool }) => {
           className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-2 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/18"
         >
           <Lock className="h-4 w-4" />
-          Unlock this reconnect journey
+          {ui.unlockReconnectJourney}
         </Link>
       ) : null}
     </section>
@@ -748,6 +934,8 @@ const ReconnectHeroCard = ({ tool }: { tool: ReconnectTool }) => {
 };
 
 const PremiumMiniCard = ({ tool }: { tool: ReconnectTool }) => {
+  const { lang } = useLanguage();
+  const ui = reconnectUiCopy[lang];
   const hasPremiumAccess = usePremiumAccess();
   const upgradeCopy = reconnectUpgradeCopy[tool.slug] ?? {
     benefit: "Use premium reconnect tracks to move from friction to closeness with clear, repeatable structure.",
@@ -760,22 +948,22 @@ const PremiumMiniCard = ({ tool }: { tool: ReconnectTool }) => {
   <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.24),transparent_55%),linear-gradient(135deg,rgba(245,158,11,0.18),rgba(15,23,42,0.15))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.62)]">
     <div className="flex items-center gap-2 text-amber-200">
       {hasPremiumAccess ? <LockOpen className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
-      <span className="text-xs uppercase tracking-[0.16em]">{hasPremiumAccess ? "Premium Active" : "Locked"}</span>
+      <span className="text-xs uppercase tracking-[0.16em]">{hasPremiumAccess ? ui.premiumActive : ui.locked}</span>
     </div>
     <p className="mt-3 text-sm leading-6 text-foreground/90">
       {miniLine}
     </p>
     <div className="mt-3 flex flex-wrap gap-2">
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Guided Scripts</span>
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Repair Tools</span>
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Sacred Love Bridges</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{ui.guidedScripts}</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{ui.repairTools}</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{ui.sacredLoveBridges}</span>
     </div>
     {hasPremiumAccess ? null : (
       <Link
         to="/pricing"
         className="mt-4 inline-flex items-center gap-2 rounded-xl border border-amber-300/30 bg-amber-500/14 px-3 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
       >
-        View plans and trial
+        {ui.viewPlansAndTrial}
         <ArrowRight className="h-4 w-4" />
       </Link>
     )}
@@ -784,6 +972,8 @@ const PremiumMiniCard = ({ tool }: { tool: ReconnectTool }) => {
 };
 
 const ReconnectPremiumBlock = ({ tool }: { tool: ReconnectTool }) => {
+  const { lang } = useLanguage();
+  const ui = reconnectUiCopy[lang];
   const hasPremiumAccess = usePremiumAccess();
   const upgradeCopy = reconnectUpgradeCopy[tool.slug] ?? {
     headline: "Stop losing each other in stressful weeks.",
@@ -798,7 +988,7 @@ const ReconnectPremiumBlock = ({ tool }: { tool: ReconnectTool }) => {
 
   return (
   <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
-    <p className="text-xs uppercase tracking-[0.2em] text-amber-300">8. Premium Value</p>
+    <p className="text-xs uppercase tracking-[0.2em] text-amber-300">{ui.premiumValue}</p>
     <h4 className="mt-2 font-display text-2xl text-foreground">{upgradeCopy.headline}</h4>
     <p className="mt-3 text-sm leading-7 text-foreground/90">{upgradeCopy.benefit}</p>
     <div className="mt-4 space-y-2">
@@ -823,6 +1013,8 @@ const ReconnectPremiumBlock = ({ tool }: { tool: ReconnectTool }) => {
 };
 
 const FreeReconnectContent = ({ tool }: { tool: ReconnectTool }) => {
+  const { lang } = useLanguage();
+  const ui = reconnectUiCopy[lang];
   if (!tool.content) return null;
 
   const data = tool.content;
@@ -830,7 +1022,7 @@ const FreeReconnectContent = ({ tool }: { tool: ReconnectTool }) => {
   return (
     <main className="space-y-5">
       <section className={shellCardClass}>
-        <p className="text-xs uppercase tracking-[0.2em] text-primary/80">1. Hero Intro</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{ui.heroIntro}</p>
         <h3 className="mt-2 font-display text-3xl text-foreground">{tool.title}</h3>
         <div className="mt-4 space-y-3 text-sm leading-7 text-foreground/90">
           {data.heroIntro.map((line) => (
@@ -844,7 +1036,7 @@ const FreeReconnectContent = ({ tool }: { tool: ReconnectTool }) => {
       </section>
 
       <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">2. Use It When</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.useItWhen}</p>
         <div className="mt-4 space-y-3">
           {data.useWhen.map((item) => (
             <div key={item} className="flex items-start gap-3 text-sm leading-7 text-foreground/90">
@@ -856,7 +1048,7 @@ const FreeReconnectContent = ({ tool }: { tool: ReconnectTool }) => {
       </section>
 
       <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">3. Why This Tool Works</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.whyThisToolWorks}</p>
         <div className="mt-4 grid gap-3 md:grid-cols-3">
           {data.whyItWorks.map((item) => (
             <article key={item.title} className="rounded-2xl border border-border/25 bg-card/35 p-4">
@@ -871,11 +1063,11 @@ const FreeReconnectContent = ({ tool }: { tool: ReconnectTool }) => {
 
       {data.beginnerTrack || data.advancedTrack ? (
         <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">3.5 Beginner And Advanced Route</p>
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.beginnerAndAdvancedRoute}</p>
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             {data.beginnerTrack ? (
               <article className="rounded-2xl border border-emerald-300/25 bg-emerald-500/8 p-4">
-                <p className="text-[11px] uppercase tracking-[0.14em] text-emerald-200">Beginner</p>
+                <p className="text-[11px] uppercase tracking-[0.14em] text-emerald-200">{ui.beginner}</p>
                 <h4 className="mt-2 font-body text-sm text-foreground">{data.beginnerTrack.title}</h4>
                 <p className="mt-2 text-sm leading-6 text-foreground/90">{data.beginnerTrack.body}</p>
                 <div className="mt-3 space-y-2">
@@ -891,7 +1083,7 @@ const FreeReconnectContent = ({ tool }: { tool: ReconnectTool }) => {
 
             {data.advancedTrack ? (
               <article className="rounded-2xl border border-amber-300/25 bg-amber-500/8 p-4">
-                <p className="text-[11px] uppercase tracking-[0.14em] text-amber-200">Advanced</p>
+                <p className="text-[11px] uppercase tracking-[0.14em] text-amber-200">{ui.advanced}</p>
                 <h4 className="mt-2 font-body text-sm text-foreground">{data.advancedTrack.title}</h4>
                 <p className="mt-2 text-sm leading-6 text-foreground/90">{data.advancedTrack.body}</p>
                 <div className="mt-3 space-y-2">
@@ -909,7 +1101,7 @@ const FreeReconnectContent = ({ tool }: { tool: ReconnectTool }) => {
       ) : null}
 
       <section className="rounded-[24px] border border-primary/20 bg-primary/8 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-primary/80">4. Modern Application</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{ui.modernApplication}</p>
         <div className="mt-4 space-y-3">
           {data.modernUse.map((item) => (
             <article key={item.title} className="rounded-2xl border border-primary/20 bg-background/50 p-4">
@@ -921,7 +1113,7 @@ const FreeReconnectContent = ({ tool }: { tool: ReconnectTool }) => {
       </section>
 
       <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">5. Misuse / What To Avoid</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.misuseAvoid}</p>
         <div className="mt-4 space-y-3">
           {data.whatToAvoid.map((item) => (
             <article key={item.title} className="rounded-2xl border border-border/25 bg-card/35 p-4">
@@ -935,11 +1127,11 @@ const FreeReconnectContent = ({ tool }: { tool: ReconnectTool }) => {
       </section>
 
       <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">6. 3 Practical Exercises</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.practicalExercises}</p>
         <div className="mt-4 space-y-4">
           {data.exercises.map((exercise, index) => (
             <article key={exercise.title} className="rounded-2xl border border-border/25 bg-card/35 p-4">
-              <p className="text-[11px] uppercase tracking-[0.14em] text-primary/80">Practice {index + 1}</p>
+              <p className="text-[11px] uppercase tracking-[0.14em] text-primary/80">{ui.practice} {index + 1}</p>
               <h4 className="mt-2 font-body text-sm text-foreground">{exercise.title}</h4>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">{exercise.setup}</p>
               <div className="mt-3 space-y-2">
@@ -950,16 +1142,16 @@ const FreeReconnectContent = ({ tool }: { tool: ReconnectTool }) => {
                   </div>
                 ))}
               </div>
-              {exercise.beginnerNote ? <p className="mt-3 text-sm leading-6 text-emerald-200/90">Beginner: {exercise.beginnerNote}</p> : null}
-              {exercise.advancedNote ? <p className="mt-1 text-sm leading-6 text-amber-200/90">Advanced: {exercise.advancedNote}</p> : null}
-              <p className="mt-3 text-sm leading-6 text-primary/85">Integration: {exercise.integration}</p>
+              {exercise.beginnerNote ? <p className="mt-3 text-sm leading-6 text-emerald-200/90">{ui.beginner}: {exercise.beginnerNote}</p> : null}
+              {exercise.advancedNote ? <p className="mt-1 text-sm leading-6 text-amber-200/90">{ui.advanced}: {exercise.advancedNote}</p> : null}
+              <p className="mt-3 text-sm leading-6 text-primary/85">{ui.integration}: {exercise.integration}</p>
             </article>
           ))}
         </div>
       </section>
 
       <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">7. Reflection Prompts</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.reflectionPrompts}</p>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           {data.reflectionPrompts.map((prompt) => (
             <article key={prompt} className="rounded-2xl border border-border/25 bg-card/35 p-4 text-sm leading-7 text-foreground/90">
@@ -975,6 +1167,8 @@ const FreeReconnectContent = ({ tool }: { tool: ReconnectTool }) => {
 };
 
 const PremiumReconnectContent = ({ tool }: { tool: ReconnectTool }) => {
+  const { lang } = useLanguage();
+  const ui = reconnectUiCopy[lang];
   const hasPremiumAccess = usePremiumAccess();
 
   return (
@@ -983,7 +1177,7 @@ const PremiumReconnectContent = ({ tool }: { tool: ReconnectTool }) => {
       <div className="flex items-center gap-2">
         <TierBadge tier="premium" />
         <span className="inline-flex items-center rounded-full border border-amber-400/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] text-amber-200">
-          {hasPremiumAccess ? "Premium Tool" : "Locked Tool"}
+          {hasPremiumAccess ? ui.premiumTool : ui.lockedTool}
         </span>
       </div>
       <h3 className="mt-3 font-display text-3xl text-foreground">{tool.title}</h3>
@@ -999,30 +1193,30 @@ const PremiumReconnectContent = ({ tool }: { tool: ReconnectTool }) => {
           className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-2 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/18"
         >
           <Lock className="h-4 w-4" />
-          Unlock this reconnect track
+          {ui.unlockReconnectTrack}
         </Link>
       )}
     </section>
 
     <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">What unlocks for your relationship</p>
+      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.unlocksForRelationship}</p>
       <div className="mt-4 grid gap-3 md:grid-cols-2">
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">Structured scripts</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Turn emotional complexity into safe, guided communication flow couples can trust.</p>
+          <h4 className="font-body text-sm text-foreground">{ui.unlockCard1Title}</h4>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.unlockCard1Body}</p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">Guided partner practices</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Audio-led reconnect sequences for difficult and high-intensity moments.</p>
+          <h4 className="font-body text-sm text-foreground">{ui.unlockCard2Title}</h4>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.unlockCard2Body}</p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">Advanced progression</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Move from basic reconnect into deeper repair and intimacy renewal that lasts.
+          <h4 className="font-body text-sm text-foreground">{ui.unlockCard3Title}</h4>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.unlockCard3Body}
           </p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">Cross-library integration</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Linked Paths and Authors recommendations so partners keep growing together.
+          <h4 className="font-body text-sm text-foreground">{ui.unlockCard4Title}</h4>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.unlockCard4Body}
           </p>
         </article>
       </div>
@@ -1042,6 +1236,8 @@ const MobileDetailHeader = ({
   tier: Tier;
   onBack: () => void;
 }) => {
+  const { lang } = useLanguage();
+  const ui = reconnectUiCopy[lang];
   const hasPremiumAccess = usePremiumAccess();
   const isLocked = tier === "premium" && !hasPremiumAccess;
 
@@ -1053,11 +1249,11 @@ const MobileDetailHeader = ({
         onClick={onBack}
         className="rounded-xl border border-border/35 bg-card/45 px-3 py-2 text-xs uppercase tracking-[0.14em] text-foreground"
       >
-        Back to Library
+        {ui.backToLibrary}
       </button>
       <div className="min-w-0 flex-1 text-right">
         <p className="truncate font-display text-lg text-foreground">{title}</p>
-        <p className="text-xs text-muted-foreground">{isLocked ? "Locked in premium" : "Open access"}</p>
+        <p className="text-xs text-muted-foreground">{isLocked ? ui.lockedInPremium : ui.openAccess}</p>
       </div>
       <TierBadge tier={tier} />
     </div>
@@ -1071,9 +1267,13 @@ const RelatedReconnectCarousel = ({
 }: {
   items: ReconnectTool[];
   onSelect: (slug: string) => void;
-}) => (
+}) => {
+  const { lang } = useLanguage();
+  const ui = reconnectUiCopy[lang];
+
+  return (
   <section className="rounded-[24px] border border-border/30 bg-card/40 p-4">
-    <p className="text-xs uppercase tracking-[0.18em] text-primary/80">Related Reconnect Tracks</p>
+    <p className="text-xs uppercase tracking-[0.18em] text-primary/80">{ui.relatedTracks}</p>
     <div className="mt-3 flex snap-x gap-3 overflow-x-auto pb-1">
       {items.map((item) => {
         const Icon = item.icon;
@@ -1097,9 +1297,12 @@ const RelatedReconnectCarousel = ({
       })}
     </div>
   </section>
-);
+  );
+};
 
 const Reconnect = () => {
+  const { lang } = useLanguage();
+  const ui = reconnectUiCopy[lang];
   const isMobile = useIsMobile();
   const [selectedSlug, setSelectedSlug] = useState("soft-landing");
   const [mobileDetailMode, setMobileDetailMode] = useState(false);
@@ -1141,15 +1344,15 @@ const Reconnect = () => {
       {showBrowse ? (
       <section className="rounded-[30px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-5 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] md:p-8">
         <div className="max-w-4xl">
-          <p className="text-xs uppercase tracking-[0.28em] text-primary/80">Sacred Library · Reconnect</p>
-          <h1 className="mt-3 font-display text-3xl text-foreground md:text-5xl">Ancient reconnect wisdom for modern relationship moments</h1>
+          <p className="text-xs uppercase tracking-[0.28em] text-primary/80">{ui.heroEyebrow}</p>
+          <h1 className="mt-3 font-display text-3xl text-foreground md:text-5xl">{ui.heroTitle}</h1>
           <p className="mt-4 text-sm leading-7 text-muted-foreground md:text-base">
-            Read, apply, and feel closer right away. Then return for deeper tracks and premium guidance that help your relationship keep moving toward sacred love.
+            {ui.heroDesc}
           </p>
         </div>
 
         <div className="mt-6 w-full rounded-[24px] border border-border/30 bg-card/45 p-4">
-          <div className="text-xs uppercase tracking-[0.22em] text-primary/80">Sacred pages</div>
+          <div className="text-xs uppercase tracking-[0.22em] text-primary/80">{ui.sacredPages}</div>
           <div className="mt-3 grid gap-3 md:grid-cols-3">
             {libraryPages.map((page) => {
               const Icon = page.icon;
@@ -1167,8 +1370,8 @@ const Reconnect = () => {
                   <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-2.5 ${page.iconClass}`}>
                     <Icon className="h-4 w-4" />
                   </div>
-                  <div className="mt-3 font-display text-xl text-foreground">{page.label}</div>
-                  <p className="mt-1 text-sm leading-6 text-muted-foreground">{page.subtitle}</p>
+                  <div className="mt-3 font-display text-xl text-foreground">{ui[page.labelKey]}</div>
+                  <p className="mt-1 text-sm leading-6 text-muted-foreground">{ui[page.subtitleKey]}</p>
                 </Link>
               );
             })}
@@ -1179,8 +1382,8 @@ const Reconnect = () => {
 
       {showBrowse ? (
       <section className={shellCardClass}>
-        <p className="text-xs uppercase tracking-[0.22em] text-primary/80">Reconnect Overview</p>
-        <h2 className="mt-2 font-display text-3xl text-foreground">Choose the reconnect track your relationship needs right now</h2>
+        <p className="text-xs uppercase tracking-[0.22em] text-primary/80">{ui.overviewEyebrow}</p>
+        <h2 className="mt-2 font-display text-3xl text-foreground">{ui.overviewTitle}</h2>
 
         <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           {reconnectTools.map((tool) => {
@@ -1207,8 +1410,8 @@ const Reconnect = () => {
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">{tool.descriptor}</p>
                 <p className="mt-2 text-xs leading-5 text-foreground/80">
                   {tool.tier === "free"
-                    ? `Practice preview: ${tool.content?.exercises[0]?.title ?? "Guided reconnect practice"}`
-                    : `Premium preview: ${tool.teaser?.[0] ?? "Expanded reconnect track"}`}
+                    ? `${ui.practicePreview}: ${tool.content?.exercises[0]?.title ?? ui.practicePreviewFallback}`
+                    : `${ui.premiumPreview}: ${tool.teaser?.[0] ?? ui.premiumPreviewFallback}`}
                 </p>
               </button>
             );
@@ -1217,12 +1420,12 @@ const Reconnect = () => {
 
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           <div className="rounded-2xl border border-emerald-400/25 bg-emerald-500/8 p-4">
-            <p className="text-xs uppercase tracking-[0.14em] text-emerald-200">Open-access Reconnect Tracks</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">{freeCount} fully open guides so couples can shift from distance to connection in minutes.</p>
+            <p className="text-xs uppercase tracking-[0.14em] text-emerald-200">{ui.openTracks}</p>
+            <p className="mt-2 text-sm leading-6 text-foreground/90">{freeCount} {ui.openTracksBody}</p>
           </div>
           <div className="rounded-2xl border border-amber-400/25 bg-amber-500/8 p-4">
-            <p className="text-xs uppercase tracking-[0.14em] text-amber-200">Locked Reconnect Tracks</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">{premiumCount} locked tracks with deeper support, richer wisdom, and guided progression toward sacred partnership.</p>
+            <p className="text-xs uppercase tracking-[0.14em] text-amber-200">{ui.lockedTracks}</p>
+            <p className="mt-2 text-sm leading-6 text-foreground/90">{premiumCount} {ui.lockedTracksBody}</p>
           </div>
         </div>
       </section>

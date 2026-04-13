@@ -14,6 +14,7 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useSeoMetadata } from "@/lib/seo";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
 
 type Tier = "free" | "premium";
@@ -91,22 +92,22 @@ type PathDetail = {
 const libraryPages = [
   {
     to: "/app/paths",
-    label: "Paths",
-    subtitle: "Ancient pathways for modern love",
+    labelKey: "pagePaths",
+    subtitleKey: "pagePathsSubtitle",
     icon: Sparkles,
     iconClass: "text-violet-300",
   },
   {
     to: "/app/authors",
-    label: "Authors",
-    subtitle: "Voices that guide intimacy",
+    labelKey: "pageAuthors",
+    subtitleKey: "pageAuthorsSubtitle",
     icon: Heart,
     iconClass: "text-rose-300",
   },
   {
     to: "/app/reconnect",
-    label: "Reconnect",
-    subtitle: "Repair and return to closeness",
+    labelKey: "pageReconnect",
+    subtitleKey: "pageReconnectSubtitle",
     icon: Flame,
     iconClass: "text-amber-300",
   },
@@ -817,6 +818,234 @@ const pathUpgradeCopy: Record<
 const shellCardClass =
   "rounded-[28px] border border-border/30 bg-card/45 p-5 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.46)]";
 
+const pathsUiCopy: Record<Language, Record<string, string>> = {
+  en: {
+    pagePaths: "Paths",
+    pagePathsSubtitle: "Ancient pathways for modern love",
+    pageAuthors: "Authors",
+    pageAuthorsSubtitle: "Voices that guide intimacy",
+    pageReconnect: "Reconnect",
+    pageReconnectSubtitle: "Repair and return to closeness",
+    backToLibrary: "Back to Library",
+    lockedInPremium: "Locked in premium",
+    openAccess: "Open access",
+    relatedPaths: "Related Paths",
+    heroEyebrow: "Sacred Library · Paths",
+    heroTitle: "Ancient pathways translated for modern couples",
+    heroDesc:
+      "Start with a quick insight you can use immediately, then go deeper as a couple when you have space. Each path helps you move from information to real closeness.",
+    sacredPages: "Sacred pages",
+    overviewEyebrow: "Paths Overview",
+    overviewTitle: "Choose a path for immediate closeness and long-term sacred growth",
+    practicePreview: "Practice preview",
+    practicePreviewFallback: "Foundational couple exercise",
+    premiumPreview: "Premium preview",
+    premiumPreviewFallback: "Deep guided path content",
+    openAccessPaths: "Open-access Paths",
+    openAccessPathsBody:
+      "fully open paths so couples can apply wisdom now and reconnect in the same moment.",
+    lockedPaths: "Locked Paths",
+    lockedPathsBody:
+      "locked paths for deeper inspiration, richer guidance, and a structured journey toward sacred love.",
+    unlockCouplePathJourney: "Unlock this couple path journey",
+    premiumActive: "Premium Active",
+    locked: "Locked",
+    guidedTracks: "Guided Tracks",
+    energyMaps: "Energy Maps",
+    sacredLoveLibrary: "Sacred Love Library",
+    viewPlansAndTrial: "View plans and trial",
+    premiumValue: "8. Premium Value",
+    whatThisPathIs: "What This Path Is",
+    whyItMattersForCouples: "Why It Matters For Couples",
+    whoItIsFor: "Who It Is For",
+    concretePracticePreview: "Concrete Practice Preview",
+    whatThisPathIsNot: "What This Path Is Not",
+    corePillars: "Core Pillars",
+    pillar: "Pillar",
+    whyItMattersInModernRelationshipLife: "Why It Matters In Modern Relationship Life",
+    beginnerAndAdvancedPath: "Beginner And Advanced Path",
+    beginner: "Beginner",
+    advanced: "Advanced",
+    commonMisunderstandings: "Common Misunderstandings",
+    practicesYouCanRunTonight: "Practices You Can Run Tonight",
+    practice: "Practice",
+    integration: "Integration",
+    reflectionPrompts: "Reflection Prompts",
+    premiumPath: "Premium Path",
+    lockedPath: "Locked Path",
+    unlockThisPathJourney: "Unlock this path journey",
+    premiumPathWhatItIs: "What This Path Is",
+    premiumWhoThisIsFor: "Who This Is For",
+    premiumOrientationTitle: "Premium path orientation sequence",
+    premiumOrientationBody:
+      "A structured first-night sequence that calibrates emotional safety, sensual pace, and relational intention before deeper modules.",
+    premiumOrientationStep1: "Set one relationship intention and one embodied intention for tonight.",
+    premiumOrientationStep2: "Run guided breath and touch pacing according to the path module structure.",
+    premiumOrientationStep3: "Close with a two-minute integration check so the next module fits your actual couple state.",
+    premiumWhoCard1Title: "Couples with stable love but unclear direction",
+    premiumWhoCard1Body: "Use a structured premium path to create continuity and momentum.",
+    premiumWhoCard2Title: "Couples rebuilding trust in intimacy",
+    premiumWhoCard2Body: "Get pacing safeguards, progressive scripts, and grounded relational guardrails.",
+    premiumWhoCard3Title: "Couples seeking advanced erotic-spiritual depth",
+    premiumWhoCard3Body: "Access layered modules that blend desire, devotion, and embodied awareness.",
+    premiumWhoCard4Title: "Couples wanting long-term progression",
+    premiumWhoCard4Body: "Map each phase from first practices to deeper couple integration.",
+    premiumWhy1: "Translate ancient philosophy into a structured modern intimacy path you can actually sustain.",
+    premiumWhy2: "Move from episodic closeness into progressive relationship growth with shared language and pacing.",
+    premiumWhy3: "Protect attraction, emotional trust, and spiritual depth at the same time.",
+  },
+  fr: {
+    pagePaths: "Parcours",
+    pagePathsSubtitle: "Parcours anciens pour l'amour moderne",
+    pageAuthors: "Auteurs",
+    pageAuthorsSubtitle: "Voix qui guident l'intimité",
+    pageReconnect: "Reconnecter",
+    pageReconnectSubtitle: "Réparer et revenir à la proximité",
+    backToLibrary: "Retour à la bibliothèque",
+    lockedInPremium: "Verrouillé en premium",
+    openAccess: "Accès libre",
+    relatedPaths: "Parcours liés",
+    heroEyebrow: "Bibliothèque sacrée · Parcours",
+    heroTitle: "Des parcours anciens adaptés aux couples modernes",
+    heroDesc:
+      "Commencez avec un insight rapide utilisable immédiatement, puis allez plus loin en couple quand vous avez de l'espace. Chaque parcours transforme la connaissance en vraie proximité.",
+    sacredPages: "Pages sacrées",
+    overviewEyebrow: "Vue d'ensemble des parcours",
+    overviewTitle: "Choisissez un parcours pour une proximité immédiate et une croissance sacrée durable",
+    practicePreview: "Aperçu de pratique",
+    practicePreviewFallback: "Exercice couple fondamental",
+    premiumPreview: "Aperçu premium",
+    premiumPreviewFallback: "Contenu guidé approfondi",
+    openAccessPaths: "Parcours en accès libre",
+    openAccessPathsBody:
+      "parcours entièrement ouverts pour appliquer la sagesse dès maintenant et se reconnecter dans le même moment.",
+    lockedPaths: "Parcours verrouillés",
+    lockedPathsBody:
+      "parcours verrouillés pour plus d'inspiration, de guidance et un chemin structuré vers l'amour sacré.",
+    unlockCouplePathJourney: "Déverrouiller ce parcours de couple",
+    premiumActive: "Premium actif",
+    locked: "Verrouillé",
+    guidedTracks: "Parcours guidés",
+    energyMaps: "Cartes énergétiques",
+    sacredLoveLibrary: "Bibliothèque d'amour sacré",
+    viewPlansAndTrial: "Voir les plans et l'essai",
+    premiumValue: "8. Valeur Premium",
+    whatThisPathIs: "Ce qu'est ce parcours",
+    whyItMattersForCouples: "Pourquoi c'est important pour les couples",
+    whoItIsFor: "Pour qui c'est",
+    concretePracticePreview: "Aperçu d'une pratique concrète",
+    whatThisPathIsNot: "Ce que ce parcours n'est pas",
+    corePillars: "Piliers centraux",
+    pillar: "Pilier",
+    whyItMattersInModernRelationshipLife: "Pourquoi c'est important dans la vie relationnelle moderne",
+    beginnerAndAdvancedPath: "Parcours débutant et avancé",
+    beginner: "Débutant",
+    advanced: "Avancé",
+    commonMisunderstandings: "Malentendus fréquents",
+    practicesYouCanRunTonight: "Pratiques à faire ce soir",
+    practice: "Pratique",
+    integration: "Intégration",
+    reflectionPrompts: "Questions de réflexion",
+    premiumPath: "Parcours premium",
+    lockedPath: "Parcours verrouillé",
+    unlockThisPathJourney: "Déverrouiller ce parcours",
+    premiumPathWhatItIs: "Ce qu'est ce parcours",
+    premiumWhoThisIsFor: "Pour qui c'est",
+    premiumOrientationTitle: "Séquence d'orientation du parcours premium",
+    premiumOrientationBody:
+      "Une séquence structurée de première soirée qui calibre la sécurité émotionnelle, le rythme sensuel et l'intention relationnelle avant les modules plus profonds.",
+    premiumOrientationStep1: "Fixez une intention relationnelle et une intention incarnée pour ce soir.",
+    premiumOrientationStep2: "Suivez le rythme guidé de souffle et de toucher selon la structure du module.",
+    premiumOrientationStep3: "Terminez par une vérification d'intégration de deux minutes pour adapter le module suivant à votre état réel de couple.",
+    premiumWhoCard1Title: "Couples avec un amour stable mais une direction floue",
+    premiumWhoCard1Body: "Utilisez un parcours premium structuré pour créer continuité et élan.",
+    premiumWhoCard2Title: "Couples qui reconstruisent la confiance dans l'intimité",
+    premiumWhoCard2Body: "Accédez à des garde-fous de rythme, des scripts progressifs et des repères relationnels solides.",
+    premiumWhoCard3Title: "Couples cherchant une profondeur érotico-spirituelle avancée",
+    premiumWhoCard3Body: "Accédez à des modules en couches qui relient désir, dévotion et conscience incarnée.",
+    premiumWhoCard4Title: "Couples voulant une progression à long terme",
+    premiumWhoCard4Body: "Cartographiez chaque phase, des premières pratiques à une intégration plus profonde du couple.",
+    premiumWhy1: "Traduisez la philosophie ancienne en un parcours d'intimité moderne et durable.",
+    premiumWhy2: "Passez d'une proximité ponctuelle à une croissance relationnelle progressive avec un langage et un rythme partagés.",
+    premiumWhy3: "Préservez attraction, confiance émotionnelle et profondeur spirituelle en même temps.",
+  },
+  cs: {
+    pagePaths: "Cesty",
+    pagePathsSubtitle: "Starověké cesty pro moderní lásku",
+    pageAuthors: "Autoři",
+    pageAuthorsSubtitle: "Hlasy, které vedou intimitu",
+    pageReconnect: "Znovuspojení",
+    pageReconnectSubtitle: "Opravit a vrátit se k blízkosti",
+    backToLibrary: "Zpět do knihovny",
+    lockedInPremium: "Uzamčeno v premium",
+    openAccess: "Volný přístup",
+    relatedPaths: "Související cesty",
+    heroEyebrow: "Posvátná knihovna · Cesty",
+    heroTitle: "Starověké cesty přeložené pro moderní páry",
+    heroDesc:
+      "Začni rychlým vhledem, který můžeš použít hned, a pak jděte v páru do větší hloubky. Každá cesta převádí informace do skutečné blízkosti.",
+    sacredPages: "Posvátné stránky",
+    overviewEyebrow: "Přehled cest",
+    overviewTitle: "Vyber cestu pro okamžitou blízkost a dlouhodobý posvátný růst",
+    practicePreview: "Náhled praxe",
+    practicePreviewFallback: "Základní párové cvičení",
+    premiumPreview: "Náhled premium",
+    premiumPreviewFallback: "Hluboký vedený obsah",
+    openAccessPaths: "Volně dostupné cesty",
+    openAccessPathsBody:
+      "plně otevřené cesty, aby páry mohly použít moudrost hned a znovu se propojit ve stejném momentu.",
+    lockedPaths: "Uzamčené cesty",
+    lockedPathsBody:
+      "uzamčené cesty pro hlubší inspiraci, bohatší vedení a strukturovanou cestu k posvátné lásce.",
+    unlockCouplePathJourney: "Odemknout tuto párovou cestu",
+    premiumActive: "Premium aktivní",
+    locked: "Uzamčeno",
+    guidedTracks: "Vedené trasy",
+    energyMaps: "Mapy energie",
+    sacredLoveLibrary: "Knihovna posvátné lásky",
+    viewPlansAndTrial: "Zobrazit plány a zkušební verzi",
+    premiumValue: "8. Premium hodnota",
+    whatThisPathIs: "Co je tato cesta",
+    whyItMattersForCouples: "Proč je to důležité pro páry",
+    whoItIsFor: "Pro koho je to určeno",
+    concretePracticePreview: "Ukázka konkrétní praxe",
+    whatThisPathIsNot: "Co tato cesta není",
+    corePillars: "Hlavní pilíře",
+    pillar: "Pilíř",
+    whyItMattersInModernRelationshipLife: "Proč je to důležité v moderním partnerském životě",
+    beginnerAndAdvancedPath: "Začátečnická a pokročilá cesta",
+    beginner: "Začátečník",
+    advanced: "Pokročilý",
+    commonMisunderstandings: "Častá nedorozumění",
+    practicesYouCanRunTonight: "Praxe, které můžete udělat dnes večer",
+    practice: "Praxe",
+    integration: "Integrace",
+    reflectionPrompts: "Otázky k zamyšlení",
+    premiumPath: "Premium cesta",
+    lockedPath: "Uzamčená cesta",
+    unlockThisPathJourney: "Odemknout tuto cestu",
+    premiumPathWhatItIs: "Co je tato cesta",
+    premiumWhoThisIsFor: "Pro koho je to určeno",
+    premiumOrientationTitle: "Úvodní sekvence premium cesty",
+    premiumOrientationBody:
+      "Strukturovaná sekvence na první večer, která ladí emoční bezpečí, smyslné tempo a vztahový záměr před hlubšími moduly.",
+    premiumOrientationStep1: "Nastavte jeden vztahový záměr a jeden tělesný záměr pro dnešní večer.",
+    premiumOrientationStep2: "Projděte vedené dýchání a dotykové tempo podle struktury modulu cesty.",
+    premiumOrientationStep3: "Zakončete dvouminutovou integrační kontrolou, aby další modul odpovídal vašemu reálnému stavu páru.",
+    premiumWhoCard1Title: "Páry se stabilní láskou, ale nejasným směrem",
+    premiumWhoCard1Body: "Použijte strukturovanou premium cestu pro kontinuitu a momentum.",
+    premiumWhoCard2Title: "Páry obnovující důvěru v intimitě",
+    premiumWhoCard2Body: "Získáte ochranné tempo, progresivní skripty a pevné vztahové mantinely.",
+    premiumWhoCard3Title: "Páry hledající pokročilou eroticko-duchovní hloubku",
+    premiumWhoCard3Body: "Získejte vrstvené moduly, které spojují touhu, oddanost a vtělené uvědomění.",
+    premiumWhoCard4Title: "Páry, které chtějí dlouhodobý progres",
+    premiumWhoCard4Body: "Zmapujte každou fázi od prvních praktik až po hlubší párovou integraci.",
+    premiumWhy1: "Převeďte starověkou filozofii do strukturované moderní intimní cesty, kterou lze dlouhodobě držet.",
+    premiumWhy2: "Přejděte od epizodické blízkosti k postupnému vztahovému růstu se sdíleným jazykem a tempem.",
+    premiumWhy3: "Chraňte přitažlivost, emoční důvěru i duchovní hloubku zároveň.",
+  },
+};
+
 const tierBadgeClass: Record<Tier, string> = {
   free: "border-amber-400/30 bg-amber-500/12 text-amber-200",
   premium: "border-amber-400/30 bg-amber-500/12 text-amber-200",
@@ -839,6 +1068,8 @@ const TierBadge = ({ tier }: { tier: Tier }) => {
 };
 
 const PathHeroCard = ({ path }: { path: PathDetail }) => {
+  const { lang } = useLanguage();
+  const ui = pathsUiCopy[lang];
   const Icon = path.icon;
   const hasPremiumAccess = usePremiumAccess();
   const isLocked = path.tier === "premium" && !hasPremiumAccess;
@@ -859,7 +1090,7 @@ const PathHeroCard = ({ path }: { path: PathDetail }) => {
           className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-2 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/18"
         >
           <Lock className="h-4 w-4" />
-          Unlock this couple path journey
+          {ui.unlockCouplePathJourney}
         </Link>
       ) : null}
     </section>
@@ -867,6 +1098,8 @@ const PathHeroCard = ({ path }: { path: PathDetail }) => {
 };
 
 const PremiumMiniCard = ({ path }: { path: PathDetail }) => {
+  const { lang } = useLanguage();
+  const ui = pathsUiCopy[lang];
   const hasPremiumAccess = usePremiumAccess();
   const upgradeCopy = pathUpgradeCopy[path.slug] ?? {
     benefit: "Add guided depth, clearer progression, and stronger partner integration.",
@@ -880,22 +1113,22 @@ const PremiumMiniCard = ({ path }: { path: PathDetail }) => {
   <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.24),transparent_55%),linear-gradient(135deg,rgba(245,158,11,0.18),rgba(15,23,42,0.15))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.62)]">
     <div className="flex items-center gap-2 text-amber-200">
       {hasPremiumAccess ? <LockOpen className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
-      <span className="text-xs uppercase tracking-[0.16em]">{hasPremiumAccess ? "Premium Active" : "Locked"}</span>
+      <span className="text-xs uppercase tracking-[0.16em]">{hasPremiumAccess ? ui.premiumActive : ui.locked}</span>
     </div>
     <p className="mt-3 text-sm leading-6 text-foreground/90">
       {miniLine}
     </p>
     <div className="mt-3 flex flex-wrap gap-2">
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Guided Tracks</span>
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Energy Maps</span>
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Sacred Love Library</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{ui.guidedTracks}</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{ui.energyMaps}</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{ui.sacredLoveLibrary}</span>
     </div>
     {hasPremiumAccess ? null : (
       <Link
         to="/pricing"
         className="mt-4 inline-flex items-center gap-2 rounded-xl border border-amber-300/30 bg-amber-500/14 px-3 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
       >
-        View plans and trial
+        {ui.viewPlansAndTrial}
         <ArrowRight className="h-4 w-4" />
       </Link>
     )}
@@ -904,6 +1137,8 @@ const PremiumMiniCard = ({ path }: { path: PathDetail }) => {
 };
 
 const PathPremiumBlock = ({ path }: { path: PathDetail }) => {
+  const { lang } = useLanguage();
+  const ui = pathsUiCopy[lang];
   const hasPremiumAccess = usePremiumAccess();
   const upgradeCopy = pathUpgradeCopy[path.slug] ?? {
     headline: `Go deeper with ${path.name}`,
@@ -918,7 +1153,7 @@ const PathPremiumBlock = ({ path }: { path: PathDetail }) => {
 
   return (
     <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
-      <p className="text-xs uppercase tracking-[0.2em] text-amber-300">8. Premium Value</p>
+      <p className="text-xs uppercase tracking-[0.2em] text-amber-300">{ui.premiumValue}</p>
       <h4 className="mt-2 font-display text-2xl text-foreground">{upgradeCopy.headline}</h4>
       <p className="mt-3 text-sm leading-7 text-foreground/90">{upgradeCopy.benefit}</p>
       <div className="mt-4 space-y-2">
@@ -943,6 +1178,8 @@ const PathPremiumBlock = ({ path }: { path: PathDetail }) => {
 };
 
 const FreePathContent = ({ path }: { path: PathDetail }) => {
+  const { lang } = useLanguage();
+  const ui = pathsUiCopy[lang];
   if (!path.content) return null;
 
   const data = path.content;
@@ -950,7 +1187,7 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
   return (
     <main className="space-y-5">
       <section className={shellCardClass}>
-        <p className="text-xs uppercase tracking-[0.2em] text-primary/80">What This Path Is</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{ui.whatThisPathIs}</p>
         <h3 className="mt-2 font-display text-3xl text-foreground">{path.name}</h3>
         <div className="mt-4 space-y-3 text-sm leading-7 text-foreground/90">
           {data.hero.map((line) => (
@@ -965,7 +1202,7 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
 
       {data.whyMatters?.length ? (
         <section className="rounded-[24px] border border-primary/20 bg-primary/8 p-5">
-          <p className="text-xs uppercase tracking-[0.2em] text-primary/80">Why It Matters For Couples</p>
+          <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{ui.whyItMattersForCouples}</p>
           <div className="mt-4 space-y-3">
             {data.whyMatters.map((line) => (
               <div key={line} className="flex items-start gap-3 text-sm leading-7 text-foreground/90">
@@ -979,7 +1216,7 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
 
       {data.whoItsFor?.length ? (
         <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Who It Is For</p>
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.whoItIsFor}</p>
           <div className="mt-4 space-y-3">
             {data.whoItsFor.map((item) => (
               <article key={item.title} className="rounded-2xl border border-border/25 bg-card/35 p-4">
@@ -993,7 +1230,7 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
 
       {data.practicePreview ? (
         <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Concrete Practice Preview</p>
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.concretePracticePreview}</p>
           <h4 className="mt-2 font-display text-2xl text-foreground">{data.practicePreview.title}</h4>
           <p className="mt-2 text-sm leading-7 text-foreground/90">{data.practicePreview.body}</p>
           <div className="mt-3 space-y-2">
@@ -1008,7 +1245,7 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
       ) : null}
 
       <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">What This Path Is Not</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.whatThisPathIsNot}</p>
         <div className="mt-4 space-y-3">
           {data.whatItIsNot.map((item) => (
             <div key={item} className="flex items-start gap-3 text-sm leading-7 text-foreground/90">
@@ -1020,11 +1257,11 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
       </section>
 
       <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Core Pillars</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.corePillars}</p>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           {data.pillars.map((pillar, index) => (
             <article key={pillar.name} className="rounded-2xl border border-border/25 bg-card/35 p-4">
-              <p className="text-[11px] uppercase tracking-[0.14em] text-primary/80">Pillar {index + 1}</p>
+              <p className="text-[11px] uppercase tracking-[0.14em] text-primary/80">{ui.pillar} {index + 1}</p>
               <h4 className="mt-2 font-body text-sm text-foreground">{pillar.name}</h4>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">{pillar.body}</p>
             </article>
@@ -1033,7 +1270,7 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
       </section>
 
       <section className="rounded-[24px] border border-primary/20 bg-primary/8 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-primary/80">Why It Matters In Modern Relationship Life</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{ui.whyItMattersInModernRelationshipLife}</p>
         <div className="mt-4 space-y-3">
           {data.modernCouples.map((item) => (
             <article key={item.title} className="rounded-2xl border border-primary/20 bg-background/50 p-4">
@@ -1046,11 +1283,11 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
 
       {data.beginnerTrack || data.advancedTrack ? (
         <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Beginner And Advanced Path</p>
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.beginnerAndAdvancedPath}</p>
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             {data.beginnerTrack ? (
               <article className="rounded-2xl border border-emerald-300/25 bg-emerald-500/8 p-4">
-                <p className="text-[11px] uppercase tracking-[0.14em] text-emerald-200">Beginner</p>
+                <p className="text-[11px] uppercase tracking-[0.14em] text-emerald-200">{ui.beginner}</p>
                 <h4 className="mt-2 font-body text-sm text-foreground">{data.beginnerTrack.title}</h4>
                 <p className="mt-2 text-sm leading-6 text-foreground/90">{data.beginnerTrack.body}</p>
                 <div className="mt-3 space-y-2">
@@ -1066,7 +1303,7 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
 
             {data.advancedTrack ? (
               <article className="rounded-2xl border border-amber-300/25 bg-amber-500/8 p-4">
-                <p className="text-[11px] uppercase tracking-[0.14em] text-amber-200">Advanced</p>
+                <p className="text-[11px] uppercase tracking-[0.14em] text-amber-200">{ui.advanced}</p>
                 <h4 className="mt-2 font-body text-sm text-foreground">{data.advancedTrack.title}</h4>
                 <p className="mt-2 text-sm leading-6 text-foreground/90">{data.advancedTrack.body}</p>
                 <div className="mt-3 space-y-2">
@@ -1084,7 +1321,7 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
       ) : null}
 
       <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Common Misunderstandings</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.commonMisunderstandings}</p>
         <div className="mt-4 space-y-3">
           {data.misunderstandings.map((item) => (
             <article key={item.title} className="rounded-2xl border border-border/25 bg-card/35 p-4">
@@ -1098,11 +1335,11 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
       </section>
 
       <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Practices You Can Run Tonight</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.practicesYouCanRunTonight}</p>
         <div className="mt-4 space-y-4">
           {data.practices.map((practice, index) => (
             <article key={practice.title} className="rounded-2xl border border-border/25 bg-card/35 p-4">
-              <p className="text-[11px] uppercase tracking-[0.14em] text-primary/80">Practice {index + 1}</p>
+              <p className="text-[11px] uppercase tracking-[0.14em] text-primary/80">{ui.practice} {index + 1}</p>
               <h4 className="mt-2 font-body text-sm text-foreground">{practice.title}</h4>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">{practice.setup}</p>
               <div className="mt-3 space-y-2">
@@ -1113,16 +1350,16 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
                   </div>
                 ))}
               </div>
-              {practice.beginnerNote ? <p className="mt-3 text-sm leading-6 text-emerald-200/90">Beginner: {practice.beginnerNote}</p> : null}
-              {practice.advancedNote ? <p className="mt-1 text-sm leading-6 text-amber-200/90">Advanced: {practice.advancedNote}</p> : null}
-              <p className="mt-3 text-sm leading-6 text-primary/85">Integration: {practice.integration}</p>
+              {practice.beginnerNote ? <p className="mt-3 text-sm leading-6 text-emerald-200/90">{ui.beginner}: {practice.beginnerNote}</p> : null}
+              {practice.advancedNote ? <p className="mt-1 text-sm leading-6 text-amber-200/90">{ui.advanced}: {practice.advancedNote}</p> : null}
+              <p className="mt-3 text-sm leading-6 text-primary/85">{ui.integration}: {practice.integration}</p>
             </article>
           ))}
         </div>
       </section>
 
       <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Reflection Prompts</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.reflectionPrompts}</p>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           {data.reflections.map((prompt) => (
             <article key={prompt} className="rounded-2xl border border-border/25 bg-card/35 p-4 text-sm leading-7 text-foreground/90">
@@ -1138,6 +1375,8 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
 };
 
 const PremiumPathContent = ({ path }: { path: PathDetail }) => {
+  const { lang } = useLanguage();
+  const ui = pathsUiCopy[lang];
   const hasPremiumAccess = usePremiumAccess();
 
   return (
@@ -1146,10 +1385,10 @@ const PremiumPathContent = ({ path }: { path: PathDetail }) => {
       <div className="flex items-center gap-2">
         <TierBadge tier="premium" />
         <span className="inline-flex items-center rounded-full border border-amber-400/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] text-amber-200">
-          {hasPremiumAccess ? "Premium Path" : "Locked Path"}
+          {hasPremiumAccess ? ui.premiumPath : ui.lockedPath}
         </span>
       </div>
-      <p className="mt-3 text-xs uppercase tracking-[0.2em] text-primary/80">What This Path Is</p>
+      <p className="mt-3 text-xs uppercase tracking-[0.2em] text-primary/80">{ui.premiumPathWhatItIs}</p>
       <h3 className="mt-2 font-display text-3xl text-foreground">{path.name}</h3>
       <p className="mt-3 text-sm leading-7 text-foreground/90">{path.oneLine}</p>
       <p className="mt-2 text-sm leading-7 text-muted-foreground">{path.overviewLine}</p>
@@ -1164,69 +1403,69 @@ const PremiumPathContent = ({ path }: { path: PathDetail }) => {
           className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-2 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/18"
         >
           <Lock className="h-4 w-4" />
-          Unlock this path journey
+          {ui.unlockThisPathJourney}
         </Link>
       )}
     </section>
 
     <section className="rounded-[24px] border border-primary/20 bg-primary/8 p-5">
-      <p className="text-xs uppercase tracking-[0.2em] text-primary/80">Why It Matters For Couples</p>
+      <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{ui.whyItMattersForCouples}</p>
       <div className="mt-4 space-y-2">
         <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
           <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>Translate ancient philosophy into a structured modern intimacy path you can actually sustain.</span>
+          <span>{ui.premiumWhy1}</span>
         </div>
         <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
           <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>Move from episodic closeness into progressive relationship growth with shared language and pacing.</span>
+          <span>{ui.premiumWhy2}</span>
         </div>
         <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
           <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>Protect attraction, emotional trust, and spiritual depth at the same time.</span>
+          <span>{ui.premiumWhy3}</span>
         </div>
       </div>
     </section>
 
     <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Who This Is For</p>
+      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.premiumWhoThisIsFor}</p>
       <div className="mt-4 grid gap-3 md:grid-cols-2">
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">Couples with stable love but unclear direction</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Use a structured premium path to create continuity and momentum.</p>
+          <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard1Title}</h4>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard1Body}</p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">Couples rebuilding trust in intimacy</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Get pacing safeguards, progressive scripts, and grounded relational guardrails.</p>
+          <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard2Title}</h4>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard2Body}</p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">Couples seeking advanced erotic-spiritual depth</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Access layered modules that blend desire, devotion, and embodied awareness.</p>
+          <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard3Title}</h4>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard3Body}</p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">Couples wanting long-term progression</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Map each phase from first practices to deeper couple integration.</p>
+          <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard4Title}</h4>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard4Body}</p>
         </article>
       </div>
     </section>
 
     <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Concrete Practice Preview</p>
-      <h4 className="mt-2 font-display text-2xl text-foreground">Premium path orientation sequence</h4>
+      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.concretePracticePreview}</p>
+      <h4 className="mt-2 font-display text-2xl text-foreground">{ui.premiumOrientationTitle}</h4>
       <p className="mt-2 text-sm leading-7 text-foreground/90">
-        A structured first-night sequence that calibrates emotional safety, sensual pace, and relational intention before deeper modules.
+        {ui.premiumOrientationBody}
       </p>
       <div className="mt-3 space-y-2">
         <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
           <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>Set one relationship intention and one embodied intention for tonight.</span>
+          <span>{ui.premiumOrientationStep1}</span>
         </div>
         <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
           <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>Run guided breath and touch pacing according to the path module structure.</span>
+          <span>{ui.premiumOrientationStep2}</span>
         </div>
         <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
           <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>Close with a two-minute integration check so the next module fits your actual couple state.</span>
+          <span>{ui.premiumOrientationStep3}</span>
         </div>
       </div>
     </section>
@@ -1245,6 +1484,8 @@ const MobileDetailHeader = ({
   tier: Tier;
   onBack: () => void;
 }) => {
+  const { lang } = useLanguage();
+  const ui = pathsUiCopy[lang];
   const hasPremiumAccess = usePremiumAccess();
   const isLocked = tier === "premium" && !hasPremiumAccess;
 
@@ -1256,11 +1497,11 @@ const MobileDetailHeader = ({
         onClick={onBack}
         className="rounded-xl border border-border/35 bg-card/45 px-3 py-2 text-xs uppercase tracking-[0.14em] text-foreground"
       >
-        Back to Library
+        {ui.backToLibrary}
       </button>
       <div className="min-w-0 flex-1 text-right">
         <p className="truncate font-display text-lg text-foreground">{title}</p>
-        <p className="text-xs text-muted-foreground">{isLocked ? "Locked in premium" : "Open access"}</p>
+        <p className="text-xs text-muted-foreground">{isLocked ? ui.lockedInPremium : ui.openAccess}</p>
       </div>
       <TierBadge tier={tier} />
     </div>
@@ -1274,9 +1515,13 @@ const RelatedPathCarousel = ({
 }: {
   items: PathDetail[];
   onSelect: (slug: string) => void;
-}) => (
+}) => {
+  const { lang } = useLanguage();
+  const ui = pathsUiCopy[lang];
+
+  return (
   <section className="rounded-[24px] border border-border/30 bg-card/40 p-4">
-    <p className="text-xs uppercase tracking-[0.18em] text-primary/80">Related Paths</p>
+    <p className="text-xs uppercase tracking-[0.18em] text-primary/80">{ui.relatedPaths}</p>
     <div className="mt-3 flex snap-x gap-3 overflow-x-auto pb-1">
       {items.map((item) => {
         const Icon = item.icon;
@@ -1300,9 +1545,12 @@ const RelatedPathCarousel = ({
       })}
     </div>
   </section>
-);
+  );
+};
 
 const Paths = () => {
+  const { lang } = useLanguage();
+  const ui = pathsUiCopy[lang];
   const isMobile = useIsMobile();
   const [selectedSlug, setSelectedSlug] = useState(pathDetails[0].slug);
   const [mobileDetailMode, setMobileDetailMode] = useState(false);
@@ -1341,15 +1589,15 @@ const Paths = () => {
       {showBrowse ? (
       <section className="rounded-[30px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-5 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] md:p-8">
         <div className="max-w-4xl">
-          <p className="text-xs uppercase tracking-[0.28em] text-primary/80">Sacred Library · Paths</p>
-          <h1 className="mt-3 font-display text-3xl text-foreground md:text-5xl">Ancient pathways translated for modern couples</h1>
+          <p className="text-xs uppercase tracking-[0.28em] text-primary/80">{ui.heroEyebrow}</p>
+          <h1 className="mt-3 font-display text-3xl text-foreground md:text-5xl">{ui.heroTitle}</h1>
           <p className="mt-4 text-sm leading-7 text-muted-foreground md:text-base">
-            Start with a quick insight you can use immediately, then go deeper as a couple when you have space. Each path helps you move from information to real closeness.
+            {ui.heroDesc}
           </p>
         </div>
 
         <div className="mt-6 w-full rounded-[24px] border border-border/30 bg-card/45 p-4">
-          <div className="text-xs uppercase tracking-[0.22em] text-primary/80">Sacred pages</div>
+          <div className="text-xs uppercase tracking-[0.22em] text-primary/80">{ui.sacredPages}</div>
           <div className="mt-3 grid gap-3 md:grid-cols-3">
             {libraryPages.map((page) => {
               const Icon = page.icon;
@@ -1367,8 +1615,8 @@ const Paths = () => {
                   <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-2.5 ${page.iconClass}`}>
                     <Icon className="h-4 w-4" />
                   </div>
-                  <div className="mt-3 font-display text-xl text-foreground">{page.label}</div>
-                  <p className="mt-1 text-sm leading-6 text-muted-foreground">{page.subtitle}</p>
+                  <div className="mt-3 font-display text-xl text-foreground">{ui[page.labelKey]}</div>
+                  <p className="mt-1 text-sm leading-6 text-muted-foreground">{ui[page.subtitleKey]}</p>
                 </Link>
               );
             })}
@@ -1379,8 +1627,8 @@ const Paths = () => {
 
       {showBrowse ? (
       <section className={shellCardClass}>
-        <p className="text-xs uppercase tracking-[0.22em] text-primary/80">Paths Overview</p>
-        <h2 className="mt-2 font-display text-3xl text-foreground">Choose a path for immediate closeness and long-term sacred growth</h2>
+        <p className="text-xs uppercase tracking-[0.22em] text-primary/80">{ui.overviewEyebrow}</p>
+        <h2 className="mt-2 font-display text-3xl text-foreground">{ui.overviewTitle}</h2>
 
         <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           {pathDetails.map((path) => {
@@ -1407,8 +1655,8 @@ const Paths = () => {
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">{path.oneLine}</p>
                 <p className="mt-2 text-xs leading-5 text-foreground/80">
                   {path.tier === "free"
-                    ? `Practice preview: ${path.content?.practices[0]?.title ?? "Foundational couple exercise"}`
-                    : `Premium preview: ${path.teaser?.[0] ?? "Deep guided path content"}`}
+                    ? `${ui.practicePreview}: ${path.content?.practices[0]?.title ?? ui.practicePreviewFallback}`
+                    : `${ui.premiumPreview}: ${path.teaser?.[0] ?? ui.premiumPreviewFallback}`}
                 </p>
               </button>
             );
@@ -1417,12 +1665,12 @@ const Paths = () => {
 
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           <div className="rounded-2xl border border-emerald-400/25 bg-emerald-500/8 p-4">
-            <p className="text-xs uppercase tracking-[0.14em] text-emerald-200">Open-access Paths</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">{freeCount} fully open paths so couples can apply wisdom now and reconnect in the same moment.</p>
+            <p className="text-xs uppercase tracking-[0.14em] text-emerald-200">{ui.openAccessPaths}</p>
+            <p className="mt-2 text-sm leading-6 text-foreground/90">{freeCount} {ui.openAccessPathsBody}</p>
           </div>
           <div className="rounded-2xl border border-amber-400/25 bg-amber-500/8 p-4">
-            <p className="text-xs uppercase tracking-[0.14em] text-amber-200">Locked Paths</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">{premiumCount} locked paths for deeper inspiration, richer guidance, and a structured journey toward sacred love.</p>
+            <p className="text-xs uppercase tracking-[0.14em] text-amber-200">{ui.lockedPaths}</p>
+            <p className="mt-2 text-sm leading-6 text-foreground/90">{premiumCount} {ui.lockedPathsBody}</p>
           </div>
         </div>
       </section>

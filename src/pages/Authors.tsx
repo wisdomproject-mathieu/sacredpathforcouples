@@ -17,6 +17,7 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useSeoMetadata } from "@/lib/seo";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
 
 type Tier = "free" | "premium";
@@ -88,22 +89,22 @@ type Author = {
 const libraryPages = [
   {
     to: "/app/paths",
-    label: "Paths",
-    subtitle: "Ancient pathways for modern love",
+    labelKey: "pagePaths",
+    subtitleKey: "pagePathsSubtitle",
     icon: Sparkles,
     iconClass: "text-violet-300",
   },
   {
     to: "/app/authors",
-    label: "Authors",
-    subtitle: "Voices that guide intimacy",
+    labelKey: "pageAuthors",
+    subtitleKey: "pageAuthorsSubtitle",
     icon: Feather,
     iconClass: "text-rose-300",
   },
   {
     to: "/app/reconnect",
-    label: "Reconnect",
-    subtitle: "Repair and return to closeness",
+    labelKey: "pageReconnect",
+    subtitleKey: "pageReconnectSubtitle",
     icon: Heart,
     iconClass: "text-amber-300",
   },
@@ -773,6 +774,231 @@ const authorUpgradeCopy: Record<
 const shellCardClass =
   "rounded-[28px] border border-border/30 bg-card/45 p-5 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.46)]";
 
+const authorsUiCopy: Record<Language, Record<string, string>> = {
+  en: {
+    pagePaths: "Paths",
+    pagePathsSubtitle: "Ancient pathways for modern love",
+    pageAuthors: "Authors",
+    pageAuthorsSubtitle: "Voices that guide intimacy",
+    pageReconnect: "Reconnect",
+    pageReconnectSubtitle: "Repair and return to closeness",
+    backToLibrary: "Back to Library",
+    lockedInPremium: "Locked in premium",
+    openAccess: "Open access",
+    relatedAuthors: "Related Authors",
+    heroEyebrow: "Sacred Library · Authors",
+    heroTitle: "Ancient voices for modern couples in real relationship life",
+    heroDesc:
+      "Read for one minute and feel closer tonight, or study deeply when you have time. Every page is designed to turn timeless wisdom into practical closeness with your partner.",
+    sacredPages: "Sacred pages",
+    overviewEyebrow: "Authors Overview",
+    overviewTitle: "Choose an author for immediate closeness and deeper shared growth",
+    practicePreview: "Practice preview",
+    practicePreviewFallback: "Guided author exercise",
+    premiumPreview: "Premium preview",
+    premiumPreviewFallback: "Expanded guided author journey",
+    openAuthors: "Open-access Authors",
+    openAuthorsBodySuffix:
+      "are fully open so couples can apply ancient wisdom immediately and feel closer today.",
+    lockedAuthors: "Locked Authors",
+    lockedAuthorsBody:
+      "locked voices for couples who want more inspiration, deeper wisdom, and a guided path toward sacred love.",
+    unlockCoupleAuthorJourney: "Unlock this couple author journey",
+    premiumActive: "Premium Active",
+    locked: "Locked",
+    guidedJourneys: "Guided Journeys",
+    practiceScripts: "Practice Scripts",
+    sacredLovePaths: "Sacred Love Paths",
+    viewPlansAndTrial: "View plans and trial",
+    premiumValue: "8. Premium Value",
+    whatThisAuthorIsAbout: "What This Author Is About",
+    whoThisIsFor: "Who This Is For",
+    concretePracticePreview: "Concrete Practice Preview",
+    whyThisAuthorMatters: "Why This Author Matters",
+    coreTeachings: "Core Teachings",
+    teaching: "Teaching",
+    whatModernCouplesCanUseToday: "What Modern Couples Can Use Today",
+    beginnerAndAdvancedPath: "Beginner And Advanced Path",
+    beginner: "Beginner",
+    advanced: "Advanced",
+    shadowMisuseAvoid: "Shadow / Misuse / What To Avoid",
+    practicalExercises: "Practical Exercises",
+    practice: "Practice",
+    integration: "Integration",
+    reflectionPrompts: "Reflection Prompts",
+    premiumAuthor: "Premium Author",
+    lockedAuthor: "Locked Author",
+    whatThisAuthorOffers: "What This Author Offers",
+    unlockThisAuthorJourney: "Unlock this author journey",
+    whyItMattersForCouples: "Why It Matters For Couples",
+    premiumWhoCard1Title: "Couples craving deeper guidance",
+    premiumWhoCard1Body: "Go beyond short quotes into structured couple implementation.",
+    premiumWhoCard2Title: "Couples navigating recurring tension",
+    premiumWhoCard2Body: "Use premium scripts and frameworks to break repetitive emotional loops.",
+    premiumWhoCard3Title: "Couples rebuilding sensual confidence",
+    premiumWhoCard3Body: "Pair emotional depth with embodied practice so attraction can return safely.",
+    premiumWhoCard4Title: "Couples seeking long-term sacred growth",
+    premiumWhoCard4Body: "Follow progression maps that connect Authors, Paths, and Reconnect tools.",
+    premiumPracticeTitle: "Premium author integration sequence",
+    premiumPracticeBody:
+      "A guided sequence that translates one teaching into breath, dialogue, touch, and integration in the same session.",
+    premiumPracticeStep1: "Choose one teaching and one relational pain-point to work on tonight.",
+    premiumPracticeStep2: "Run a timed dialogue plus body-regulation sequence from the premium module.",
+    premiumPracticeStep3: "Close with one integration commitment and one next-step recommendation.",
+    premiumWhy1: "Translate philosophy into practical relational behavior that works in real life.",
+    premiumWhy2: "Upgrade communication, touch quality, and emotional clarity in the same framework.",
+    premiumWhy3: "Build a consistent couple practice instead of waiting for random moments of closeness.",
+  },
+  fr: {
+    pagePaths: "Parcours",
+    pagePathsSubtitle: "Parcours anciens pour l'amour moderne",
+    pageAuthors: "Auteurs",
+    pageAuthorsSubtitle: "Voix qui guident l'intimité",
+    pageReconnect: "Reconnecter",
+    pageReconnectSubtitle: "Réparer et revenir à la proximité",
+    backToLibrary: "Retour à la bibliothèque",
+    lockedInPremium: "Verrouillé en premium",
+    openAccess: "Accès libre",
+    relatedAuthors: "Auteurs liés",
+    heroEyebrow: "Bibliothèque sacrée · Auteurs",
+    heroTitle: "Des voix anciennes pour les couples modernes dans la vraie vie relationnelle",
+    heroDesc:
+      "Lisez une minute et sentez-vous plus proches ce soir, ou étudiez en profondeur quand vous avez du temps. Chaque page transforme une sagesse intemporelle en proximité concrète avec votre partenaire.",
+    sacredPages: "Pages sacrées",
+    overviewEyebrow: "Vue d'ensemble des auteurs",
+    overviewTitle: "Choisissez un auteur pour une proximité immédiate et une croissance partagée plus profonde",
+    practicePreview: "Aperçu de pratique",
+    practicePreviewFallback: "Exercice auteur guidé",
+    premiumPreview: "Aperçu premium",
+    premiumPreviewFallback: "Parcours auteur guidé étendu",
+    openAuthors: "Auteurs en accès libre",
+    openAuthorsBodySuffix:
+      "sont totalement ouverts pour appliquer immédiatement la sagesse ancienne et se sentir plus proches aujourd'hui.",
+    lockedAuthors: "Auteurs verrouillés",
+    lockedAuthorsBody:
+      "voix verrouillées pour les couples qui veulent plus d'inspiration, une sagesse plus profonde et un chemin guidé vers l'amour sacré.",
+    unlockCoupleAuthorJourney: "Déverrouiller ce parcours auteur de couple",
+    premiumActive: "Premium actif",
+    locked: "Verrouillé",
+    guidedJourneys: "Parcours guidés",
+    practiceScripts: "Scripts de pratique",
+    sacredLovePaths: "Chemins d'amour sacré",
+    viewPlansAndTrial: "Voir les plans et l'essai",
+    premiumValue: "8. Valeur Premium",
+    whatThisAuthorIsAbout: "De quoi parle cet auteur",
+    whoThisIsFor: "Pour qui c'est",
+    concretePracticePreview: "Aperçu d'une pratique concrète",
+    whyThisAuthorMatters: "Pourquoi cet auteur compte",
+    coreTeachings: "Enseignements centraux",
+    teaching: "Enseignement",
+    whatModernCouplesCanUseToday: "Ce que les couples modernes peuvent utiliser aujourd'hui",
+    beginnerAndAdvancedPath: "Parcours débutant et avancé",
+    beginner: "Débutant",
+    advanced: "Avancé",
+    shadowMisuseAvoid: "Ombre / mauvais usage / à éviter",
+    practicalExercises: "Exercices pratiques",
+    practice: "Pratique",
+    integration: "Intégration",
+    reflectionPrompts: "Questions de réflexion",
+    premiumAuthor: "Auteur premium",
+    lockedAuthor: "Auteur verrouillé",
+    whatThisAuthorOffers: "Ce que cet auteur apporte",
+    unlockThisAuthorJourney: "Déverrouiller cet auteur",
+    whyItMattersForCouples: "Pourquoi c'est important pour les couples",
+    premiumWhoCard1Title: "Couples en quête de guidance plus profonde",
+    premiumWhoCard1Body: "Allez au-delà des citations courtes vers une implémentation structurée en couple.",
+    premiumWhoCard2Title: "Couples qui traversent des tensions récurrentes",
+    premiumWhoCard2Body: "Utilisez des scripts premium et des cadres pour casser les boucles émotionnelles répétitives.",
+    premiumWhoCard3Title: "Couples qui reconstruisent leur confiance sensuelle",
+    premiumWhoCard3Body: "Associez profondeur émotionnelle et pratique incarnée pour ramener l'attraction en sécurité.",
+    premiumWhoCard4Title: "Couples cherchant une croissance sacrée à long terme",
+    premiumWhoCard4Body: "Suivez des cartes de progression qui relient Auteurs, Parcours et outils Reconnect.",
+    premiumPracticeTitle: "Séquence d'intégration premium auteur",
+    premiumPracticeBody:
+      "Une séquence guidée qui traduit un enseignement en souffle, dialogue, toucher et intégration dans la même session.",
+    premiumPracticeStep1: "Choisissez un enseignement et un point de douleur relationnel à travailler ce soir.",
+    premiumPracticeStep2: "Lancez un dialogue chronométré plus une séquence de régulation corporelle du module premium.",
+    premiumPracticeStep3: "Terminez avec un engagement d'intégration et une recommandation pour l'étape suivante.",
+    premiumWhy1: "Traduisez la philosophie en comportement relationnel concret qui fonctionne dans la vraie vie.",
+    premiumWhy2: "Améliorez communication, qualité du toucher et clarté émotionnelle dans le même cadre.",
+    premiumWhy3: "Construisez une pratique de couple régulière au lieu d'attendre des moments de proximité aléatoires.",
+  },
+  cs: {
+    pagePaths: "Cesty",
+    pagePathsSubtitle: "Starověké cesty pro moderní lásku",
+    pageAuthors: "Autoři",
+    pageAuthorsSubtitle: "Hlasy, které vedou intimitu",
+    pageReconnect: "Znovuspojení",
+    pageReconnectSubtitle: "Opravit a vrátit se k blízkosti",
+    backToLibrary: "Zpět do knihovny",
+    lockedInPremium: "Uzamčeno v premium",
+    openAccess: "Volný přístup",
+    relatedAuthors: "Související autoři",
+    heroEyebrow: "Posvátná knihovna · Autoři",
+    heroTitle: "Starověké hlasy pro moderní páry v reálném vztahovém životě",
+    heroDesc:
+      "Čti jednu minutu a už dnes večer se cítíte blíž, nebo studujte do hloubky, když máte čas. Každá stránka převádí nadčasovou moudrost do praktické blízkosti s partnerem.",
+    sacredPages: "Posvátné stránky",
+    overviewEyebrow: "Přehled autorů",
+    overviewTitle: "Vyber autora pro okamžitou blízkost a hlubší společný růst",
+    practicePreview: "Náhled praxe",
+    practicePreviewFallback: "Vedené autorské cvičení",
+    premiumPreview: "Náhled premium",
+    premiumPreviewFallback: "Rozšířená vedená autorská cesta",
+    openAuthors: "Volně dostupní autoři",
+    openAuthorsBodySuffix:
+      "jsou plně otevření, aby páry mohly starověkou moudrost použít hned a cítit se dnes blíž.",
+    lockedAuthors: "Uzamčení autoři",
+    lockedAuthorsBody:
+      "uzamčené hlasy pro páry, které chtějí více inspirace, hlubší moudrost a vedenou cestu k posvátné lásce.",
+    unlockCoupleAuthorJourney: "Odemknout tuto párovou autorskou cestu",
+    premiumActive: "Premium aktivní",
+    locked: "Uzamčeno",
+    guidedJourneys: "Vedené cesty",
+    practiceScripts: "Skripty praxe",
+    sacredLovePaths: "Cesty posvátné lásky",
+    viewPlansAndTrial: "Zobrazit plány a zkušební verzi",
+    premiumValue: "8. Premium hodnota",
+    whatThisAuthorIsAbout: "O čem tento autor je",
+    whoThisIsFor: "Pro koho je to určeno",
+    concretePracticePreview: "Ukázka konkrétní praxe",
+    whyThisAuthorMatters: "Proč je tento autor důležitý",
+    coreTeachings: "Hlavní učení",
+    teaching: "Učení",
+    whatModernCouplesCanUseToday: "Co mohou moderní páry použít už dnes",
+    beginnerAndAdvancedPath: "Začátečnická a pokročilá cesta",
+    beginner: "Začátečník",
+    advanced: "Pokročilý",
+    shadowMisuseAvoid: "Stín / zneužití / čemu se vyhnout",
+    practicalExercises: "Praktická cvičení",
+    practice: "Praxe",
+    integration: "Integrace",
+    reflectionPrompts: "Otázky k zamyšlení",
+    premiumAuthor: "Premium autor",
+    lockedAuthor: "Uzamčený autor",
+    whatThisAuthorOffers: "Co tento autor nabízí",
+    unlockThisAuthorJourney: "Odemknout tuto autorskou cestu",
+    whyItMattersForCouples: "Proč je to důležité pro páry",
+    premiumWhoCard1Title: "Páry toužící po hlubším vedení",
+    premiumWhoCard1Body: "Jděte za krátké citáty k strukturované párové implementaci.",
+    premiumWhoCard2Title: "Páry řešící opakované napětí",
+    premiumWhoCard2Body: "Použijte premium skripty a rámce k přerušení opakujících se emočních smyček.",
+    premiumWhoCard3Title: "Páry obnovující smyslnou sebedůvěru",
+    premiumWhoCard3Body: "Spojte emoční hloubku s vtělenou praxí, aby se přitažlivost mohla bezpečně vrátit.",
+    premiumWhoCard4Title: "Páry hledající dlouhodobý posvátný růst",
+    premiumWhoCard4Body: "Sledujte mapy progrese, které propojují Autory, Cesty a nástroje Reconnect.",
+    premiumPracticeTitle: "Premium integrační sekvence autora",
+    premiumPracticeBody:
+      "Vedená sekvence, která převádí jedno učení do dechu, dialogu, doteku a integrace v rámci jednoho sezení.",
+    premiumPracticeStep1: "Vyberte jedno učení a jeden vztahový bolestivý bod, na kterém dnes večer pracovat.",
+    premiumPracticeStep2: "Spusťte časovaný dialog plus sekvenci regulace těla z premium modulu.",
+    premiumPracticeStep3: "Ukončete jedním integračním závazkem a jedním doporučením dalšího kroku.",
+    premiumWhy1: "Převeďte filozofii do praktického vztahového chování, které funguje v reálném životě.",
+    premiumWhy2: "Vylepšete komunikaci, kvalitu doteku a emoční jasnost v jednom rámci.",
+    premiumWhy3: "Vybudujte konzistentní párovou praxi místo čekání na náhodné chvíle blízkosti.",
+  },
+};
+
 const badgeByTier: Record<Tier, string> = {
   free: "border-amber-400/30 bg-amber-500/12 text-amber-200",
   premium: "border-amber-400/30 bg-amber-500/12 text-amber-200",
@@ -795,6 +1021,8 @@ const TierBadge = ({ tier }: { tier: Tier }) => {
 };
 
 const AuthorHeroCard = ({ author }: { author: Author }) => {
+  const { lang } = useLanguage();
+  const ui = authorsUiCopy[lang];
   const Icon = author.icon;
   const hasPremiumAccess = usePremiumAccess();
   const isLocked = author.tier === "premium" && !hasPremiumAccess;
@@ -818,7 +1046,7 @@ const AuthorHeroCard = ({ author }: { author: Author }) => {
           className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-2 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/18"
         >
           <Lock className="h-4 w-4" />
-          Unlock this couple author journey
+          {ui.unlockCoupleAuthorJourney}
         </Link>
       ) : null}
     </section>
@@ -826,6 +1054,8 @@ const AuthorHeroCard = ({ author }: { author: Author }) => {
 };
 
 const PremiumMiniCard = ({ author }: { author: Author }) => {
+  const { lang } = useLanguage();
+  const ui = authorsUiCopy[lang];
   const hasPremiumAccess = usePremiumAccess();
   const upgradeCopy = authorUpgradeCopy[author.slug] ?? {
     benefit: "Turn insight into guided couple practice with structure that lasts.",
@@ -838,22 +1068,22 @@ const PremiumMiniCard = ({ author }: { author: Author }) => {
   <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.24),transparent_55%),linear-gradient(135deg,rgba(245,158,11,0.18),rgba(15,23,42,0.15))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.62)]">
     <div className="flex items-center gap-2 text-amber-200">
       {hasPremiumAccess ? <LockOpen className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
-      <span className="text-xs uppercase tracking-[0.16em]">{hasPremiumAccess ? "Premium Active" : "Locked"}</span>
+      <span className="text-xs uppercase tracking-[0.16em]">{hasPremiumAccess ? ui.premiumActive : ui.locked}</span>
     </div>
     <p className="mt-3 text-sm leading-6 text-foreground/90">
       {miniLine}
     </p>
     <div className="mt-3 flex flex-wrap gap-2">
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Guided Journeys</span>
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Practice Scripts</span>
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Sacred Love Paths</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{ui.guidedJourneys}</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{ui.practiceScripts}</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{ui.sacredLovePaths}</span>
     </div>
     {hasPremiumAccess ? null : (
       <Link
         to="/pricing"
         className="mt-4 inline-flex items-center gap-2 rounded-xl border border-amber-300/30 bg-amber-500/14 px-3 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
       >
-        View plans and trial
+        {ui.viewPlansAndTrial}
         <ArrowRight className="h-4 w-4" />
       </Link>
     )}
@@ -862,6 +1092,8 @@ const PremiumMiniCard = ({ author }: { author: Author }) => {
 };
 
 const AuthorPremiumBlock = ({ author }: { author: Author }) => {
+  const { lang } = useLanguage();
+  const ui = authorsUiCopy[lang];
   const hasPremiumAccess = usePremiumAccess();
   const upgradeCopy = authorUpgradeCopy[author.slug] ?? {
     headline: `Go deeper with ${author.name}`,
@@ -876,7 +1108,7 @@ const AuthorPremiumBlock = ({ author }: { author: Author }) => {
 
   return (
     <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
-      <p className="text-xs uppercase tracking-[0.2em] text-amber-300">8. Premium Value</p>
+      <p className="text-xs uppercase tracking-[0.2em] text-amber-300">{ui.premiumValue}</p>
       <h4 className="mt-2 font-display text-2xl text-foreground">{upgradeCopy.headline}</h4>
       <p className="mt-3 text-sm leading-7 text-foreground/90">{upgradeCopy.benefit}</p>
       <div className="mt-4 space-y-2">
@@ -901,6 +1133,8 @@ const AuthorPremiumBlock = ({ author }: { author: Author }) => {
 };
 
 const FreeAuthorContent = ({ author }: { author: Author }) => {
+  const { lang } = useLanguage();
+  const ui = authorsUiCopy[lang];
   if (!author.content) return null;
 
   const data = author.content;
@@ -908,7 +1142,7 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
   return (
     <main className="space-y-5">
       <section className={shellCardClass}>
-        <p className="text-xs uppercase tracking-[0.2em] text-primary/80">What This Author Is About</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{ui.whatThisAuthorIsAbout}</p>
         <h3 className="mt-2 font-display text-3xl text-foreground">{author.name}</h3>
         <div className="mt-4 space-y-3 text-sm leading-7 text-foreground/90">
           {data.heroIntro.map((line) => (
@@ -923,7 +1157,7 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
 
       {data.whoItsFor?.length ? (
         <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Who This Is For</p>
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.whoThisIsFor}</p>
           <div className="mt-4 space-y-3">
             {data.whoItsFor.map((item) => (
               <article key={item.title} className="rounded-2xl border border-border/25 bg-card/35 p-4">
@@ -937,7 +1171,7 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
 
       {data.practicePreview ? (
         <section className="rounded-[24px] border border-primary/20 bg-primary/8 p-5">
-          <p className="text-xs uppercase tracking-[0.2em] text-primary/80">Concrete Practice Preview</p>
+          <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{ui.concretePracticePreview}</p>
           <h4 className="mt-2 font-display text-2xl text-foreground">{data.practicePreview.title}</h4>
           <p className="mt-2 text-sm leading-7 text-foreground/90">{data.practicePreview.body}</p>
           <div className="mt-3 space-y-2">
@@ -952,7 +1186,7 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
       ) : null}
 
       <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Why This Author Matters</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.whyThisAuthorMatters}</p>
         <div className="mt-4 space-y-3">
           {data.whyMatters.map((item) => (
             <div key={item} className="flex items-start gap-3 text-sm leading-7 text-foreground/90">
@@ -964,11 +1198,11 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
       </section>
 
       <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Core Teachings</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.coreTeachings}</p>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           {data.coreTeachings.map((teaching, index) => (
             <article key={teaching.title} className="rounded-2xl border border-border/25 bg-card/35 p-4">
-              <p className="text-[11px] uppercase tracking-[0.14em] text-primary/80">Teaching {index + 1}</p>
+              <p className="text-[11px] uppercase tracking-[0.14em] text-primary/80">{ui.teaching} {index + 1}</p>
               <h4 className="mt-2 font-body text-sm text-foreground">{teaching.title}</h4>
               <p className="mt-2 text-sm leading-6 text-foreground/90">{teaching.body}</p>
               {teaching.beginnerReframe ? <p className="mt-2 text-sm leading-6 text-emerald-200/90">{teaching.beginnerReframe}</p> : null}
@@ -979,7 +1213,7 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
       </section>
 
       <section className="rounded-[24px] border border-primary/20 bg-primary/8 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-primary/80">What Modern Couples Can Use Today</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{ui.whatModernCouplesCanUseToday}</p>
         <div className="mt-4 space-y-3">
           {data.modernUse.map((item) => (
             <article key={item.title} className="rounded-2xl border border-primary/20 bg-background/50 p-4">
@@ -992,11 +1226,11 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
 
       {data.beginnerTrack || data.advancedTrack ? (
         <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Beginner And Advanced Path</p>
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.beginnerAndAdvancedPath}</p>
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             {data.beginnerTrack ? (
               <article className="rounded-2xl border border-emerald-300/25 bg-emerald-500/8 p-4">
-                <p className="text-[11px] uppercase tracking-[0.14em] text-emerald-200">Beginner</p>
+                <p className="text-[11px] uppercase tracking-[0.14em] text-emerald-200">{ui.beginner}</p>
                 <h4 className="mt-2 font-body text-sm text-foreground">{data.beginnerTrack.title}</h4>
                 <p className="mt-2 text-sm leading-6 text-foreground/90">{data.beginnerTrack.body}</p>
                 <div className="mt-3 space-y-2">
@@ -1012,7 +1246,7 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
 
             {data.advancedTrack ? (
               <article className="rounded-2xl border border-amber-300/25 bg-amber-500/8 p-4">
-                <p className="text-[11px] uppercase tracking-[0.14em] text-amber-200">Advanced</p>
+                <p className="text-[11px] uppercase tracking-[0.14em] text-amber-200">{ui.advanced}</p>
                 <h4 className="mt-2 font-body text-sm text-foreground">{data.advancedTrack.title}</h4>
                 <p className="mt-2 text-sm leading-6 text-foreground/90">{data.advancedTrack.body}</p>
                 <div className="mt-3 space-y-2">
@@ -1030,7 +1264,7 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
       ) : null}
 
       <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Shadow / Misuse / What To Avoid</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.shadowMisuseAvoid}</p>
         <div className="mt-4 space-y-3">
           {data.shadowToAvoid.map((item) => (
             <article key={item.title} className="rounded-2xl border border-border/25 bg-card/35 p-4">
@@ -1044,11 +1278,11 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
       </section>
 
       <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Practical Exercises</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.practicalExercises}</p>
         <div className="mt-4 space-y-4">
           {data.exercises.map((exercise, index) => (
             <article key={exercise.title} className="rounded-2xl border border-border/25 bg-card/35 p-4">
-              <div className="text-[11px] uppercase tracking-[0.14em] text-primary/80">Practice {index + 1}</div>
+              <div className="text-[11px] uppercase tracking-[0.14em] text-primary/80">{ui.practice} {index + 1}</div>
               <h4 className="mt-2 font-body text-sm text-foreground">{exercise.title}</h4>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">{exercise.setup}</p>
               <div className="mt-3 space-y-2">
@@ -1059,16 +1293,16 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
                   </div>
                 ))}
               </div>
-              {exercise.beginnerNote ? <p className="mt-3 text-sm leading-6 text-emerald-200/90">Beginner: {exercise.beginnerNote}</p> : null}
-              {exercise.advancedNote ? <p className="mt-1 text-sm leading-6 text-amber-200/90">Advanced: {exercise.advancedNote}</p> : null}
-              <p className="mt-3 text-sm leading-6 text-primary/85">Integration: {exercise.integration}</p>
+              {exercise.beginnerNote ? <p className="mt-3 text-sm leading-6 text-emerald-200/90">{ui.beginner}: {exercise.beginnerNote}</p> : null}
+              {exercise.advancedNote ? <p className="mt-1 text-sm leading-6 text-amber-200/90">{ui.advanced}: {exercise.advancedNote}</p> : null}
+              <p className="mt-3 text-sm leading-6 text-primary/85">{ui.integration}: {exercise.integration}</p>
             </article>
           ))}
         </div>
       </section>
 
       <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Reflection Prompts</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.reflectionPrompts}</p>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           {data.reflectionPrompts.map((prompt) => (
             <article key={prompt} className="rounded-2xl border border-border/25 bg-card/35 p-4 text-sm leading-7 text-foreground/90">
@@ -1084,6 +1318,8 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
 };
 
 const PremiumAuthorContent = ({ author }: { author: Author }) => {
+  const { lang } = useLanguage();
+  const ui = authorsUiCopy[lang];
   const hasPremiumAccess = usePremiumAccess();
 
   return (
@@ -1092,10 +1328,10 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => {
       <div className="flex flex-wrap items-center gap-2">
         <TierBadge tier="premium" />
         <span className="inline-flex items-center rounded-full border border-amber-400/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] text-amber-200">
-          {hasPremiumAccess ? "Premium Author" : "Locked Author"}
+          {hasPremiumAccess ? ui.premiumAuthor : ui.lockedAuthor}
         </span>
       </div>
-      <p className="mt-3 text-xs uppercase tracking-[0.2em] text-primary/80">What This Author Offers</p>
+      <p className="mt-3 text-xs uppercase tracking-[0.2em] text-primary/80">{ui.whatThisAuthorOffers}</p>
       <h3 className="mt-2 font-display text-3xl text-foreground">{author.name}</h3>
       <p className="mt-3 text-sm leading-7 text-foreground/90">{author.descriptor}</p>
       <p className="mt-2 text-sm leading-7 text-muted-foreground">{author.oneLiner}</p>
@@ -1110,69 +1346,69 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => {
           className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-2 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/18"
         >
           <Lock className="h-4 w-4" />
-          Unlock this author journey
+          {ui.unlockThisAuthorJourney}
         </Link>
       )}
     </section>
 
     <section className="rounded-[24px] border border-primary/20 bg-primary/8 p-5">
-      <p className="text-xs uppercase tracking-[0.2em] text-primary/80">Why It Matters For Couples</p>
+      <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{ui.whyItMattersForCouples}</p>
       <div className="mt-4 space-y-2">
         <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
           <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>Translate philosophy into practical relational behavior that works in real life.</span>
+          <span>{ui.premiumWhy1}</span>
         </div>
         <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
           <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>Upgrade communication, touch quality, and emotional clarity in the same framework.</span>
+          <span>{ui.premiumWhy2}</span>
         </div>
         <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
           <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>Build a consistent couple practice instead of waiting for random moments of closeness.</span>
+          <span>{ui.premiumWhy3}</span>
         </div>
       </div>
     </section>
 
     <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Who This Is For</p>
+      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.whoThisIsFor}</p>
       <div className="mt-4 grid gap-3 md:grid-cols-2">
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">Couples craving deeper guidance</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Go beyond short quotes into structured couple implementation.</p>
+          <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard1Title}</h4>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard1Body}</p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">Couples navigating recurring tension</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Use premium scripts and frameworks to break repetitive emotional loops.</p>
+          <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard2Title}</h4>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard2Body}</p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">Couples rebuilding sensual confidence</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Pair emotional depth with embodied practice so attraction can return safely.</p>
+          <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard3Title}</h4>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard3Body}</p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">Couples seeking long-term sacred growth</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Follow progression maps that connect Authors, Paths, and Reconnect tools.</p>
+          <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard4Title}</h4>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard4Body}</p>
         </article>
       </div>
     </section>
 
     <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Concrete Practice Preview</p>
-      <h4 className="mt-2 font-display text-2xl text-foreground">Premium author integration sequence</h4>
+      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.concretePracticePreview}</p>
+      <h4 className="mt-2 font-display text-2xl text-foreground">{ui.premiumPracticeTitle}</h4>
       <p className="mt-2 text-sm leading-7 text-foreground/90">
-        A guided sequence that translates one teaching into breath, dialogue, touch, and integration in the same session.
+        {ui.premiumPracticeBody}
       </p>
       <div className="mt-3 space-y-2">
         <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
           <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>Choose one teaching and one relational pain-point to work on tonight.</span>
+          <span>{ui.premiumPracticeStep1}</span>
         </div>
         <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
           <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>Run a timed dialogue plus body-regulation sequence from the premium module.</span>
+          <span>{ui.premiumPracticeStep2}</span>
         </div>
         <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
           <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>Close with one integration commitment and one next-step recommendation.</span>
+          <span>{ui.premiumPracticeStep3}</span>
         </div>
       </div>
     </section>
@@ -1191,6 +1427,8 @@ const MobileDetailHeader = ({
   tier: Tier;
   onBack: () => void;
 }) => {
+  const { lang } = useLanguage();
+  const ui = authorsUiCopy[lang];
   const hasPremiumAccess = usePremiumAccess();
   const isLocked = tier === "premium" && !hasPremiumAccess;
 
@@ -1202,11 +1440,11 @@ const MobileDetailHeader = ({
         onClick={onBack}
         className="rounded-xl border border-border/35 bg-card/45 px-3 py-2 text-xs uppercase tracking-[0.14em] text-foreground"
       >
-        Back to Library
+        {ui.backToLibrary}
       </button>
       <div className="min-w-0 flex-1 text-right">
         <p className="truncate font-display text-lg text-foreground">{title}</p>
-        <p className="text-xs text-muted-foreground">{isLocked ? "Locked in premium" : "Open access"}</p>
+        <p className="text-xs text-muted-foreground">{isLocked ? ui.lockedInPremium : ui.openAccess}</p>
       </div>
       <TierBadge tier={tier} />
     </div>
@@ -1220,9 +1458,13 @@ const RelatedAuthorCarousel = ({
 }: {
   items: Author[];
   onSelect: (slug: string) => void;
-}) => (
+}) => {
+  const { lang } = useLanguage();
+  const ui = authorsUiCopy[lang];
+
+  return (
   <section className="rounded-[24px] border border-border/30 bg-card/40 p-4">
-    <p className="text-xs uppercase tracking-[0.18em] text-primary/80">Related Authors</p>
+    <p className="text-xs uppercase tracking-[0.18em] text-primary/80">{ui.relatedAuthors}</p>
     <div className="mt-3 flex snap-x gap-3 overflow-x-auto pb-1">
       {items.map((item) => {
         const Icon = item.icon;
@@ -1246,9 +1488,13 @@ const RelatedAuthorCarousel = ({
       })}
     </div>
   </section>
-);
+  );
+};
 
 const Authors = () => {
+  const { lang } = useLanguage();
+  const ui = authorsUiCopy[lang];
+  const authorJoinWord = lang === "fr" ? " et " : lang === "cs" ? " a " : " and ";
   const isMobile = useIsMobile();
   const [selectedSlug, setSelectedSlug] = useState("deida");
   const [mobileDetailMode, setMobileDetailMode] = useState(false);
@@ -1287,15 +1533,15 @@ const Authors = () => {
       {showBrowse ? (
       <section className="rounded-[30px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-5 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] md:p-8">
         <div className="max-w-4xl">
-          <p className="text-xs uppercase tracking-[0.28em] text-primary/80">Sacred Library · Authors</p>
-          <h1 className="mt-3 font-display text-3xl text-foreground md:text-5xl">Ancient voices for modern couples in real relationship life</h1>
+          <p className="text-xs uppercase tracking-[0.28em] text-primary/80">{ui.heroEyebrow}</p>
+          <h1 className="mt-3 font-display text-3xl text-foreground md:text-5xl">{ui.heroTitle}</h1>
           <p className="mt-4 text-sm leading-7 text-muted-foreground md:text-base">
-            Read for one minute and feel closer tonight, or study deeply when you have time. Every page is designed to turn timeless wisdom into practical closeness with your partner.
+            {ui.heroDesc}
           </p>
         </div>
 
         <div className="mt-6 w-full rounded-[24px] border border-border/30 bg-card/45 p-4">
-          <div className="text-xs uppercase tracking-[0.22em] text-primary/80">Sacred pages</div>
+          <div className="text-xs uppercase tracking-[0.22em] text-primary/80">{ui.sacredPages}</div>
           <div className="mt-3 grid gap-3 md:grid-cols-3">
             {libraryPages.map((page) => {
               const Icon = page.icon;
@@ -1313,8 +1559,8 @@ const Authors = () => {
                   <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-2.5 ${page.iconClass}`}>
                     <Icon className="h-4 w-4" />
                   </div>
-                  <div className="mt-3 font-display text-xl text-foreground">{page.label}</div>
-                  <p className="mt-1 text-sm leading-6 text-muted-foreground">{page.subtitle}</p>
+                  <div className="mt-3 font-display text-xl text-foreground">{ui[page.labelKey]}</div>
+                  <p className="mt-1 text-sm leading-6 text-muted-foreground">{ui[page.subtitleKey]}</p>
                 </Link>
               );
             })}
@@ -1325,8 +1571,8 @@ const Authors = () => {
 
       {showBrowse ? (
       <section className={shellCardClass}>
-        <p className="text-xs uppercase tracking-[0.22em] text-primary/80">Authors Overview</p>
-        <h2 className="mt-2 font-display text-3xl text-foreground">Choose an author for immediate closeness and deeper shared growth</h2>
+        <p className="text-xs uppercase tracking-[0.22em] text-primary/80">{ui.overviewEyebrow}</p>
+        <h2 className="mt-2 font-display text-3xl text-foreground">{ui.overviewTitle}</h2>
 
         <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           {authors.map((author) => {
@@ -1353,8 +1599,8 @@ const Authors = () => {
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">{author.descriptor}</p>
                 <p className="mt-2 text-xs leading-5 text-foreground/80">
                   {author.tier === "free"
-                    ? `Practice preview: ${author.content?.exercises[0]?.title ?? "Guided author exercise"}`
-                    : `Premium preview: ${author.teaser?.[0] ?? "Expanded guided author journey"}`}
+                    ? `${ui.practicePreview}: ${author.content?.exercises[0]?.title ?? ui.practicePreviewFallback}`
+                    : `${ui.premiumPreview}: ${author.teaser?.[0] ?? ui.premiumPreviewFallback}`}
                 </p>
               </button>
             );
@@ -1363,12 +1609,12 @@ const Authors = () => {
 
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           <div className="rounded-2xl border border-emerald-400/25 bg-emerald-500/8 p-4">
-            <p className="text-xs uppercase tracking-[0.14em] text-emerald-200">Open-access Authors</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">{freeAuthors.map((author) => author.name).join(" and ")} are fully open so couples can apply ancient wisdom immediately and feel closer today.</p>
+            <p className="text-xs uppercase tracking-[0.14em] text-emerald-200">{ui.openAuthors}</p>
+            <p className="mt-2 text-sm leading-6 text-foreground/90">{freeAuthors.map((author) => author.name).join(authorJoinWord)} {ui.openAuthorsBodySuffix}</p>
           </div>
           <div className="rounded-2xl border border-amber-400/25 bg-amber-500/8 p-4">
-            <p className="text-xs uppercase tracking-[0.14em] text-amber-200">Locked Authors</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">{premiumAuthors.length} locked voices for couples who want more inspiration, deeper wisdom, and a guided path toward sacred love.</p>
+            <p className="text-xs uppercase tracking-[0.14em] text-amber-200">{ui.lockedAuthors}</p>
+            <p className="mt-2 text-sm leading-6 text-foreground/90">{premiumAuthors.length} {ui.lockedAuthorsBody}</p>
           </div>
         </div>
       </section>
