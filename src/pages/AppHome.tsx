@@ -6,6 +6,7 @@ import {
   ChevronDown,
   ChevronUp,
   Heart,
+  HeartHandshake,
   Lock,
   MessageCircle,
   Sparkles,
@@ -16,6 +17,7 @@ import {
 } from "lucide-react";
 
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 
@@ -23,6 +25,7 @@ type RitualItem = Tables<"ritual_items">;
 type Pathway = Tables<"pathways">;
 type PartnerMessage = Tables<"partner_messages">;
 type AltarItem = Tables<"altar_items">;
+type Profile = Tables<"profiles">;
 
 type DailyCard = {
   id: string;
@@ -39,97 +42,317 @@ type ReactionType = "up" | "down" | null;
 type ReactionMap = Record<string, ReactionType>;
 type FeedbackTotals = Record<string, { up: number; down: number }>;
 
-const quotes = [
-  {
-    id: "quote-richardson",
-    author: "Diana Richardson",
-    quote: "When slowness enters intimacy, the body starts telling a much deeper truth.",
-  },
-  {
-    id: "quote-deida",
-    author: "David Deida",
-    quote: "Love deepens when presence, truth, and attraction are all still welcome in the room.",
-  },
-  {
-    id: "quote-chia",
-    author: "Mantak Chia",
-    quote: "Breath and awareness turn intensity into nourishment instead of depletion.",
-  },
-  {
-    id: "quote-osho",
-    author: "Osho",
-    quote: "When lovers meet in awareness, even silence becomes intimate.",
-  },
-] as const;
+const quoteSets: Record<Language, Array<{ id: string; author: string; quote: string }>> = {
+  en: [
+    { id: "quote-richardson", author: "Diana Richardson", quote: "When slowness enters intimacy, the body starts telling a much deeper truth." },
+    { id: "quote-deida", author: "David Deida", quote: "Love deepens when presence, truth, and attraction are all still welcome in the room." },
+    { id: "quote-chia", author: "Mantak Chia", quote: "Breath and awareness turn intensity into nourishment instead of depletion." },
+    { id: "quote-osho", author: "Osho", quote: "When lovers meet in awareness, even silence becomes intimate." },
+  ],
+  fr: [
+    { id: "quote-richardson", author: "Diana Richardson", quote: "Quand la lenteur entre dans l'intimité, le corps commence à dire une vérité plus profonde." },
+    { id: "quote-deida", author: "David Deida", quote: "L'amour s'approfondit quand la présence, la vérité et l'attirance restent toutes les trois dans la pièce." },
+    { id: "quote-chia", author: "Mantak Chia", quote: "Le souffle et la conscience transforment l'intensité en nourriture plutôt qu'en épuisement." },
+    { id: "quote-osho", author: "Osho", quote: "Quand deux amants se rencontrent en conscience, même le silence devient intime." },
+  ],
+  cs: [
+    { id: "quote-richardson", author: "Diana Richardson", quote: "Když do intimity vstoupí pomalost, tělo začne mluvit mnohem hlubší pravdou." },
+    { id: "quote-deida", author: "David Deida", quote: "Láska se prohlubuje, když jsou v prostoru zároveň přítomnost, pravda i přitažlivost." },
+    { id: "quote-chia", author: "Mantak Chia", quote: "Dech a vědomí mění intenzitu ve výživu místo vyčerpání." },
+    { id: "quote-osho", author: "Osho", quote: "Když se milenci setkají ve vědomé přítomnosti, i ticho se stává intimním." },
+  ],
+};
 
-const positions = [
-  {
-    id: "position-hand-on-heart",
-    title: "Hand on heart",
-    description: "Start chest-to-chest and let safety arrive before intensity.",
-  },
-  {
-    id: "position-back-to-back",
-    title: "Back to back",
-    description: "Share breath without pressure and let your nervous systems settle together.",
-  },
-  {
-    id: "position-seated-closeness",
-    title: "Seated closeness",
-    description: "Face each other, stay near, and allow desire to grow from presence.",
-  },
-  {
-    id: "position-synchronized-exhale",
-    title: "Synchronized exhale",
-    description: "Use a shared exhale to soften the room and open one clear next move.",
-  },
-] as const;
+const positionSets: Record<Language, Array<{ id: string; title: string; description: string }>> = {
+  en: [
+    { id: "position-hand-on-heart", title: "Hand on heart", description: "Start chest-to-chest and let safety arrive before intensity." },
+    { id: "position-back-to-back", title: "Back to back", description: "Share breath without pressure and let your nervous systems settle together." },
+    { id: "position-seated-closeness", title: "Seated closeness", description: "Face each other, stay near, and allow desire to grow from presence." },
+    { id: "position-synchronized-exhale", title: "Synchronized exhale", description: "Use a shared exhale to soften the room and open one clear next move." },
+  ],
+  fr: [
+    { id: "position-hand-on-heart", title: "Main sur le cœur", description: "Commencez poitrine contre poitrine et laissez la sécurité arriver avant l'intensité." },
+    { id: "position-back-to-back", title: "Dos à dos", description: "Partagez le souffle sans pression et laissez vos systèmes nerveux se réguler ensemble." },
+    { id: "position-seated-closeness", title: "Proximité assise", description: "Asseyez-vous face à face, restez proches, et laissez le désir grandir depuis la présence." },
+    { id: "position-synchronized-exhale", title: "Expiration synchronisée", description: "Utilisez une expiration commune pour adoucir l'espace et ouvrir une prochaine étape claire." },
+  ],
+  cs: [
+    { id: "position-hand-on-heart", title: "Ruka na srdci", description: "Začněte hrudník na hrudník a nechte bezpečí přijít dřív než intenzitu." },
+    { id: "position-back-to-back", title: "Zády k sobě", description: "Sdílejte dech bez tlaku a nechte nervový systém uklidnit se společně." },
+    { id: "position-seated-closeness", title: "Blízkost vsedě", description: "Sedněte si čelem k sobě, zůstaňte blízko, a nechte touhu růst z přítomnosti." },
+    { id: "position-synchronized-exhale", title: "Synchronní výdech", description: "Použijte společný výdech, aby se prostor zjemnil a otevřel jeden jasný další krok." },
+  ],
+};
 
-const templePulses = [
-  {
-    id: "temple-soft",
-    title: "Soft and receptive",
-    description: "Tonight favors tenderness, gentle touch, and slow eye contact.",
-  },
-  {
-    id: "temple-playful",
-    title: "Playful and alive",
-    description: "Bring laughter, curiosity, and one light sensual invitation.",
-  },
-  {
-    id: "temple-devotional",
-    title: "Devotional and deep",
-    description: "Less noise, more reverence. Stay with breath and heart-led words.",
-  },
-  {
-    id: "temple-magnetic",
-    title: "Magnetic and erotic",
-    description: "Build anticipation slowly and let polarity unfold without rushing.",
-  },
-] as const;
+const templePulseSets: Record<Language, Array<{ id: string; title: string; description: string }>> = {
+  en: [
+    { id: "temple-soft", title: "Soft and receptive", description: "Tonight favors tenderness, gentle touch, and slow eye contact." },
+    { id: "temple-playful", title: "Playful and alive", description: "Bring laughter, curiosity, and one light sensual invitation." },
+    { id: "temple-devotional", title: "Devotional and deep", description: "Less noise, more reverence. Stay with breath and heart-led words." },
+    { id: "temple-magnetic", title: "Magnetic and erotic", description: "Build anticipation slowly and let polarity unfold without rushing." },
+  ],
+  fr: [
+    { id: "temple-soft", title: "Doux et réceptif", description: "Ce soir favorise la tendresse, le toucher doux et le regard lent." },
+    { id: "temple-playful", title: "Joueur et vivant", description: "Apportez du rire, de la curiosité et une invitation sensuelle légère." },
+    { id: "temple-devotional", title: "Dévotion et profondeur", description: "Moins de bruit, plus de révérence. Restez avec le souffle et des mots guidés par le cœur." },
+    { id: "temple-magnetic", title: "Magnétique et érotique", description: "Construisez l'anticipation lentement et laissez la polarité se déployer sans précipitation." },
+  ],
+  cs: [
+    { id: "temple-soft", title: "Jemné a přijímající", description: "Dnešní večer přeje něze, jemnému doteku a pomalému očnímu kontaktu." },
+    { id: "temple-playful", title: "Hravé a živé", description: "Přineste smích, zvědavost a jedno lehké smyslné pozvání." },
+    { id: "temple-devotional", title: "Oddané a hluboké", description: "Méně hluku, více úcty. Zůstaňte u dechu a slov vedených srdcem." },
+    { id: "temple-magnetic", title: "Magnetické a erotické", description: "Budujte očekávání pomalu a nechte polaritu rozvinout bez spěchu." },
+  ],
+};
 
-const reconnectMoves = [
-  {
-    id: "reconnect-soft-checkin",
-    title: "Soft check-in",
-    description: "Ask: “What would help you feel cherished tonight?” and mirror the answer with warmth.",
+const reconnectMoveSets: Record<Language, Array<{ id: string; title: string; description: string }>> = {
+  en: [
+    { id: "reconnect-soft-checkin", title: "Soft check-in", description: "Ask: “What would help you feel cherished tonight?” and mirror the answer with warmth." },
+    { id: "reconnect-90-second-reset", title: "90-second reset", description: "Hold hands, breathe together, and each share one appreciation before anything else." },
+    { id: "reconnect-devotion-line", title: "Devotion line", description: "Whisper one line of love and one desire for deeper closeness tonight." },
+    { id: "reconnect-sensual-pause", title: "Sensual pause", description: "Pause logistics for five minutes and let touch lead before words." },
+  ],
+  fr: [
+    { id: "reconnect-soft-checkin", title: "Check-in doux", description: "Demandez: « Qu'est-ce qui t'aiderait à te sentir chéri(e) ce soir? » puis reflétez la réponse avec chaleur." },
+    { id: "reconnect-90-second-reset", title: "Reset 90 secondes", description: "Tenez-vous les mains, respirez ensemble, et partagez chacun une appréciation avant tout le reste." },
+    { id: "reconnect-devotion-line", title: "Ligne de dévotion", description: "Chuchotez une ligne d'amour et un désir de plus grande proximité ce soir." },
+    { id: "reconnect-sensual-pause", title: "Pause sensuelle", description: "Mettez la logistique en pause cinq minutes et laissez le toucher guider avant les mots." },
+  ],
+  cs: [
+    { id: "reconnect-soft-checkin", title: "Jemný check-in", description: "Zeptejte se: „Co by ti dnes večer pomohlo cítit se milovaně?“ a odpověď zrcadlete s laskavostí." },
+    { id: "reconnect-90-second-reset", title: "90s reset", description: "Držte se za ruce, dýchejte spolu a každý sdílejte jedno ocenění ještě před čímkoli dalším." },
+    { id: "reconnect-devotion-line", title: "Věta oddanosti", description: "Zašeptete jednu větu lásky a jedno přání po hlubší blízkosti dnes večer." },
+    { id: "reconnect-sensual-pause", title: "Smyslná pauza", description: "Na pět minut zastavte logistiku a nechte dotek vést dřív než slova." },
+  ],
+};
+
+const homeCopy: Record<Language, Record<string, string>> = {
+  en: {
+    heroTitle: "Daily Sacred Starter for Modern Couples",
+    heroDesc: "Six preselected cards. Calm direction. Shared intimacy momentum. This page renews every day to support your path toward infinite love.",
+    relationship: "Relationship",
+    partnerFallback: "Partner",
+    journeyLine: "On a journey to sacred intimacy.",
+    notConnectedLine: "Not connected yet. Invite your partner to begin your shared path.",
+    connected: "Connected",
+    solo: "Solo",
+    signalPreparing: "Preparing today's flow...",
+    signalPartner: "Partner pulse",
+    signalMemory: "Saved memory",
+    signalThread: "Shared thread",
+    signalDaily: "Daily rhythm",
+    signalDailyDetail: "A gentle daily plan for modern couples who want depth without decision fatigue.",
+    todayFlowLabel: "Today's fixed flow",
+    todayFlowTitle: "6 cards selected for your relationship today",
+    selecting: "Selecting...",
+    calibrating: "Calibrating your daily relationship guidance.",
+    labelRitual: "Today Ritual",
+    labelQuote: "Today Quote",
+    labelInsight: "Today Insight",
+    labelPosition: "Today Position",
+    labelTemple: "Temple Pulse",
+    labelReconnect: "Reconnect Move",
+    fallbackRitualTitle: "Soft arrival ritual",
+    fallbackRitualDesc: "Begin with one minute of touch and one honest sentence.",
+    fallbackInsightTitle: "Slow down before intensity",
+    fallbackInsightDesc: "Presence first, performance second. Let your nervous systems meet.",
+    fallbackCardDesc: "A grounded opening for emotional and sensual closeness.",
+    fallbackInsightCardDesc: "One practical learning insight for couples building lasting intimacy.",
+    quickInsight: "Quick insight",
+    stepByStep: "Step by step",
+    goDeeper: "Go deeper",
+    goDeeperDesc: "Unlock 14 additional daily cards built from your couple rhythm for richer sensual progression.",
+    useful: "Was this useful?",
+    ritualInsight: "A short ritual lowers stress and raises emotional and erotic safety in minutes.",
+    quoteInsight: "Use one line of wisdom as tonight's shared intention.",
+    insightInsight: "Tiny daily learning loops create long-term relational transformation.",
+    positionInsight: "Body-led connection can reopen closeness faster than long conversations.",
+    templeInsight: "Match the mood of your connection before asking for more intensity.",
+    reconnectInsight: "One repair micro-move protects trust and attraction over time.",
+    lockedDaily: "Locked Daily Expansion",
+    lockedDailyTitle: "More of this page: 14 extra daily cards",
+    lockedDailyDesc: "Keep your daily rhythm fresh with additional rituals, quotes, insights, positions, and temple pulses shaped for modern couples.",
+    chipExtraCards: "14 Extra Cards",
+    chipDailyRefresh: "Daily Refresh",
+    chipSensualGuidance: "Sensual Guidance",
+    buttonDailyPlans: "See daily expansion plans",
+    lockedFull: "Locked Full Experience",
+    lockedFullTitle: "More of Sacred Path across the entire app",
+    lockedFullDesc: "Unlock all eight temple doorways, full Sacred Library depth, advanced reconnect systems, Wisdom Oracle innovation, and complete journey intelligence.",
+    chipTemple: "Sacred Temple",
+    chipLibrary: "Sacred Library",
+    chipOracle: "Wisdom Oracle",
+    buttonFullPlans: "View full plans",
+    stepRitual1: "Take three synchronized breaths.",
+    stepRitual2: "Share one feeling each.",
+    stepRitual3: "Close with one intentional touch.",
+    stepQuote1: "Read the quote aloud slowly.",
+    stepQuote2: "Each partner shares one sentence it awakens.",
+    stepQuote3: "Choose one action to embody it tonight.",
+    stepInsight1: "Name the one insight that matters most today.",
+    stepInsight2: "Apply it in one 5-minute moment.",
+    stepInsight3: "Reflect together tonight: what shifted?",
+    stepPosition1: "Set a gentle timer for 3-5 minutes.",
+    stepPosition2: "Stay in position and track breath together.",
+    stepPosition3: "Share one word each before moving on.",
+    stepTemple1: "Name tonight's emotional tone.",
+    stepTemple2: "Choose touch and words that fit that tone.",
+    stepTemple3: "Re-check in after five minutes.",
+    stepReconnect1: "Pause everything for a brief reconnection.",
+    stepReconnect2: "Offer one appreciation and one need.",
+    stepReconnect3: "Close with warmth, not analysis.",
   },
-  {
-    id: "reconnect-90-second-reset",
-    title: "90-second reset",
-    description: "Hold hands, breathe together, and each share one appreciation before anything else.",
+  fr: {
+    heroTitle: "Démarrage sacré du jour pour couples modernes",
+    heroDesc: "Six cartes présélectionnées. Direction calme. Élan d'intimité partagé. Cette page se renouvelle chaque jour.",
+    relationship: "Relation",
+    partnerFallback: "Partenaire",
+    journeyLine: "En chemin vers une intimité sacrée.",
+    notConnectedLine: "Pas encore connectés. Invitez votre partenaire pour commencer votre chemin partagé.",
+    connected: "Connectés",
+    solo: "Solo",
+    signalPreparing: "Préparation du flow du jour...",
+    signalPartner: "Pouls du partenaire",
+    signalMemory: "Souvenir sauvegardé",
+    signalThread: "Fil partagé",
+    signalDaily: "Rythme quotidien",
+    signalDailyDetail: "Un plan quotidien doux pour les couples modernes qui veulent de la profondeur sans fatigue décisionnelle.",
+    todayFlowLabel: "Flow fixe du jour",
+    todayFlowTitle: "6 cartes sélectionnées pour votre relation aujourd'hui",
+    selecting: "Sélection...",
+    calibrating: "Calibrage de votre guidance relationnelle du jour.",
+    labelRitual: "Rituel du jour",
+    labelQuote: "Citation du jour",
+    labelInsight: "Insight du jour",
+    labelPosition: "Position du jour",
+    labelTemple: "Pulse du temple",
+    labelReconnect: "Mouvement de reconnexion",
+    fallbackRitualTitle: "Rituel d'arrivée douce",
+    fallbackRitualDesc: "Commencez par une minute de toucher et une phrase honnête.",
+    fallbackInsightTitle: "Ralentir avant l'intensité",
+    fallbackInsightDesc: "Présence d'abord, performance ensuite. Laissez vos systèmes nerveux se rencontrer.",
+    fallbackCardDesc: "Une ouverture ancrée vers la proximité émotionnelle et sensuelle.",
+    fallbackInsightCardDesc: "Un insight pratique pour les couples qui construisent une intimité durable.",
+    quickInsight: "Insight rapide",
+    stepByStep: "Étape par étape",
+    goDeeper: "Aller plus loin",
+    goDeeperDesc: "Débloquez 14 cartes quotidiennes supplémentaires construites depuis votre rythme de couple.",
+    useful: "Utile pour vous?",
+    ritualInsight: "Un rituel court réduit le stress et augmente la sécurité émotionnelle et érotique.",
+    quoteInsight: "Utilisez une ligne de sagesse comme intention partagée de ce soir.",
+    insightInsight: "Les micro-boucles d'apprentissage transforment la relation sur le long terme.",
+    positionInsight: "La connexion par le corps peut rouvrir la proximité plus vite que de longues conversations.",
+    templeInsight: "Accordez l'intensité au climat réel de votre connexion.",
+    reconnectInsight: "Un micro-geste de réparation protège confiance et attirance.",
+    lockedDaily: "Extension quotidienne verrouillée",
+    lockedDailyTitle: "Plus de cette page: 14 cartes quotidiennes",
+    lockedDailyDesc: "Gardez votre rythme frais avec des rituels, citations, insights, positions et pulses supplémentaires.",
+    chipExtraCards: "14 cartes en plus",
+    chipDailyRefresh: "Refresh quotidien",
+    chipSensualGuidance: "Guidance sensuelle",
+    buttonDailyPlans: "Voir les plans d'extension",
+    lockedFull: "Expérience complète verrouillée",
+    lockedFullTitle: "Plus de Sacred Path dans toute l'app",
+    lockedFullDesc: "Débloquez les huit portes du temple, toute la profondeur de la bibliothèque et l'intelligence de parcours complète.",
+    chipTemple: "Temple sacré",
+    chipLibrary: "Bibliothèque sacrée",
+    chipOracle: "Oracle de sagesse",
+    buttonFullPlans: "Voir les plans complets",
+    stepRitual1: "Prenez trois respirations synchronisées.",
+    stepRitual2: "Partagez chacun un ressenti.",
+    stepRitual3: "Terminez par un toucher intentionnel.",
+    stepQuote1: "Lisez la citation à voix haute et lentement.",
+    stepQuote2: "Chaque partenaire partage une phrase qu'elle réveille.",
+    stepQuote3: "Choisissez une action pour l'incarner ce soir.",
+    stepInsight1: "Nommez l'insight le plus important aujourd'hui.",
+    stepInsight2: "Appliquez-le dans un moment de 5 minutes.",
+    stepInsight3: "Refaites un bilan ce soir: qu'est-ce qui a bougé?",
+    stepPosition1: "Posez un minuteur doux de 3-5 minutes.",
+    stepPosition2: "Restez dans la position et suivez le souffle ensemble.",
+    stepPosition3: "Partagez un mot chacun avant de continuer.",
+    stepTemple1: "Nommez le ton émotionnel de ce soir.",
+    stepTemple2: "Choisissez toucher et mots qui correspondent.",
+    stepTemple3: "Refaites un check-in après cinq minutes.",
+    stepReconnect1: "Mettez tout en pause pour une brève reconnexion.",
+    stepReconnect2: "Offrez une appréciation et un besoin.",
+    stepReconnect3: "Fermez avec chaleur, pas avec analyse.",
   },
-  {
-    id: "reconnect-devotion-line",
-    title: "Devotion line",
-    description: "Whisper one line of love and one desire for deeper closeness tonight.",
+  cs: {
+    heroTitle: "Denní posvátný start pro moderní páry",
+    heroDesc: "Šest předvybraných karet. Klidný směr. Sdílená intimní dynamika. Tato stránka se obnovuje každý den.",
+    relationship: "Vztah",
+    partnerFallback: "Partner",
+    journeyLine: "Na cestě k posvátné intimitě.",
+    notConnectedLine: "Ještě nejste propojeni. Pozvěte partnera a začněte společnou cestu.",
+    connected: "Propojeno",
+    solo: "Solo",
+    signalPreparing: "Připravuji dnešní flow...",
+    signalPartner: "Pulz partnera",
+    signalMemory: "Uložená vzpomínka",
+    signalThread: "Sdílené vlákno",
+    signalDaily: "Denní rytmus",
+    signalDailyDetail: "Jemný denní plán pro moderní páry, které chtějí hloubku bez rozhodovací únavy.",
+    todayFlowLabel: "Dnešní pevný flow",
+    todayFlowTitle: "6 karet vybraných pro váš vztah na dnešek",
+    selecting: "Vybírám...",
+    calibrating: "Kalibruji vaše dnešní vztahové vedení.",
+    labelRitual: "Dnešní rituál",
+    labelQuote: "Dnešní citát",
+    labelInsight: "Dnešní vhled",
+    labelPosition: "Dnešní pozice",
+    labelTemple: "Pulz chrámu",
+    labelReconnect: "Reconnect krok",
+    fallbackRitualTitle: "Jemný příchozí rituál",
+    fallbackRitualDesc: "Začněte jednou minutou doteku a jednou upřímnou větou.",
+    fallbackInsightTitle: "Zpomalte před intenzitou",
+    fallbackInsightDesc: "Nejprve přítomnost, potom výkon. Nechte se potkat nervové systémy.",
+    fallbackCardDesc: "Ukotvené otevření k emoční i smyslné blízkosti.",
+    fallbackInsightCardDesc: "Jeden praktický vhled pro páry budující dlouhodobou intimitu.",
+    quickInsight: "Rychlý vhled",
+    stepByStep: "Krok za krokem",
+    goDeeper: "Jít hlouběji",
+    goDeeperDesc: "Odemkněte 14 dalších denních karet postavených na rytmu vašeho páru.",
+    useful: "Bylo to užitečné?",
+    ritualInsight: "Krátký rituál snižuje stres a zvyšuje emoční i erotické bezpečí během minut.",
+    quoteInsight: "Použijte jednu větu moudrosti jako dnešní společný záměr.",
+    insightInsight: "Malé denní smyčky učení tvoří velkou dlouhodobou změnu vztahu.",
+    positionInsight: "Tělesné propojení často otevře blízkost rychleji než dlouhé rozhovory.",
+    templeInsight: "Než přidáte intenzitu, slaďte se s aktuální náladou vztahu.",
+    reconnectInsight: "Jeden mikrokrok opravy dlouhodobě chrání důvěru i přitažlivost.",
+    lockedDaily: "Uzamčené denní rozšíření",
+    lockedDailyTitle: "Více z této stránky: 14 extra denních karet",
+    lockedDailyDesc: "Udržte svůj denní rytmus svěží dalšími rituály, citáty, vhledy, pozicemi a chrámovými pulzy.",
+    chipExtraCards: "14 extra karet",
+    chipDailyRefresh: "Denní obnova",
+    chipSensualGuidance: "Smyslné vedení",
+    buttonDailyPlans: "Zobrazit plány rozšíření",
+    lockedFull: "Uzamčený plný zážitek",
+    lockedFullTitle: "Více Sacred Path v celé aplikaci",
+    lockedFullDesc: "Odemkněte všech osm chrámových bran, plnou hloubku knihovny a kompletní inteligenci cesty.",
+    chipTemple: "Posvátný chrám",
+    chipLibrary: "Posvátná knihovna",
+    chipOracle: "Oracle moudrosti",
+    buttonFullPlans: "Zobrazit plné plány",
+    stepRitual1: "Dejte si tři synchronní nádechy a výdechy.",
+    stepRitual2: "Každý sdílejte jeden pocit.",
+    stepRitual3: "Uzavřete jedním záměrným dotekem.",
+    stepQuote1: "Přečtěte citát nahlas a pomalu.",
+    stepQuote2: "Každý řekněte jednu větu, co to ve vás probouzí.",
+    stepQuote3: "Vyberte jednu akci, jak to dnes ztělesnit.",
+    stepInsight1: "Pojmenujte jeden dnešní klíčový vhled.",
+    stepInsight2: "Použijte ho v jednom 5minutovém momentu.",
+    stepInsight3: "Večer spolu zhodnoťte: co se posunulo?",
+    stepPosition1: "Nastavte jemný časovač na 3-5 minut.",
+    stepPosition2: "Zůstaňte v pozici a sledujte dech spolu.",
+    stepPosition3: "Než půjdete dál, řekněte každý jedno slovo.",
+    stepTemple1: "Pojmenujte dnešní emoční tón.",
+    stepTemple2: "Vyberte dotek a slova, které tomu odpovídají.",
+    stepTemple3: "Po pěti minutách se znovu nalaďte.",
+    stepReconnect1: "Na chvíli vše zastavte pro krátké znovupropojení.",
+    stepReconnect2: "Nabídněte jedno ocenění a jednu potřebu.",
+    stepReconnect3: "Uzavřete to teplem, ne analýzou.",
   },
-  {
-    id: "reconnect-sensual-pause",
-    title: "Sensual pause",
-    description: "Pause logistics for five minutes and let touch lead before words.",
-  },
-] as const;
+};
 
 const hashString = (value: string) =>
   Array.from(value).reduce((acc, char) => (acc * 31 + char.charCodeAt(0)) >>> 0, 7);
@@ -196,8 +419,17 @@ const parseRitualSteps = (steps: RitualItem["steps"]): string[] => {
 
 const AppHome = () => {
   const { user } = useAuth();
+  const { lang } = useLanguage();
+  const copy = homeCopy[lang];
+  const quotes = quoteSets[lang];
+  const positions = positionSets[lang];
+  const templePulses = templePulseSets[lang];
+  const reconnectMoves = reconnectMoveSets[lang];
 
   const [loading, setLoading] = useState(true);
+  const [relationshipConnected, setRelationshipConnected] = useState(false);
+  const [myName, setMyName] = useState("Beloved");
+  const [partnerName, setPartnerName] = useState<string | null>(null);
   const [messages, setMessages] = useState<PartnerMessage[]>([]);
   const [altarItems, setAltarItems] = useState<AltarItem[]>([]);
   const [rituals, setRituals] = useState<RitualItem[]>([]);
@@ -206,13 +438,28 @@ const AppHome = () => {
   const [feedbackTotals, setFeedbackTotals] = useState<FeedbackTotals>({});
   const [dailyReactions, setDailyReactions] = useState<ReactionMap>({});
 
+  const resolvePreferredName = (profile: Pick<Profile, "display_name"> | null, fallbackUser = user) => {
+    const profileName = profile?.display_name?.trim();
+    if (profileName) return profileName;
+
+    const metadataName = typeof fallbackUser?.user_metadata?.full_name === "string"
+      ? fallbackUser.user_metadata.full_name.trim()
+      : "";
+    if (metadataName) return metadataName;
+
+    const emailPrefix = fallbackUser?.email?.split("@")[0]?.trim();
+    if (emailPrefix) return emailPrefix;
+
+    return "Beloved";
+  };
+
   useEffect(() => {
     if (!user) return;
 
     const loadHome = async () => {
       setLoading(true);
 
-      const [{ data: ritualData }, { data: pathwayData }, { data: couple }] = await Promise.all([
+      const [{ data: ritualData }, { data: pathwayData }, { data: couple }, { data: ownProfile }] = await Promise.all([
         supabase
           .from("ritual_items")
           .select("*")
@@ -228,19 +475,32 @@ const AppHome = () => {
           .select("id, partner_a, partner_b")
           .or(`partner_a.eq.${user.id},partner_b.eq.${user.id}`)
           .maybeSingle(),
+        supabase
+          .from("profiles")
+          .select("display_name, user_id")
+          .eq("user_id", user.id)
+          .maybeSingle(),
       ]);
 
       setRituals((ritualData ?? []).filter((item) => item.item_type === "ritual"));
       setPathways(pathwayData ?? []);
+      setMyName(resolvePreferredName(ownProfile));
 
       if (!couple) {
+        setRelationshipConnected(false);
+        setPartnerName(null);
         setMessages([]);
         setAltarItems([]);
         setLoading(false);
         return;
       }
 
-      const [{ data: messageData }, { data: altarData }] = await Promise.all([
+      const connected = Boolean(couple.partner_b);
+      setRelationshipConnected(connected);
+
+      const partnerId = couple.partner_a === user.id ? couple.partner_b : couple.partner_a;
+
+      const [{ data: messageData }, { data: altarData }, { data: partnerProfile }] = await Promise.all([
         supabase
           .from("partner_messages")
           .select("*")
@@ -253,8 +513,16 @@ const AppHome = () => {
           .eq("couple_id", couple.id)
           .order("created_at", { ascending: false })
           .limit(10),
+        partnerId
+          ? supabase
+            .from("profiles")
+            .select("display_name, user_id")
+            .eq("user_id", partnerId)
+            .maybeSingle()
+          : Promise.resolve({ data: null }),
       ]);
 
+      setPartnerName(partnerProfile ? resolvePreferredName(partnerProfile, null) : null);
       setMessages(messageData ?? []);
       setAltarItems(altarData ?? []);
       setLoading(false);
@@ -285,30 +553,30 @@ const AppHome = () => {
   const signal = useMemo(() => {
     if (latestPartnerMessage) {
       return {
-        title: "Partner pulse",
+        title: copy.signalPartner,
         detail: clipText(latestPartnerMessage.content),
       };
     }
 
     if (latestMemory) {
       return {
-        title: "Saved memory",
+        title: copy.signalMemory,
         detail: clipText(latestMemory.note || latestMemory.title),
       };
     }
 
     if (latestSharedMessage) {
       return {
-        title: "Shared thread",
+        title: copy.signalThread,
         detail: clipText(latestSharedMessage.content),
       };
     }
 
     return {
-      title: "Daily rhythm",
-      detail: "A gentle daily plan for modern couples who want depth without decision fatigue.",
+      title: copy.signalDaily,
+      detail: copy.signalDailyDetail,
     };
-  }, [latestMemory, latestPartnerMessage, latestSharedMessage]);
+  }, [copy.signalDaily, copy.signalDailyDetail, copy.signalMemory, copy.signalPartner, copy.signalThread, latestMemory, latestPartnerMessage, latestSharedMessage]);
 
   const dailySeed = useMemo(() => `${todayKey}:${user?.id ?? "guest"}:${signal.detail}`, [signal.detail, todayKey, user?.id]);
 
@@ -318,8 +586,8 @@ const AppHome = () => {
         ? pickBySeed(rituals, `${dailySeed}:ritual`)
         : {
             id: "ritual-fallback",
-            title: "Soft arrival ritual",
-            hook: "Begin with one minute of touch and one honest sentence.",
+            title: copy.fallbackRitualTitle,
+            hook: copy.fallbackRitualDesc,
           };
 
     const pathwayChoice =
@@ -327,8 +595,8 @@ const AppHome = () => {
         ? pickBySeed(pathways, `${dailySeed}:insight`)
         : {
             id: "insight-fallback",
-            title: "Slow down before intensity",
-            description: "Presence first, performance second. Let your nervous systems meet.",
+            title: copy.fallbackInsightTitle,
+            description: copy.fallbackInsightDesc,
           };
 
     const quoteChoice = pickBySeed(quotes, `${dailySeed}:quote`);
@@ -340,69 +608,69 @@ const AppHome = () => {
     return [
       {
         id: `ritual-${ritualChoice.id}`,
-        label: "Today Ritual",
+        label: copy.labelRitual,
         title: ritualChoice.title,
-        description: ritualChoice.hook || "A grounded opening for emotional and sensual closeness.",
-        quickInsight: "A short ritual lowers stress and raises emotional and erotic safety in minutes.",
+        description: ritualChoice.hook || copy.fallbackCardDesc,
+        quickInsight: copy.ritualInsight,
         steps: ritualSteps.length > 0
           ? ritualSteps
-          : ["Take three synchronized breaths.", "Share one feeling each.", "Close with one intentional touch."],
+          : [copy.stepRitual1, copy.stepRitual2, copy.stepRitual3],
         icon: Sparkles,
         accentClass: "text-amber-300",
       },
       {
         id: quoteChoice.id,
-        label: "Today Quote",
+        label: copy.labelQuote,
         title: `From ${quoteChoice.author}`,
         description: `“${quoteChoice.quote}”`,
-        quickInsight: "Use one line of wisdom as tonight's shared intention.",
-        steps: ["Read the quote aloud slowly.", "Each partner shares one sentence it awakens.", "Choose one action to embody it tonight."],
+        quickInsight: copy.quoteInsight,
+        steps: [copy.stepQuote1, copy.stepQuote2, copy.stepQuote3],
         icon: Stars,
         accentClass: "text-sky-300",
       },
       {
         id: `insight-${pathwayChoice.id}`,
-        label: "Today Insight",
+        label: copy.labelInsight,
         title: pathwayChoice.title,
         description:
-          pathwayChoice.description || "One practical learning insight for couples building lasting intimacy.",
-        quickInsight: "Tiny daily learning loops create long-term relational transformation.",
-        steps: ["Name the one insight that matters most today.", "Apply it in one 5-minute moment.", "Reflect together tonight: what shifted?"],
+          pathwayChoice.description || copy.fallbackInsightCardDesc,
+        quickInsight: copy.insightInsight,
+        steps: [copy.stepInsight1, copy.stepInsight2, copy.stepInsight3],
         icon: BookOpen,
         accentClass: "text-violet-300",
       },
       {
         id: positionChoice.id,
-        label: "Today Position",
+        label: copy.labelPosition,
         title: positionChoice.title,
         description: positionChoice.description,
-        quickInsight: "Body-led connection can reopen closeness faster than long conversations.",
-        steps: ["Set a gentle timer for 3-5 minutes.", "Stay in position and track breath together.", "Share one word each before moving on."],
+        quickInsight: copy.positionInsight,
+        steps: [copy.stepPosition1, copy.stepPosition2, copy.stepPosition3],
         icon: Heart,
         accentClass: "text-rose-300",
       },
       {
         id: templePulse.id,
-        label: "Temple Pulse",
+        label: copy.labelTemple,
         title: templePulse.title,
         description: templePulse.description,
-        quickInsight: "Match the mood of your connection before asking for more intensity.",
-        steps: ["Name tonight's emotional tone.", "Choose touch and words that fit that tone.", "Re-check in after five minutes."],
+        quickInsight: copy.templeInsight,
+        steps: [copy.stepTemple1, copy.stepTemple2, copy.stepTemple3],
         icon: MessageCircle,
         accentClass: "text-teal-300",
       },
       {
         id: reconnectMove.id,
-        label: "Reconnect Move",
+        label: copy.labelReconnect,
         title: reconnectMove.title,
         description: reconnectMove.description,
-        quickInsight: "One repair micro-move protects trust and attraction over time.",
-        steps: ["Pause everything for a brief reconnection.", "Offer one appreciation and one need.", "Close with warmth, not analysis."],
+        quickInsight: copy.reconnectInsight,
+        steps: [copy.stepReconnect1, copy.stepReconnect2, copy.stepReconnect3],
         icon: Heart,
         accentClass: "text-rose-300",
       },
     ];
-  }, [dailySeed, pathways, rituals]);
+  }, [copy.fallbackCardDesc, copy.fallbackInsightCardDesc, copy.fallbackInsightDesc, copy.fallbackInsightTitle, copy.fallbackRitualDesc, copy.fallbackRitualTitle, copy.insightInsight, copy.labelInsight, copy.labelPosition, copy.labelQuote, copy.labelReconnect, copy.labelRitual, copy.labelTemple, copy.positionInsight, copy.quoteInsight, copy.reconnectInsight, copy.ritualInsight, copy.stepInsight1, copy.stepInsight2, copy.stepInsight3, copy.stepPosition1, copy.stepPosition2, copy.stepPosition3, copy.stepQuote1, copy.stepQuote2, copy.stepQuote3, copy.stepReconnect1, copy.stepReconnect2, copy.stepReconnect3, copy.stepRitual1, copy.stepRitual2, copy.stepRitual3, copy.stepTemple1, copy.stepTemple2, copy.stepTemple3, copy.templeInsight, dailySeed, pathways, positions, quotes, reconnectMoves, rituals, templePulses]);
 
   useEffect(() => {
     if (dailyCards.length === 0) return;
@@ -447,12 +715,36 @@ const AppHome = () => {
   return (
     <div className="space-y-5">
       <section className="rounded-[28px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-6 shadow-[0_24px_80px_-40px_rgba(255,170,70,0.35)] md:p-8">
-        <div className="max-w-4xl">
-          <p className="text-xs uppercase tracking-[0.28em] text-primary/80">{todayLabel}</p>
-          <h1 className="mt-3 font-display text-4xl leading-tight text-foreground md:text-5xl">Daily Sacred Starter for Modern Couples</h1>
-          <p className="mt-4 max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
-            Six preselected cards. Calm direction. Shared intimacy momentum. This page renews every day to support your path toward infinite love.
-          </p>
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+          <div className="max-w-4xl">
+            <p className="text-xs uppercase tracking-[0.28em] text-primary/80">{todayLabel}</p>
+            <h1 className="mt-3 font-display text-4xl leading-tight text-foreground md:text-5xl">Daily Sacred Starter for Modern Couples</h1>
+            <p className="mt-4 max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
+              Six preselected cards. Calm direction. Shared intimacy momentum. This page renews every day to support your path toward infinite love.
+            </p>
+          </div>
+
+          <aside className="lg:w-[360px] lg:shrink-0">
+            <div className="rounded-[22px] border border-border/30 bg-card/45 p-4">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                  <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">{copy.relationship}</p>
+                  <h2 className="mt-2 font-display text-2xl text-foreground">
+                    {relationshipConnected ? `${myName} + ${partnerName ?? copy.partnerFallback}` : myName}
+                  </h2>
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                    {relationshipConnected ? copy.journeyLine : copy.notConnectedLine}
+                  </p>
+                </div>
+                <div className={`inline-flex rounded-2xl border p-3 ${relationshipConnected ? "border-emerald-300/30 bg-emerald-500/10 text-emerald-200" : "border-amber-300/35 bg-amber-500/10 text-amber-200"}`}>
+                  <HeartHandshake className="h-5 w-5" />
+                </div>
+              </div>
+              <div className="mt-4 inline-flex rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.14em] text-foreground/90">
+                {relationshipConnected ? copy.connected : copy.solo}
+              </div>
+            </div>
+          </aside>
         </div>
 
         <div className="mt-6 rounded-[22px] border border-border/30 bg-card/40 p-4">
@@ -460,14 +752,14 @@ const AppHome = () => {
             <MessageCircle className="h-4 w-4" />
             <span className="text-xs uppercase tracking-[0.18em]">{signal.title}</span>
           </div>
-          <p className="mt-3 text-sm leading-6 text-foreground/90">{loading ? "Preparing today’s flow..." : signal.detail}</p>
+          <p className="mt-3 text-sm leading-6 text-foreground/90">{loading ? copy.signalPreparing : signal.detail}</p>
         </div>
       </section>
 
       <section>
         <div className="mb-4">
-          <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Today&apos;s fixed flow</p>
-          <h2 className="mt-2 font-display text-3xl text-foreground">6 cards selected for your relationship today</h2>
+          <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">{copy.todayFlowLabel}</p>
+          <h2 className="mt-2 font-display text-3xl text-foreground">{copy.todayFlowTitle}</h2>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -483,7 +775,7 @@ const AppHome = () => {
                   <div className="flex min-h-[96px] flex-wrap items-start justify-between gap-3">
                     <div>
                       <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{card.label}</p>
-                      <h3 className="mt-3 font-display text-2xl text-foreground">{loading ? "Selecting..." : card.title}</h3>
+                      <h3 className="mt-3 font-display text-2xl text-foreground">{loading ? copy.selecting : card.title}</h3>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className={`inline-flex rounded-2xl border border-border/30 bg-background/45 p-3 ${card.accentClass}`}>
@@ -495,19 +787,19 @@ const AppHome = () => {
                     </div>
                   </div>
                   <p className="mt-3 min-h-[48px] text-sm leading-6 text-muted-foreground">
-                    {loading ? "Calibrating your daily relationship guidance." : card.description}
+                    {loading ? copy.calibrating : card.description}
                   </p>
                 </button>
 
                 {!loading && expanded && (
                   <div className="mt-4 space-y-4 rounded-2xl border border-border/30 bg-background/45 p-4">
                     <div>
-                      <p className="text-xs uppercase tracking-[0.16em] text-primary/80">Quick insight</p>
+                      <p className="text-xs uppercase tracking-[0.16em] text-primary/80">{copy.quickInsight}</p>
                       <p className="mt-2 text-sm leading-6 text-foreground/90">{card.quickInsight}</p>
                     </div>
 
                     <div>
-                      <p className="text-xs uppercase tracking-[0.16em] text-primary/80">Step by step</p>
+                      <p className="text-xs uppercase tracking-[0.16em] text-primary/80">{copy.stepByStep}</p>
                       <ol className="mt-2 space-y-2 text-sm leading-6 text-foreground/90">
                         {card.steps.map((step, index) => (
                           <li key={step}>
@@ -518,14 +810,14 @@ const AppHome = () => {
                     </div>
 
                     <div className="rounded-xl border border-amber-300/30 bg-amber-500/8 p-3">
-                      <p className="text-xs uppercase tracking-[0.14em] text-amber-200">Go deeper</p>
+                      <p className="text-xs uppercase tracking-[0.14em] text-amber-200">{copy.goDeeper}</p>
                       <p className="mt-1 text-sm leading-6 text-foreground/90">
-                        Unlock 14 additional daily cards built from your couple rhythm for richer sensual progression.
+                        {copy.goDeeperDesc}
                       </p>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-3">
-                      <span className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Was this useful?</span>
+                      <span className="text-xs uppercase tracking-[0.14em] text-muted-foreground">{copy.useful}</span>
                       <button
                         type="button"
                         onClick={() => handleCardReaction(card.id, "up")}
@@ -561,22 +853,22 @@ const AppHome = () => {
         <div className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.18),rgba(15,23,42,0.12))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.5)]">
           <div className="flex items-center gap-2 text-amber-200">
             <Lock className="h-4 w-4" />
-            <span className="text-xs uppercase tracking-[0.16em]">Locked Daily Expansion</span>
+            <span className="text-xs uppercase tracking-[0.16em]">{copy.lockedDaily}</span>
           </div>
-          <h3 className="mt-2 font-display text-xl text-foreground">More of this page: 14 extra daily cards</h3>
+          <h3 className="mt-2 font-display text-xl text-foreground">{copy.lockedDailyTitle}</h3>
           <p className="mt-3 text-sm leading-6 text-foreground/90">
-            Keep your daily rhythm fresh with additional rituals, quotes, insights, positions, and temple pulses shaped for modern couples.
+            {copy.lockedDailyDesc}
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
-            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">14 Extra Cards</span>
-            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Daily Refresh</span>
-            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Sensual Guidance</span>
+            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{copy.chipExtraCards}</span>
+            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{copy.chipDailyRefresh}</span>
+            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{copy.chipSensualGuidance}</span>
           </div>
           <Link
             to="/pricing"
             className="mt-4 inline-flex items-center gap-2 rounded-xl border border-amber-300/30 bg-amber-500/14 px-3 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
           >
-            See daily expansion plans
+            {copy.buttonDailyPlans}
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
@@ -584,22 +876,22 @@ const AppHome = () => {
         <div className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(250,204,21,0.2),transparent_60%),linear-gradient(135deg,rgba(251,191,36,0.16),rgba(17,24,39,0.14))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.46)]">
           <div className="flex items-center gap-2 text-amber-200">
             <Lock className="h-4 w-4" />
-            <span className="text-xs uppercase tracking-[0.16em]">Locked Full Experience</span>
+            <span className="text-xs uppercase tracking-[0.16em]">{copy.lockedFull}</span>
           </div>
-          <h3 className="mt-2 font-display text-xl text-foreground">More of Sacred Path across the entire app</h3>
+          <h3 className="mt-2 font-display text-xl text-foreground">{copy.lockedFullTitle}</h3>
           <p className="mt-3 text-sm leading-6 text-foreground/90">
-            Unlock all eight temple doorways, full Sacred Library depth, advanced reconnect systems, Wisdom Oracle innovation, and complete journey intelligence.
+            {copy.lockedFullDesc}
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
-            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Sacred Temple</span>
-            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Sacred Library</span>
-            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Wisdom Oracle</span>
+            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{copy.chipTemple}</span>
+            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{copy.chipLibrary}</span>
+            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{copy.chipOracle}</span>
           </div>
           <Link
             to="/pricing"
             className="mt-4 inline-flex items-center gap-2 rounded-xl border border-amber-300/30 bg-amber-500/14 px-3 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
           >
-            View full plans
+            {copy.buttonFullPlans}
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
