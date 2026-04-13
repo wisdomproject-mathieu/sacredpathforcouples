@@ -76,16 +76,16 @@ describe("routing regressions", () => {
     expect(screen.getAllByText(/the thread/i).length).toBeGreaterThan(0);
   });
 
-  it("renders /app fallback shell with visible heading and primary CTA", async () => {
+  it("redirects /app to the public connect entry for unauthenticated users", async () => {
     renderAt("/app");
 
-    expect(await screen.findByRole("heading", { name: /the app is live and ready/i })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /connect with partner/i })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: /connect with partner/i })).toBeInTheDocument();
+    expect(screen.getAllByRole("link", { name: /connect with partner/i }).length).toBeGreaterThan(0);
   });
 
-  it("renders /app/connect without blank page for unauthenticated users", async () => {
+  it("redirects /app/connect to the public connect route for unauthenticated users", async () => {
     renderAt("/app/connect");
 
-    expect(await screen.findByRole("heading", { name: /the app is live and ready/i })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: /connect with partner/i })).toBeInTheDocument();
   });
 });

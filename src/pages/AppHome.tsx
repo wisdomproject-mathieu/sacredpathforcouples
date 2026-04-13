@@ -19,6 +19,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
+import { resolveCoupleStateForUser } from "@/lib/couples";
 import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
 
 type RitualItem = Tables<"ritual_items">;
@@ -492,14 +493,15 @@ const AppHome = () => {
         pathwaysQuery.eq("premium_required", false);
       }
 
-      const [{ data: ritualData }, { data: pathwayData }, { data: couple }, { data: ownProfile }] = await Promise.all([
+      const [{ data: ritualData }, { data: pathwayData }, { data: coupleRows }, { data: ownProfile }] = await Promise.all([
         ritualsQuery,
         pathwaysQuery,
         supabase
           .from("couples")
-          .select("id, partner_a, partner_b")
+          .select("id, partner_a, partner_b, couple_code, created_at, updated_at")
           .or(`partner_a.eq.${user.id},partner_b.eq.${user.id}`)
-          .maybeSingle(),
+          .order("updated_at", { ascending: false })
+          .limit(20),
         supabase
           .from("profiles")
           .select("display_name, user_id")
@@ -511,7 +513,10 @@ const AppHome = () => {
       setPathways(pathwayData ?? []);
       setMyName(resolvePreferredName(ownProfile));
 
-      if (!couple) {
+      const resolvedCouple = resolveCoupleStateForUser(coupleRows ?? [], user.id);
+      const activeCouple = resolvedCouple.activeCouple;
+
+      if (!activeCouple) {
         setRelationshipConnected(false);
         setPartnerName(null);
         setMessages([]);
@@ -520,22 +525,22 @@ const AppHome = () => {
         return;
       }
 
-      const connected = Boolean(couple.partner_b);
+      const connected = resolvedCouple.connected;
       setRelationshipConnected(connected);
 
-      const partnerId = couple.partner_a === user.id ? couple.partner_b : couple.partner_a;
+      const partnerId = resolvedCouple.partnerId;
 
       const [{ data: messageData }, { data: altarData }, { data: partnerProfile }] = await Promise.all([
         supabase
           .from("partner_messages")
           .select("*")
-          .eq("couple_id", couple.id)
+          .eq("couple_id", activeCouple.id)
           .order("created_at", { ascending: false })
           .limit(10),
         supabase
           .from("altar_items")
           .select("*")
-          .eq("couple_id", couple.id)
+          .eq("couple_id", activeCouple.id)
           .order("created_at", { ascending: false })
           .limit(10),
         partnerId
@@ -547,7 +552,7 @@ const AppHome = () => {
           : Promise.resolve({ data: null }),
       ]);
 
-      setPartnerName(partnerProfile ? resolvePreferredName(partnerProfile, null) : null);
+      setPartnerName(connected && partnerProfile ? resolvePreferredName(partnerProfile, null) : null);
       setMessages(messageData ?? []);
       setAltarItems(altarData ?? []);
       setLoading(false);

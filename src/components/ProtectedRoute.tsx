@@ -1,8 +1,9 @@
 import { useAuth } from "@/contexts/AuthContext";
-import AppAccessFallback from "@/components/AppAccessFallback";
+import { Navigate, useLocation } from "react-router-dom";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
+  const location = useLocation();
 
   if (loading) {
     return (
@@ -13,7 +14,8 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   }
 
   if (!user) {
-    return <AppAccessFallback />;
+    const returnTo = `${location.pathname}${location.search}${location.hash}`;
+    return <Navigate to="/connect" replace state={{ returnTo }} />;
   }
 
   return <>{children}</>;

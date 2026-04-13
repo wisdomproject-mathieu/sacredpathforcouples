@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Copy, HeartHandshake, Link as LinkIcon, MessageCircleHeart, Sparkles, Users, Wand2 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
+import { resolveCoupleStateForUser } from "@/lib/couples";
 
 const connectCopy: Record<Language, Record<string, string>> = {
   en: {
@@ -123,6 +124,7 @@ const connectCopy: Record<Language, Record<string, string>> = {
 const Connect = () => {
   const { user } = useAuth();
   const { lang } = useLanguage();
+  const [searchParams] = useSearchParams();
   const copy = connectCopy[lang];
   const [loading, setLoading] = useState(true);
   const [code, setCode] = useState("");
@@ -131,37 +133,74 @@ const Connect = () => {
   const [message, setMessage] = useState("");
   const [isConnected, setIsConnected] = useState(false);
 
+  const loadCoupleState = useCallback(async () => {
+    if (!user) {
+      setIsConnected(false);
+      setInviteCode(null);
+      setLoading(false);
+      return;
+    }
+
+    const { data: coupleRows } = await supabase
+      .from("couples")
+      .select("id, couple_code, partner_a, partner_b, created_at, updated_at")
+      .or(`partner_a.eq.${user.id},partner_b.eq.${user.id}`)
+      .order("updated_at", { ascending: false })
+      .limit(20);
+
+    const resolved = resolveCoupleStateForUser(coupleRows ?? [], user.id);
+    setIsConnected(resolved.connected);
+    if (resolved.connected) {
+      setInviteCode(resolved.activeCouple?.couple_code ?? null);
+    } else {
+      setInviteCode(resolved.pendingInvite?.couple_code ?? null);
+    }
+    setLoading(false);
+  }, [user]);
+
+  useEffect(() => {
+    void loadCoupleState();
+  }, [loadCoupleState]);
+
+  useEffect(() => {
+    const inviteFromUrl = searchParams.get("invite");
+    if (!inviteFromUrl) return;
+    setCode((current) => current || inviteFromUrl.trim().toUpperCase());
+  }, [searchParams]);
+
   useEffect(() => {
     if (!user) return;
 
-    const load = async () => {
-      const { data: connected } = await supabase
-        .from("couples")
-        .select("id, couple_code, partner_b")
-        .or(`partner_a.eq.${user.id},partner_b.eq.${user.id}`)
-        .not("partner_b", "is", null)
-        .maybeSingle();
-
-      if (connected) {
-        setIsConnected(true);
-        setInviteCode(connected.couple_code ?? null);
-        setLoading(false);
-        return;
-      }
-
-      const { data: pending } = await supabase
-        .from("couples")
-        .select("id, couple_code")
-        .eq("partner_a", user.id)
-        .is("partner_b", null)
-        .maybeSingle();
-
-      if (pending?.couple_code) setInviteCode(pending.couple_code);
-      setLoading(false);
+    const refresh = () => {
+      void loadCoupleState();
     };
 
-    load();
-  }, [user]);
+    const channelAsPartnerA = supabase
+      .channel(`couples_partner_a_${user.id}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "couples", filter: `partner_a=eq.${user.id}` },
+        refresh,
+      )
+      .subscribe();
+
+    const channelAsPartnerB = supabase
+      .channel(`couples_partner_b_${user.id}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "couples", filter: `partner_b=eq.${user.id}` },
+        refresh,
+      )
+      .subscribe();
+
+    window.addEventListener("focus", refresh);
+
+    return () => {
+      window.removeEventListener("focus", refresh);
+      supabase.removeChannel(channelAsPartnerA);
+      supabase.removeChannel(channelAsPartnerB);
+    };
+  }, [loadCoupleState, user]);
 
   const inviteLink = useMemo(() => {
     if (!inviteCode) return "";
@@ -176,6 +215,21 @@ const Connect = () => {
     setStatus("idle");
     setMessage("");
 
+    const { data: existingPendingRows } = await supabase
+      .from("couples")
+      .select("id, couple_code, partner_a, partner_b, created_at, updated_at")
+      .eq("partner_a", user.id)
+      .is("partner_b", null)
+      .order("updated_at", { ascending: false })
+      .limit(1);
+
+    const existingPending = existingPendingRows?.[0];
+    if (existingPending?.couple_code) {
+      setInviteCode(existingPending.couple_code);
+      setMessage(copy.linkReady);
+      return;
+    }
+
     const newCode = generateCode();
     const { error } = await supabase.from("couples").insert({
       partner_a: user.id,
@@ -188,7 +242,7 @@ const Connect = () => {
       return;
     }
 
-    setInviteCode(newCode);
+    await loadCoupleState();
   };
 
   const joinWithCode = async () => {
@@ -221,7 +275,8 @@ const Connect = () => {
     const { error: updateError } = await supabase
       .from("couples")
       .update({ partner_b: user.id })
-      .eq("id", target.id);
+      .eq("id", target.id)
+      .is("partner_b", null);
 
     if (updateError) {
       setStatus("error");
@@ -229,8 +284,8 @@ const Connect = () => {
       return;
     }
 
-    setIsConnected(true);
-    setInviteCode(cleanCode);
+    await loadCoupleState();
+    setCode("");
     setMessage(copy.okConnected);
   };
 

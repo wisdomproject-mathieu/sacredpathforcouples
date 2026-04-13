@@ -8,6 +8,7 @@ export const isPremiumTier = (tier?: MembershipTier | null) => {
 
 const explicitTesterEmails = [
   "mathieu.escande@gmail.com",
+  "editamathieu@gmail.com",
   "eeeditka@seznam.cz",
 ];
 
