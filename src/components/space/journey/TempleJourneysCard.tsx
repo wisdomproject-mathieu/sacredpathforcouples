@@ -10,15 +10,30 @@ type Props = {
   subtitle: string;
   journeys: TempleJourneyTemplate[];
   isPremium: boolean;
+  previewLimit?: number;
+  viewAllLabel?: string;
+  onViewAll?: () => void;
 };
 
-const TempleJourneysCard = ({ lang, title, subtitle, journeys, isPremium }: Props) => (
+const TempleJourneysCard = ({
+  lang,
+  title,
+  subtitle,
+  journeys,
+  isPremium,
+  previewLimit,
+  viewAllLabel,
+  onViewAll,
+}: Props) => {
+  const visibleJourneys = previewLimit ? journeys.slice(0, previewLimit) : journeys;
+
+  return (
   <section className="rounded-[24px] border border-border/30 bg-card/45 p-4">
     <p className="text-xs uppercase tracking-[0.16em] text-primary/80">{title}</p>
     <p className="mt-2 text-sm leading-6 text-muted-foreground">{subtitle}</p>
 
     <div className="mt-3 space-y-2">
-      {journeys.map((journey) => {
+      {visibleJourneys.map((journey) => {
         const locked = !isPremium && !journey.freePreview;
         return (
           <article
@@ -60,7 +75,18 @@ const TempleJourneysCard = ({ lang, title, subtitle, journeys, isPremium }: Prop
         );
       })}
     </div>
+    {previewLimit && journeys.length > visibleJourneys.length && onViewAll ? (
+      <button
+        type="button"
+        onClick={onViewAll}
+        className="mt-3 rounded-lg border border-border/35 bg-background/45 px-3 py-1.5 text-xs text-foreground transition-all hover:border-border/55 hover:bg-background/60"
+      >
+        {viewAllLabel ??
+          (lang === "fr" ? "Voir tous les parcours" : lang === "cs" ? "Zobrazit všechny cesty" : "View all journeys")}
+      </button>
+    ) : null}
   </section>
-);
+  );
+};
 
 export default TempleJourneysCard;

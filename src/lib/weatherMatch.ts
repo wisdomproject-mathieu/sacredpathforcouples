@@ -263,27 +263,27 @@ const heroImageByKey: Record<string, { src: string; alt: Localized }> = {
     alt: lz("Shiva holding Shakti in devotional reassurance"),
   },
   "shared-fire": {
-    src: "/placeholder.svg?archetype=shared-fire",
+    src: shivaShaktiIcon,
     alt: lz("Sacred facing couple with central current"),
   },
   "playful-fire": {
-    src: "/placeholder.svg?archetype=playful-fire",
+    src: shivaShaktiIcon,
     alt: lz("Playful luminous sacred couple energy"),
   },
   "sacred-rest": {
-    src: "/placeholder.svg?archetype=sacred-rest",
+    src: shivaShaktiIcon,
     alt: lz("Sacred rest in moonlit stillness"),
   },
   "nectar-play": {
-    src: "/placeholder.svg?archetype=nectar-play",
+    src: shivaShaktiIcon,
     alt: lz("Radiant playful couple in motion"),
   },
   "approach-with-reverence": {
-    src: "/placeholder.svg?archetype=approach-with-reverence",
+    src: shivaShaktiIcon,
     alt: lz("Near-touch invitation with patience and tenderness"),
   },
   "attuned-bridge": {
-    src: "/placeholder.svg?archetype=attuned-bridge",
+    src: shivaShaktiIcon,
     alt: lz("Two partners crossing toward shared attunement"),
   },
 };
