@@ -142,6 +142,8 @@ const homeCopy: Record<Language, Record<string, string>> = {
     notConnectedLine: "Not connected yet. Invite your partner to begin your shared path.",
     connected: "Connected",
     solo: "Solo",
+    syncing: "Syncing",
+    syncingLine: "Checking your connection status...",
     signalPreparing: "Preparing today's flow...",
     signalPartner: "Partner pulse",
     signalMemory: "Saved memory",
@@ -228,6 +230,8 @@ const homeCopy: Record<Language, Record<string, string>> = {
     notConnectedLine: "Pas encore connectés. Invitez votre partenaire pour commencer votre chemin partagé.",
     connected: "Connectés",
     solo: "Solo",
+    syncing: "Synchronisation",
+    syncingLine: "Vérification du statut de connexion...",
     signalPreparing: "Préparation du flow du jour...",
     signalPartner: "Pouls du partenaire",
     signalMemory: "Souvenir sauvegardé",
@@ -314,6 +318,8 @@ const homeCopy: Record<Language, Record<string, string>> = {
     notConnectedLine: "Ještě nejste propojeni. Pozvěte partnera a začněte společnou cestu.",
     connected: "Propojeno",
     solo: "Solo",
+    syncing: "Synchronizuji",
+    syncingLine: "Ověřuji stav propojení...",
     signalPreparing: "Připravuji dnešní flow...",
     signalPartner: "Pulz partnera",
     signalMemory: "Uložená vzpomínka",
@@ -481,6 +487,9 @@ const AppHome = () => {
 
   useEffect(() => {
     if (!user) return;
+    if (readEverConnected(user.id)) {
+      setRelationshipConnected(true);
+    }
 
     const loadHome = async () => {
       setLoading(true);
@@ -751,7 +760,11 @@ const AppHome = () => {
                     {relationshipConnected ? `${myName} + ${partnerName ?? copy.partnerFallback}` : myName}
                   </h2>
                   <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    {relationshipConnected ? copy.journeyLine : copy.notConnectedLine}
+                    {loading
+                      ? copy.syncingLine
+                      : relationshipConnected
+                        ? copy.journeyLine
+                        : copy.notConnectedLine}
                   </p>
                 </div>
                 <div className={`inline-flex rounded-2xl border p-3 ${relationshipConnected ? "border-emerald-300/30 bg-emerald-500/10 text-emerald-200" : "border-amber-300/35 bg-amber-500/10 text-amber-200"}`}>
@@ -759,7 +772,7 @@ const AppHome = () => {
                 </div>
               </div>
               <div className="mt-4 inline-flex rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.14em] text-foreground/90">
-                {relationshipConnected ? copy.connected : copy.solo}
+                {loading ? copy.syncing : relationshipConnected ? copy.connected : copy.solo}
               </div>
             </div>
           </aside>

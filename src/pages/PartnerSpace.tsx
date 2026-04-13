@@ -816,7 +816,7 @@ const PartnerSpace = () => {
   return (
     <div className="min-h-screen bg-background px-4 py-6 text-foreground md:px-6">
       <div className="mx-auto max-w-6xl space-y-6">
-        {!hasConnectedPartner && (
+        {!hasConnectedPartner && !coupleId && (
           <section className="rounded-[28px] border border-amber-300/30 bg-amber-500/10 p-5">
             <div className="flex items-start gap-3">
               <div className="rounded-2xl border border-amber-300/35 bg-background/45 p-3 text-amber-300">
