@@ -145,8 +145,7 @@ const Connect = () => {
       .from("couples")
       .select("id, couple_code, partner_a, partner_b, created_at, updated_at")
       .or(`partner_a.eq.${user.id},partner_b.eq.${user.id}`)
-      .order("updated_at", { ascending: false })
-      .limit(20);
+      .order("updated_at", { ascending: false });
 
     const resolved = resolveCoupleStateForUser(coupleRows ?? [], user.id);
     setIsConnected(resolved.connected);
@@ -276,11 +275,25 @@ const Connect = () => {
       .from("couples")
       .update({ partner_b: user.id })
       .eq("id", target.id)
-      .is("partner_b", null);
+      .is("partner_b", null)
+      .select("id")
+      .maybeSingle();
 
     if (updateError) {
       setStatus("error");
       setMessage(updateError.message || copy.errJoin);
+      return;
+    }
+
+    const { data: verifyJoined } = await supabase
+      .from("couples")
+      .select("id, partner_a, partner_b, couple_code, created_at, updated_at")
+      .eq("id", target.id)
+      .maybeSingle();
+
+    if (!verifyJoined?.partner_b || verifyJoined.partner_b !== user.id) {
+      setStatus("error");
+      setMessage(copy.errJoin);
       return;
     }
 

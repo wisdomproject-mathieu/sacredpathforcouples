@@ -500,8 +500,7 @@ const AppHome = () => {
           .from("couples")
           .select("id, partner_a, partner_b, couple_code, created_at, updated_at")
           .or(`partner_a.eq.${user.id},partner_b.eq.${user.id}`)
-          .order("updated_at", { ascending: false })
-          .limit(20),
+          .order("updated_at", { ascending: false }),
         supabase
           .from("profiles")
           .select("display_name, user_id")
