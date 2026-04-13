@@ -5,7 +5,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
-import { resolveCoupleStateForUser } from "@/lib/couples";
+import { fetchCoupleStateForUser } from "@/lib/couples";
 
 const connectCopy: Record<Language, Record<string, string>> = {
   en: {
@@ -141,13 +141,7 @@ const Connect = () => {
       return;
     }
 
-    const { data: coupleRows } = await supabase
-      .from("couples")
-      .select("id, couple_code, partner_a, partner_b, created_at, updated_at")
-      .or(`partner_a.eq.${user.id},partner_b.eq.${user.id}`)
-      .order("updated_at", { ascending: false });
-
-    const resolved = resolveCoupleStateForUser(coupleRows ?? [], user.id);
+    const resolved = await fetchCoupleStateForUser(supabase, user.id);
     setIsConnected(resolved.connected);
     if (resolved.connected) {
       setInviteCode(resolved.activeCouple?.couple_code ?? null);
@@ -214,15 +208,8 @@ const Connect = () => {
     setStatus("idle");
     setMessage("");
 
-    const { data: existingPendingRows } = await supabase
-      .from("couples")
-      .select("id, couple_code, partner_a, partner_b, created_at, updated_at")
-      .eq("partner_a", user.id)
-      .is("partner_b", null)
-      .order("updated_at", { ascending: false })
-      .limit(1);
-
-    const existingPending = existingPendingRows?.[0];
+    const existingState = await fetchCoupleStateForUser(supabase, user.id);
+    const existingPending = existingState.pendingInvite;
     if (existingPending?.couple_code) {
       setInviteCode(existingPending.couple_code);
       setMessage(copy.linkReady);

@@ -1,4 +1,5 @@
-import { Tables } from "@/integrations/supabase/types";
+import { Tables, type Database } from "@/integrations/supabase/types";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 export type CoupleRow = Pick<
   Tables<"couples">,
@@ -10,6 +11,10 @@ export type ResolvedCoupleState = {
   pendingInvite: CoupleRow | null;
   connected: boolean;
   partnerId: string | null;
+};
+
+export type FetchCoupleStateResult = ResolvedCoupleState & {
+  rows: CoupleRow[];
 };
 
 const parseTime = (value?: string | null) => {
@@ -51,5 +56,45 @@ export const resolveCoupleStateForUser = (rows: CoupleRow[], userId: string): Re
     pendingInvite,
     connected,
     partnerId: connected ? partnerId : null,
+  };
+};
+
+const uniqueById = (rows: CoupleRow[]) => {
+  const seen = new Set<string>();
+  const unique: CoupleRow[] = [];
+  for (const row of rows) {
+    if (seen.has(row.id)) continue;
+    seen.add(row.id);
+    unique.push(row);
+  }
+  return unique;
+};
+
+export const fetchCoupleStateForUser = async (
+  client: SupabaseClient<Database>,
+  userId: string,
+): Promise<FetchCoupleStateResult> => {
+  const [asPartnerAResult, asPartnerBResult] = await Promise.all([
+    client
+      .from("couples")
+      .select("id, partner_a, partner_b, couple_code, created_at, updated_at")
+      .eq("partner_a", userId)
+      .order("updated_at", { ascending: false }),
+    client
+      .from("couples")
+      .select("id, partner_a, partner_b, couple_code, created_at, updated_at")
+      .eq("partner_b", userId)
+      .order("updated_at", { ascending: false }),
+  ]);
+
+  const mergedRows = uniqueById([
+    ...(asPartnerAResult.data ?? []),
+    ...(asPartnerBResult.data ?? []),
+  ]);
+  const state = resolveCoupleStateForUser(mergedRows, userId);
+
+  return {
+    ...state,
+    rows: mergedRows,
   };
 };

@@ -19,7 +19,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
-import { resolveCoupleStateForUser } from "@/lib/couples";
+import { fetchCoupleStateForUser } from "@/lib/couples";
 import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
 
 type RitualItem = Tables<"ritual_items">;
@@ -493,14 +493,10 @@ const AppHome = () => {
         pathwaysQuery.eq("premium_required", false);
       }
 
-      const [{ data: ritualData }, { data: pathwayData }, { data: coupleRows }, { data: ownProfile }] = await Promise.all([
+      const [{ data: ritualData }, { data: pathwayData }, coupleState, { data: ownProfile }] = await Promise.all([
         ritualsQuery,
         pathwaysQuery,
-        supabase
-          .from("couples")
-          .select("id, partner_a, partner_b, couple_code, created_at, updated_at")
-          .or(`partner_a.eq.${user.id},partner_b.eq.${user.id}`)
-          .order("updated_at", { ascending: false }),
+        fetchCoupleStateForUser(supabase, user.id),
         supabase
           .from("profiles")
           .select("display_name, user_id")
@@ -512,8 +508,7 @@ const AppHome = () => {
       setPathways(pathwayData ?? []);
       setMyName(resolvePreferredName(ownProfile));
 
-      const resolvedCouple = resolveCoupleStateForUser(coupleRows ?? [], user.id);
-      const activeCouple = resolvedCouple.activeCouple;
+      const activeCouple = coupleState.activeCouple;
 
       if (!activeCouple) {
         setRelationshipConnected(false);
@@ -524,10 +519,10 @@ const AppHome = () => {
         return;
       }
 
-      const connected = resolvedCouple.connected;
+      const connected = coupleState.connected;
       setRelationshipConnected(connected);
 
-      const partnerId = resolvedCouple.partnerId;
+      const partnerId = coupleState.partnerId;
 
       const [{ data: messageData }, { data: altarData }, { data: partnerProfile }] = await Promise.all([
         supabase

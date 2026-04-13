@@ -31,7 +31,7 @@ import TempleGuide from "@/components/space/TempleGuide";
 import WisdomOracle from "@/components/space/WisdomOracle";
 import ShareCardButton from "@/components/space/ShareCardButton";
 import { Tables } from "@/integrations/supabase/types";
-import { resolveCoupleStateForUser } from "@/lib/couples";
+import { fetchCoupleStateForUser } from "@/lib/couples";
 import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -394,13 +394,7 @@ const PartnerSpace = () => {
     if (!user) return;
 
     const load = async () => {
-      const { data: coupleRows } = await supabase
-        .from("couples")
-        .select("id, partner_a, partner_b, couple_code, created_at, updated_at")
-        .or(`partner_a.eq.${user.id},partner_b.eq.${user.id}`)
-        .order("updated_at", { ascending: false });
-
-      const resolved = resolveCoupleStateForUser(coupleRows ?? [], user.id);
+      const resolved = await fetchCoupleStateForUser(supabase, user.id);
       if (resolved.activeCouple) {
         setCoupleId(resolved.activeCouple.id);
         setHasConnectedPartner(resolved.connected);
