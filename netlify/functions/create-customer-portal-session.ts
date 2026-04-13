@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
+import { buildCorsHeaders } from "./_shared/cors";
 
 type FunctionResponse = {
   statusCode: number;
@@ -7,9 +8,10 @@ type FunctionResponse = {
   body: string;
 };
 
-const json = (statusCode: number, body: unknown): FunctionResponse => ({
+const json = (statusCode: number, body: unknown, requestOrigin?: string): FunctionResponse => ({
   statusCode,
   headers: {
+    ...buildCorsHeaders(requestOrigin),
     "Content-Type": "application/json",
   },
   body: JSON.stringify(body),
@@ -43,28 +45,38 @@ export const handler = async (event: {
   headers?: Record<string, string | undefined>;
   rawUrl?: string;
 }): Promise<FunctionResponse> => {
+  const requestOrigin = event.headers?.origin || event.headers?.Origin;
+
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 204,
+      headers: buildCorsHeaders(requestOrigin),
+      body: "",
+    };
+  }
+
   if (event.httpMethod !== "POST") {
-    return json(405, { error: "Method not allowed" });
+    return json(405, { error: "Method not allowed" }, requestOrigin);
   }
 
   const stripeSecret = process.env.STRIPE_SECRET_KEY;
   const supabaseUrl = process.env.SUPABASE_URL;
   const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!stripeSecret || !supabaseUrl || !supabaseServiceRoleKey) {
-    return json(500, { error: "Missing server env vars for billing portal." });
+    return json(500, { error: "Missing server env vars for billing portal." }, requestOrigin);
   }
 
   let parsedBody: { userId?: string; email?: string };
   try {
     parsedBody = JSON.parse(event.body || "{}");
   } catch {
-    return json(400, { error: "Invalid JSON body." });
+    return json(400, { error: "Invalid JSON body." }, requestOrigin);
   }
 
   const userId = parsedBody.userId?.trim();
   const email = parsedBody.email?.trim();
   if (!userId) {
-    return json(400, { error: "User ID is required." });
+    return json(400, { error: "User ID is required." }, requestOrigin);
   }
 
   const stripe = new Stripe(stripeSecret);
@@ -76,17 +88,17 @@ export const handler = async (event: {
   });
   const token = extractBearerToken(event.headers?.authorization || event.headers?.Authorization);
   if (!token) {
-    return json(401, { error: "Missing bearer token." });
+    return json(401, { error: "Missing bearer token." }, requestOrigin);
   }
 
   try {
     const authResult = await supabaseAdmin.auth.getUser(token);
     const authenticatedUser = authResult.data.user;
     if (!authenticatedUser) {
-      return json(401, { error: "Invalid session token." });
+      return json(401, { error: "Invalid session token." }, requestOrigin);
     }
     if (authenticatedUser.id !== userId) {
-      return json(403, { error: "User mismatch for billing portal request." });
+      return json(403, { error: "User mismatch for billing portal request." }, requestOrigin);
     }
 
     const { data: subscription } = await supabaseAdmin
@@ -109,7 +121,7 @@ export const handler = async (event: {
     }
 
     if (!customerId) {
-      return json(404, { error: "No Stripe customer found for this account yet." });
+      return json(404, { error: "No Stripe customer found for this account yet." }, requestOrigin);
     }
 
     const origin = getOrigin(event.rawUrl, event.headers?.origin);
@@ -119,9 +131,9 @@ export const handler = async (event: {
       return_url: returnUrl,
     });
 
-    return json(200, { url: session.url });
+    return json(200, { url: session.url }, requestOrigin);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to create billing portal session.";
-    return json(500, { error: message });
+    return json(500, { error: message }, requestOrigin);
   }
 };

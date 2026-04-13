@@ -2,6 +2,7 @@ import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
 
 import { billingPlanConfig, isBillingPlan } from "./_shared/billing";
+import { buildCorsHeaders } from "./_shared/cors";
 
 type FunctionResponse = {
   statusCode: number;
@@ -9,9 +10,10 @@ type FunctionResponse = {
   body: string;
 };
 
-const json = (statusCode: number, body: unknown): FunctionResponse => ({
+const json = (statusCode: number, body: unknown, requestOrigin?: string): FunctionResponse => ({
   statusCode,
   headers: {
+    ...buildCorsHeaders(requestOrigin),
     "Content-Type": "application/json",
   },
   body: JSON.stringify(body),
@@ -45,25 +47,35 @@ export const handler = async (event: {
   headers?: Record<string, string | undefined>;
   rawUrl?: string;
 }): Promise<FunctionResponse> => {
+  const requestOrigin = event.headers?.origin || event.headers?.Origin;
+
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 204,
+      headers: buildCorsHeaders(requestOrigin),
+      body: "",
+    };
+  }
+
   if (event.httpMethod !== "POST") {
-    return json(405, { error: "Method not allowed" });
+    return json(405, { error: "Method not allowed" }, requestOrigin);
   }
 
   const secretKey = process.env.STRIPE_SECRET_KEY;
   const supabaseUrl = process.env.SUPABASE_URL;
   const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!secretKey) {
-    return json(500, { error: "Stripe secret key is missing." });
+    return json(500, { error: "Stripe secret key is missing." }, requestOrigin);
   }
   if (!supabaseUrl || !supabaseServiceRoleKey) {
-    return json(500, { error: "Supabase server env vars are missing." });
+    return json(500, { error: "Supabase server env vars are missing." }, requestOrigin);
   }
 
   let parsedBody: { plan?: string; userId?: string; email?: string };
   try {
     parsedBody = JSON.parse(event.body || "{}");
   } catch {
-    return json(400, { error: "Invalid JSON body." });
+    return json(400, { error: "Invalid JSON body." }, requestOrigin);
   }
 
   const plan = parsedBody.plan ?? "";
@@ -71,16 +83,16 @@ export const handler = async (event: {
   const email = parsedBody.email?.trim();
 
   if (!isBillingPlan(plan)) {
-    return json(400, { error: "Invalid plan." });
+    return json(400, { error: "Invalid plan." }, requestOrigin);
   }
 
   if (!userId) {
-    return json(400, { error: "User ID is required." });
+    return json(400, { error: "User ID is required." }, requestOrigin);
   }
 
   const token = extractBearerToken(event.headers?.authorization || event.headers?.Authorization);
   if (!token) {
-    return json(401, { error: "Missing bearer token." });
+    return json(401, { error: "Missing bearer token." }, requestOrigin);
   }
 
   const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
@@ -92,15 +104,15 @@ export const handler = async (event: {
   const authResult = await supabaseAdmin.auth.getUser(token);
   const authenticatedUser = authResult.data.user;
   if (!authenticatedUser) {
-    return json(401, { error: "Invalid session token." });
+    return json(401, { error: "Invalid session token." }, requestOrigin);
   }
   if (authenticatedUser.id !== userId) {
-    return json(403, { error: "User mismatch for checkout request." });
+    return json(403, { error: "User mismatch for checkout request." }, requestOrigin);
   }
 
   const priceId = process.env[billingPlanConfig[plan].envPriceKey];
   if (!priceId) {
-    return json(500, { error: `Missing price id for plan ${plan}.` });
+    return json(500, { error: `Missing price id for plan ${plan}.` }, requestOrigin);
   }
 
   const stripe = new Stripe(secretKey);
@@ -129,9 +141,9 @@ export const handler = async (event: {
       },
     });
 
-    return json(200, { url: session.url });
+    return json(200, { url: session.url }, requestOrigin);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Stripe checkout creation failed.";
-    return json(500, { error: message });
+    return json(500, { error: message }, requestOrigin);
   }
 };
