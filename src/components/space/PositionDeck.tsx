@@ -23,15 +23,16 @@ interface Props {
 }
 
 const PositionDeck = ({ onNavigate, coupleId, isPremium = false }: Props) => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  const l = (en: string, fr: string, cs: string) => (lang === "fr" ? fr : lang === "cs" ? cs : en);
   const [expanded, setExpanded] = useState<number | null>(null);
 
   return (
     <DoorwayShell
-      label="Positions"
+      label={l("Positions", "Positions", "Pozice")}
       title={t("position.title")}
       description={t("position.subtitle")}
-      actionLabel="Enter rituals"
+      actionLabel={l("Enter rituals", "Entrer dans les rituels", "Vstoupit do rituálů")}
       onAction={onNavigate ? () => onNavigate("rituals") : undefined}
     >
 
@@ -74,7 +75,7 @@ const PositionDeck = ({ onNavigate, coupleId, isPremium = false }: Props) => {
                             coupleId={coupleId}
                             messageType="position_share"
                             content={`Position card ✦ ${t(`position.${p.key}.title`)} — ${t(`position.${p.key}.desc`)}`}
-                            label="Offer this position"
+                            label={l("Offer this position", "Partager cette position", "Sdílet tuto pozici")}
                           />
                         </div>
                       </div>

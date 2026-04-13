@@ -37,6 +37,7 @@ const renderAt = (path: string) => {
 describe("routing regressions", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    window.localStorage.setItem("sacred-path-lang", "en");
   });
 
   it("renders homepage with connect CTA and features anchor", async () => {
@@ -54,6 +55,14 @@ describe("routing regressions", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /open menu/i }));
     expect(screen.getAllByRole("link", { name: /connect with partner/i }).length).toBeGreaterThan(0);
+  });
+
+  it("switches landing content language, not only nav labels", async () => {
+    renderAt("/");
+
+    fireEvent.click(screen.getByTitle(/switch to fr/i));
+    expect((await screen.findAllByText(/chemin sacré/i)).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/se connecter au partenaire/i).length).toBeGreaterThan(0);
   });
 
   it("renders public connect route with core partner modules", async () => {

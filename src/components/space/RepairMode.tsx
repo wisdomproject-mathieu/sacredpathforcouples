@@ -18,7 +18,8 @@ interface Props {
 }
 
 const RepairMode = ({ onNavigate, coupleId }: Props) => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  const l = (en: string, fr: string, cs: string) => (lang === "fr" ? fr : lang === "cs" ? cs : en);
   const [step, setStep] = useState<number | null>(null);
   const [started, setStarted] = useState(false);
 
@@ -32,10 +33,10 @@ const RepairMode = ({ onNavigate, coupleId }: Props) => {
 
   return (
     <DoorwayShell
-      label="Repair"
+      label={l("Repair", "Réparation", "Oprava")}
       title={t("repair.title")}
       description={t("repair.subtitle")}
-      actionLabel="Enter messages"
+      actionLabel={l("Enter messages", "Entrer dans les messages", "Vstoupit do zpráv")}
       onAction={onNavigate ? () => onNavigate("messages") : undefined}
     >
 
@@ -110,7 +111,7 @@ const RepairMode = ({ onNavigate, coupleId }: Props) => {
               coupleId={coupleId}
               messageType="repair_share"
               content={`Repair card ✦ ${t(`repair.${currentStep.key}.title`)} — ${t(`repair.${currentStep.key}.instruction`)}`}
-              label="Offer this repair card"
+              label={l("Offer this repair card", "Partager cette carte de réparation", "Sdílet tuto kartu opravy")}
             />
           </div>
         </div>

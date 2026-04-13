@@ -126,6 +126,7 @@ const reconnectMoveSets: Record<Language, Array<{ id: string; title: string; des
 
 const homeCopy: Record<Language, Record<string, string>> = {
   en: {
+    beloved: "Beloved",
     heroTitle: "Daily Sacred Starter for Modern Couples",
     heroDesc: "Six preselected cards. Calm direction. Shared intimacy momentum. This page renews every day to support your path toward infinite love.",
     relationship: "Relationship",
@@ -167,6 +168,10 @@ const homeCopy: Record<Language, Record<string, string>> = {
     positionInsight: "Body-led connection can reopen closeness faster than long conversations.",
     templeInsight: "Match the mood of your connection before asking for more intensity.",
     reconnectInsight: "One repair micro-move protects trust and attraction over time.",
+    checkIntimacyWeather: "Check your intimacy weather",
+    saveThisPractice: "Save this practice",
+    savedToYourPath: "Saved to your path",
+    fromAuthorPattern: "From {author}",
     lockedDaily: "Locked Daily Expansion",
     lockedDailyTitle: "More of this page: 14 extra daily cards",
     lockedDailyDesc: "Keep your daily rhythm fresh with additional rituals, quotes, insights, positions, and temple pulses shaped for modern couples.",
@@ -207,6 +212,7 @@ const homeCopy: Record<Language, Record<string, string>> = {
     stepReconnect3: "Close with warmth, not analysis.",
   },
   fr: {
+    beloved: "Bien-aimé(e)",
     heroTitle: "Démarrage sacré du jour pour couples modernes",
     heroDesc: "Six cartes présélectionnées. Direction calme. Élan d'intimité partagé. Cette page se renouvelle chaque jour.",
     relationship: "Relation",
@@ -248,6 +254,10 @@ const homeCopy: Record<Language, Record<string, string>> = {
     positionInsight: "La connexion par le corps peut rouvrir la proximité plus vite que de longues conversations.",
     templeInsight: "Accordez l'intensité au climat réel de votre connexion.",
     reconnectInsight: "Un micro-geste de réparation protège confiance et attirance.",
+    checkIntimacyWeather: "Vérifier votre météo d'intimité",
+    saveThisPractice: "Sauvegarder cette pratique",
+    savedToYourPath: "Sauvegardé dans votre chemin",
+    fromAuthorPattern: "De {author}",
     lockedDaily: "Extension quotidienne verrouillée",
     lockedDailyTitle: "Plus de cette page: 14 cartes quotidiennes",
     lockedDailyDesc: "Gardez votre rythme frais avec des rituels, citations, insights, positions et pulses supplémentaires.",
@@ -288,6 +298,7 @@ const homeCopy: Record<Language, Record<string, string>> = {
     stepReconnect3: "Fermez avec chaleur, pas avec analyse.",
   },
   cs: {
+    beloved: "Milovaná duše",
     heroTitle: "Denní posvátný start pro moderní páry",
     heroDesc: "Šest předvybraných karet. Klidný směr. Sdílená intimní dynamika. Tato stránka se obnovuje každý den.",
     relationship: "Vztah",
@@ -329,6 +340,10 @@ const homeCopy: Record<Language, Record<string, string>> = {
     positionInsight: "Tělesné propojení často otevře blízkost rychleji než dlouhé rozhovory.",
     templeInsight: "Než přidáte intenzitu, slaďte se s aktuální náladou vztahu.",
     reconnectInsight: "Jeden mikrokrok opravy dlouhodobě chrání důvěru i přitažlivost.",
+    checkIntimacyWeather: "Zkontrolovat vaše počasí intimity",
+    saveThisPractice: "Uložit tuto praxi",
+    savedToYourPath: "Uloženo do vaší cesty",
+    fromAuthorPattern: "Od {author}",
     lockedDaily: "Uzamčené denní rozšíření",
     lockedDailyTitle: "Více z této stránky: 14 extra denních karet",
     lockedDailyDesc: "Udržte svůj denní rytmus svěží dalšími rituály, citáty, vhledy, pozicemi a chrámovými pulzy.",
@@ -419,6 +434,8 @@ const parseRitualSteps = (steps: RitualItem["steps"]): string[] => {
   return parsed.slice(0, 3);
 };
 
+const fallbackBelovedValues = new Set(Object.values(homeCopy).map((copySet) => copySet.beloved));
+
 const AppHome = () => {
   const { user } = useAuth();
   const { lang } = useLanguage();
@@ -431,7 +448,7 @@ const AppHome = () => {
 
   const [loading, setLoading] = useState(true);
   const [relationshipConnected, setRelationshipConnected] = useState(false);
-  const [myName, setMyName] = useState("Beloved");
+  const [myName, setMyName] = useState(copy.beloved);
   const [partnerName, setPartnerName] = useState<string | null>(null);
   const [messages, setMessages] = useState<PartnerMessage[]>([]);
   const [altarItems, setAltarItems] = useState<AltarItem[]>([]);
@@ -452,7 +469,7 @@ const AppHome = () => {
     const emailPrefix = fallbackUser?.email?.split("@")[0]?.trim();
     if (emailPrefix) return emailPrefix;
 
-    return "Beloved";
+    return copy.beloved;
   };
 
   useEffect(() => {
@@ -632,7 +649,7 @@ const AppHome = () => {
       {
         id: quoteChoice.id,
         label: copy.labelQuote,
-        title: `From ${quoteChoice.author}`,
+        title: copy.fromAuthorPattern.replace("{author}", quoteChoice.author),
         description: `“${quoteChoice.quote}”`,
         quickInsight: copy.quoteInsight,
         steps: [copy.stepQuote1, copy.stepQuote2, copy.stepQuote3],
@@ -681,7 +698,7 @@ const AppHome = () => {
         accentClass: "text-rose-300",
       },
     ];
-  }, [copy.fallbackCardDesc, copy.fallbackInsightCardDesc, copy.fallbackInsightDesc, copy.fallbackInsightTitle, copy.fallbackRitualDesc, copy.fallbackRitualTitle, copy.insightInsight, copy.labelInsight, copy.labelPosition, copy.labelQuote, copy.labelReconnect, copy.labelRitual, copy.labelTemple, copy.positionInsight, copy.quoteInsight, copy.reconnectInsight, copy.ritualInsight, copy.stepInsight1, copy.stepInsight2, copy.stepInsight3, copy.stepPosition1, copy.stepPosition2, copy.stepPosition3, copy.stepQuote1, copy.stepQuote2, copy.stepQuote3, copy.stepReconnect1, copy.stepReconnect2, copy.stepReconnect3, copy.stepRitual1, copy.stepRitual2, copy.stepRitual3, copy.stepTemple1, copy.stepTemple2, copy.stepTemple3, copy.templeInsight, dailySeed, pathways, positions, quotes, reconnectMoves, rituals, templePulses]);
+  }, [copy.fallbackCardDesc, copy.fallbackInsightCardDesc, copy.fallbackInsightDesc, copy.fallbackInsightTitle, copy.fallbackRitualDesc, copy.fallbackRitualTitle, copy.fromAuthorPattern, copy.insightInsight, copy.labelInsight, copy.labelPosition, copy.labelQuote, copy.labelReconnect, copy.labelRitual, copy.labelTemple, copy.positionInsight, copy.quoteInsight, copy.reconnectInsight, copy.ritualInsight, copy.stepInsight1, copy.stepInsight2, copy.stepInsight3, copy.stepPosition1, copy.stepPosition2, copy.stepPosition3, copy.stepQuote1, copy.stepQuote2, copy.stepQuote3, copy.stepReconnect1, copy.stepReconnect2, copy.stepReconnect3, copy.stepRitual1, copy.stepRitual2, copy.stepRitual3, copy.stepTemple1, copy.stepTemple2, copy.stepTemple3, copy.templeInsight, dailySeed, pathways, positions, quotes, reconnectMoves, rituals, templePulses]);
 
   useEffect(() => {
     if (dailyCards.length === 0) return;
@@ -697,6 +714,10 @@ const AppHome = () => {
     setSavedCards(next);
     writeSavedCards(next);
   };
+
+  useEffect(() => {
+    setMyName((current) => (fallbackBelovedValues.has(current) ? copy.beloved : current));
+  }, [copy.beloved]);
 
   return (
     <div className="space-y-5">
@@ -747,7 +768,7 @@ const AppHome = () => {
             className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/10 px-4 py-2.5 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
           >
             <Cloud className="h-4 w-4 text-primary/80" />
-            <span>Check your intimacy weather</span>
+            <span>{copy.checkIntimacyWeather}</span>
             <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
           </Link>
         )}
@@ -822,7 +843,7 @@ const AppHome = () => {
                       }`}
                     >
                       <Heart className={`h-3.5 w-3.5 ${saved ? "fill-current" : ""}`} />
-                      {saved ? "Saved to your path" : "Save this practice"}
+                      {saved ? copy.savedToYourPath : copy.saveThisPractice}
                     </button>
                   </div>
                 )}

@@ -11,10 +11,39 @@ import FlameIcon from "@/components/tantra-icons/FlameIcon";
 import BreathIcon from "@/components/tantra-icons/BreathIcon";
 import YinYangIcon from "@/components/tantra-icons/YinYangIcon";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useLanguage, type Language } from "@/contexts/LanguageContext";
+
+type Teacher = { name: string; tradition: string };
+
+const teachersByLanguage: Record<Language, Teacher[]> = {
+  en: [
+    { name: "Osho", tradition: "Neo-Tantra" },
+    { name: "David Deida", tradition: "Masculine-Feminine Polarity" },
+    { name: "Mantak Chia", tradition: "Taoist Sexual Alchemy" },
+    { name: "Diana Richardson", tradition: "Slow Love" },
+    { name: "Barry Long", tradition: "Making Love" },
+    { name: "Margot Anand", tradition: "SkyDancing Tantra" },
+  ],
+  fr: [
+    { name: "Osho", tradition: "Néo-Tantra" },
+    { name: "David Deida", tradition: "Polarité masculin-féminin" },
+    { name: "Mantak Chia", tradition: "Alchimie sexuelle taoïste" },
+    { name: "Diana Richardson", tradition: "Amour lent" },
+    { name: "Barry Long", tradition: "Faire l'amour en conscience" },
+    { name: "Margot Anand", tradition: "Tantra SkyDancing" },
+  ],
+  cs: [
+    { name: "Osho", tradition: "Neo-tantra" },
+    { name: "David Deida", tradition: "Polarita mužského a ženského" },
+    { name: "Mantak Chia", tradition: "Taoistická sexuální alchymie" },
+    { name: "Diana Richardson", tradition: "Pomalá láska" },
+    { name: "Barry Long", tradition: "Vědomé milování" },
+    { name: "Margot Anand", tradition: "SkyDancing tantra" },
+  ],
+};
 
 const Index = () => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
@@ -44,14 +73,7 @@ const Index = () => {
     { icon: SacredGeometryIcon, title: t("landing.feature.library.title"), desc: t("landing.feature.library.desc") },
   ];
 
-  const teachers = [
-    { name: "Osho", tradition: "Neo-Tantra" },
-    { name: "David Deida", tradition: "Masculine-Feminine Polarity" },
-    { name: "Mantak Chia", tradition: "Taoist Sexual Alchemy" },
-    { name: "Diana Richardson", tradition: "Slow Love" },
-    { name: "Barry Long", tradition: "Making Love" },
-    { name: "Margot Anand", tradition: "SkyDancing Tantra" },
-  ];
+  const teachers = teachersByLanguage[lang];
 
   return (
     <div className="min-h-screen bg-background">

@@ -30,7 +30,8 @@ interface Props {
 
 const MemoryAltar = ({ coupleId, onNavigate }: Props) => {
   const { user } = useAuth();
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  const l = (en: string, fr: string, cs: string) => (lang === "fr" ? fr : lang === "cs" ? cs : en);
   const isPreview = !coupleId;
   const [items, setItems] = useState<AltarItem[]>([]);
   const [filter, setFilter] = useState("all");
@@ -77,10 +78,10 @@ const MemoryAltar = ({ coupleId, onNavigate }: Props) => {
 
   return (
     <DoorwayShell
-      label="Altar"
+      label={l("Altar", "Autel", "Oltář")}
       title={t("altar.title")}
       description={t("altar.subtitle")}
-      actionLabel="Enter pathways"
+      actionLabel={l("Enter pathways", "Entrer dans les parcours", "Vstoupit do cest")}
       onAction={onNavigate ? () => onNavigate("pathways") : undefined}
     >
       <div className="px-5 max-w-xl mx-auto">
@@ -147,7 +148,15 @@ const MemoryAltar = ({ coupleId, onNavigate }: Props) => {
           {filtered.length === 0 && (
             <div className="text-center py-12">
               <Star className="h-8 w-8 text-primary/20 mx-auto mb-3" />
-              <p className="text-base text-muted-foreground font-body">{isPreview ? "No shared altar memory yet in preview mode." : t("altar.empty")}</p>
+              <p className="text-base text-muted-foreground font-body">
+                {isPreview
+                  ? l(
+                      "No shared altar memory yet in preview mode.",
+                      "Aucune mémoire d'autel partagée en mode aperçu.",
+                      "V režimu náhledu zatím není žádná sdílená oltářní vzpomínka.",
+                    )
+                  : t("altar.empty")}
+              </p>
             </div>
           )}
           {filtered.map((item) => {
@@ -166,7 +175,7 @@ const MemoryAltar = ({ coupleId, onNavigate }: Props) => {
                         coupleId={coupleId}
                         messageType="altar_share"
                         content={`Altar card ✦ ${item.title}${item.note ? ` — ${item.note}` : ""}`}
-                        label="Offer this altar memory"
+                        label={l("Offer this altar memory", "Partager ce souvenir d'autel", "Sdílet tuto oltářní vzpomínku")}
                       />
                     </div>
                   </div>

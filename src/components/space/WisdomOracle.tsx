@@ -4,6 +4,7 @@ import { Brain, Compass, Flame, Heart, MessageCircle, Route, Shield, Sparkles, S
 import DoorwayShell from "@/components/space/DoorwayShell";
 import ShareCardButton from "@/components/space/ShareCardButton";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 
@@ -136,6 +137,92 @@ const daysAgo = (iso?: string | null) => {
 
 const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
   const { user } = useAuth();
+  const { lang } = useLanguage();
+  const l = (en: string, fr: string, cs: string) => (lang === "fr" ? fr : lang === "cs" ? cs : en);
+  const toneTitle = (toneKey: OracleTone) => {
+    switch (toneKey) {
+      case "romantic":
+        return l("Romantic", "Romantique", "Romantický");
+      case "erotic":
+        return l("Erotic", "Érotique", "Erotický");
+      case "playful":
+        return l("Playful", "Joueur", "Hravý");
+      case "healing":
+        return l("Healing", "Guérison", "Léčení");
+      case "devotional":
+        return l("Devotional", "Dévotionnel", "Oddaný");
+      default:
+        return toneKey;
+    }
+  };
+  const toneSubtitle = (toneKey: OracleTone) => {
+    switch (toneKey) {
+      case "romantic":
+        return l("Tender atmosphere, devotion, and emotional closeness.", "Atmosphère tendre, dévotion et proximité émotionnelle.", "Jemná atmosféra, oddanost a emoční blízkost.");
+      case "erotic":
+        return l("Magnetic charge, erotic pacing, and embodied polarity.", "Charge magnétique, rythme érotique et polarité incarnée.", "Magnetický náboj, erotické tempo a vtělená polarita.");
+      case "playful":
+        return l("Lightness, teasing, novelty, and spontaneous delight.", "Légèreté, séduction, nouveauté et joie spontanée.", "Lehkost, škádlení, novost a spontánní radost.");
+      case "healing":
+        return l("Regulation-first repair and nervous-system safety.", "Réparation axée régulation et sécurité du système nerveux.", "Oprava vedená regulací a bezpečím nervového systému.");
+      case "devotional":
+        return l("Sacred intention, gratitude, and ceremony over speed.", "Intention sacrée, gratitude et cérémonie plutôt que vitesse.", "Posvátný záměr, vděčnost a ceremonie místo spěchu.");
+      default:
+        return "";
+    }
+  };
+  const heatLabel = (heatKey: HeatLevel) => {
+    switch (heatKey) {
+      case "soft":
+        return l("Soft", "Doux", "Jemné");
+      case "balanced":
+        return l("Balanced", "Équilibré", "Vyvážené");
+      case "intense":
+        return l("Intense", "Intense", "Intenzivní");
+      default:
+        return heatKey;
+    }
+  };
+  const heatNote = (heatKey: HeatLevel) => {
+    switch (heatKey) {
+      case "soft":
+        return l("Slow pace and emotional safety first", "Rythme lent et sécurité émotionnelle d'abord", "Pomalé tempo a emoční bezpečí na prvním místě");
+      case "balanced":
+        return l("Warm connection with some charge", "Connexion chaleureuse avec un peu de charge", "Hřejivé spojení s dávkou náboje");
+      case "intense":
+        return l("High-energy intimacy with structure", "Intimité haute énergie avec structure", "Vysoká energie intimity se strukturou");
+      default:
+        return "";
+    }
+  };
+  const focusLabel = (focusKey: OracleFocus) => {
+    switch (focusKey) {
+      case "bonding":
+        return l("Bonding", "Lien", "Propojení");
+      case "attraction":
+        return l("Attraction", "Attraction", "Přitažlivost");
+      case "repair":
+        return l("Repair", "Réparation", "Oprava");
+      case "growth":
+        return l("Growth", "Croissance", "Růst");
+      default:
+        return focusKey;
+    }
+  };
+  const focusNote = (focusKey: OracleFocus) => {
+    switch (focusKey) {
+      case "bonding":
+        return l("Deepen emotional closeness tonight", "Approfondir la proximité émotionnelle ce soir", "Dnes večer prohloubit emoční blízkost");
+      case "attraction":
+        return l("Awaken playful and erotic momentum", "Éveiller l'élan joueur et érotique", "Probudit hravé a erotické momentum");
+      case "repair":
+        return l("Soothe tension and reconnect", "Apaiser la tension et se reconnecter", "Zklidnit napětí a znovu se propojit");
+      case "growth":
+        return l("Invest in a long-term sacred path", "Investir dans un chemin sacré à long terme", "Investovat do dlouhodobé posvátné cesty");
+      default:
+        return "";
+    }
+  };
 
   const [weatherEntries, setWeatherEntries] = useState<WeatherEntry[]>([]);
   const [messages, setMessages] = useState<PartnerMessage[]>([]);
@@ -332,47 +419,75 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
 
     const entryStep: OracleStep = {
       id: "entry",
-      title: "1. Arrival signal",
+      title: l("1. Arrival signal", "1. Signal d'arrivée", "1. Signál příchodu"),
       detail:
         focus === "repair"
-          ? "Begin with one regulation move so both nervous systems feel safer before deeper content."
-          : "Open with one short emotional signal so you both enter the same field.",
+          ? l(
+              "Begin with one regulation move so both nervous systems feel safer before deeper content.",
+              "Commencez par un geste de régulation pour que les deux systèmes nerveux se sentent en sécurité avant d'aller plus profond.",
+              "Začněte jedním regulačním krokem, aby se oba nervové systémy cítily bezpečněji před hlubším obsahem.",
+            )
+          : l(
+              "Open with one short emotional signal so you both enter the same field.",
+              "Ouvrez avec un signal émotionnel court pour entrer tous les deux dans le même champ.",
+              "Otevřete krátkým emočním signálem, aby oba vstoupili do stejného prostoru.",
+            ),
       target: entryTarget,
       iconClass: "text-sky-300",
     };
 
     const deepenStep: OracleStep = {
       id: "deepen",
-      title: "2. Deepen the moment",
+      title: l("2. Deepen the moment", "2. Approfondir le moment", "2. Prohloubit moment"),
       detail: tunedRitual
-        ? `Use "${tunedRitual.title}" as your core practice tonight. Keep the pace ${heat}.`
-        : "Choose one guided ritual or position and let the body set the pace.",
+        ? l(
+            `Use "${tunedRitual.title}" as your core practice tonight. Keep the pace ${heat}.`,
+            `Utilisez "${tunedRitual.title}" comme pratique centrale ce soir. Gardez un rythme ${heatLabel(heat).toLowerCase()}.`,
+            `Použijte "${tunedRitual.title}" jako hlavní praktiku dnešního večera. Udržte tempo ${heatLabel(heat).toLowerCase()}.`,
+          )
+        : l(
+            "Choose one guided ritual or position and let the body set the pace.",
+            "Choisissez un rituel guidé ou une position, et laissez le corps donner le tempo.",
+            "Vyberte jeden vedený rituál nebo pozici a nechte tělo určit tempo.",
+          ),
       target: tunedRitual ? "rituals" : "positions",
       iconClass: heat === "intense" ? "text-orange-300" : "text-fuchsia-300",
     };
 
     const integrateStep: OracleStep = {
       id: "integrate",
-      title: "3. Lock in continuity",
+      title: l("3. Lock in continuity", "3. Ancrer la continuité", "3. Ukotvit kontinuitu"),
       detail:
         focus === "growth"
-          ? "Close by advancing one pathway day so tonight becomes long-term momentum."
-          : "Close with one message or altar memory so the emotional trace stays alive tomorrow.",
+          ? l(
+              "Close by advancing one pathway day so tonight becomes long-term momentum.",
+              "Terminez en avançant un jour de parcours pour transformer ce soir en élan durable.",
+              "Uzavřete posunem o jeden den cesty, aby dnešní večer vytvořil dlouhodobé momentum.",
+            )
+          : l(
+              "Close with one message or altar memory so the emotional trace stays alive tomorrow.",
+              "Terminez par un message ou une mémoire d'autel pour garder la trace émotionnelle vivante demain.",
+              "Zakončete jednou zprávou nebo oltářní vzpomínkou, aby emoční stopa zůstala živá i zítra.",
+            ),
       target: focus === "growth" ? "pathways" : "messages",
       iconClass: "text-emerald-300",
     };
 
     return [entryStep, deepenStep, integrateStep];
-  }, [focus, heat, selectedTone.openingTarget, tunedRitual]);
+  }, [focus, heat, selectedTone.openingTarget, tunedRitual, lang]);
 
   const oracleMoves = useMemo(() => {
     const moves: OracleMove[] = [];
 
     moves.push({
       id: "tone-directive",
-      title: `Tonight's Oracle Tone: ${selectedTone.title}`,
-      why: selectedTone.subtitle,
-      cta: "Open first doorway",
+      title: l(
+        `Tonight's Oracle Tone: ${toneTitle(selectedTone.key)}`,
+        `Tonalité Oracle de ce soir : ${toneTitle(selectedTone.key)}`,
+        `Dnešní Oracle tón: ${toneTitle(selectedTone.key)}`,
+      ),
+      why: toneSubtitle(selectedTone.key),
+      cta: l("Open first doorway", "Ouvrir la première porte", "Otevřít první bránu"),
       target: selectedTone.openingTarget,
       iconClass: selectedTone.iconClass,
     });
@@ -380,9 +495,13 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
     if (!coupleId) {
       moves.push({
         id: "preview-start-weather",
-        title: "Set your first couple baseline",
-        why: "When your beloved connects, two weather check-ins instantly improve Oracle precision.",
-        cta: "Open weather",
+        title: l("Set your first couple baseline", "Définir votre première base de couple", "Nastavit první párovou základnu"),
+        why: l(
+          "When your beloved connects, two weather check-ins instantly improve Oracle precision.",
+          "Quand votre partenaire se connecte, deux check-ins météo améliorent immédiatement la précision de l'Oracle.",
+          "Když se partner připojí, dva check-iny počasí okamžitě zlepší přesnost Oracle.",
+        ),
+        cta: l("Open weather", "Ouvrir météo", "Otevřít počasí"),
         target: "weather",
         iconClass: "text-sky-300",
       });
@@ -390,9 +509,13 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
       if (tunedRitual) {
         moves.push({
           id: "preview-ritual",
-          title: `Try this first ritual: ${tunedRitual.title}`,
-          why: "This recommendation is matched to your selected tone and focus.",
-          cta: "Open rituals",
+          title: l(`Try this first ritual: ${tunedRitual.title}`, `Essayez ce rituel d'abord : ${tunedRitual.title}`, `Nejdřív zkuste tento rituál: ${tunedRitual.title}`),
+          why: l(
+            "This recommendation is matched to your selected tone and focus.",
+            "Cette recommandation est alignée avec votre tonalité et votre focus.",
+            "Toto doporučení je sladěno s vybraným tónem a zaměřením.",
+          ),
+          cta: l("Open rituals", "Ouvrir rituels", "Otevřít rituály"),
           target: "rituals",
           iconClass: "text-fuchsia-300",
         });
@@ -401,9 +524,13 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
       if (analytics.nextPathway) {
         moves.push({
           id: "preview-pathway",
-          title: `Prepare pathway: ${analytics.nextPathway.title}`,
-          why: "Pre-selecting your pathway avoids startup friction once you are both in.",
-          cta: "Open pathways",
+          title: l(`Prepare pathway: ${analytics.nextPathway.title}`, `Préparer le parcours : ${analytics.nextPathway.title}`, `Připravit cestu: ${analytics.nextPathway.title}`),
+          why: l(
+            "Pre-selecting your pathway avoids startup friction once you are both in.",
+            "Pré-sélectionner votre parcours évite les frictions de démarrage quand vous êtes tous les deux connectés.",
+            "Předvýběr cesty snižuje startovní tření, jakmile jste oba uvnitř.",
+          ),
+          cta: l("Open pathways", "Ouvrir parcours", "Otevřít cesty"),
           target: "pathways",
           iconClass: "text-emerald-300",
         });
@@ -415,9 +542,13 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
     if (!analytics.latestWeather) {
       moves.push({
         id: "check-weather",
-        title: "Name the emotional climate first",
-        why: "Without a fresh weather signal, couples often choose intensity mismatched to reality.",
-        cta: "Open weather",
+        title: l("Name the emotional climate first", "Nommez d'abord le climat émotionnel", "Nejdřív pojmenujte emoční klima"),
+        why: l(
+          "Without a fresh weather signal, couples often choose intensity mismatched to reality.",
+          "Sans signal météo récent, les couples choisissent souvent une intensité décalée de la réalité.",
+          "Bez čerstvého signálu počasí páry často volí intenzitu, která neodpovídá realitě.",
+        ),
+        cta: l("Open weather", "Ouvrir météo", "Otevřít počasí"),
         target: "weather",
         iconClass: "text-sky-300",
       });
@@ -426,9 +557,13 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
     if (tunedRitual) {
       moves.push({
         id: "tuned-ritual",
-        title: `Run ritual: ${tunedRitual.title}`,
-        why: `Oracle selected this from your ${selectedTone.title.toLowerCase()} tone, ${focus} focus, and recent signals.`,
-        cta: "Open rituals",
+        title: l(`Run ritual: ${tunedRitual.title}`, `Lancer le rituel : ${tunedRitual.title}`, `Spustit rituál: ${tunedRitual.title}`),
+        why: l(
+          `Oracle selected this from your ${toneTitle(selectedTone.key).toLowerCase()} tone, ${focusLabel(focus).toLowerCase()} focus, and recent signals.`,
+          `L'Oracle a sélectionné ceci selon votre tonalité ${toneTitle(selectedTone.key).toLowerCase()}, votre focus ${focusLabel(focus).toLowerCase()}, et vos signaux récents.`,
+          `Oracle vybral toto podle tónu ${toneTitle(selectedTone.key).toLowerCase()}, zaměření ${focusLabel(focus).toLowerCase()} a posledních signálů.`,
+        ),
+        cta: l("Open rituals", "Ouvrir rituels", "Otevřít rituály"),
         target: "rituals",
         iconClass: "text-fuchsia-300",
       });
@@ -437,9 +572,13 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
     if (!analytics.latestMessage || (analytics.silentDays !== null && analytics.silentDays >= 2)) {
       moves.push({
         id: "message-bridge",
-        title: "Close the gap with one precise whisper",
-        why: "A short shared whisper protects momentum between deeper rituals.",
-        cta: "Open messages",
+        title: l("Close the gap with one precise whisper", "Combler l'écart avec un murmure précis", "Uzavřít mezeru jedním přesným vzkazem"),
+        why: l(
+          "A short shared whisper protects momentum between deeper rituals.",
+          "Un murmure court partagé protège l'élan entre des rituels plus profonds.",
+          "Krátký sdílený vzkaz chrání momentum mezi hlubšími rituály.",
+        ),
+        cta: l("Open messages", "Ouvrir messages", "Otevřít zprávy"),
         target: "messages",
         iconClass: "text-violet-300",
       });
@@ -448,18 +587,26 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
     if (analytics.activePathway && analytics.activeProgress) {
       moves.push({
         id: "continue-pathway",
-        title: `Continue ${analytics.activePathway.title}`,
-        why: `You are on day ${analytics.activeProgress.current_day}. Continuity is your edge right now.`,
-        cta: "Open pathways",
+        title: l(`Continue ${analytics.activePathway.title}`, `Continuer ${analytics.activePathway.title}`, `Pokračovat ${analytics.activePathway.title}`),
+        why: l(
+          `You are on day ${analytics.activeProgress.current_day}. Continuity is your edge right now.`,
+          `Vous êtes au jour ${analytics.activeProgress.current_day}. La continuité est votre avantage maintenant.`,
+          `Jste ve dni ${analytics.activeProgress.current_day}. Kontinuita je teď vaše výhoda.`,
+        ),
+        cta: l("Open pathways", "Ouvrir parcours", "Otevřít cesty"),
         target: "pathways",
         iconClass: "text-emerald-300",
       });
     } else if (analytics.nextPathway) {
       moves.push({
         id: "start-pathway",
-        title: `Start pathway: ${analytics.nextPathway.title}`,
-        why: "Your current data suggests this is the right moment to move from one-off to progression.",
-        cta: "Open pathways",
+        title: l(`Start pathway: ${analytics.nextPathway.title}`, `Démarrer le parcours : ${analytics.nextPathway.title}`, `Začít cestu: ${analytics.nextPathway.title}`),
+        why: l(
+          "Your current data suggests this is the right moment to move from one-off to progression.",
+          "Vos données actuelles suggèrent que c'est le bon moment pour passer du ponctuel à la progression.",
+          "Aktuální data naznačují, že je správný čas přejít od jednorázových kroků k progresi.",
+        ),
+        cta: l("Open pathways", "Ouvrir parcours", "Otevřít cesty"),
         target: "pathways",
         iconClass: "text-emerald-300",
       });
@@ -468,58 +615,70 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
     if (moves.length < 4) {
       moves.push({
         id: "oracle-guide",
-        title: "Use Temple Guide for micro-calibration",
-        why: "Guide helps when multiple options are valid and you want a faster decision.",
-        cta: "Open guide",
+        title: l("Use Temple Guide for micro-calibration", "Utiliser le Guide du Temple pour une micro-calibration", "Použít chrámového průvodce pro mikro-kalibraci"),
+        why: l(
+          "Guide helps when multiple options are valid and you want a faster decision.",
+          "Le Guide aide quand plusieurs options sont valides et que vous voulez décider plus vite.",
+          "Průvodce pomáhá, když je více možností správných a chcete rychlejší rozhodnutí.",
+        ),
+        cta: l("Open guide", "Ouvrir guide", "Otevřít průvodce"),
         target: "guide",
         iconClass: "text-cyan-300",
       });
     }
 
     return moves.slice(0, 4);
-  }, [analytics, coupleId, focus, selectedTone, tunedRitual]);
+  }, [analytics, coupleId, focus, selectedTone, tunedRitual, lang]);
 
   const signals = useMemo(
     () => [
       {
-        label: "Rhythm days",
+        label: l("Rhythm days", "Jours de rythme", "Dny rytmu"),
         value: coupleId ? String(analytics.rhythmDays) : "—",
-        note: "Days with recorded shared activity",
+        note: l("Days with recorded shared activity", "Jours avec activité partagée enregistrée", "Dny se zaznamenanou sdílenou aktivitou"),
       },
       {
-        label: "Current streak",
+        label: l("Current streak", "Série actuelle", "Aktuální série"),
         value: coupleId ? String(analytics.streakCount) : "—",
-        note: "Consecutive active days",
+        note: l("Consecutive active days", "Jours actifs consécutifs", "Po sobě jdoucí aktivní dny"),
       },
       {
-        label: "Latest climate",
-        value: coupleId ? analytics.latestWeather?.state ?? "No check-in" : "Temple preview",
-        note: "Most recent intimacy weather",
+        label: l("Latest climate", "Climat le plus récent", "Nejnovější klima"),
+        value: coupleId ? analytics.latestWeather?.state ?? l("No check-in", "Aucun check-in", "Žádný check-in") : l("Temple preview", "Aperçu du temple", "Náhled chrámu"),
+        note: l("Most recent intimacy weather", "Dernière météo d'intimité", "Nejnovější počasí intimity"),
       },
       {
-        label: "Message gap",
-        value: coupleId ? (analytics.silentDays === null ? "No messages" : `${analytics.silentDays} day(s)`) : "Temple preview",
-        note: "Days since last partner message",
+        label: l("Message gap", "Intervalle des messages", "Prodleva zpráv"),
+        value: coupleId
+          ? analytics.silentDays === null
+            ? l("No messages", "Aucun message", "Žádné zprávy")
+            : l(`${analytics.silentDays} day(s)`, `${analytics.silentDays} jour(s)`, `${analytics.silentDays} den/dní`)
+          : l("Temple preview", "Aperçu du temple", "Náhled chrámu"),
+        note: l("Days since last partner message", "Jours depuis le dernier message partenaire", "Dny od poslední zprávy partnera"),
       },
     ],
-    [analytics.latestWeather?.state, analytics.rhythmDays, analytics.silentDays, analytics.streakCount, coupleId]
+    [analytics.latestWeather?.state, analytics.rhythmDays, analytics.silentDays, analytics.streakCount, coupleId, lang]
   );
 
   return (
     <DoorwayShell
-      label="Wisdom Oracle"
-      title="Sacred intelligence for your next loving move"
-      description="Set the tone you desire tonight, then Oracle composes your next steps from shared signals, memory, and Temple wisdom."
-      actionLabel="Receive fresh guidance"
+      label={l("Wisdom Oracle", "Oracle de sagesse", "Oracle moudrosti")}
+      title={l("Sacred intelligence for your next loving move", "Intelligence sacrée pour votre prochain geste d'amour", "Posvátná inteligence pro váš další láskyplný krok")}
+      description={l(
+        "Set the tone you desire tonight, then Oracle composes your next steps from shared signals, memory, and Temple wisdom.",
+        "Choisissez la tonalité désirée ce soir, puis l'Oracle compose vos prochaines étapes à partir des signaux partagés, de la mémoire et de la sagesse du Temple.",
+        "Nastavte tón dnešního večera a Oracle složí další kroky ze sdílených signálů, paměti a moudrosti chrámu.",
+      )}
+      actionLabel={l("Receive fresh guidance", "Recevoir une guidance fraîche", "Získat nové vedení")}
       onAction={() => setRefreshTick((value) => value + 1)}
       actionDisabled={loading}
     >
       <section className="rounded-[28px] border border-border/30 bg-card/45 p-6">
         <div className="flex items-center gap-2 text-primary/80">
           <Stars className="h-4 w-4" />
-          <p className="text-xs uppercase tracking-[0.22em]">Oracle configuration</p>
+          <p className="text-xs uppercase tracking-[0.22em]">{l("Oracle configuration", "Configuration Oracle", "Nastavení Oracle")}</p>
         </div>
-        <h3 className="mt-2 font-display text-3xl text-foreground">Co-create tonight's intention</h3>
+        <h3 className="mt-2 font-display text-3xl text-foreground">{l("Co-create tonight's intention", "Co-créez l'intention de ce soir", "Společně vytvořte záměr dnešního večera")}</h3>
 
         <div className="mt-5 grid gap-3 md:grid-cols-5">
           {tonePresets.map((preset) => {
@@ -538,8 +697,8 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
                 <div className={`inline-flex rounded-xl border border-border/30 bg-card/45 p-2 ${preset.iconClass}`}>
                   {preset.key === "erotic" ? <Flame className="h-4 w-4" /> : <Heart className="h-4 w-4" />}
                 </div>
-                <div className="mt-3 font-display text-xl text-foreground">{preset.title}</div>
-                <p className="mt-1 text-xs leading-5 text-muted-foreground">{preset.subtitle}</p>
+                <div className="mt-3 font-display text-xl text-foreground">{toneTitle(preset.key)}</div>
+                <p className="mt-1 text-xs leading-5 text-muted-foreground">{toneSubtitle(preset.key)}</p>
               </button>
             );
           })}
@@ -547,7 +706,7 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
 
         <div className="mt-5 grid gap-4 lg:grid-cols-2">
           <div className="rounded-[22px] border border-border/30 bg-background/45 p-4">
-            <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Intensity</p>
+            <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{l("Intensity", "Intensité", "Intenzita")}</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {heatOptions.map((option) => (
                 <button
@@ -560,15 +719,15 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
                       : "border-border/30 bg-card/45 text-muted-foreground"
                   }`}
                 >
-                  {option.label}
+                  {heatLabel(option.key)}
                 </button>
               ))}
             </div>
-            <p className="mt-2 text-xs text-muted-foreground">{heatOptions.find((item) => item.key === heat)?.note}</p>
+            <p className="mt-2 text-xs text-muted-foreground">{heatNote(heat)}</p>
           </div>
 
           <div className="rounded-[22px] border border-border/30 bg-background/45 p-4">
-            <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Primary focus</p>
+            <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{l("Primary focus", "Focus principal", "Hlavní fokus")}</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {focusOptions.map((option) => (
                 <button
@@ -581,11 +740,11 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
                       : "border-border/30 bg-card/45 text-muted-foreground"
                   }`}
                 >
-                  {option.label}
+                  {focusLabel(option.key)}
                 </button>
               ))}
             </div>
-            <p className="mt-2 text-xs text-muted-foreground">{focusOptions.find((item) => item.key === focus)?.note}</p>
+            <p className="mt-2 text-xs text-muted-foreground">{focusNote(focus)}</p>
           </div>
         </div>
 
@@ -593,15 +752,15 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
           <ShareCardButton
             coupleId={coupleId}
             messageType="oracle_config_share"
-            content={`Oracle configuration ✦ Tone: ${selectedTone.title}, Intensity: ${heat}, Focus: ${focus}.`}
-            label="Offer this intention"
+            content={`${l("Oracle configuration", "Configuration Oracle", "Nastavení Oracle")} ✦ ${l("Tone", "Tonalité", "Tón")}: ${toneTitle(selectedTone.key)}, ${l("Intensity", "Intensité", "Intenzita")}: ${heatLabel(heat)}, ${l("Focus", "Focus", "Zaměření")}: ${focusLabel(focus)}.`}
+            label={l("Offer this intention", "Partager cette intention", "Sdílet tento záměr")}
           />
         </div>
       </section>
 
       {loading ? (
         <section className="rounded-[24px] border border-border/30 bg-card/45 p-6">
-          <p className="text-sm text-muted-foreground">Reading your latest temple data and composing next best moves…</p>
+          <p className="text-sm text-muted-foreground">{l("Reading your latest temple data and composing next best moves…", "Lecture de vos dernières données du temple et composition des prochains meilleurs gestes…", "Čtu poslední chrámová data a skládám nejlepší další kroky…")}</p>
         </section>
       ) : (
         <>
@@ -618,9 +777,9 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
           <section className="rounded-[28px] border border-border/30 bg-card/45 p-6">
             <div className="flex items-center gap-2 text-primary/80">
               <Compass className="h-4 w-4" />
-              <p className="text-xs uppercase tracking-[0.22em]">Tonight sequence</p>
+              <p className="text-xs uppercase tracking-[0.22em]">{l("Tonight sequence", "Séquence de ce soir", "Sekvence dnešního večera")}</p>
             </div>
-            <h3 className="mt-2 font-display text-3xl text-foreground">Oracle ritual arc for tonight</h3>
+            <h3 className="mt-2 font-display text-3xl text-foreground">{l("Oracle ritual arc for tonight", "Arc rituel Oracle pour ce soir", "Oracle rituální oblouk pro dnešní večer")}</h3>
 
             <div className="mt-5 grid gap-4 md:grid-cols-3">
               {oraclePlan.map((step) => (
@@ -636,13 +795,13 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
                       onClick={() => onNavigate(step.target)}
                       className="rounded-2xl border border-primary/25 bg-primary/12 px-4 py-3 text-xs text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
                     >
-                      Enter step
+                      {l("Enter step", "Entrer dans l'étape", "Vstoupit do kroku")}
                     </button>
                     <ShareCardButton
                       coupleId={coupleId}
                       messageType="oracle_sequence_share"
                       content={`Oracle sequence card ✦ ${step.title} — ${step.detail}`}
-                      label="Offer this step"
+                      label={l("Offer this step", "Partager cette étape", "Sdílet tento krok")}
                     />
                   </div>
                 </div>
@@ -653,9 +812,9 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
           <section className="rounded-[28px] border border-border/30 bg-card/45 p-6">
             <div className="flex items-center gap-2 text-primary/80">
               <Brain className="h-4 w-4" />
-              <p className="text-xs uppercase tracking-[0.22em]">Oracle moves</p>
+              <p className="text-xs uppercase tracking-[0.22em]">{l("Oracle moves", "Mouvements Oracle", "Oracle kroky")}</p>
             </div>
-            <h3 className="mt-2 font-display text-3xl text-foreground">What love wants next</h3>
+            <h3 className="mt-2 font-display text-3xl text-foreground">{l("What love wants next", "Ce que l'amour veut ensuite", "Co láska chce dál")}</h3>
 
             <div className="mt-5 grid gap-4 lg:grid-cols-2">
               {oracleMoves.map((move) => (
@@ -671,13 +830,13 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
                       onClick={() => onNavigate(move.target)}
                       className="rounded-2xl border border-primary/25 bg-primary/12 px-4 py-3 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
                     >
-                      {move.cta.replace("Open", "Enter")}
+                      {move.cta}
                     </button>
                     <ShareCardButton
                       coupleId={coupleId}
                       messageType="oracle_move_share"
                       content={`Oracle move card ✦ ${move.title} — ${move.why}`}
-                      label="Offer this move"
+                      label={l("Offer this move", "Partager ce mouvement", "Sdílet tento krok")}
                     />
                   </div>
                 </div>
@@ -688,33 +847,33 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
           <section className="rounded-[28px] border border-border/30 bg-card/45 p-6">
             <div className="flex items-center gap-2 text-amber-300">
               <Sparkles className="h-4 w-4" />
-              <p className="text-xs uppercase tracking-[0.22em]">Beloved-tier features</p>
+              <p className="text-xs uppercase tracking-[0.22em]">{l("Beloved-tier features", "Fonctionnalités niveau Beloved", "Funkce úrovně Beloved")}</p>
             </div>
-            <h3 className="mt-2 font-display text-3xl text-foreground">Premium intimacy intelligence couples crave</h3>
+            <h3 className="mt-2 font-display text-3xl text-foreground">{l("Premium intimacy intelligence couples crave", "Intelligence premium d'intimité que les couples recherchent", "Premium inteligence intimity, po které páry touží")}</h3>
 
             <div className="mt-5 grid gap-4 md:grid-cols-3">
               <div className="rounded-[22px] border border-border/30 bg-background/45 p-4">
                 <div className="inline-flex rounded-xl border border-border/30 bg-card/45 p-2 text-rose-300">
                   <Heart className="h-4 w-4" />
                 </div>
-                <h4 className="mt-3 font-display text-xl text-foreground">Desire Synchrony Dial</h4>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">Tracks how often erotic and emotional tempos match, then proposes exact bridge rituals.</p>
+                <h4 className="mt-3 font-display text-xl text-foreground">{l("Desire Synchrony Dial", "Cadence de synchronie du désir", "Měřič synchronie touhy")}</h4>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">{l("Tracks how often erotic and emotional tempos match, then proposes exact bridge rituals.", "Suit la fréquence d'alignement des tempos érotiques et émotionnels, puis propose des rituels de pont précis.", "Sleduje, jak často se sladí erotické a emoční tempo, a navrhuje přesné mostové rituály.")}</p>
               </div>
 
               <div className="rounded-[22px] border border-border/30 bg-background/45 p-4">
                 <div className="inline-flex rounded-xl border border-border/30 bg-card/45 p-2 text-violet-300">
                   <MessageCircle className="h-4 w-4" />
                 </div>
-                <h4 className="mt-3 font-display text-xl text-foreground">Afterglow Debrief Engine</h4>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">Transforms shared moments into post-ritual prompts that deepen trust instead of fading overnight.</p>
+                <h4 className="mt-3 font-display text-xl text-foreground">{l("Afterglow Debrief Engine", "Moteur de débrief afterglow", "Afterglow debrief engine")}</h4>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">{l("Transforms shared moments into post-ritual prompts that deepen trust instead of fading overnight.", "Transforme les moments partagés en prompts post-rituel qui renforcent la confiance au lieu de s'effacer pendant la nuit.", "Proměňuje sdílené okamžiky na otázky po rituálu, které prohlubují důvěru místo toho, aby přes noc vybledly.")}</p>
               </div>
 
               <div className="rounded-[22px] border border-border/30 bg-background/45 p-4">
                 <div className="inline-flex rounded-xl border border-border/30 bg-card/45 p-2 text-emerald-300">
                   <Route className="h-4 w-4" />
                 </div>
-                <h4 className="mt-3 font-display text-xl text-foreground">Seasonal Intimacy Forecast</h4>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">Predicts your next relational season and suggests the precise pathway to sustain momentum.</p>
+                <h4 className="mt-3 font-display text-xl text-foreground">{l("Seasonal Intimacy Forecast", "Prévision saisonnière d'intimité", "Sezónní předpověď intimity")}</h4>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">{l("Predicts your next relational season and suggests the precise pathway to sustain momentum.", "Prédit votre prochaine saison relationnelle et suggère le parcours précis pour soutenir l'élan.", "Předpovídá další vztahové období a navrhuje přesnou cestu, jak udržet tempo.")}</p>
               </div>
             </div>
 
@@ -722,7 +881,11 @@ const WisdomOracle = ({ coupleId, onNavigate }: Props) => {
               <div className="flex items-start gap-3">
                 <Shield className="h-4 w-4 text-primary mt-1" />
                 <p className="text-sm leading-6 text-muted-foreground">
-                  Oracle stays devotional to consent and pacing. It offers a strong next move while preserving emotional sovereignty for both lovers.
+                  {l(
+                    "Oracle stays devotional to consent and pacing. It offers a strong next move while preserving emotional sovereignty for both lovers.",
+                    "L'Oracle reste dévoué au consentement et au bon rythme. Il propose un geste fort tout en préservant la souveraineté émotionnelle des deux partenaires.",
+                    "Oracle zůstává věrný souhlasu a tempu. Nabízí silný další krok a zároveň chrání emoční suverenitu obou partnerů.",
+                  )}
                 </p>
               </div>
             </div>

@@ -29,7 +29,8 @@ interface Props {
 }
 
 const Pathways = ({ coupleId, onNavigate, isPremium = false }: Props) => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  const l = (en: string, fr: string, cs: string) => (lang === "fr" ? fr : lang === "cs" ? cs : en);
   const { user } = useAuth();
   const [pathways, setPathways] = useState<Pathway[]>([]);
   const [progress, setProgress] = useState<Record<string, Progress>>({});
@@ -92,10 +93,10 @@ const Pathways = ({ coupleId, onNavigate, isPremium = false }: Props) => {
 
   return (
     <DoorwayShell
-      label="Pathways"
+      label={l("Pathways", "Parcours", "Cesty")}
       title={t("pathways.title")}
       description={t("pathways.subtitle")}
-      actionLabel="Enter temple guide"
+      actionLabel={l("Enter temple guide", "Entrer dans le guide du temple", "Vstoupit do průvodce chrámu")}
       onAction={onNavigate ? () => onNavigate("guide") : undefined}
     >
 
@@ -172,7 +173,7 @@ const Pathways = ({ coupleId, onNavigate, isPremium = false }: Props) => {
                         coupleId={coupleId}
                         messageType="pathway_share"
                         content={`Pathway card ✦ ${p.title} — ${p.description || `${p.duration_days} days`}`}
-                        label="Offer this pathway card"
+                        label={l("Offer this pathway card", "Partager cette carte de parcours", "Sdílet tuto kartu cesty")}
                       />
                     </div>
                   </div>

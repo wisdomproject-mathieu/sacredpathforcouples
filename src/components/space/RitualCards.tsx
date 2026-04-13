@@ -71,7 +71,8 @@ const categoryFilters: CategoryKey[] = [
 ];
 
 const RitualCards = ({ coupleId, onNavigate, isPremium = false }: Props) => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  const l = (en: string, fr: string, cs: string) => (lang === "fr" ? fr : lang === "cs" ? cs : en);
   const { user } = useAuth();
 
   const [rituals, setRituals] = useState<RitualItem[]>([]);
@@ -140,25 +141,29 @@ const RitualCards = ({ coupleId, onNavigate, isPremium = false }: Props) => {
       content: `Ritual card ✦ ${ritual.title}${ritual.hook ? ` — ${ritual.hook}` : ""}`,
     });
 
-    toast.success("Offered ritual card to your beloved.");
+    toast.success(l("Offered ritual card to your beloved.", "Carte rituel partagée avec votre partenaire.", "Rituálová karta byla sdílena s partnerem."));
   };
 
   return (
     <DoorwayShell
-      label="Rituals"
+      label={l("Rituals", "Rituels", "Rituály")}
       title={t("ritual_cards.title")}
       description={t("ritual_cards.subtitle")}
-      actionLabel="Enter temple guide"
+      actionLabel={l("Enter temple guide", "Entrer dans le guide du temple", "Vstoupit do průvodce chrámu")}
       onAction={onNavigate ? () => onNavigate("guide") : undefined}
     >
       {!isPremium && (
         <div className="rounded-2xl border border-emerald-300/25 bg-emerald-500/10 p-4">
           <p className="inline-flex items-center gap-1 text-xs uppercase tracking-[0.18em] text-emerald-200">
             <LockOpen className="h-3.5 w-3.5 text-amber-200" />
-            Open-access ritual flow
+            {l("Open-access ritual flow", "Flux rituel en accès libre", "Rituální tok v otevřeném přístupu")}
           </p>
           <p className="mt-2 text-sm leading-6 text-foreground/90">
-            You can open one ritual in each category after Intimacy Weather. Everything else unlocks in premium.
+            {l(
+              "You can open one ritual in each category after Intimacy Weather. Everything else unlocks in premium.",
+              "Vous pouvez ouvrir un rituel dans chaque catégorie après la Météo d'intimité. Le reste se débloque en premium.",
+              "Po Počasí intimity můžete otevřít jeden rituál v každé kategorii. Vše ostatní se odemkne v premium.",
+            )}
           </p>
         </div>
       )}

@@ -58,7 +58,8 @@ interface Props {
 }
 
 const TempleGuide = ({ onNavigate, coupleId }: Props) => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  const l = (en: string, fr: string, cs: string) => (lang === "fr" ? fr : lang === "cs" ? cs : en);
   const [energy, setEnergy] = useState<string | null>(null);
   const [time, setTime] = useState<string | null>(null);
   const [privacy, setPrivacy] = useState<string | null>(null);
@@ -69,10 +70,14 @@ const TempleGuide = ({ onNavigate, coupleId }: Props) => {
 
   return (
     <DoorwayShell
-      label="Sacred Guide"
-      title="Sacred Guide"
-      description="When love feels uncertain, Sacred Guide offers a grounded next step for tenderness, polarity, and presence."
-      actionLabel="Enter rituals"
+      label={l("Sacred Guide", "Guide sacré", "Posvátný průvodce")}
+      title={l("Sacred Guide", "Guide sacré", "Posvátný průvodce")}
+      description={l(
+        "When love feels uncertain, Sacred Guide offers a grounded next step for tenderness, polarity, and presence.",
+        "Quand l'amour devient incertain, le Guide sacré propose un prochain pas concret vers la tendresse, la polarité et la présence.",
+        "Když si láska není jistá, Posvátný průvodce nabídne ukotvený další krok pro něhu, polaritu a přítomnost.",
+      )}
+      actionLabel={l("Enter rituals", "Entrer dans les rituels", "Vstoupit do rituálů")}
       onAction={onNavigate ? () => onNavigate("rituals") : undefined}
     >
 
@@ -171,7 +176,7 @@ const TempleGuide = ({ onNavigate, coupleId }: Props) => {
                       coupleId={coupleId}
                       messageType="guide_share"
                       content={`Guide card ✦ ${t(rec.titleKey)} — ${t(rec.descKey)}`}
-                      label="Offer this guide card"
+                      label={l("Offer this guide card", "Partager cette carte guide", "Sdílet tuto kartu průvodce")}
                       className="w-full justify-center"
                     />
                   </div>
