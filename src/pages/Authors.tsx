@@ -78,6 +78,7 @@ type Author = {
   name: string;
   tier: Tier;
   descriptor: string;
+  tradition?: string;
   oneLiner: string;
   overviewLine: string;
   icon: LucideIcon;
@@ -120,15 +121,16 @@ const authors: Author[] = [
     name: "David Deida",
     tier: "free",
     descriptor: "Ancient polarity wisdom translated into practical intimacy for modern couples.",
-    oneLiner: "Helps couples recover charge quickly when love is steady but desire has gone flat.",
+    tradition: "Sacred Masculinity & Conscious Polarity",
+    oneLiner: "The edge of love, presence, and polarity",
     overviewLine: "Use now for erotic clarity and devotion, then go deeper as a couple over time.",
     icon: Flame,
     iconClass: "text-amber-300",
     content: {
       heroIntro: [
-        "David Deida is most useful when a relationship still has loyalty and care, but erotic aliveness has flattened. His work gives couples language for restoring charge without abandoning tenderness.",
-        "Read skillfully, this is not about rigid gender scripts. It is about directed presence, conscious contrast, emotional truth, and devotion held inside explicit consent.",
-        "For modern couples, Deida becomes practical when translated into short rituals: truth naming, lead/receive rounds, and clear pacing signals that protect nervous-system safety.",
+        "David Deida's work stands at the intersection of spiritual practice and erotic intelligence. Drawing from Zen, Tantra, and decades working directly with couples, Deida maps the invisible currents that flow between masculine and feminine — not as rigid gender roles, but as poles of consciousness and energy that every couple navigates.",
+        "His central insight: most modern relationships collapse not from lack of love, but from collapsed polarity. When both partners unconsciously occupy the same energetic territory, desire dims and genuine contact flattens.",
+        "Deida's teachings restore the living charge between two people — the specific quality of directed presence in one partner that calls out the radiant openness of the other.",
       ],
       whoItsFor: [
         {
@@ -149,13 +151,13 @@ const authors: Author[] = [
         },
       ],
       practicePreview: {
-        title: "Deida polarity check-in",
-        body: "A structured pre-intimacy sequence for reconnecting desire with emotional integrity.",
+        title: "Directional Breath Frame",
+        body: "A partner breathing practice designed to restore polarity through directed presence and energetic distinction. One partner holds space; the other fills it. Eight minutes that reorient a couple's entire nervous system toward each other.",
         steps: [
-          "Name one relational truth you have been avoiding this week.",
-          "Name one devotional action you will take tonight.",
-          "Run a 2-minute lead/receive breath round and switch.",
-          "Close with explicit more, same, slower, or pause consent language.",
+          "One partner takes the directional role: breathe with clear intention, establishing presence and direction.",
+          "The other partner receives — breathing into the space being held, following rather than leading.",
+          "Sustain for four minutes with soft eye contact, then switch roles completely.",
+          "Close with two minutes of synchronized, equal breath — no direction, pure shared presence.",
         ],
       },
       beginnerTrack: {
@@ -309,15 +311,16 @@ const authors: Author[] = [
     name: "Osho",
     tier: "free",
     descriptor: "Meditative intimacy from ancient awareness teachings, adapted for modern couples.",
-    oneLiner: "Helps couples reconnect fast when they feel numb, over-mental, or emotionally blocked.",
+    tradition: "Tantric Meditation & Sacred Presence",
+    oneLiner: "Meditation as the deepest form of love",
     overviewLine: "Awareness-based intimacy tools you can apply now and deepen over time together.",
     icon: SunMoon,
     iconClass: "text-fuchsia-300",
     content: {
       heroIntro: [
-        "Osho's practical value is method, not mythology: bring awareness into sensation, emotion, and relational patterning so reactivity does not run the relationship.",
-        "He distinguishes suppression from integration. The invitation is neither collapse nor control, but witnessing: feel fully, breathe fully, and stay present enough for connection to return.",
-        "For couples, the usable piece is simple: regulate the body, name what is real, and re-enter dialogue from awareness instead of defensive reflex.",
+        "Osho brought the ancient Tantric texts — particularly the Vigyan Bhairav Tantra, a five-thousand-year-old dialogue between Shiva and Parvati on the one hundred and twelve methods of awakening — into language modern couples can actually inhabit.",
+        "His radical reframe: sex is not the enemy of enlightenment, and enlightenment is not the enemy of pleasure. They are the same energy moving in different directions. Osho taught that most couples never truly meet, because they are not present. Two absences cannot create intimacy.",
+        "The entire Tantric path, in Osho's rendering, is the journey from mechanical, goal-driven lovemaking toward conscious union — in which every moment of touch becomes an act of meditation, and the beloved becomes the doorway to the absolute.",
       ],
       whoItsFor: [
         {
@@ -338,13 +341,13 @@ const authors: Author[] = [
         },
       ],
       practicePreview: {
-        title: "Witnessing reset loop",
-        body: "A practical sequence for turning charged evenings into regulated connection.",
+        title: "Witnessing Breath",
+        body: "A Tantric practice of becoming the silent witness within lovemaking — present without grasping, open without performance. The witness does not judge, does not direct, does not want. It simply sees — and in that seeing, love deepens.",
         steps: [
-          "Sit back-to-back and track breath without changing it.",
-          "Name one sensation and one emotion without explanation.",
-          "Turn face-to-face and mirror each other’s words exactly.",
-          "Close with one shared intention for the next hour.",
+          "Sit or lie together in comfortable proximity, eyes soft or gently closed.",
+          "Breathe naturally — do not direct, control, or shape the breath in any way.",
+          "Become the silent witness: observe sensation, feeling, and thought without engaging or narrating them.",
+          "If presence wavers, return gently to breath. Close with one word each: what you witnessed.",
         ],
       },
       beginnerTrack: {
@@ -497,7 +500,8 @@ const authors: Author[] = [
     name: "Mantak Chia",
     tier: "premium",
     descriptor: "Taoist alchemy translated into partner practices for sustainable intimacy and vitality.",
-    oneLiner: "For couples learning to transform arousal into shared life-force and deeper connection.",
+    tradition: "Taoist Sexual Alchemy",
+    oneLiner: "Life force as the true currency of love",
     overviewLine: "Ancient Taoist mechanics for modern couples who want lasting erotic energy.",
     icon: Waves,
     iconClass: "text-cyan-300",
@@ -512,7 +516,8 @@ const authors: Author[] = [
     name: "Margot Anand",
     tier: "premium",
     descriptor: "Ecstatic Tantra and sacred sensuality translated for modern couple ritual life.",
-    oneLiner: "For couples wanting joy, devotion, and erotic celebration with relational structure.",
+    tradition: "SkyDancing Tantra",
+    oneLiner: "Ecstasy as a path, not a peak",
     overviewLine: "Ceremonial Tantra for partners growing closer through beauty and intention.",
     icon: Sparkles,
     iconClass: "text-rose-300",
@@ -527,7 +532,8 @@ const authors: Author[] = [
     name: "Daniel Odier",
     tier: "premium",
     descriptor: "Non-dual Tantra and subtle attention for couples seeking contemplative erotic depth.",
-    oneLiner: "For couples drawn to silence, subtlety, and refined presence that builds intimacy.",
+    tradition: "Non-Dual Kashmir Shaivism Tantra",
+    oneLiner: "Desire itself as the doorway to the absolute",
     overviewLine: "Contemplative intimacy for partners who value depth over performance pressure.",
     icon: Star,
     iconClass: "text-violet-300",
@@ -542,7 +548,8 @@ const authors: Author[] = [
     name: "Michaela Boehm",
     tier: "premium",
     descriptor: "Embodiment and relational nervous-system literacy for modern couple intimacy.",
-    oneLiner: "For couples who want grounded somatic tools they can use immediately.",
+    tradition: "Somatic Tantra & Nervous System Intimacy",
+    oneLiner: "The wild somatic intelligence of love",
     overviewLine: "Somatic relational skills for attraction, regulation, and honest connection.",
     icon: Heart,
     iconClass: "text-orange-300",
@@ -557,7 +564,8 @@ const authors: Author[] = [
     name: "Barry Long",
     tier: "premium",
     descriptor: "Relational truth, simplicity, and disciplined conscious love for committed partners.",
-    oneLiner: "For couples who want less drama and more clarity that restores respect and closeness.",
+    tradition: "Sacred Love & Conscious Union",
+    oneLiner: "Lovemaking as the most direct return to God",
     overviewLine: "Presence-led relational integrity for modern couples seeking grounded sacred love.",
     icon: Feather,
     iconClass: "text-emerald-300",
@@ -572,7 +580,8 @@ const authors: Author[] = [
     name: "Jan Day",
     tier: "premium",
     descriptor: "Body-led intimacy, relational healing, and emotional courage for modern couples.",
-    oneLiner: "For couples rebuilding trust in touch, vulnerability, and honest expression.",
+    tradition: "Conscious Relating & Tantric Embodiment",
+    oneLiner: "Emotional truth as the foundation of erotic depth",
     overviewLine: "Embodied intimacy repair with practical exercises for deeper connection.",
     icon: Compass,
     iconClass: "text-violet-300",
@@ -587,7 +596,8 @@ const authors: Author[] = [
     name: "Max Bush",
     tier: "premium",
     descriptor: "Erotic confidence and practical sensual development for connected modern couples.",
-    oneLiner: "For couples who want skillful erotic communication that strengthens emotional trust.",
+    tradition: "Embodied Masculine Eros",
+    oneLiner: "Erotic confidence grounded in relational integrity",
     overviewLine: "Practical erotic craft with confidence-building progression for long-term love.",
     icon: Flame,
     iconClass: "text-amber-300",
@@ -602,7 +612,8 @@ const authors: Author[] = [
     name: "Victor Gold",
     tier: "premium",
     descriptor: "Refined erotic craftsmanship, devotion, and magnetic relational form for couples.",
-    oneLiner: "For couples exploring elegant polarity and deeper erotic architecture together.",
+    tradition: "Sacred Erotic Craftsmanship",
+    oneLiner: "The refined art of conscious erotic form",
     overviewLine: "Advanced relational erotics with structure, depth, and sacred intentionality.",
     icon: Star,
     iconClass: "text-rose-300",
@@ -617,7 +628,8 @@ const authors: Author[] = [
     name: "Charles Muir",
     tier: "premium",
     descriptor: "Modern sacred intimacy facilitation and practical tantric partner work for couples.",
-    oneLiner: "For couples who want usable ritual structure with grounded, modern language.",
+    tradition: "Heart Tantra & Sacred Healing",
+    oneLiner: "Healing the heart through sacred sexual union",
     overviewLine: "Applied Neo-Tantra sequencing that turns insight into embodied closeness.",
     icon: Waves,
     iconClass: "text-cyan-300",
@@ -632,7 +644,8 @@ const authors: Author[] = [
     name: "Sally Kempton",
     tier: "premium",
     descriptor: "Kashmir Shaivism-inspired contemplative practice for intimate recognition and presence.",
-    oneLiner: "For couples drawn to heart-depth, non-dual intimacy, and subtle consciousness work.",
+    tradition: "Kashmir Shaivism & Tantric Meditation",
+    oneLiner: "Shakti: the living power that moves through all love",
     overviewLine: "Kashmir Shaivism depth translated for modern couples seeking sacred love.",
     icon: SunMoon,
     iconClass: "text-violet-300",
@@ -1424,8 +1437,11 @@ const AuthorHeroCard = ({ author }: { author: Author }) => {
       </div>
 
       <h2 className="mt-4 font-display text-3xl text-foreground">{author.name}</h2>
+      {author.tradition ? (
+        <p className="mt-2 text-[11px] uppercase tracking-[0.14em] text-primary/70">{author.tradition}</p>
+      ) : null}
       <p className="mt-3 text-sm leading-6 text-muted-foreground">{author.descriptor}</p>
-      <p className="mt-3 text-sm leading-6 text-foreground/90">{author.oneLiner}</p>
+      <p className="mt-3 text-sm leading-6 text-foreground/90 italic">{author.oneLiner}</p>
 
       {isLocked ? (
         <Link
