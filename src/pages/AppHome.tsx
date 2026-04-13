@@ -528,7 +528,7 @@ const AppHome = () => {
       const activeCouple = coupleState.activeCouple;
 
       if (!activeCouple) {
-        setRelationshipConnected(stickyConnected);
+        setRelationshipConnected(Boolean(stickyConnected || stickyCoupleId));
         setPartnerName(null);
         setMessages([]);
         setAltarItems([]);

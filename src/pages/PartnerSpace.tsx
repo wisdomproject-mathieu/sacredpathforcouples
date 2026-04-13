@@ -8,7 +8,6 @@ import {
   Bookmark,
   Cloud,
   Compass,
-  Flame,
   Heart,
   Home,
   Lock,
@@ -17,7 +16,6 @@ import {
   Route,
   Shield,
   Sparkles,
-  Stars,
 } from "lucide-react";
 
 import IntimacyWeather from "@/components/space/IntimacyWeather";
@@ -30,7 +28,25 @@ import RepairMode from "@/components/space/RepairMode";
 import TempleGuide from "@/components/space/TempleGuide";
 import WisdomOracle from "@/components/space/WisdomOracle";
 import ShareCardButton from "@/components/space/ShareCardButton";
+import EmptyStateCard from "@/components/space/journey/EmptyStateCard";
+import NotificationBadge from "@/components/space/journey/NotificationBadge";
+import PartnerWeatherCard from "@/components/space/journey/PartnerWeatherCard";
+import SacredMessageComposer, { type SacredComposerType } from "@/components/space/journey/SacredMessageComposer";
+import SacredTempleBoard, { type SacredBoardItem } from "@/components/space/journey/SacredTempleBoard";
+import SharedTimeline from "@/components/space/journey/SharedTimeline";
+import type { JourneyTimelineItem } from "@/components/space/journey/SharedTimelineItem";
+import SharedWeatherCard, { type WeatherCardData } from "@/components/space/journey/SharedWeatherCard";
+import WaitingForPartnerCard from "@/components/space/journey/WaitingForPartnerCard";
+import WeatherMatchCard from "@/components/space/journey/WeatherMatchCard";
 import { Tables } from "@/integrations/supabase/types";
+import {
+  markJourneySectionRead,
+  readJourneySeenMap,
+  toTimestamp,
+  unreadCountSince,
+  type JourneyNotificationSection,
+} from "@/lib/journeyNotifications";
+import { buildWeatherMatchResult, getWeatherPresentation } from "@/lib/weatherMatch";
 import {
   fetchCoupleStateForUser,
   markEverConnected,
@@ -44,16 +60,9 @@ import { useIsMobile } from "@/hooks/use-mobile";
 type ToolKey = "weather" | "rituals" | "positions" | "messages" | "guide" | "repair" | "pathways" | "altar";
 type ViewMode = "doorways" | "journey" | "oracle";
 
-type ActivityState = {
-  partnerNote: string;
-  lastMove: string;
-  rhythmCount: number;
-  streakCount: number;
-  altarNote: string;
-  nextSuggestion: string;
-};
-
 type JourneyItem = Pick<Tables<"partner_messages">, "id" | "content" | "created_at" | "sender_id" | "message_type">;
+type JourneyWeatherItem = Pick<Tables<"weather_entries">, "id" | "created_at" | "state" | "user_id" | "note">;
+type JourneyAltarItem = Pick<Tables<"altar_items">, "id" | "title" | "created_at" | "user_id" | "item_type" | "note">;
 
 const toolDefs: {
   key: ToolKey;
@@ -151,7 +160,7 @@ const templeViewDefs: {
     key: "journey",
     icon: Route,
     iconClass: "text-amber-300",
-    premium: true,
+    premium: false,
   },
   {
     key: "oracle",
@@ -181,130 +190,11 @@ const templeViewTextByLanguage: Record<Language, Record<ViewMode, { title: strin
 
 const freeDoorways: ToolKey[] = ["weather", "rituals"];
 
-const dayKey = (iso?: string | null) => (iso ? new Date(iso).toISOString().slice(0, 10) : null);
-
 const isToolKey = (value?: string | null): value is ToolKey =>
   Boolean(value && toolDefs.some((tool) => tool.key === value));
 
 const isViewKey = (value?: string | null): value is ViewMode =>
   Boolean(value && templeViewDefs.some((view) => view.key === value));
-
-const messageTypeLabel = (messageType: string | null | undefined, lang: Language) => {
-  const labelsByLanguage: Record<Language, Record<string, string>> = {
-    en: {
-      doorway_share: "Doorway offering",
-      weather_share: "Weather offering",
-      ritual_share: "Ritual offering",
-      position_share: "Position offering",
-      guide_share: "Guide offering",
-      repair_share: "Repair offering",
-      pathway_share: "Pathway offering",
-      altar_share: "Altar offering",
-      oracle_move_share: "Oracle guidance",
-      oracle_sequence_share: "Oracle sequence",
-      oracle_config_share: "Oracle intention",
-      message_prompt_share: "Message prompt",
-      message: "Whisper",
-      invitation: "Invitation",
-      default: "Shared offering",
-    },
-    fr: {
-      doorway_share: "Offrande de porte",
-      weather_share: "Offrande météo",
-      ritual_share: "Offrande de rituel",
-      position_share: "Offrande de position",
-      guide_share: "Offrande de guide",
-      repair_share: "Offrande de réparation",
-      pathway_share: "Offrande de parcours",
-      altar_share: "Offrande d'autel",
-      oracle_move_share: "Guidance oracle",
-      oracle_sequence_share: "Séquence oracle",
-      oracle_config_share: "Intention oracle",
-      message_prompt_share: "Prompt de message",
-      message: "Murmure",
-      invitation: "Invitation",
-      default: "Offrande partagée",
-    },
-    cs: {
-      doorway_share: "Sdílení brány",
-      weather_share: "Sdílení počasí",
-      ritual_share: "Sdílení rituálu",
-      position_share: "Sdílení pozice",
-      guide_share: "Sdílení průvodce",
-      repair_share: "Sdílení opravy",
-      pathway_share: "Sdílení cesty",
-      altar_share: "Sdílení oltáře",
-      oracle_move_share: "Oracle vedení",
-      oracle_sequence_share: "Oracle sekvence",
-      oracle_config_share: "Oracle záměr",
-      message_prompt_share: "Prompt zprávy",
-      message: "Vzkaz",
-      invitation: "Pozvání",
-      default: "Sdílené sdělení",
-    },
-  };
-
-  const labels = labelsByLanguage[lang];
-  switch (messageType) {
-    case "doorway_share":
-      return labels.doorway_share;
-    case "weather_share":
-      return labels.weather_share;
-    case "ritual_share":
-      return labels.ritual_share;
-    case "position_share":
-      return labels.position_share;
-    case "guide_share":
-      return labels.guide_share;
-    case "repair_share":
-      return labels.repair_share;
-    case "pathway_share":
-      return labels.pathway_share;
-    case "altar_share":
-      return labels.altar_share;
-    case "oracle_move_share":
-      return labels.oracle_move_share;
-    case "oracle_sequence_share":
-      return labels.oracle_sequence_share;
-    case "oracle_config_share":
-      return labels.oracle_config_share;
-    case "message_prompt_share":
-      return labels.message_prompt_share;
-    case "message":
-      return labels.message;
-    case "invitation":
-      return labels.invitation;
-    default:
-      return labels.default;
-  }
-};
-
-const computeStreak = (dates: string[]) => {
-  const unique = Array.from(new Set(dates.filter(Boolean))).sort().reverse();
-  if (!unique.length) return 0;
-
-  let streak = 1;
-  let cursor = new Date(unique[0]);
-
-  for (let i = 1; i < unique.length; i++) {
-    const prev = new Date(cursor);
-    prev.setDate(prev.getDate() - 1);
-    const expected = prev.toISOString().slice(0, 10);
-    if (unique[i] === expected) {
-      streak += 1;
-      cursor = prev;
-    } else {
-      break;
-    }
-  }
-
-  return streak;
-};
-
-const truncateText = (value: string, max = 132) => {
-  if (value.length <= max) return value;
-  return `${value.slice(0, max).trimEnd()}...`;
-};
 
 const DoorwayDetailBar = ({
   title,
@@ -371,20 +261,16 @@ const PartnerSpace = () => {
   const [activeTool, setActiveTool] = useState<ToolKey>("weather");
   const [mobileDoorwayDetailMode, setMobileDoorwayDetailMode] = useState(false);
   const [activityTick, setActivityTick] = useState(0);
-  const [activity, setActivity] = useState<ActivityState>({
-    partnerNote: "No message in your shared thread yet. Offer one honest line and let the night begin.",
-    lastMove: "No shared movement yet. Begin with Intimacy Weather or a soft invitation.",
-    rhythmCount: 0,
-    streakCount: 0,
-    altarNote: "No altar memory has been sealed yet.",
-    nextSuggestion: "Start with Intimacy Weather to meet each other where you truly are.",
-  });
-  const [journeyFeed, setJourneyFeed] = useState<JourneyItem[]>([]);
+  const [partnerUserId, setPartnerUserId] = useState<string | null>(null);
+  const [weatherEntries, setWeatherEntries] = useState<JourneyWeatherItem[]>([]);
+  const [journeyMessages, setJourneyMessages] = useState<JourneyItem[]>([]);
+  const [altarEvents, setAltarEvents] = useState<JourneyAltarItem[]>([]);
+  const [seenMap, setSeenMap] = useState<Partial<Record<JourneyNotificationSection, number>>>({});
   const membershipTier = getEffectiveMembershipTier(user);
   const hasPremiumAccess = isPremiumTier(membershipTier);
 
   const isToolUnlocked = (tool: ToolKey) => hasPremiumAccess || freeDoorways.includes(tool);
-  const isViewUnlocked = (view: ViewMode) => hasPremiumAccess || view === "doorways";
+  const isViewUnlocked = (view: ViewMode) => (view === "oracle" ? hasPremiumAccess : true);
   const activeToolUnlocked = isToolUnlocked(activeTool);
 
   const activateTool = (tool: ToolKey) => {
@@ -412,9 +298,17 @@ const PartnerSpace = () => {
       if (resolved.activeCouple) {
         setCoupleId(resolved.activeCouple.id);
         setHasConnectedPartner(resolved.connected || stickyConnected || stickyCoupleId === resolved.activeCouple.id);
+        setPartnerUserId(resolved.partnerId);
+        setSeenMap(readJourneySeenMap(user.id, resolved.activeCouple.id));
       } else {
         setCoupleId(stickyCoupleId);
-        setHasConnectedPartner(stickyConnected);
+        setHasConnectedPartner(Boolean(stickyConnected || stickyCoupleId));
+        setPartnerUserId(null);
+        if (stickyCoupleId) {
+          setSeenMap(readJourneySeenMap(user.id, stickyCoupleId));
+        } else {
+          setSeenMap({});
+        }
       }
       setLoading(false);
     };
@@ -437,7 +331,7 @@ const PartnerSpace = () => {
       const [weatherRes, messageRes, altarRes] = await Promise.all([
         supabase
           .from("weather_entries")
-          .select("state, created_at, user_id")
+          .select("id, state, note, created_at, user_id")
           .eq("couple_id", coupleId)
           .order("created_at", { ascending: false })
           .limit(20),
@@ -449,90 +343,19 @@ const PartnerSpace = () => {
           .limit(40),
         supabase
           .from("altar_items")
-          .select("title, created_at")
+          .select("id, title, note, item_type, created_at, user_id")
           .eq("couple_id", coupleId)
           .order("created_at", { ascending: false })
           .limit(20),
       ]);
 
-      const latestWeather = weatherRes.data?.[0];
-      const latestMessage = messageRes.data?.find((item) => item.sender_id !== user.id) ?? messageRes.data?.[0];
-      const latestAltar = altarRes.data?.[0];
-      setJourneyFeed((messageRes.data ?? []).slice(0, 12));
-
-      const allDates = [
-        ...(weatherRes.data?.map((item) => dayKey(item.created_at)) ?? []),
-        ...(messageRes.data?.map((item) => dayKey(item.created_at)) ?? []),
-        ...(altarRes.data?.map((item) => dayKey(item.created_at)) ?? []),
-      ].filter(Boolean) as string[];
-
-      const rhythmCount = new Set(allDates).size;
-      const streakCount = computeStreak(allDates);
-
-      let nextSuggestion = l(
-        "Begin with Intimacy Weather so your next move feels precise and kind.",
-        "Commencez par la météo d'intimité pour que votre prochain geste soit juste et doux.",
-        "Začněte počasím intimity, aby další krok byl přesný a laskavý.",
-      );
-      if (latestWeather?.state === "stormy")
-        nextSuggestion = l(
-          "Lead with Repair or a gentle reassurance note before intensity.",
-          "Commencez par Réparation ou un message de réassurance avant l'intensité.",
-          "Nejprve otevřete Opravu nebo jemné ujištění, až pak intenzitu.",
-        );
-      if (latestWeather?.state === "warm")
-        nextSuggestion = l(
-          "A beautiful night for Rituals or a warm teasing message.",
-          "Une belle soirée pour des rituels ou un message taquin et tendre.",
-          "Krásný večer pro Rituály nebo hravý a laskavý vzkaz.",
-        );
-      if (latestWeather?.state === "passionate")
-        nextSuggestion = l(
-          "Open Positions or Rituals and shape the energy with presence.",
-          "Ouvrez Positions ou Rituels et façonnez l'énergie avec présence.",
-          "Otevřete Pozice nebo Rituály a veďte energii přítomností.",
-        );
-
-      setActivity({
-        partnerNote:
-          latestMessage?.content ||
-          l(
-            "No message in your shared thread yet. Offer one honest line and let the night begin.",
-            "Aucun message partagé pour le moment. Offrez une ligne sincère et laissez la soirée commencer.",
-            "Ve sdíleném vlákně zatím není zpráva. Pošlete jednu upřímnou větu a nechte večer začít.",
-          ),
-        lastMove: latestWeather
-          ? l(
-              `Latest shared weather: ${latestWeather.state}.`,
-              `Dernière météo partagée : ${latestWeather.state}.`,
-              `Poslední sdílené počasí: ${latestWeather.state}.`,
-            )
-          : latestAltar
-          ? l(
-              `Latest altar memory: ${latestAltar.title}.`,
-              `Dernière mémoire d'autel : ${latestAltar.title}.`,
-              `Poslední oltářní vzpomínka: ${latestAltar.title}.`,
-            )
-          : l(
-              "No shared movement yet. Begin with Intimacy Weather or a soft invitation.",
-              "Pas encore de mouvement partagé. Commencez par la météo d'intimité ou une invitation douce.",
-              "Zatím žádný sdílený pohyb. Začněte počasím intimity nebo jemným pozváním.",
-            ),
-        rhythmCount,
-        streakCount,
-        altarNote:
-          latestAltar?.title ||
-          l(
-            "No altar memory has been sealed yet.",
-            "Aucune mémoire d'autel n'a encore été scellée.",
-            "Zatím nebyla uzavřena žádná oltářní vzpomínka.",
-          ),
-        nextSuggestion,
-      });
+      setWeatherEntries(weatherRes.data ?? []);
+      setJourneyMessages(messageRes.data ?? []);
+      setAltarEvents(altarRes.data ?? []);
     };
 
     loadActivity();
-  }, [activityTick, coupleId, user, lang]);
+  }, [activityTick, coupleId, user]);
 
   useEffect(() => {
     if (!coupleId) return;
@@ -560,6 +383,339 @@ const PartnerSpace = () => {
       supabase.removeChannel(channel);
     };
   }, [coupleId]);
+
+  const markSectionRead = (section: JourneyNotificationSection, at?: number) => {
+    if (!user || !coupleId) return;
+    const timestamp = at ?? Date.now();
+    markJourneySectionRead(user.id, coupleId, section, timestamp);
+    setSeenMap((current) => ({ ...current, [section]: timestamp }));
+  };
+
+  const myWeatherEntry = useMemo(
+    () => weatherEntries.find((item) => item.user_id === user?.id) ?? null,
+    [weatherEntries, user?.id],
+  );
+  const belovedWeatherEntry = useMemo(
+    () =>
+      weatherEntries.find((item) =>
+        partnerUserId ? item.user_id === partnerUserId : item.user_id !== user?.id,
+      ) ?? null,
+    [partnerUserId, weatherEntries, user?.id],
+  );
+
+  const myWeatherCard: WeatherCardData | null = useMemo(() => {
+    if (!myWeatherEntry) return null;
+    const weather = getWeatherPresentation(myWeatherEntry.state, lang);
+    return {
+      key: weather.key,
+      label: weather.label,
+      emoji: weather.emoji,
+      hint: weather.hint,
+      createdAt: myWeatherEntry.created_at,
+    };
+  }, [lang, myWeatherEntry]);
+
+  const belovedWeatherCard: WeatherCardData | null = useMemo(() => {
+    if (!belovedWeatherEntry) return null;
+    const weather = getWeatherPresentation(belovedWeatherEntry.state, lang);
+    return {
+      key: weather.key,
+      label: weather.label,
+      emoji: weather.emoji,
+      hint: weather.hint,
+      createdAt: belovedWeatherEntry.created_at,
+    };
+  }, [belovedWeatherEntry, lang]);
+
+  const weatherStateMode = useMemo(() => {
+    if (!myWeatherEntry && !belovedWeatherEntry) return "none";
+    if (myWeatherEntry && !belovedWeatherEntry) return "mine_only";
+    if (!myWeatherEntry && belovedWeatherEntry) return "beloved_only";
+    return "both";
+  }, [belovedWeatherEntry, myWeatherEntry]);
+
+  const weatherMatch = useMemo(
+    () =>
+      myWeatherEntry && belovedWeatherEntry
+        ? buildWeatherMatchResult(myWeatherEntry.state, belovedWeatherEntry.state, lang)
+        : null,
+    [belovedWeatherEntry, lang, myWeatherEntry],
+  );
+
+  const matchTimestamp = useMemo(() => {
+    if (!myWeatherEntry || !belovedWeatherEntry) return 0;
+    return Math.max(toTimestamp(myWeatherEntry.created_at), toTimestamp(belovedWeatherEntry.created_at));
+  }, [belovedWeatherEntry, myWeatherEntry]);
+
+  const seenSharedWeather = seenMap.shared_weather ?? 0;
+  const seenCombinedMatch = seenMap.combined_match ?? 0;
+  const seenNewBeloved = seenMap.new_from_beloved ?? 0;
+  const seenTempleBoard = seenMap.temple_board ?? 0;
+  const seenTimeline = seenMap.timeline ?? 0;
+
+  const partnerWeatherTimestamps = useMemo(
+    () =>
+      weatherEntries
+        .filter((item) => (partnerUserId ? item.user_id === partnerUserId : item.user_id !== user?.id))
+        .map((item) => toTimestamp(item.created_at)),
+    [partnerUserId, user?.id, weatherEntries],
+  );
+  const sharedWeatherUnreadCount = unreadCountSince(partnerWeatherTimestamps, seenSharedWeather);
+  const combinedMatchUnreadCount = weatherMatch && matchTimestamp > seenCombinedMatch ? 1 : 0;
+
+  const partnerMessages = useMemo(
+    () => journeyMessages.filter((item) => (partnerUserId ? item.sender_id === partnerUserId : item.sender_id !== user?.id)),
+    [journeyMessages, partnerUserId, user?.id],
+  );
+  const partnerMessageTimestamps = useMemo(
+    () => partnerMessages.map((item) => toTimestamp(item.created_at)),
+    [partnerMessages],
+  );
+  const partnerOfferings = useMemo(
+    () =>
+      altarEvents.filter((item) =>
+        partnerUserId ? item.user_id === partnerUserId : item.user_id !== user?.id,
+      ),
+    [altarEvents, partnerUserId, user?.id],
+  );
+  const partnerOfferingTimestamps = useMemo(
+    () => partnerOfferings.map((item) => toTimestamp(item.created_at)),
+    [partnerOfferings],
+  );
+  const belovedEventTimestamps = useMemo(
+    () => [...partnerWeatherTimestamps, ...partnerMessageTimestamps, ...partnerOfferingTimestamps],
+    [partnerMessageTimestamps, partnerOfferingTimestamps, partnerWeatherTimestamps],
+  );
+  const newBelovedUnreadCount = unreadCountSince(belovedEventTimestamps, seenNewBeloved);
+  const templeBoardUnreadCount = unreadCountSince(partnerMessageTimestamps, seenTempleBoard);
+
+  const boardItems: SacredBoardItem[] = useMemo(
+    () =>
+      journeyMessages.map((item) => ({
+        id: item.id,
+        type: item.message_type ?? "note",
+        authorLabel: item.sender_id === user?.id ? l("You", "Vous", "Ty") : l("Beloved", "Partenaire", "Milovaný protějšek"),
+        body: item.content,
+        createdAt: item.created_at,
+        mine: item.sender_id === user?.id,
+        unread: item.sender_id !== user?.id && toTimestamp(item.created_at) > seenTempleBoard,
+      })),
+    [journeyMessages, l, seenTempleBoard, user?.id],
+  );
+
+  const latestBelovedWeatherSignal = useMemo(() => {
+    if (!belovedWeatherEntry) return null;
+    const weather = getWeatherPresentation(belovedWeatherEntry.state, lang);
+    return {
+      id: belovedWeatherEntry.id,
+      createdAt: belovedWeatherEntry.created_at,
+      preview:
+        l("Beloved shared ", "Partenaire a partagé ", "Partner sdílel ") + `${weather.label} ${weather.emoji}`,
+    };
+  }, [belovedWeatherEntry, lang, l]);
+
+  const latestBelovedMessageSignal = useMemo(() => {
+    if (!partnerMessages.length) return null;
+    const latest = partnerMessages[0];
+    return {
+      id: latest.id,
+      createdAt: latest.created_at,
+      preview: latest.content,
+    };
+  }, [partnerMessages]);
+
+  const latestBelovedOfferingSignal = useMemo(() => {
+    const offering = partnerOfferings[0];
+    if (!offering) return null;
+    return {
+      id: offering.id,
+      createdAt: offering.created_at,
+      preview:
+        l("Beloved shared an offering: ", "Partenaire a partagé une offrande : ", "Partner sdílel nabídku: ") +
+        offering.title,
+    };
+  }, [l, partnerOfferings]);
+
+  const latestFromBeloved = useMemo(() => {
+    const candidates = [latestBelovedWeatherSignal, latestBelovedMessageSignal, latestBelovedOfferingSignal].filter(Boolean) as Array<{
+      id: string;
+      createdAt: string;
+      preview: string;
+    }>;
+    if (!candidates.length) return null;
+    return candidates.sort((a, b) => toTimestamp(b.createdAt) - toTimestamp(a.createdAt))[0];
+  }, [latestBelovedMessageSignal, latestBelovedOfferingSignal, latestBelovedWeatherSignal]);
+
+  const timelineItems: JourneyTimelineItem[] = useMemo(() => {
+    const typeLabels: Record<JourneyTimelineItem["type"], string> = {
+      weather: l("Weather", "Météo", "Počasí"),
+      ritual: l("Ritual", "Rituel", "Rituál"),
+      message: l("Message", "Message", "Zpráva"),
+      offering: l("Offering", "Offrande", "Sdílení"),
+      oracle: l("Oracle", "Oracle", "Oracle"),
+      invitation: l("Invitation", "Invitation", "Pozvání"),
+      note: l("Note", "Note", "Vzkaz"),
+      intention: l("Intention", "Intention", "Záměr"),
+      nudge: l("Nudge", "Nudge", "Postrčení"),
+      acknowledgement: l("Response", "Réponse", "Reakce"),
+    };
+
+    const getAction = (type: JourneyTimelineItem["type"]) => {
+      if (type === "weather") {
+        return {
+          actionLabel: l("Open weather", "Ouvrir météo", "Otevřít počasí"),
+          onAction: () => activateTool("weather"),
+        };
+      }
+      if (type === "invitation" || type === "ritual") {
+        return {
+          actionLabel: l("Open rituals", "Ouvrir rituels", "Otevřít rituály"),
+          onAction: () => activateTool("rituals"),
+        };
+      }
+      if (type === "oracle") {
+        return {
+          actionLabel: l("Open Oracle", "Ouvrir Oracle", "Otevřít Oracle"),
+          onAction: () => setViewMode("oracle"),
+        };
+      }
+      if (type === "message" || type === "note" || type === "nudge" || type === "acknowledgement") {
+        return {
+          actionLabel: l("Open messages", "Ouvrir messages", "Otevřít zprávy"),
+          onAction: () => activateTool("messages"),
+        };
+      }
+      if (type === "offering" || type === "intention") {
+        return {
+          actionLabel: l("Open temple board", "Ouvrir le tableau", "Otevřít chrámovou nástěnku"),
+          onAction: () => markSectionRead("temple_board"),
+        };
+      }
+      return {};
+    };
+
+    const messageToTimelineType = (messageType?: string | null): JourneyTimelineItem["type"] => {
+      if (!messageType) return "message";
+      if (messageType === "invitation") return "invitation";
+      if (messageType === "ritual_share" || messageType === "pathway_share") return "ritual";
+      if (messageType === "weather_share") return "weather";
+      if (messageType === "nudge") return "nudge";
+      if (messageType === "intention") return "intention";
+      if (messageType === "offering" || messageType.endsWith("_share")) return "offering";
+      if (messageType.includes("oracle")) return "oracle";
+      if (messageType === "acknowledgement") return "acknowledgement";
+      if (messageType === "note") return "note";
+      return "message";
+    };
+
+    const fromWeather: JourneyTimelineItem[] = weatherEntries.map((item) => {
+      const weather = getWeatherPresentation(item.state, lang);
+      const mine = item.user_id === user?.id;
+      const action = getAction("weather");
+      return {
+        id: `weather-${item.id}`,
+        type: "weather",
+        typeLabel: typeLabels.weather,
+        authorLabel: mine ? l("You", "Vous", "Ty") : l("Beloved", "Partenaire", "Milovaný protějšek"),
+        preview: mine
+          ? l("You shared ", "Vous avez partagé ", "Sdílel(a) jsi ") + `${weather.label} ${weather.emoji}`
+          : l("Beloved shared ", "Partenaire a partagé ", "Partner sdílel ") + `${weather.label} ${weather.emoji}`,
+        createdAt: item.created_at,
+        unread: !mine && toTimestamp(item.created_at) > seenTimeline,
+        ...action,
+      };
+    });
+
+    const fromMessages: JourneyTimelineItem[] = journeyMessages.map((item) => {
+      const mine = item.sender_id === user?.id;
+      const mappedType = messageToTimelineType(item.message_type);
+      const action = getAction(mappedType);
+      return {
+        id: `message-${item.id}`,
+        type: mappedType,
+        typeLabel: typeLabels[mappedType],
+        authorLabel: mine ? l("You", "Vous", "Ty") : l("Beloved", "Partenaire", "Milovaný protějšek"),
+        preview: item.content,
+        createdAt: item.created_at,
+        unread: !mine && toTimestamp(item.created_at) > seenTimeline,
+        ...action,
+      };
+    });
+
+    const fromAltar: JourneyTimelineItem[] = altarEvents.map((item) => {
+      const mine = item.user_id === user?.id;
+      const action = getAction("offering");
+      return {
+        id: `offering-${item.id}`,
+        type: "offering",
+        typeLabel: typeLabels.offering,
+        authorLabel: mine ? l("You", "Vous", "Ty") : l("Beloved", "Partenaire", "Milovaný protějšek"),
+        preview: mine
+          ? l("You shared an offering: ", "Vous avez partagé une offrande : ", "Sdílel(a) jsi nabídku: ") + item.title
+          : l("Beloved shared an offering: ", "Partenaire a partagé une offrande : ", "Partner sdílel nabídku: ") +
+            item.title,
+        createdAt: item.created_at,
+        unread: !mine && toTimestamp(item.created_at) > seenTimeline,
+        ...action,
+      };
+    });
+
+    return [...fromWeather, ...fromMessages, ...fromAltar].sort(
+      (a, b) => toTimestamp(b.createdAt) - toTimestamp(a.createdAt),
+    );
+  }, [altarEvents, journeyMessages, lang, l, seenTimeline, user?.id, weatherEntries]);
+
+  const timelineUnreadCount = useMemo(
+    () => unreadCountSince(belovedEventTimestamps, seenTimeline),
+    [belovedEventTimestamps, seenTimeline],
+  );
+  const latestPartnerWeatherTimestamp = partnerWeatherTimestamps.length ? Math.max(...partnerWeatherTimestamps) : 0;
+  const latestPartnerMessageTimestamp = partnerMessageTimestamps.length ? Math.max(...partnerMessageTimestamps) : 0;
+  const latestBelovedTimestamp = belovedEventTimestamps.length ? Math.max(...belovedEventTimestamps) : 0;
+
+  const sendSacredMessage = async (type: SacredComposerType | "acknowledgement", body: string) => {
+    if (!coupleId || !user || !body.trim()) return;
+    await supabase.from("partner_messages").insert({
+      couple_id: coupleId,
+      sender_id: user.id,
+      message_type: type,
+      content: body.trim(),
+    });
+    setActivityTick((value) => value + 1);
+  };
+
+  const quickComposeTemplates: Record<SacredComposerType, string> = {
+    note: l("I shared this from my heart for us tonight.", "Je partage ceci depuis mon cœur pour nous ce soir.", "Sdílím to ze srdce pro nás na dnešní večer."),
+    invitation: l("Would you like to open our ritual after dinner?", "Souhaites-tu ouvrir notre rituel après le dîner ?", "Chceš po večeři otevřít náš rituál?"),
+    ritual_share: l("I sent you a ritual invitation for us.", "Je t'ai envoyé une invitation rituelle pour nous.", "Poslal(a) jsem ti rituální pozvání pro nás."),
+    offering: l("I shared a temple offering for our journey.", "J'ai partagé une offrande du temple pour notre parcours.", "Sdílel(a) jsem chrámovou nabídku pro naši cestu."),
+    nudge: l("When you're ready, share your weather so our ritual appears.", "Quand tu es prêt(e), partage ta météo pour faire apparaître notre rituel.", "Až budeš připraven(a), sdílej počasí, ať se objeví náš rituál."),
+    intention: l("Tonight my intention is softness and presence with you.", "Ce soir, mon intention est douceur et présence avec toi.", "Můj dnešní záměr je jemnost a přítomnost s tebou."),
+  };
+
+  const handleQuickCompose = async (type: SacredComposerType) => {
+    await sendSacredMessage(type, quickComposeTemplates[type]);
+  };
+
+  const openWeatherSection = () => {
+    markSectionRead("shared_weather", latestPartnerWeatherTimestamp || Date.now());
+  };
+
+  const openMatchSection = () => {
+    markSectionRead("combined_match", matchTimestamp || Date.now());
+  };
+
+  const openBelovedSection = () => {
+    markSectionRead("new_from_beloved", latestBelovedTimestamp || Date.now());
+  };
+
+  const openTempleBoardSection = () => {
+    markSectionRead("temple_board", latestPartnerMessageTimestamp || Date.now());
+  };
+
+  const openTimelineSection = () => {
+    markSectionRead("timeline", latestBelovedTimestamp || Date.now());
+  };
 
   const navigateTool = (tab: string) => {
     if (!isToolKey(tab)) return;
@@ -649,87 +805,6 @@ const PartnerSpace = () => {
           {l("Continue with open access", "Continuer en accès libre", "Pokračovat v otevřeném přístupu")}
         </button>
       </div>
-    </section>
-  );
-
-  const journeyPreview = (
-    <section className="space-y-4">
-      <div>
-        <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">{l("Our Journey Preview", "Aperçu de notre parcours", "Náhled naší cesty")}</p>
-        <h2 className="mt-2 font-display text-3xl text-foreground">{l("A living map of your shared love story", "Une carte vivante de votre histoire d'amour", "Živá mapa vašeho sdíleného příběhu lásky")}</h2>
-        <p className="mt-2 max-w-3xl text-sm leading-7 text-muted-foreground">
-          {l(
-            "See where your closeness is growing, what your partner offered most recently, and what Sacred Temple suggests next for your couple rhythm.",
-            "Voyez où votre proximité grandit, ce que votre partenaire a offert récemment, et ce que le Temple sacré propose pour la suite.",
-            "Uvidíte, kde vaše blízkost roste, co partner naposledy sdílel a co Posvátný chrám doporučuje jako další krok.",
-          )}
-        </p>
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <div className="rounded-[26px] border border-border/30 bg-card/45 p-5">
-          <div className="text-xs uppercase tracking-[0.18em] text-primary/80">{l("Rhythm snapshot", "Aperçu du rythme", "Snímek rytmu")}</div>
-          <div className="mt-3 font-display text-4xl text-foreground">{activity.rhythmCount}</div>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">{l("Shared temple days detected in your recent connection cycle.", "Jours de temple partagés détectés sur votre cycle récent.", "Sdílené dny chrámu zaznamenané v posledním cyklu propojení.")}</p>
-        </div>
-
-        <div className="rounded-[26px] border border-border/30 bg-card/45 p-5">
-          <div className="text-xs uppercase tracking-[0.18em] text-primary/80">{l("Continuity streak", "Série de continuité", "Série kontinuity")}</div>
-          <div className="mt-3 font-display text-4xl text-foreground">{activity.streakCount}</div>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">{l("Consecutive days of emotional and sensual movement together.", "Jours consécutifs de mouvement émotionnel et sensuel à deux.", "Po sobě jdoucí dny emočního a smyslného pohybu spolu.")}</p>
-        </div>
-
-        <div className="rounded-[26px] border border-border/30 bg-card/45 p-5">
-          <div className="text-xs uppercase tracking-[0.18em] text-primary/80">{l("Beloved signal", "Signal du partenaire", "Signál partnera")}</div>
-          <p className="mt-3 text-sm leading-7 text-foreground/90">{truncateText(activity.partnerNote)}</p>
-        </div>
-
-        <div className="rounded-[26px] border border-border/30 bg-card/45 p-5">
-          <div className="text-xs uppercase tracking-[0.18em] text-primary/80">{l("Suggested next move", "Prochain geste suggéré", "Doporučený další krok")}</div>
-          <p className="mt-3 text-sm leading-7 text-foreground/90">{truncateText(activity.nextSuggestion)}</p>
-        </div>
-      </div>
-
-      <div className="rounded-[28px] border border-border/30 bg-card/45 p-5">
-        <div className="flex items-center gap-2 text-violet-300">
-          <MessageCircle className="h-4 w-4" />
-          <span className="text-xs uppercase tracking-[0.18em]">{l("Timeline preview", "Aperçu de la timeline", "Náhled časové osy")}</span>
-        </div>
-        <p className="mt-2 text-sm leading-6 text-muted-foreground">
-          {l(
-            "In premium, every shared doorway and oracle offering becomes a visible timeline with context and relational momentum.",
-            "En premium, chaque porte partagée et chaque offrande Oracle deviennent une timeline visible avec contexte et élan relationnel.",
-            "V premium se každá sdílená brána a oracle sdílení promění ve viditelnou časovou osu s kontextem i vztahem.",
-          )}
-        </p>
-        <div className="mt-4 space-y-3">
-          {journeyFeed.length === 0 ? (
-            <div className="rounded-[22px] border border-border/30 bg-background/45 p-4 text-sm text-muted-foreground">
-              {l(
-                "No shared offerings yet. Journey preview will populate as soon as you share doorway and oracle cards.",
-                "Aucune offrande partagée pour le moment. L'aperçu se remplira dès vos premiers partages de portes et de cartes Oracle.",
-                "Zatím žádná sdílení. Náhled cesty se naplní hned, jak začnete sdílet brány a oracle karty.",
-              )}
-            </div>
-          ) : (
-            journeyFeed.slice(0, 2).map((item) => (
-              <div key={item.id} className="rounded-[22px] border border-border/30 bg-background/45 p-4">
-                <div className="inline-flex rounded-full border border-border/35 bg-card/45 px-2.5 py-1 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
-                  {messageTypeLabel(item.message_type, lang)}
-                </div>
-                <p className="mt-3 text-sm leading-6 text-foreground/90">{truncateText(item.content, 168)}</p>
-              </div>
-            ))
-          )}
-        </div>
-      </div>
-
-      {premiumPreviewBanner(
-        "Journey Premium",
-        "Unlock full couple timeline intelligence",
-        "Track your shared patterns, offerings, devotion notes, and next-step momentum so your relationship keeps evolving with clarity and sensual depth.",
-        ["Timeline Memory", "Couple Patterns", "Next-Step Guidance"],
-      )}
     </section>
   );
 
@@ -1018,137 +1093,197 @@ const PartnerSpace = () => {
           </>
         )}
 
-        {viewMode === "journey" &&
-          (isViewUnlocked("journey") ? (
-            <section className="space-y-4">
+        {viewMode === "journey" && (
+          <section className="space-y-4">
             <div>
               <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">{l("Our Journey", "Notre parcours", "Naše cesta")}</p>
               <h2 className="mt-2 font-display text-3xl text-foreground">{l("The living story of your love", "L'histoire vivante de votre amour", "Živý příběh vaší lásky")}</h2>
             </div>
 
-            <div className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
-              <div className="rounded-[28px] border border-border/30 bg-card/45 p-5">
-                <div className="flex items-center gap-2 text-violet-300">
-                  <MessageCircle className="h-4 w-4" />
-                  <span className="text-xs uppercase tracking-[0.18em]">{l("Beloved note", "Note du partenaire", "Vzkaz partnera")}</span>
+            <section className="space-y-3 rounded-[24px] border border-border/30 bg-card/45 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="text-xs uppercase tracking-[0.16em] text-primary/80">{l("Shared weather", "Météo partagée", "Sdílené počasí")}</p>
+                <div className="rounded-full border border-border/35 bg-background/55 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-foreground/90">
+                  {weatherStateMode === "both"
+                    ? l("Both shared", "Les deux ont partagé", "Oba sdíleli")
+                    : weatherStateMode === "mine_only"
+                    ? l("Waiting for beloved", "En attente du partenaire", "Čeká se na partnera")
+                    : weatherStateMode === "beloved_only"
+                    ? l("Your turn", "À votre tour", "Teď jsi na řadě")
+                    : l("Not shared yet", "Pas encore partagé", "Zatím nesdíleno")}
                 </div>
-                <p className="mt-4 text-sm leading-7 text-foreground/90">{activity.partnerNote}</p>
               </div>
 
-              <div className="rounded-[28px] border border-border/30 bg-card/45 p-5">
-                <div className="flex items-center gap-2 text-amber-300">
-                  <Stars className="h-4 w-4" />
-                  <span className="text-xs uppercase tracking-[0.18em]">{l("Latest shared movement", "Dernier mouvement partagé", "Poslední sdílený pohyb")}</span>
-                </div>
-                <p className="mt-4 text-sm leading-7 text-foreground/90">{activity.lastMove}</p>
-              </div>
-            </div>
-
-            <div className="rounded-[28px] border border-border/30 bg-card/45 p-5">
-              <div className="flex items-center gap-2 text-cyan-300">
-                <Stars className="h-4 w-4" />
-                <span className="text-xs uppercase tracking-[0.18em]">{l("Shared offerings timeline", "Timeline des offrandes partagées", "Časová osa sdílení")}</span>
-              </div>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                {l(
-                  "Every offering from Doorways and Oracle is woven here, so your relationship story stays visible over time.",
-                  "Chaque offrande des Portes et de l'Oracle est tissée ici pour garder visible l'histoire de votre relation.",
-                  "Každé sdílení z Bran a Oracle se zapisuje sem, aby váš vztahový příběh zůstal viditelný v čase.",
-                )}
-              </p>
-
-              <div className="mt-4 space-y-3">
-                {journeyFeed.length === 0 ? (
-                  <div className="rounded-[22px] border border-border/30 bg-background/45 p-4 text-sm text-muted-foreground">
-                    {l(
-                      "No shared offerings yet. Offer one doorway card to begin your couple timeline.",
-                      "Aucune offrande partagée pour le moment. Partagez une carte de porte pour démarrer votre timeline de couple.",
-                      "Zatím žádná sdílení. Sdílejte jednu kartu brány a spusťte párovou časovou osu.",
-                    )}
-                  </div>
-                ) : (
-                  journeyFeed.map((item) => {
-                    const mine = item.sender_id === user?.id;
-                    return (
-                      <div
-                        key={item.id}
-                        className={`rounded-[22px] border p-4 ${
-                          mine ? "border-primary/20 bg-primary/8" : "border-border/30 bg-background/45"
-                        }`}
-                      >
-                        <div className="flex flex-wrap items-center justify-between gap-2">
-                          <div className="inline-flex rounded-full border border-border/35 bg-card/45 px-2.5 py-1 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
-                            {messageTypeLabel(item.message_type, lang)}
-                          </div>
-                          <div className="text-[11px] text-muted-foreground">
-                            {new Date(item.created_at).toLocaleDateString()} · {mine ? l("You", "Vous", "Ty") : l("Beloved", "Partenaire", "Partner")}
-                          </div>
-                        </div>
-                        <p className="mt-3 text-sm leading-6 text-foreground/90">{item.content}</p>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-              <div className="rounded-[26px] border border-border/30 bg-card/45 p-5">
-                <div className="text-xs uppercase tracking-[0.18em] text-primary/80">{l("Sacred rhythm", "Rythme sacré", "Posvátný rytmus")}</div>
-                <div className="mt-3 font-display text-4xl text-foreground">{activity.rhythmCount}</div>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">{l("Days with shared Sacred Temple activity recorded.", "Jours avec activité partagée du Temple sacré enregistrée.", "Dny se zaznamenanou sdílenou aktivitou v Posvátném chrámu.")}</p>
+              <div className="grid gap-3 lg:grid-cols-2">
+                <SharedWeatherCard
+                  title={l("Your weather", "Votre météo", "Vaše počasí")}
+                  data={myWeatherCard}
+                  emptyText={l("Share your weather to start your shared ritual.", "Partagez votre météo pour démarrer votre rituel partagé.", "Sdílejte své počasí a spusťte společný rituál.")}
+                  onOpen={openWeatherSection}
+                />
+                <PartnerWeatherCard
+                  title={l("Beloved's weather", "Météo du partenaire", "Počasí partnera")}
+                  data={belovedWeatherCard}
+                  unreadCount={sharedWeatherUnreadCount}
+                  emptyText={l("Waiting for your beloved to share their weather.", "En attente que votre partenaire partage sa météo.", "Čeká se, až partner nasdílí své počasí.")}
+                  onOpen={openWeatherSection}
+                />
               </div>
 
-              <div className="rounded-[26px] border border-border/30 bg-card/45 p-5">
-                <div className="text-xs uppercase tracking-[0.18em] text-primary/80">{l("Continuity streak", "Série de continuité", "Série kontinuity")}</div>
-                <div className="mt-3 font-display text-4xl text-foreground">{activity.streakCount}</div>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">{l("Consecutive active days based on your recent Sacred Temple rhythm.", "Jours actifs consécutifs selon votre rythme récent du Temple sacré.", "Po sobě jdoucí aktivní dny podle vašeho nedávného rytmu Posvátného chrámu.")}</p>
-              </div>
+              {weatherStateMode === "none" ? (
+                <EmptyStateCard
+                  title={l("Share your weather", "Partagez votre météo", "Sdílejte své počasí")}
+                  body={coupleId
+                    ? l("When both of you share, your shared weather and ritual recommendations appear here.", "Quand vous partagez tous les deux, votre météo commune et vos rituels apparaissent ici.", "Jakmile oba nasdílíte, objeví se zde společné počasí i rituál.")
+                    : l("Connect with your partner first, then share your weather to unlock your shared ritual.", "Connectez-vous d'abord à votre partenaire, puis partagez votre météo pour débloquer votre rituel commun.", "Nejprve se propojte s partnerem, pak sdílejte počasí pro odemknutí společného rituálu.")}
+                  ctaLabel={coupleId ? l("Share your weather", "Partager votre météo", "Sdílet počasí") : l("Connect with partner", "Se connecter au partenaire", "Propojit s partnerem")}
+                  onCta={() => (coupleId ? activateTool("weather") : navigate("/connect"))}
+                />
+              ) : null}
 
-              <div className="rounded-[26px] border border-border/30 bg-card/45 p-5">
-                <div className="text-xs uppercase tracking-[0.18em] text-primary/80">{l("Altar resonance", "Résonance de l'autel", "Rezonance oltáře")}</div>
-                <p className="mt-3 text-sm leading-7 text-foreground/90">{activity.altarNote}</p>
-              </div>
-
-              <div className="rounded-[26px] border border-border/30 bg-card/45 p-5">
-                <div className="text-xs uppercase tracking-[0.18em] text-primary/80">{l("Oracle next move", "Prochain geste Oracle", "Další krok Oracle")}</div>
-                <p className="mt-3 text-sm leading-7 text-foreground/90">{activity.nextSuggestion}</p>
-              </div>
-            </div>
-
-            <div className="grid gap-4 lg:grid-cols-2">
-              <div className="rounded-[28px] border border-border/30 bg-card/45 p-5">
-                <div className="flex items-center gap-2 text-fuchsia-300">
-                  <Flame className="h-4 w-4" />
-                  <span className="text-xs uppercase tracking-[0.18em]">{l("Cards, history, and teasing", "Cartes, histoire et séduction", "Karty, historie a jiskření")}</span>
-                </div>
-                <p className="mt-4 text-sm leading-7 text-muted-foreground">
-                  {l(
-                    "Let this become the golden thread of your love: desire notes, gratitude offerings, ritual invitations, gentle apologies, and afterglow follow-ups.",
-                    "Faites-en le fil d'or de votre amour: notes de désir, offrandes de gratitude, invitations rituelles, excuses douces et suivis d'après-rituel.",
-                    "Ať se z toho stane zlatá nit vaší lásky: vzkazy touhy, sdílení vděčnosti, rituální pozvání, jemné omluvy a následná péče.",
+              {weatherStateMode === "mine_only" ? (
+                <WaitingForPartnerCard
+                  title={l("Waiting for your beloved", "En attente de votre partenaire", "Čekání na partnera")}
+                  body={l(
+                    "You've shared your weather. When your beloved shares theirs, your shared ritual will appear here.",
+                    "Vous avez partagé votre météo. Quand votre partenaire partage la sienne, votre rituel commun apparaît ici.",
+                    "Sdílel(a) jste své počasí. Jakmile partner sdílí své, objeví se zde společný rituál.",
                   )}
-                </p>
-              </div>
+                  ctaLabel={l("Send a gentle nudge", "Envoyer un nudge doux", "Poslat jemné postrčení")}
+                  onCta={() => void handleQuickCompose("nudge")}
+                />
+              ) : null}
 
-              <div className="rounded-[28px] border border-border/30 bg-card/45 p-5">
-                <div className="flex items-center gap-2 text-emerald-300">
-                  <Route className="h-4 w-4" />
-                  <span className="text-xs uppercase tracking-[0.18em]">{l("Where the journey can grow", "Là où le parcours peut grandir", "Kde může cesta růst")}</span>
-                </div>
-                <p className="mt-4 text-sm leading-7 text-muted-foreground">
-                  {l(
-                    "Over time, this page becomes your living sanctuary map: what opened, what healed, what deepened, and what your love is ready for next.",
-                    "Avec le temps, cette page devient la carte vivante de votre sanctuaire: ce qui s'est ouvert, réparé, approfondi, et ce que votre amour est prêt à vivre ensuite.",
-                    "Časem se z této stránky stane živá mapa vaší svatyně: co se otevřelo, co se uzdravilo, co se prohloubilo a na co je vaše láska připravená dál.",
+              {weatherStateMode === "beloved_only" ? (
+                <WaitingForPartnerCard
+                  title={l("Complete your weather", "Complétez votre météo", "Doplňte své počasí")}
+                  body={l(
+                    "Your beloved shared first. Complete your weather now to unlock your shared ritual.",
+                    "Votre partenaire a partagé en premier. Complétez votre météo pour débloquer votre rituel commun.",
+                    "Partner sdílel jako první. Doplňte své počasí a odemkněte společný rituál.",
                   )}
-                </p>
-              </div>
-            </div>
+                  ctaLabel={l("Complete now", "Compléter maintenant", "Doplnit teď")}
+                  onCta={() => activateTool("weather")}
+                />
+              ) : null}
             </section>
-          ) : (
-            journeyPreview
-          ))}
+
+            {weatherMatch && weatherStateMode === "both" ? (
+              <WeatherMatchCard
+                title={l("Your shared weather", "Votre météo partagée", "Vaše sdílené počasí")}
+                result={weatherMatch}
+                unreadCount={combinedMatchUnreadCount}
+                openRitualLabel={l("Open our ritual", "Ouvrir notre rituel", "Otevřít náš rituál")}
+                exploreLabel={l("Explore both energies", "Explorer les deux énergies", "Prozkoumat obě energie")}
+                firstEnergyLabel={l("Your energy", "Votre énergie", "Vaše energie")}
+                secondEnergyLabel={l("Beloved's energy", "Énergie du partenaire", "Partnerova energie")}
+                combinedEnergyLabel={l("Combined meaning", "Sens combiné", "Společný význam")}
+                newChipLabel={l("new", "nouveau", "nové")}
+                recommendationActionLabel={l("Open ritual", "Ouvrir rituel", "Otevřít rituál")}
+                onOpenRitual={() => {
+                  openMatchSection();
+                  activateTool("rituals");
+                }}
+                onExplore={openMatchSection}
+              />
+            ) : null}
+
+            <article
+              className="relative rounded-[24px] border border-border/30 bg-card/45 p-4 transition-all hover:border-primary/20 hover:bg-card/55"
+              onClick={openBelovedSection}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(event) => (event.key === "Enter" || event.key === " " ? openBelovedSection() : undefined)}
+            >
+              <p className="text-xs uppercase tracking-[0.16em] text-primary/80">{l("New from your beloved", "Nouveau de votre partenaire", "Nové od partnera")}</p>
+              {latestFromBeloved ? (
+                <>
+                  <p className="mt-2 text-sm leading-7 text-foreground/90">{latestFromBeloved.preview}</p>
+                  <p className="mt-2 text-xs text-muted-foreground">{new Date(latestFromBeloved.createdAt).toLocaleString()}</p>
+                </>
+              ) : (
+                <p className="mt-2 text-sm leading-7 text-muted-foreground">
+                  {l(
+                    "No new shared note yet. Send a loving signal to begin tonight's thread.",
+                    "Pas encore de nouveau message partagé. Envoyez un signal d'amour pour ouvrir le fil de ce soir.",
+                    "Zatím žádný nový sdílený vzkaz. Pošlete láskyplný signál pro dnešní vlákno.",
+                  )}
+                </p>
+              )}
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    openTempleBoardSection();
+                  }}
+                  className="rounded-xl border border-border/35 bg-background/45 px-3 py-2 text-xs text-foreground transition-all hover:border-border/55 hover:bg-background/60"
+                >
+                  {l("Open temple board", "Ouvrir le tableau", "Otevřít chrámovou nástěnku")}
+                </button>
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    void handleQuickCompose("nudge");
+                  }}
+                  className="rounded-xl border border-primary/25 bg-primary/12 px-3 py-2 text-xs text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
+                >
+                  {l("Send a gentle nudge", "Envoyer un nudge doux", "Poslat jemné postrčení")}
+                </button>
+              </div>
+              <NotificationBadge show={newBelovedUnreadCount > 0} count={newBelovedUnreadCount} chipLabel={newBelovedUnreadCount > 0 ? l("new", "nouveau", "nové") : undefined} />
+            </article>
+
+            <div className="grid gap-4 xl:grid-cols-[1.05fr_0.95fr]">
+              <SacredTempleBoard
+                lang={lang}
+                title={l("Sacred Temple Board", "Tableau du Temple sacré", "Posvátná chrámová nástěnka")}
+                subtitle={l(
+                  "A sacred space for notes, invitations, intentions, and offerings between you.",
+                  "Un espace sacré pour vos notes, invitations, intentions et offrandes.",
+                  "Posvátný prostor pro vzkazy, pozvání, záměry a sdílení mezi vámi.",
+                )}
+                items={boardItems}
+                unreadCount={templeBoardUnreadCount}
+                onOpen={openTempleBoardSection}
+                onAcknowledge={(item) => {
+                  openTempleBoardSection();
+                  void sendSacredMessage(
+                    "acknowledgement",
+                    l("I received your message with love: ", "J'ai bien reçu ton message avec amour : ", "Přijal(a) jsem tvou zprávu s láskou: ") + item.body,
+                  );
+                }}
+                onQuickCompose={(type) => {
+                  openTempleBoardSection();
+                  void handleQuickCompose(type);
+                }}
+              />
+
+              <SacredMessageComposer
+                lang={lang}
+                disabled={!coupleId}
+                onSend={(type, body) => {
+                  openTempleBoardSection();
+                  return sendSacredMessage(type, body);
+                }}
+              />
+            </div>
+
+            <SharedTimeline
+              lang={lang}
+              title={l("Shared Offerings Timeline", "Timeline des offrandes partagées", "Časová osa sdílených nabídek")}
+              subtitle={l(
+                "Your shared weather, invitations, rituals, and offerings in one living story.",
+                "Vos météos partagées, invitations, rituels et offrandes dans une histoire vivante.",
+                "Vaše sdílené počasí, pozvání, rituály a nabídky v jednom živém příběhu.",
+              )}
+              items={timelineItems}
+              unreadCount={timelineUnreadCount}
+              onOpen={openTimelineSection}
+            />
+          </section>
+        )}
 
         {viewMode === "oracle" &&
           (isViewUnlocked("oracle") ? (

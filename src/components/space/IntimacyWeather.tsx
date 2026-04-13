@@ -61,7 +61,7 @@ const weatherCopyByLanguage: Record<Language, Record<string, string>> = {
     shellDescription: "Check in first. When the truth is named, every next move lands with more tenderness and accuracy.",
     shellActionLabel: "Enter rituals",
     chooseState: "Choose your state",
-    arrivingTonight: "How are you arriving tonight?",
+    arrivingTonight: "How is your weather tonight?",
     suggestedNextStep: "Suggested next step",
     stressedSuggestion: "Choose a short breathing or soft-touch ritual rather than intensity.",
     eroticSuggestion: "Open Positions or a sensual ritual and keep the pace slow at first.",
@@ -72,6 +72,7 @@ const weatherCopyByLanguage: Record<Language, Record<string, string>> = {
     sealWeather: "Seal my weather",
     sendWhisperNext: "Send a whisper next",
     shareCardLabel: "Offer this weather card",
+    shareCardText: "Weather card ✦ My weather tonight is {weather}. {hint}",
     yourWeather: "Your weather",
     belovedWeather: "Beloved weather",
     connectBelovedHint: "Connect with your beloved to sync your shared weather here.",
@@ -84,7 +85,7 @@ const weatherCopyByLanguage: Record<Language, Record<string, string>> = {
     shellDescription: "Commencez par un check-in. Quand la vérité est nommée, chaque pas suivant devient plus tendre et plus juste.",
     shellActionLabel: "Entrer dans les rituels",
     chooseState: "Choisissez votre état",
-    arrivingTonight: "Comment arrivez-vous ce soir ?",
+    arrivingTonight: "Quelle est votre météo ce soir ?",
     suggestedNextStep: "Étape suivante suggérée",
     stressedSuggestion: "Choisissez un rituel court de respiration ou de toucher doux plutôt que l'intensité.",
     eroticSuggestion: "Ouvrez Positions ou un rituel sensuel et gardez un rythme lent au début.",
@@ -95,6 +96,7 @@ const weatherCopyByLanguage: Record<Language, Record<string, string>> = {
     sealWeather: "Sceller ma météo",
     sendWhisperNext: "Envoyer un murmure ensuite",
     shareCardLabel: "Partager cette carte météo",
+    shareCardText: "Carte météo ✦ Ma météo ce soir est {weather}. {hint}",
     yourWeather: "Votre météo",
     belovedWeather: "Météo de votre partenaire",
     connectBelovedHint: "Connectez-vous avec votre partenaire pour synchroniser votre météo partagée ici.",
@@ -107,7 +109,7 @@ const weatherCopyByLanguage: Record<Language, Record<string, string>> = {
     shellDescription: "Začněte check-inem. Když je pravda pojmenovaná, další kroky dopadají jemněji a přesněji.",
     shellActionLabel: "Vstoupit do rituálů",
     chooseState: "Vyberte svůj stav",
-    arrivingTonight: "Jak dnes večer přicházíte?",
+    arrivingTonight: "Jaké je vaše počasí dnes večer?",
     suggestedNextStep: "Doporučený další krok",
     stressedSuggestion: "Zvolte krátký dechový nebo jemný dotekový rituál místo intenzity.",
     eroticSuggestion: "Otevřete Pozice nebo smyslný rituál a na začátku držte pomalé tempo.",
@@ -118,6 +120,7 @@ const weatherCopyByLanguage: Record<Language, Record<string, string>> = {
     sealWeather: "Uložit moje počasí",
     sendWhisperNext: "Pak poslat vzkaz",
     shareCardLabel: "Sdílet tuto kartu počasí",
+    shareCardText: "Karta počasí ✦ Moje dnešní počasí je {weather}. {hint}",
     yourWeather: "Vaše počasí",
     belovedWeather: "Počasí partnera",
     connectBelovedHint: "Propojte se s partnerem a synchronizujte zde společné počasí.",
@@ -296,7 +299,9 @@ const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
             <ShareCardButton
               coupleId={coupleId}
               messageType="weather_share"
-              content={`Weather card ✦ I am arriving as ${selectedState.label} ${selectedState.emoji}. ${selectedState.hint}`}
+              content={copy.shareCardText
+                .replace("{weather}", `${selectedState.label} ${selectedState.emoji}`)
+                .replace("{hint}", selectedState.hint)}
               label={copy.shareCardLabel}
             />
           )}
