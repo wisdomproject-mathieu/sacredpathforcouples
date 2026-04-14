@@ -16,6 +16,7 @@ import { useSeoMetadata } from "@/lib/seo";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
+import { PATH_LONGFORM_BY_SLUG } from "@/lib/libraryLongform";
 
 type Tier = "free" | "premium";
 
@@ -2132,6 +2133,8 @@ const PremiumPathContent = ({ path }: { path: PathDetail }) => {
   const { lang } = useLanguage();
   const ui = pathsUiCopy[lang];
   const hasPremiumAccess = usePremiumAccess();
+  const longform = PATH_LONGFORM_BY_SLUG[path.slug];
+  const longformParagraphs = longform?.fullDescription.split("\n\n") ?? [];
 
   return (
   <main className="space-y-5">
@@ -2144,10 +2147,13 @@ const PremiumPathContent = ({ path }: { path: PathDetail }) => {
       </div>
       <p className="mt-3 text-xs uppercase tracking-[0.2em] text-primary/80">{ui.premiumPathWhatItIs}</p>
       <h3 className="mt-2 font-display text-3xl text-foreground">{path.name}</h3>
-      <p className="mt-3 text-sm leading-7 text-foreground/90">{path.oneLine}</p>
-      <p className="mt-2 text-sm leading-7 text-muted-foreground">{path.overviewLine}</p>
+      <p className="mt-3 text-sm leading-7 text-foreground/90">{longform?.shortDescription ?? path.oneLine}</p>
+      <p className="mt-2 text-sm leading-7 text-muted-foreground">{longform?.tagline ?? path.overviewLine}</p>
+      {longform?.subtitle ? (
+        <p className="mt-2 text-xs uppercase tracking-[0.12em] text-primary/80">{longform.subtitle}</p>
+      ) : null}
       <div className="mt-4 space-y-3 text-sm leading-7 text-muted-foreground">
-        {path.teaser?.map((line) => (
+        {(longformParagraphs.length ? longformParagraphs : path.teaser ?? []).map((line) => (
           <p key={line}>{line}</p>
         ))}
       </div>
@@ -2165,63 +2171,102 @@ const PremiumPathContent = ({ path }: { path: PathDetail }) => {
     <section className="rounded-[24px] border border-primary/20 bg-primary/8 p-5">
       <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{ui.whyItMattersForCouples}</p>
       <div className="mt-4 space-y-2">
-        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>{ui.premiumWhy1}</span>
-        </div>
-        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>{ui.premiumWhy2}</span>
-        </div>
-        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>{ui.premiumWhy3}</span>
-        </div>
+        {(longform?.forCouples
+          ? [longform.forCouples, ...longformParagraphs.slice(0, 2)]
+          : [ui.premiumWhy1, ui.premiumWhy2, ui.premiumWhy3]
+        ).map((line) => (
+          <div key={line} className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+            <span>{line}</span>
+          </div>
+        ))}
       </div>
     </section>
 
-    <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.premiumWhoThisIsFor}</p>
-      <div className="mt-4 grid gap-3 md:grid-cols-2">
-        <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard1Title}</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard1Body}</p>
-        </article>
-        <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard2Title}</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard2Body}</p>
-        </article>
-        <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard3Title}</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard3Body}</p>
-        </article>
-        <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard4Title}</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard4Body}</p>
-        </article>
-      </div>
-    </section>
+    {longform?.sacredInvitation ? (
+      <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{longform.sacredInvitation.title}</p>
+        <p className="mt-3 text-sm leading-7 text-foreground/90">{longform.sacredInvitation.body}</p>
+        <div className="mt-4 grid gap-3 md:grid-cols-2">
+          {longform.sacredInvitation.resonances.map((item) => (
+            <article key={item} className="rounded-2xl border border-border/25 bg-card/35 p-4 text-sm leading-6 text-muted-foreground">
+              {item}
+            </article>
+          ))}
+        </div>
+      </section>
+    ) : (
+      <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.premiumWhoThisIsFor}</p>
+        <div className="mt-4 grid gap-3 md:grid-cols-2">
+          <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
+            <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard1Title}</h4>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard1Body}</p>
+          </article>
+          <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
+            <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard2Title}</h4>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard2Body}</p>
+          </article>
+          <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
+            <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard3Title}</h4>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard3Body}</p>
+          </article>
+          <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
+            <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard4Title}</h4>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard4Body}</p>
+          </article>
+        </div>
+      </section>
+    )}
+
+    {longform?.pillars.length ? (
+      <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.corePillars}</p>
+        <div className="mt-4 grid gap-3 md:grid-cols-2">
+          {longform.pillars.map((pillar) => (
+            <article key={pillar.id} className="rounded-2xl border border-border/25 bg-card/35 p-4">
+              <p className="text-[11px] uppercase tracking-[0.14em] text-primary/80">{pillar.label}</p>
+              <h4 className="mt-2 font-body text-sm text-foreground">{pillar.title}</h4>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">{pillar.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+    ) : null}
 
     <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
       <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.concretePracticePreview}</p>
       <h4 className="mt-2 font-display text-2xl text-foreground">{ui.premiumOrientationTitle}</h4>
       <p className="mt-2 text-sm leading-7 text-foreground/90">
-        {ui.premiumOrientationBody}
+        {longform?.shortDescription ?? ui.premiumOrientationBody}
       </p>
-      <div className="mt-3 space-y-2">
-        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>{ui.premiumOrientationStep1}</span>
+      {longform?.premiumFeatures.length ? (
+        <div className="mt-3 space-y-2">
+          {longform.premiumFeatures.map((feature) => (
+            <div key={feature.id} className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+              <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+              <span>
+                <span className="font-medium text-foreground">{feature.label}:</span> {feature.description}
+              </span>
+            </div>
+          ))}
         </div>
-        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>{ui.premiumOrientationStep2}</span>
+      ) : (
+        <div className="mt-3 space-y-2">
+          <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+            <span>{ui.premiumOrientationStep1}</span>
+          </div>
+          <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+            <span>{ui.premiumOrientationStep2}</span>
+          </div>
+          <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+            <span>{ui.premiumOrientationStep3}</span>
+          </div>
         </div>
-        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>{ui.premiumOrientationStep3}</span>
-        </div>
-      </div>
+      )}
     </section>
 
     <PathPremiumBlock path={path} />
@@ -2441,11 +2486,13 @@ const Paths = () => {
                   <TierBadge tier={path.tier} />
                 </div>
                 <h3 className="mt-3 font-display text-2xl text-foreground">{path.name}</h3>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">{path.oneLine}</p>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  {PATH_LONGFORM_BY_SLUG[path.slug]?.shortDescription ?? path.oneLine}
+                </p>
                 <p className="mt-2 text-xs leading-5 text-foreground/80">
                   {path.tier === "free"
                     ? `${ui.practicePreview}: ${path.content?.practices[0]?.title ?? ui.practicePreviewFallback}`
-                    : `${ui.premiumPreview}: ${path.teaser?.[0] ?? ui.premiumPreviewFallback}`}
+                    : `${ui.premiumPreview}: ${PATH_LONGFORM_BY_SLUG[path.slug]?.shortDescription ?? path.teaser?.[0] ?? ui.premiumPreviewFallback}`}
                 </p>
               </button>
             );

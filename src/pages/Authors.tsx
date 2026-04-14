@@ -19,6 +19,7 @@ import { useSeoMetadata } from "@/lib/seo";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
+import { AUTHOR_LONGFORM_BY_SLUG } from "@/lib/libraryLongform";
 
 type Tier = "free" | "premium";
 
@@ -1724,6 +1725,13 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => {
   const { lang } = useLanguage();
   const ui = authorsUiCopy[lang];
   const hasPremiumAccess = usePremiumAccess();
+  const longform = AUTHOR_LONGFORM_BY_SLUG[author.slug];
+  const longformParagraphs = longform?.fullDescription.split("\n\n") ?? [];
+  const previewHeading = longform?.practicePreview ? longform.practicePreview.title : ui.premiumPracticeTitle;
+  const previewBody = longform?.practicePreview?.description ?? longform?.premiumPreview ?? ui.premiumPracticeBody;
+  const previewDuration = longform?.practicePreview?.durationMinutes;
+  const topThemes = longform?.coreThemes.slice(0, 6) ?? [];
+  const works = longform?.keyWorks.slice(0, 6) ?? [];
 
   return (
   <main className="space-y-5">
@@ -1736,10 +1744,13 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => {
       </div>
       <p className="mt-3 text-xs uppercase tracking-[0.2em] text-primary/80">{ui.whatThisAuthorOffers}</p>
       <h3 className="mt-2 font-display text-3xl text-foreground">{author.name}</h3>
-      <p className="mt-3 text-sm leading-7 text-foreground/90">{author.descriptor}</p>
-      <p className="mt-2 text-sm leading-7 text-muted-foreground">{author.oneLiner}</p>
+      <p className="mt-3 text-sm leading-7 text-foreground/90">{longform?.shortDescription ?? author.descriptor}</p>
+      <p className="mt-2 text-sm leading-7 text-muted-foreground">{longform?.tagline ?? author.oneLiner}</p>
+      {longform?.tradition ? (
+        <p className="mt-2 text-xs uppercase tracking-[0.12em] text-primary/80">{longform.tradition}</p>
+      ) : null}
       <div className="mt-4 space-y-3 text-sm leading-7 text-muted-foreground">
-        {author.teaser?.map((line) => (
+        {(longformParagraphs.length ? longformParagraphs : author.teaser ?? []).map((line) => (
           <p key={line}>{line}</p>
         ))}
       </div>
@@ -1757,18 +1768,12 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => {
     <section className="rounded-[24px] border border-primary/20 bg-primary/8 p-5">
       <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{ui.whyItMattersForCouples}</p>
       <div className="mt-4 space-y-2">
-        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>{ui.premiumWhy1}</span>
-        </div>
-        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>{ui.premiumWhy2}</span>
-        </div>
-        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>{ui.premiumWhy3}</span>
-        </div>
+        {(topThemes.length ? topThemes : [ui.premiumWhy1, ui.premiumWhy2, ui.premiumWhy3]).map((line) => (
+          <div key={line} className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+            <span>{line}</span>
+          </div>
+        ))}
       </div>
     </section>
 
@@ -1777,43 +1782,61 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => {
       <div className="mt-4 grid gap-3 md:grid-cols-2">
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
           <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard1Title}</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard1Body}</p>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">{longform?.shortDescription ?? ui.premiumWhoCard1Body}</p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
           <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard2Title}</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard2Body}</p>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">{longform?.premiumPreview ?? ui.premiumWhoCard2Body}</p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
           <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard3Title}</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard3Body}</p>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">{longform?.tradition ?? ui.premiumWhoCard3Body}</p>
         </article>
         <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
           <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard4Title}</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard4Body}</p>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            {works.length ? works.join(", ") : ui.premiumWhoCard4Body}
+          </p>
         </article>
       </div>
     </section>
 
     <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
       <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.concretePracticePreview}</p>
-      <h4 className="mt-2 font-display text-2xl text-foreground">{ui.premiumPracticeTitle}</h4>
+      <h4 className="mt-2 font-display text-2xl text-foreground">{previewHeading}</h4>
+      {previewDuration ? (
+        <p className="mt-2 text-xs uppercase tracking-[0.12em] text-primary/80">{previewDuration} min</p>
+      ) : null}
       <p className="mt-2 text-sm leading-7 text-foreground/90">
-        {ui.premiumPracticeBody}
+        {previewBody}
       </p>
-      <div className="mt-3 space-y-2">
-        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>{ui.premiumPracticeStep1}</span>
+      {topThemes.length ? (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {topThemes.map((theme) => (
+            <span
+              key={theme}
+              className="rounded-full border border-primary/25 bg-primary/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-primary/85"
+            >
+              {theme}
+            </span>
+          ))}
         </div>
-        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>{ui.premiumPracticeStep2}</span>
+      ) : (
+        <div className="mt-3 space-y-2">
+          <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+            <span>{ui.premiumPracticeStep1}</span>
+          </div>
+          <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+            <span>{ui.premiumPracticeStep2}</span>
+          </div>
+          <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+            <span>{ui.premiumPracticeStep3}</span>
+          </div>
         </div>
-        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>{ui.premiumPracticeStep3}</span>
-        </div>
-      </div>
+      )}
     </section>
 
     <AuthorPremiumBlock author={author} />
@@ -2034,11 +2057,13 @@ const Authors = () => {
                   <TierBadge tier={author.tier} />
                 </div>
                 <h3 className="mt-3 font-display text-2xl text-foreground">{author.name}</h3>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">{author.descriptor}</p>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  {AUTHOR_LONGFORM_BY_SLUG[author.slug]?.shortDescription ?? author.descriptor}
+                </p>
                 <p className="mt-2 text-xs leading-5 text-foreground/80">
                   {author.tier === "free"
                     ? `${ui.practicePreview}: ${author.content?.exercises[0]?.title ?? ui.practicePreviewFallback}`
-                    : `${ui.premiumPreview}: ${author.teaser?.[0] ?? ui.premiumPreviewFallback}`}
+                    : `${ui.premiumPreview}: ${AUTHOR_LONGFORM_BY_SLUG[author.slug]?.shortDescription ?? author.teaser?.[0] ?? ui.premiumPreviewFallback}`}
                 </p>
               </button>
             );
