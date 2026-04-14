@@ -2490,9 +2490,10 @@ const Paths = () => {
         <h2 className="mt-2 font-display text-3xl text-foreground">{ui.overviewTitle}</h2>
 
         <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-          {localizedPathDetails.map((path) => {
+          {localizedPathDetails.map((path, idx) => {
             const Icon = path.icon;
             const isSelected = selectedSlug === path.slug;
+            const isLastAlone = idx === localizedPathDetails.length - 1 && localizedPathDetails.length % 4 !== 0;
             return (
               <button
                 key={path.slug}
@@ -2502,7 +2503,7 @@ const Paths = () => {
                   isSelected
                     ? "border-primary/30 bg-primary/10 shadow-[0_16px_50px_-40px_rgba(255,173,70,0.45)]"
                     : "border-border/30 bg-background/45 hover:border-primary/20 hover:bg-card/55"
-                }`}
+                } ${isLastAlone ? "xl:col-span-4 xl:max-w-none" : ""}`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-3 ${path.iconClass}`}>
