@@ -1,34 +1,39 @@
-export type LongformPracticePreview = {
+// ─────────────────────────────────────────────────────────────────────────────
+// SACRED PATH FOR COUPLES — libraryLongform.ts  v3.0
+// Complete replacement. All 13 authors + 6 paths.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface LongformPracticePreview {
   title: string;
   durationMinutes?: number;
   description: string;
-};
+}
 
-export type LongformAuthor = {
+export interface LongformAuthor {
   tagline: string;
   tradition: string;
   shortDescription: string;
   fullDescription: string;
-  practicePreview?: LongformPracticePreview | null;
+  practicePreview: LongformPracticePreview | null;
   premiumPreview: string;
   coreThemes: string[];
   keyWorks: string[];
-};
+}
 
-export type LongformPillar = {
+export interface LongformPillar {
   id: string;
   label: string;
   title: string;
   body: string;
-};
+}
 
-export type LongformPremiumFeature = {
+export interface LongformPremiumFeature {
   id: string;
   label: string;
   description: string;
-};
+}
 
-export type LongformPath = {
+export interface LongformPath {
   tagline: string;
   subtitle: string;
   shortDescription: string;
@@ -41,26 +46,24 @@ export type LongformPath = {
   };
   pillars: LongformPillar[];
   premiumFeatures: LongformPremiumFeature[];
-};
+}
 
-export type ContentPathPillar = {
+export interface ContentPathPillar {
   id: string;
   label: string;
   title: string;
   body: string;
-};
+}
 
-export type ContentPathFeature = {
+export interface ContentPathFeature {
   id: string;
   label: string;
   description: string;
-};
+}
 
-export type ContentPathEntry = {
+export interface ContentPathEntry {
   id: string;
   name: string;
-  icon: string;
-  tier: "open" | "premium";
   tagline: string;
   subtitle: string;
   short_description: string;
@@ -73,592 +76,623 @@ export type ContentPathEntry = {
   };
   pillars: ContentPathPillar[];
   premium_features: ContentPathFeature[];
-};
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// AUTHORS
+// ─────────────────────────────────────────────────────────────────────────────
 
 export const AUTHOR_LONGFORM_BY_SLUG: Record<string, LongformAuthor> = {
+
   deida: {
     tagline: "The living edge of love, presence, and polarity",
-    tradition: "Sacred Masculinity and Conscious Polarity",
+    tradition: "Sacred Masculinity & Conscious Polarity",
     shortDescription:
-      "The teacher who gave modern couples a language for what desire requires and why it fades when polarity collapses.",
+      "The teacher who gave modern couples a language for what desire actually requires — and why it quietly disappears when polarity collapses.",
     fullDescription:
-      "David Deida draws from Zen, Tantra, and decades of direct relational teaching to name a core modern dilemma: couples can become fair, loving, and safe, yet lose erotic charge. His central lens is polarity as a living energetic contrast, not a fixed role script.\n\nIn practice, his work is less about performance and more about being: directed presence, honest truth, and devotional offering. The invitation is to keep equality and emotional safety while restoring magnetic aliveness between two people.",
+      "David Deida spent years inside Zen monasteries and Tantric lineages before finding his own voice — one that is simultaneously ancient and urgently contemporary. His foundational insight: most modern couples are very good at being equal, fair, and safe with each other — and wonder, with genuine confusion, why they have stopped turning each other on. Deida's diagnosis is precise. Polarity — the energetic difference between one partner's directed, penetrating presence and the other's radiant, yielding openness — is not a romantic fantasy or a gendered cliché. It is a law of desire as fundamental as electromagnetism. Where the difference collapses, attraction collapses with it.\n\nHis entire body of work is the map of how to restore that living charge consciously and spiritually, without sacrificing the equality that modern love rightly demands. His approach is rooted not in technique but in being. The masculine path he describes is not a performance of confidence but the genuine cultivation of presence — the capacity to remain still and directional under emotional pressure, to feel the pull toward comfort and choose love's edge instead. The feminine path is not a performance of openness but genuine surrender to a presence that has been genuinely earned — the release of the management and protection that accumulate when that presence has been unreliable.\n\nBoth paths require real courage. Neither is a role to play. Together, they create what Deida calls the third stage of intimacy: a relationship in which spiritual depth and erotic aliveness are not in competition but are the same practice, feeding each other, deepening together over a shared lifetime.",
     practicePreview: {
       title: "Directional Breath Frame",
       durationMinutes: 8,
       description:
-        "One partner holds clear directional presence while the other receives and expands. Then switch. Close in shared equal breath to integrate charge with tenderness.",
+        "One partner holds the space — breathing slowly, feeling the ground, directing their full attention toward the other without agenda or wanting. The other breathes into fullness, allowing their energy to expand and move outward without containment. Eight minutes that reorient a couple's entire nervous system back toward genuine contact and energetic distinction.",
     },
     premiumPreview:
-      "Enter Deida's full map of intimacy stages, polarity restoration, and devotion-in-action practices for long-term couples.",
-    coreThemes: ["Polarity", "Masculine presence", "Feminine radiance", "The edge", "Spiritual intimacy", "Stage Three love"],
+      "Discover the complete map of Deida's three stages of intimacy — why Stage Two love (equal, safe, negotiated) structurally kills desire, and what Stage Three requires: the specific daily practice of undivided masculine presence that creates the condition in which feminine radiance can fully open. Learn the partner practices that restore the living current between two people who love each other and want to stay genuinely turned on.",
+    coreThemes: ["Polarity", "Masculine presence", "Feminine radiance", "The edge", "Stage Three love", "Spiritual eros"],
     keyWorks: ["The Way of the Superior Man", "Blue Truth", "Finding God Through Sex", "Dear Lover", "Intimate Communion", "Wild Nights"],
   },
+
   osho: {
     tagline: "Where meditation and love are the same path",
-    tradition: "Tantric Meditation and Sacred Awareness",
+    tradition: "Tantric Meditation & Sacred Awareness",
     shortDescription:
-      "The teacher who refused the split between spiritual life and erotic life and showed why presence is the missing ingredient in intimacy.",
+      "The teacher who refused the split between spiritual life and erotic life — and showed why genuine presence is the missing ingredient in intimacy.",
     fullDescription:
-      "Osho's relationship teachings are rooted in awareness first. He taught that two people who are not present cannot create real intimacy, only a simulation of closeness.\n\nHis practical translation for couples is direct: witness breath, sensation, thought, and desire without grasping. As presence deepens, touch becomes less performative and more alive, and love becomes a state of being rather than a mood.",
+      "Osho — born Rajneesh Chandra Mohan Jain in 1931 — was one of the most provocative and penetrating spiritual teachers of the twentieth century, and his teaching on love, sexuality, and meditation remains among the most complete and honest in any tradition. Where other spiritual paths asked practitioners to transcend the body, Osho insisted on inhabiting it completely. The body is not the problem, he taught. Unconsciousness is the problem. And nowhere is unconsciousness more immediately visible — and more immediately transformable — than in the act of lovemaking.\n\nHis primary source text was the Vigyan Bhairav Tantra, a five-thousand-year-old Sanskrit dialogue between Shiva and his consort Parvati in which Shiva offers one hundred and twelve methods of awakening. Osho lectured on all one hundred and twelve methods across decades of teaching, creating the most complete practical Tantric instruction available to modern couples in any Western language.\n\nHis central teaching for couples is as simple as it is radical: you have never truly met. Two people who are not genuinely present — who are lost in thought, performance, memory, or anticipation — cannot create intimacy. They can create proximity. They can create a simulation of closeness that satisfies nobody and slowly deadens both people. The entire Tantric path, in Osho's rendering, is the return to genuine presence in each other's company — a presence so complete that the boundary between two selves begins to dissolve, and what is experienced is no longer two people loving each other but love itself moving through two temporarily distinct forms of consciousness.",
     practicePreview: {
       title: "Witnessing Breath",
       durationMinutes: 7,
       description:
-        "Sit face to face, soften effort, and witness the beloved's breath with no agenda. Return to witnessing whenever mind pulls toward control or performance.",
+        "Sitting facing each other, both partners become the silent witness of the other's breath. Not directing, not wanting, not performing — simply watching with complete and unhurried attention. The witness does not judge the beloved or manage the moment. It simply sees. In the quality of that seeing — in the willingness to be fully present without agenda — something happens between two people that all of intimacy is trying to create and rarely achieves.",
     },
     premiumPreview:
-      "Explore a complete awareness-based path from mechanical sexuality toward meditative intimacy and embodied prayer.",
-    coreThemes: ["Presence", "Witnessing", "Sacred sexuality", "Meditation in love", "Non-grasping", "Love as liberation"],
-    keyWorks: ["Tantra: The Supreme Understanding", "The Book of Secrets", "Tantric Love", "Love Sex Prayer", "From Sex to Superconsciousness", "Being in Love"],
+      "Explore Osho's complete map of love: the journey from unconscious, goal-driven sexuality through awareness and presence all the way to the state he called 'prayer' — in which lovemaking becomes indistinguishable from deep meditation. Includes practices from the Vigyan Bhairav Tantra specifically adapted for couples, teachings on the role of laughter in sacred sexuality, and how to use ordinary daily life together as a continuous meditative practice.",
+    coreThemes: ["Presence", "Witnessing", "Sacred sexuality", "Non-grasping", "Meditation in love", "Love as liberation"],
+    keyWorks: ["Tantra: The Supreme Understanding", "The Book of Secrets", "Being in Love", "From Sex to Superconsciousness", "Love Sex Prayer", "Tantric Love"],
   },
+
   "mantak-chia": {
-    tagline: "Sexual energy as intimate life force",
-    tradition: "Taoist Sexual Alchemy and Universal Tao",
+    tagline: "Sexual energy as the most intimate form of life force",
+    tradition: "Taoist Sexual Alchemy & Universal Tao",
     shortDescription:
-      "The teacher who translated Taoist sexual classics into practical cultivation methods for modern couples.",
+      "The teacher who translated Taoist sexual classics out of sealed imperial lineages into practical cultivation methods for modern couples.",
     fullDescription:
-      "Mantak Chia's Taoist framework treats sexual energy as vital essence, not only erotic impulse. The emphasis is not suppression, but circulation and refinement, so intimacy nourishes rather than depletes.\n\nFor couples, this means pacing, breath, and subtle energetic awareness. Over time, practices like the Microcosmic Orbit support vitality, steadier attraction, and longer relational stamina.",
+      "Mantak Chia was born in Thailand in 1944 and trained under Master Yi Eng in the complete system of Taoist internal arts before moving to New York in 1979 to begin one of the most remarkable cross-cultural transmissions of esoteric knowledge of the twentieth century. The practices he brought — preserved for millennia within Taoist monasteries and imperial courts, historically accessible only to monks, physicians, and emperors — are among the most sophisticated technologies for working with sexual energy ever developed by any civilization.\n\nThe foundational Taoist recognition, confirmed by modern endocrinology, is that sexual energy is not merely erotic energy. It is jīng — the concentrated vital essence from which all other forms of life force derive. Kidney vitality, creative capacity, emotional resilience, and longevity are all expressions of this same underlying essence. How a couple manages their shared jīng determines not only the quality of their intimate life but the vitality of their bodies and the depth of their bond over decades.\n\nConventional lovemaking discharges jīng in orgasm. Most couples experience the subtle depletion that follows as natural and inevitable — the flatness, the mild withdrawal, the quiet sense that something has been spent. Chia's work reveals that this depletion is a choice, not a law. The practices he systematized — the Microcosmic Orbit, the Healing Love sequence, the Valley Orgasm, the Big Draw — teach couples to redirect sexual energy through the body's subtle channel system rather than releasing it, transforming a brief peak experience into a sustained, circulating current of aliveness that deepens both partners' health and their bond with each encounter.\n\nChia's genius is systematic precision. He maps the subtle body with the rigor of a physician, and his practices are genuinely learnable skills that develop incrementally, with each practice building the capacity for the next. The work does not ask for belief. It asks for practice, patience, and the willingness to discover what the body is actually capable of beyond the narrow range that conventional sexuality reveals.",
     practicePreview: null,
     premiumPreview:
-      "Learn couple-based circulation methods, valley-style orgasmic expansion, and longevity-oriented Tao pathways adapted for modern partnership.",
-    coreThemes: ["Jing cultivation", "Microcosmic Orbit", "Healing love", "Sexual alchemy", "Valley orgasm", "Taoist chi kung"],
-    keyWorks: ["The Multi-Orgasmic Couple", "Healing Love Through the Tao", "The Multi-Orgasmic Man", "Sexual Reflexology", "Taoist Secrets of Love", "The Multi-Orgasmic Woman"],
+      "Learn the Microcosmic Orbit as a couples practice: two bodies creating a shared circuit of vital energy through synchronized breath, intention, and conscious touch — building over time into a renewable source of health, aliveness, and deepening love. Discover the critical distinction between peak orgasm and valley orgasm, why that distinction is the gateway to a dimension of erotic experience most couples never reach, and the specific techniques Chia developed over forty years for helping couples make that transition safely and sustainably.",
+    coreThemes: ["Jīng cultivation", "Microcosmic Orbit", "Healing love", "Valley orgasm", "Sexual alchemy", "Taoist chi kung"],
+    keyWorks: ["The Multi-Orgasmic Couple", "Healing Love Through the Tao", "The Multi-Orgasmic Man", "The Multi-Orgasmic Woman", "Taoist Secrets of Love", "Sexual Reflexology"],
   },
+
   "diana-richardson": {
-    tagline: "Stillness as deep erotic intelligence",
-    tradition: "Slow Sex and Tantric Presence",
+    tagline: "Stillness is not the opposite of eros — it is its deepest home",
+    tradition: "Slow Sex & Tantric Presence",
     shortDescription:
-      "The teacher who showed couples that slowing down is often the fastest way back to real intimacy.",
+      "The teacher who discovered that slowing everything down — including desire itself — is what finally allows couples to arrive at each other.",
     fullDescription:
-      "Diana Richardson's Slow Sex approach challenges the habit of chasing intensity. Her core proposal is that stillness, relaxation, and inner awareness open dimensions of sensation and connection that effort cannot produce.\n\nThis work is especially potent for couples exhausted by performance pressure. It restores body trust, lowers anxiety, and helps desire emerge from presence instead of force.",
+      "Diana Richardson trained in the Osho tradition in Pune and spent years in direct contact with both Tantric teachers and somatic practitioners before arriving at the insight that has defined three decades of her couples work: the reason most couples experience a gradual diminishing of their intimate life is not that desire fades. It is that they never learned to be genuinely still together.\n\nEvery conventional approach to improving intimate life adds something — more technique, more variety, more novelty, more intensity, more effort. Richardson's approach, refined through thousands of hours working directly with couples internationally, subtracts. And in the subtraction, something arrives that no technique can manufacture: the specific quality of erotic presence and genuine connection that is only available in genuine stillness.\n\nHer Slow Sex framework is rooted in a Tantric understanding of sexual energy as inherently intelligent. When two bodies are genuinely present, genuinely relaxed, and genuinely free from the direction of goal-seeking mind, the energy between them knows what it wants to do. The role of the partners is not to drive this energy but to create the conditions — stillness, conscious breath, internal awareness, unhurried touch — in which it can move freely and reveal itself.\n\nWhat couples discover in Richardson's work is that underneath all the performance, the goal-orientation, and the unconscious habit of ordinary lovemaking is an entirely different dimension of erotic experience: softer, deeper, more sustaining, and more profoundly connecting than anything technique can reach. She has documented this work with unusual precision in some of the most practically useful books on sacred sexuality in print — books that couples regularly describe as having changed the entire texture of their intimate life.",
     practicePreview: null,
     premiumPreview:
-      "Access complete Slow Sex pathways for non-goal lovemaking, deep body awareness, and sustainable erotic connection.",
+      "Enter the practice of Tantric stillness: how to use complete physical relaxation, conscious internal awareness, and the deliberate setting aside of sexual goals to arrive at a quality of erotic presence that neither partner has experienced before. Learn Richardson's specific practices for dissolving the performance anxiety and goal-orientation that quietly diminish most couples' intimate lives — and discover the body's own erotic intelligence, which has been waiting beneath all the effort to express itself all along.",
     coreThemes: ["Slow Sex", "Tantric stillness", "Internal awareness", "Non-goal lovemaking", "Body intelligence", "Dissolving performance"],
-    keyWorks: ["Slow Sex: The Path to Fulfilling and Sustainable Sexuality", "The Heart of Tantric Sex", "Tantric Orgasm for Women", "Conscious Men", "Tantric Love: Feeling versus Emotion"],
+    keyWorks: ["Slow Sex: The Path to Fulfilling and Sustainable Sexuality", "The Heart of Tantric Sex", "Tantric Orgasm for Women", "Tantric Love: Feeling versus Emotion"],
   },
+
   "margot-anand": {
-    tagline: "Ecstasy as quality of presence",
+    tagline: "Ecstasy is not a peak to reach — it is a quality of presence to inhabit",
     tradition: "SkyDancing Tantra",
     shortDescription:
       "The teacher who made ritual atmosphere, beauty, and sacred sensuality practical for everyday couples.",
     fullDescription:
-      "Margot Anand's work integrates Tantra, ritual intelligence, and somatic preparation. A central contribution is teaching couples how to prepare internal and external space before intimacy begins.\n\nThat preparation changes the entire nervous-system field: less rushed contact, more reverence, and deeper embodied availability. In this approach, atmosphere is not decoration, it is part of the practice.",
+      "Margot Anand trained directly under Osho in Pune in the 1970s before spending years studying Taoist practices, somatic therapies, and Western depth psychology — and then synthesizing everything she had learned into SkyDancing Tantra, a living teaching lineage she has transmitted to tens of thousands of students across six continents over four decades. Her work is distinguished above all by its refusal to choose between the sacred and the sensual, between spiritual depth and erotic aliveness, between reverence and playfulness. In the SkyDancing framework, these apparent opposites are not in tension — they are the same energy moving through different qualities of attention.\n\nAnand's particular contribution to couples work is her meticulous attention to the preparation that precedes intimacy — what she calls the creation of sacred space. Most couples arrive at lovemaking carrying the residue of the day: stress, unresolved tension, the ambient noise of modern life that does not simply disappear when clothes come off. SkyDancing teaches partners how to consciously clear and create the internal and external environment before any physical contact begins. Through ritual, breath, music, slow intentional touch, eye contact, and the deliberate cultivation of mutual reverence, two people transition from ordinary mind into sacred presence together.\n\nThis preparation is not foreplay in the conventional sense. It is the practice itself — and when both partners arrive at genuine contact from this place of prepared, unhurried presence, what becomes available is not simply more pleasure but an entirely different quality of erotic experience. Anand calls it ecstasy — meaning not intensity or peak, but liberation: the body's natural state of aliveness when performance, protection, goal-seeking, and unconscious habit have been gently and beautifully set aside.\n\nHer work with the chakra system as a couples practice is among the most complete available in Western teaching — showing how each energy center, when consciously opened and shared between partners, reveals a distinct dimension of erotic and spiritual experience that neither could access alone.",
     practicePreview: null,
     premiumPreview:
-      "Unlock SkyDancing-based ceremonial sequences, chakra-oriented couple practices, and sacred-space preparation frameworks.",
-    coreThemes: ["Sacred space", "Chakra awakening", "Erotic ritual", "Somatic safety", "Ecstatic presence", "SkyDancing"],
+      "Discover Anand's complete ritual framework for creating sacred space — the specific practices couples use to transition from ordinary consciousness into genuine sacred presence before intimacy begins, and why this transition is itself one of the deepest forms of foreplay available. Learn her SkyDancing approach to the seven chakras as a shared couples practice: how conscious activation of each energy center opens a distinct dimension of erotic and spiritual aliveness — and how partners learn to awaken each other through the full living spectrum of these energies.",
+    coreThemes: ["Sacred space", "Chakra awakening", "SkyDancing", "Erotic ritual", "Somatic safety", "Ecstatic presence"],
     keyWorks: ["The Art of Sexual Ecstasy", "The Art of Everyday Ecstasy", "Sexual Secrets for Women", "Love, Sex, and Awakening"],
   },
+
   "daniel-odier": {
-    tagline: "Desire as doorway to non-dual awareness",
-    tradition: "Kashmir Shaivism Tantra",
+    tagline: "Desire itself is the doorway to the absolute",
+    tradition: "Non-Dual Kashmir Shaivism Tantra",
     shortDescription:
       "A lineage-grounded teacher of non-dual tantra, subtle touch, and awareness-led erotic presence.",
     fullDescription:
-      "Daniel Odier's transmission emphasizes direct recognition rather than performance. In this view, desire is not an obstacle but a movement of consciousness when met without grasping.\n\nHis couple practice style is subtle and precise: deep listening, minimal force, and high awareness. The result is less spectacle and more depth.",
+      "Daniel Odier received direct initiation into the Tantric lineage of Kashmir Shaivism from the yogini Lalita Devi — a transmission within one of the most philosophically demanding and spiritually uncompromising non-dual traditions ever produced. Kashmir Shaivism does not offer a path of gradual spiritual improvement. It offers the immediate recognition of what is already the case: that consciousness (Śiva) and creative energy (Śakti) are not two things, that the divine is not elsewhere, and that every experience — including the most intense physical and erotic ones — is already an expression of that single, undivided awareness recognizing itself.\n\nIn this lineage, Tantra is not a set of techniques for better sex. It is the radical, complete acceptance of totality: all energy, all desire, all sensation, all darkness, all light — each recognized as a movement of Spanda, the divine pulse of consciousness itself — and met with complete awareness rather than grasped at, rejected, or managed. Odier's distinctive gift to Western couples is making this demanding and beautiful teaching accessible without diluting it.\n\nHis practices work through the specific quality of touch — sometimes barely perceptible, two fingertips resting on the beloved's skin with absolute attention and no agenda — and through the practice of feeling the living space between two bodies before any touch begins. He calls this 'non-grasping reception': the capacity to receive sensation, beauty, and presence in the beloved without immediately trying to increase it, hold it, or direct it. In this non-grasping, something occurs that all ordinary desire is trying to reach and never does — a complete fullness, in which nothing is missing, nothing needs to be added, and love is simply, overwhelmingly present between two people who have stopped trying to make it happen.",
     practicePreview: null,
     premiumPreview:
-      "Explore non-grasping reception, subtle-touch practices, and Shaivist recognition methods adapted to couple intimacy.",
+      "Explore the practice of Kashmiri Tantric touch: how to use barely perceptible contact — fingertips resting on skin with total awareness but no agenda — to dissolve the boundary between giver and receiver, and what that dissolution reveals about the nature of the beloved. Discover Spanda recognition: how to feel the divine pulse moving through ordinary moments of intimacy — in a breath, a held gaze, the electric pause before contact — and how that recognition, practiced regularly, transforms the entire texture of a couple's life together.",
     coreThemes: ["Non-dual awareness", "Spanda", "Subtle touch", "Desire as sacred", "Kashmir Shaivism", "Non-grasping"],
     keyWorks: ["Tantric Quest", "Desire: The Tantric Path to Awakening", "Yoga Spandakarika", "Tantric Kali", "The Doors of Joy"],
   },
+
   "michaela-boehm": {
-    tagline: "Nervous system truth for lasting eros",
-    tradition: "Somatic Tantra and Relational Nervous System Work",
+    tagline: "The wild somatic intelligence of the body knows what love needs",
+    tradition: "Somatic Tantra & Relational Nervous System Work",
     shortDescription:
       "A teacher who integrates somatic precision and tantric depth to help couples build real safety and real desire.",
     fullDescription:
-      "Michaela Boehm's core insight is practical: many erotic struggles are nervous-system struggles first. If the body is not truly safe, desire does not stabilize.\n\nHer work teaches partners to track authentic yes/no signals, regulate activation, and create conditions where eros can emerge naturally. This shifts couples from pressure to attunement.",
+      "Michaela Boehm was born in Austria and trained in both the Tantric tradition and in somatic therapies before spending three decades developing her integrated approach to intimate life — one she has brought to thousands of couples in intensive retreats across five continents, in deep ongoing collaboration with David Deida, and in her development of the Non-Linear Movement Method (NLMM), now practiced internationally as a standalone somatic practice.\n\nHer foundational clinical insight is deceptively simple and profoundly consequential: most problems that couples experience in their erotic life are nervous system problems before they are relationship problems. When the body does not feel genuinely safe — not conceptually safe, not logically reassured, but actually, somatically safe in its tissues and nervous system — the erotic cannot emerge. Not through effort. Not through romantic setting. Not through the best of intentions. Genuine eros requires the parasympathetic state: the physiological condition of deep rest, openness, and receptivity that is structurally unavailable when the body is running any level of protective activation.\n\nUnderstanding this changes everything about how a couple approaches their intimate life. Creating genuine felt safety for a partner — the specific quality of presence, unhurried attention, and non-demanding contact that shifts the nervous system into genuine openness — is not a preliminary to desire. It is one of the most intimate and erotic acts available between two people.\n\nBoehm's practices go significantly beyond relaxation techniques. They work with the body's own intelligence: teaching couples to feel the difference between genuine arousal and conditioned willingness, between an authentic somatic yes and a habituated going-along. Her Non-Linear Movement Method opens the body to authentic expression by removing the mind's direction entirely, allowing the body's own movement intelligence to surface, discharge accumulated tension, and restore the natural aliveness that chronic activation suppresses.",
     practicePreview: null,
     premiumPreview:
-      "Access body-led regulation drills, relational attunement protocols, and non-linear movement integrations for couples.",
-    coreThemes: ["Nervous system safety", "Non-linear sexuality", "Somatic embodiment", "Erotic presence", "Body-led intimacy", "Wild feminine"],
-    keyWorks: ["The Wild Woman Book", "Non-Linear Movement Method Training", "Embodied Relationship Retreat Series"],
+      "Learn Boehm's framework for somatic erotic presence: how to distinguish genuine arousal from conditioned performance in your own body, and how to create the specific nervous system conditions that allow your partner's erotic nature to emerge naturally rather than be coaxed or performed. Discover the Non-Linear Movement Method as a couples practice: how non-directed movement dissolves accumulated tension, restores the body's authentic expressive aliveness, and rebuilds genuine desire after it has been flattened by stress, habit, or the quiet weight of emotional protection.",
+    coreThemes: ["Nervous system safety", "Non-linear sexuality", "Somatic embodiment", "Wild feminine", "Body-led intimacy", "Erotic attunement"],
+    keyWorks: ["The Wild Woman Book", "Non-Linear Movement Method (NLMM)", "Relating to the Wild (teaching series)", "The Embodied Relationship Retreat Series"],
   },
+
   "barry-long": {
-    tagline: "Stillness in love as spiritual practice",
-    tradition: "Sacred Love and Mystical Union",
+    tagline: "Lovemaking as the most direct return to what is real",
+    tradition: "Sacred Love & Mystical Union",
     shortDescription:
-      "A radically clear voice on conscious lovemaking, truth, and inner stillness in long-term partnership.",
+      "A radically clear voice on conscious lovemaking, inner stillness, and the truth that makes genuine union possible in long-term partnership.",
     fullDescription:
-      "Barry Long taught that conscious lovemaking is not separate from meditation. His emphasis is uncompromising simplicity: less performance, more presence.\n\nIn couple work, this translates to inner quiet, honest contact, and disciplined relational integrity. The reward is not novelty, but depth that continues to unfold.",
+      "Barry Long was born in Australia in 1926 and spent the first part of his adult life as a journalist before undergoing a profound spiritual opening in his thirties that eventually led him to teach — first in London, then internationally — until his death in 2003. He is one of the most uncompromising and tender teachers of sacred love in the English language, and his work on conscious lovemaking stands almost completely alone in its refusal of complexity, technique, and spiritual theater. What Long offers is ruthlessly simple — and for exactly that reason, among the most demanding teachings in this entire field.\n\nHis central conviction, which he returned to from every direction across four decades: sexual love, when made with total inner stillness and genuine presence — not the stillness of suppression, but the specific meditative quality of a mind that has genuinely come to rest — is among the most direct and complete spiritual experiences available to a human being. Not because it resembles meditation. Because it is meditation. Because in the moment when two people are truly, wholly present with each other, what is experienced is not two people having sex. It is consciousness experiencing itself through love.\n\nThe difficulty, which Long addressed with unsparing and compassionate honesty, is that most people have never made love. They have had sex — the release of unconscious emotional and physical tension in the temporary company of another person. The wanting, the performance, the anxiety about getting it right, the comparing, the thinking — all of it is the habitual noise of ordinary mind that stands between two people and the genuine meeting their bodies are trying to reach.\n\nLong's teaching on the man's role is particularly distinctive: genuine masculine presence is not confidence or skill but inner stillness — the specific capacity to be completely here, holding the loving space in which the woman can open fully and safely, without the man's own wanting or restlessness disturbing that space.",
     practicePreview: null,
     premiumPreview:
-      "Learn stillness-based intimate practice, conscious closure, and truth-led relational forms inspired by Barry Long's teaching.",
-    coreThemes: ["Stillness in eros", "Conscious lovemaking", "Love as presence", "Spiritual union", "Dissolving performance"],
-    keyWorks: ["Making Love: Sexual Love the Divine Way", "To Woman in Love", "Knowing Yourself"],
+      "Discover Long's teaching on the inner stillness required for genuine lovemaking — the specific quality of consciousness in which physical contact transforms from a transaction between two desires into a meeting between two presences. Learn his approach to making love as a form of meditation and prayer: how the quality of inner stillness that each partner brings determines the depth of union actually available, and why most couples, despite genuinely loving each other, never reach the intimacy their bodies and hearts are actually seeking.",
+    coreThemes: ["Stillness in eros", "Conscious lovemaking", "Love as presence", "Making love vs having sex", "Spiritual union", "Inner truth"],
+    keyWorks: ["Making Love: Sexual Love the Divine Way", "To Woman in Love", "The Origins of Man and the Universe", "Knowing Yourself"],
   },
+
   "jan-day": {
-    tagline: "Emotional truth as erotic foundation",
-    tradition: "Conscious Relating and Somatic Tantra",
+    tagline: "Emotional truth is the ground that genuine desire grows from",
+    tradition: "Conscious Relating & Somatic Tantra",
     shortDescription:
-      "A guide for couples who want desire rooted in honesty, body-awareness, and courageous disclosure.",
+      "A guide for couples who want desire rooted in honesty, body-awareness, and the courage to be fully known.",
     fullDescription:
-      "Jan Day's relational work centers on body-led truth. She teaches that unresolved shame, defended expression, and emotional avoidance flatten intimacy over time.\n\nHer practices help couples disclose from sensation rather than accusation, creating contact that feels safer and more alive. This often restores attraction where technique alone fails.",
+      "Jan Day has worked at the intersection of conscious relationship, Tantra, and somatic healing for more than thirty years, training first in the Osho tradition and then in somatic therapies and body-centered psychotherapy before developing her own approach — one that addresses a dimension of intimate life that most Tantric teaching skips entirely: the emotional body.\n\nHer central teaching is as honest as it is uncomfortable: genuine erotic aliveness in a long-term relationship depends not primarily on technique, ritual, or erotic skill. It depends on emotional honesty. The walls that couples build over time to protect themselves from hurt — the defended body, the managed expression, the habitual emotional withdrawal that has accumulated so gradually neither partner quite noticed — are precisely the same walls that keep genuine erotic depth out. Protection and surrender use the same gates. You cannot selectively open to pleasure while keeping emotional truth closed.\n\nDay's practices guide couples through what she calls body-led disclosure: the specific kind of emotional honesty that does not live in the mind's narrative but in the body's direct, felt, present-moment experience. Not 'I feel hurt because you did X,' but the actual tightening in the chest, the held breath, the heat behind the eyes — disclosed as it is, without story layered over it, to the person who is present right now.\n\nThis kind of somatic disclosure, practiced regularly, creates over time a quality of mutual knowing that no amount of conventional communication can substitute for. And it creates, as a natural consequence rather than a goal, the erotic electricity that exists between two people who genuinely know and are genuinely known by each other — the desire that comes not from novelty or performance but from the specific quality of complete visibility.",
     practicePreview: null,
     premiumPreview:
-      "Unlock body-led disclosure methods, shame-dissolution pathways, and repair practices that rebuild erotic trust.",
-    coreThemes: ["Emotional courage", "Shame dissolution", "Body-led truth", "Erotic trust", "Conscious relating"],
-    keyWorks: ["The New Intimacy", "Longwave Tantra", "Embodied Relating"],
+      "Learn Day's body-led disclosure practices: how to share emotional truth from the body rather than from the narrative mind, and why this specific quality of somatic honesty restores erotic charge in long-term relationships more reliably than any other single approach. Discover her work with the emotional architecture of sustained desire — what actually keeps eros alive across years and decades, and the specific practices that rebuild genuine erotic trust after distance, unspoken resentment, or the accumulated weight of emotional self-protection.",
+    coreThemes: ["Emotional courage", "Shame dissolution", "Body-led truth", "Erotic trust", "Conscious relating", "Somatic disclosure"],
+    keyWorks: ["The New Intimacy (retreat series)", "Longwave Tantra (teaching lineage)", "Embodied Relating (workshop body)"],
   },
+
   "charles-muir": {
-    tagline: "The body as sacred ceremonial space",
-    tradition: "Heart Tantra and Sacred Healing",
+    tagline: "The body of the beloved is a sacred space that deserves ceremony",
+    tradition: "Heart Tantra & Sacred Healing",
     shortDescription:
-      "A foundational western tantra teacher focused on reverence, ceremony, and healing partner practice.",
+      "A foundational Western Tantra teacher whose work centers on reverence, ceremony, and the healing power of the sacred approach to the beloved's body.",
     fullDescription:
-      "Charles Muir's approach emphasizes how partners enter and hold the relational field. Reverence is not poetic framing in this lineage - it is a practical state that transforms touch.\n\nHis honoring practices help dissolve performance anxiety and emotional armor by shifting contact from habit to ceremony. That shift often reopens trust and desire together.",
+      "Charles Muir co-founded the Source School of Tantra Yoga with Caroline Muir in Hawaii in 1985 and has spent four decades teaching classical Tantric practices to couples, therapists, and healing practitioners across North America and internationally. His lineage draws directly from classical Indian Tantra — particularly its emphasis on the body as a sacred space and the beloved as a living embodiment of the divine — and from his own clinical work with the specific healing dimension of conscious sexuality.\n\nMuir's central contribution is his unwavering focus on reverence as the primary quality from which all genuine Tantric practice must flow. Most couples, even those with genuine spiritual interest, approach each other's bodies with a mixture of desire, familiarity, habit, and unconscious expectation. The body of the beloved has become, over time, known terrain — somewhat predictable, no longer encountered with genuine fresh attention. The Tantric approach Muir teaches asks for something more demanding and more beautiful: the deliberate, practiced cultivation of the capacity to approach the beloved's body as if encountering it for the first time, as genuinely sacred — worthy of the quality of attention one would bring to a holy space.\n\nHis honoring practices — specific partner rituals developed from the ancient Tantric tradition of puja and refined through decades of direct couples facilitation — are among the most practically effective tools available for dissolving the performance anxiety, residual shame, and unconscious defensive holding that accumulate in any couple's erotic life over time. When reverence is genuinely present between two people — not performed but actually felt — the body opens in ways it cannot open to desire alone. Genuine healing of accumulated wounds becomes available. And the depth of connection reaches dimensions that chemistry and skill simply cannot access.",
     practicePreview: null,
     premiumPreview:
-      "Access honoring rituals, ceremony frameworks, and heart-centered tantric practice arcs from the Source School lineage.",
+      "Discover Muir's honoring practices: specific partner rituals drawn from the classical Tantric tradition that cultivate genuine reverence for the beloved's body — and dissolve, through that reverence, the unconscious performance anxiety and protective holding that most couples bring unexamined to the erotic field. Learn the Source School approach to sacred lovemaking as ceremony: how to create a ritual container in which both partners approach the entire intimate encounter with the quality of conscious attention that transforms ordinary physical contact into conscious, healing, sacred union.",
     coreThemes: ["Sacred reverence", "Heart Tantra", "Healing love", "Ceremony", "Body as temple", "Honoring practices"],
-    keyWorks: ["Tantra: The Art of Conscious Loving", "Source School curriculum", "Heart Tantra teachings"],
+    keyWorks: ["Tantra: The Art of Conscious Loving", "Source School of Tantra Yoga curriculum", "Heart Tantra teachings"],
   },
+
   "sally-kempton": {
-    tagline: "Shakti as living relational energy",
-    tradition: "Kashmir Shaivism and Tantric Meditation",
+    tagline: "Śakti is not a concept — she is the energy moving through your love right now",
+    tradition: "Kashmir Shaivism & Tantric Meditation",
     shortDescription:
-      "A clear modern voice translating Shaiva recognition practice into intimate relational life.",
+      "A clear modern voice translating Shaiva recognition practice into the living reality of intimate relational life.",
     fullDescription:
-      "Sally Kempton brought deep Shaiva scholarship into direct lived practice. Her teaching invites couples to experience the beloved as living Shakti, not as concept.\n\nThis lens makes intimacy both tender and luminous: ordinary moments become sites of recognition, reverence, and devotional awareness.",
+      "Sally Kempton was a journalist and essayist — including a period writing for Esquire in the early years of second-wave feminism — before a profound encounter with Swami Muktananda in New York in 1974 led her into eleven years as a sannyasi in the Siddha Yoga tradition. She emerged as a teacher with deep scholarly grounding in Sanskrit, Tantric philosophy, and the complete tradition of Kashmir Shaivism, combined with a rare gift for making the most subtle metaphysical insights feel immediately relevant to the texture of ordinary relational and intimate life.\n\nKashmir Shaivism's central teaching — that consciousness (Śiva) and creative energy (Śakti) are not two separate principles but one undivided reality appearing in different modes — has profound consequences for how couples actually experience each other. In the Shaiva framework, the beloved is not merely a person you love. They are, at the deepest level of what is real, a living expression of Śakti: the divine creative energy that animates all of existence. The love you feel for them is not merely a personal emotion. It is the movement of consciousness recognizing itself in another form.\n\nKempton's teaching does not ask couples to believe this intellectually. It offers specific practices — recognition-based meditations, ways of looking, listening, and touching that carry this awareness actively through the body and senses — through which the Shaiva teaching becomes a direct felt experience available in the most ordinary moments of daily life together: across a dinner table, in the quality of a morning greeting, in the specific way one partner holds the other's gaze.\n\nThe result, for couples who engage her work seriously, is not merely a richer erotic life. It is a transformed relationship to existence itself: a growing sense that the love between two people is not a private human transaction but a participation in something that was already happening at the level of the cosmos.",
     practicePreview: null,
     premiumPreview:
-      "Explore non-dual partner meditations, recognition practices, and Shakti-centered contemplative intimacy pathways.",
-    coreThemes: ["Shakti recognition", "Non-dual meditation", "Kashmir Shaivism", "Divine feminine", "Relationship as sadhana"],
-    keyWorks: ["Awakening Shakti", "Meditation for the Love of It", "Doorways to the Infinite", "The Heart of Meditation"],
+      "Discover the recognition practices of Kashmir Shaivism applied to intimate partnership: how to look at your beloved and directly perceive the Śakti moving within them — not as metaphor but as an actual felt experience that deepens with practice. Learn Kempton's approach to Tantric meditation within relationship: how ordinary moments of genuine contact between partners become the laboratory of non-dual awakening, available not only on meditation retreat but in the living intimacy of every shared day.",
+    coreThemes: ["Śakti recognition", "Non-dual meditation", "Kashmir Shaivism", "Divine feminine", "Relationship as sadhana", "Tantric philosophy"],
+    keyWorks: ["Awakening Shakti", "Meditation for the Love of It", "Doorways to the Infinite", "The Heart of Meditation", "Awakening to Kali"],
   },
+
   "max-bush": {
-    tagline: "Erotic presence earned through awareness",
+    tagline: "Erotic confidence earned through awareness, not performance",
     tradition: "Embodied Masculine Eros",
     shortDescription:
       "Practical training in confident, attuned erotic leadership without performance posturing.",
     fullDescription:
-      "Max Bush teaches the distinction between projected confidence and embodied presence. One can be performed; the other is felt in the partner's body as both safety and attraction.\n\nHis practices build moment-to-moment attunement, helping partners respond to real signals rather than fixed scripts. The result is cleaner confidence and deeper relational trust.",
+      "Max Bush works with a question that many partners carry largely in silence: how do I develop genuine erotic confidence and skill without reducing my partner to an object, and without performing a sexuality that is not authentically mine? His teaching operates at the specific intersection of conscious masculinity work, somatic practice, and the nervous system dynamics of desire and genuine attunement.\n\nThe central distinction his work turns on is between performed confidence and embodied presence. Performed confidence — the surface behavior of erotic certainty — is available to anyone willing to act the part. It may even produce some of what it is attempting to produce. But a partner's body can feel the difference between genuine presence and its performance, and over time in a committed relationship, that difference determines everything.\n\nEmbodied presence is the specific quality of being — grounded, genuinely here, genuinely attentive, genuinely responsive to what is actually happening rather than what is supposed to happen — that a partner feels in their body as simultaneous safety and attraction. It cannot be faked. It can be cultivated. And the path of cultivation runs directly through the willingness to feel what is actually present in the body — both one's own and the beloved's — without the management of anxiety or the performance of sureness getting in the way.\n\nHis practices develop erotic attunement: the practiced capacity to feel and respond to a partner's living energetic and somatic state, moment by moment, rather than executing a predetermined approach regardless of actual signal. This attunement, developed through honest embodied attention, is what separates erotic confidence that opens a partner from erotic confidence that merely impresses.",
     practicePreview: null,
     premiumPreview:
-      "Get progression-based erotic attunement drills, leadership pacing protocols, and partner-safe confidence training.",
+      "Learn the foundational practices of embodied erotic presence: how to arrive fully in your own body before you arrive with your partner, how to feel and follow a partner's living somatic signals rather than projecting desire onto them, and how to develop the specific quality of grounded, unhurried, genuinely responsive attention that creates safety and genuine desire at the same time — in the partner, and in yourself.",
     coreThemes: ["Erotic attunement", "Conscious masculinity", "Somatic skill", "Relational integrity", "Embodied confidence"],
     keyWorks: [],
   },
+
   "victor-gold": {
-    tagline: "Love refined through craft and devotion",
-    tradition: "Sacred Erotic Craft and Conscious Form",
+    tagline: "Love as a living art that deepens with devoted attention",
+    tradition: "Sacred Erotic Craft & Conscious Form",
     shortDescription:
-      "A craft-based approach to intimacy where attention quality matters more than novelty.",
+      "A craft-based approach to intimacy where the quality of attention matters infinitely more than novelty.",
     fullDescription:
-      "Victor Gold's contribution is erotic craft: refining touch, pacing, and presence with the care of an art form. He frames routine not as lack of chemistry, but as lack of conscious attention.\n\nCouples in this work learn to arrive freshly in familiar forms. That shift turns repetition into depth and makes devotion practical.",
+      "Victor Gold brings to conscious relationship work an emphasis that most teachers overlook and most couples quietly need: craft. Not technique in the mechanical sense, but the kind of attentive, creative, devoted artistry that a musician brings to a phrase or a poet brings to a line — the quality of presence in which something familiar is continuously transformed into something extraordinary through the sustained, genuine quality of attention given to it.\n\nMost erosion of intimate aliveness in long-term relationships is not a failure of love or chemistry. It is a failure of creative attention. Couples stop truly arriving: they bring the same habitual gestures, the same sequence, the same quality of distracted presence they have always brought — and wonder, with genuine sadness, why the experience feels increasingly familiar in the worst sense of that word. The standard cultural prescription is novelty: change what you do. Gold's teaching addresses something more fundamental and more lasting: deepen how you are present to what is already there.\n\nHis approach draws from sacred erotic traditions, from the Japanese aesthetic of wabi-sabi — the beauty of the impermanent, unrepeatable, and genuinely present — and from decades of direct facilitation work with couples. His central insight is both clarifying and immediately actionable: the quality of creative attention you bring to a single touch, a single moment of genuine eye contact, a single minute of truly unhurried presence with your partner's body, contains more erotic potential than an entire evening of varied technique delivered with half a mind.\n\nThe depth was always there. Craft is what opens it.",
     practicePreview: null,
     premiumPreview:
-      "Unlock advanced craft protocols for conscious erotic form, aesthetic sensuality, and devotion-led couple practice.",
-    coreThemes: ["Erotic craft", "Creative presence", "Devotion", "Conscious form", "Sacred aesthetics", "Depth over novelty"],
+      "Explore Gold's framework for conscious erotic artistry: how to bring genuine creative presence and devotion to lovemaking in ways that transform the familiar into the sacred, and why this quality of attention — not novelty, not technique — is what determines whether intimacy deepens or gradually empties over time. Learn the practice of arriving fully: the specific quality of inner gathering that determines the depth of an intimate encounter before a single touch occurs.",
+    coreThemes: ["Erotic craft", "Creative presence", "Devotion", "Depth over novelty", "Conscious form", "Sacred aesthetics"],
     keyWorks: [],
   },
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CONTENT PATHS (used by path cards / navigation)
+// ─────────────────────────────────────────────────────────────────────────────
 
 export const CONTENT_PATHS: ContentPathEntry[] = [
   {
     id: "tantric_wisdom",
     name: "Tantric Wisdom",
-    icon: "sparkle-pink",
-    tier: "premium",
     tagline: "An ancient path translated for modern couples",
     subtitle: "Through breath, presence, polarity, and the sacred body",
-    short_description: "A body-inclusive path where erotic aliveness and spiritual awareness develop together.",
+    short_description: "The five-thousand-year-old map of consciousness that locates the sacred inside the erotic body.",
     full_description:
-      "Tantric practice treats the body as a doorway to consciousness rather than a distraction from it. For couples, this means pacing intimacy through breath, awareness, and consent so trust and desire can grow together.\n\nThe practical shift is from performance to practice: arrive, regulate, attune, and then intensify only when both partners are genuinely available.",
-    for_couples: "For couples who want intimacy to feel conscious tonight and deepen over time.",
+      "Tantra is not a technique for better sex. It is a five-thousand-year-old map of consciousness that recognized, long before modern psychology, that the erotic body and the spiritual body are not separate. They are the same body, approached with different qualities of attention. Where most spiritual paths asked practitioners to transcend the senses, Tantra insisted on inhabiting them completely — recognizing in pleasure, sensation, and the living charge between two bodies the most immediate expression of the divine available to human beings.",
+    for_couples: "For couples who want intimacy to feel conscious tonight and grow spiritually over time.",
     sacred_invitation: {
       title: "Who This Path Calls",
-      body: "This path calls couples who feel that intimacy can be both sacred and practical. It serves pairs who want deeper presence, cleaner consent, and relational warmth without losing erotic current.",
+      body: "This path calls to couples who sense that something more is possible — not simply more pleasure or more frequency, but a different quality of contact altogether. Couples who have noticed that even in their most intimate moments, something in them is still watching, waiting, slightly elsewhere. Couples who want the body to be a doorway rather than a destination.",
       resonances: [
         "You want depth more than technique.",
-        "You want to feel seen, not only desired.",
-        "You want sacred language with practical steps.",
-        "You are ready to move from rushing to attunement.",
+        "You sense that your lovemaking has more silence, more reverence, and more aliveness available than you have yet discovered.",
+        "You are drawn to the idea that spiritual practice and erotic life belong together.",
+        "You want both partners to feel genuinely seen — not merely desired.",
+        "You are willing to be changed by intimacy, not just satisfied by it.",
       ],
     },
     pillars: [
-      {
-        id: "shiva_shakti",
-        label: "SHIVA AND SHAKTI",
-        title: "Sacred polarity",
-        body: "Consciousness and energy meet as complementary currents. The quality of that meeting shapes desire and trust.",
-      },
-      {
-        id: "prana",
-        label: "PRANA",
-        title: "Breath as bridge",
-        body: "Breath regulates nervous systems and synchronizes relational presence before intensity rises.",
-      },
-      {
-        id: "deha",
-        label: "DEHA",
-        title: "Body as temple",
-        body: "Approach the beloved with reverence, patience, and curiosity. This transforms contact quality.",
-      },
-      {
-        id: "bhakti",
-        label: "BHAKTI",
-        title: "Devotion",
-        body: "Devotion is a discipline of attention and care, not only an emotion. It keeps eros connected to love.",
-      },
-      {
-        id: "spanda",
-        label: "SPANDA",
-        title: "Divine pulse",
-        body: "Recognize subtle aliveness already present between you and stay with it instead of forcing escalation.",
-      },
+      { id: "shiva_shakti", label: "ŚIVA & ŚAKTI", title: "Sacred Polarity", body: "At the heart of Tantra is the recognition that existence itself is a dance between two principles: pure witnessing consciousness (Śiva) and living creative energy (Śakti). In your relationship, these poles are alive in every moment of genuine contact. One partner holds space; the other fills it. The quality of your intimacy depends on how consciously you inhabit and honor these complementary currents — not as fixed roles, but as a living exchange that flows and changes between you." },
+      { id: "prana", label: "PRĀṆA", title: "Breath as Bridge", body: "In Tantric physiology, breath is the vehicle of prāṇa — the animating life force that flows through the subtle body. Conscious breathing during intimacy transforms the quality of contact: it regulates the nervous system, opens the body to deeper sensation, and carries awareness into the areas where holding and protection have accumulated. In partner breathing practices, it creates a shared rhythm that synchronizes two subtle bodies before the physical bodies even touch." },
+      { id: "deha", label: "DEHA", title: "Body as Living Temple", body: "Tantra was the first tradition to fully consecrate the physical body — to insist that the body is not an obstacle to the sacred but its most immediate and complete expression. The Tantric body is not a machine of sensation. It is a living temple of intelligence, memory, and divine energy. Every part of it is worthy of reverence. In relationship, this means approaching your partner's body with the quality of attention you would bring to a genuinely holy space: unhurried, curious, full of gratitude." },
+      { id: "bhakti", label: "BHAKTI", title: "Devotion", body: "Bhakti is the yogic path of love as spiritual practice — the recognition that devotion is not a sentiment but a discipline. In Tantric relationship, bhakti transforms how partners meet: not as two individuals negotiating needs, but as two expressions of divine consciousness recognizing each other. It requires the willingness to look at your partner as if for the first time, to see past the familiar image to the aliveness beneath it — and to let that aliveness land in the body as genuine reverence." },
+      { id: "spanda", label: "SPANDA", title: "The Divine Pulse", body: "Spanda — the vibrant, pulsing aliveness that Kashmir Shaivism recognizes as the fundamental nature of reality — is not something to be created in intimacy. It is something to be recognized. It is already present in the trembling of genuine excitement, in the pause between exhale and inhale, in the moment when two bodies first touch with full awareness. Tantric practice teaches couples to recognize Spanda and stay with it — to be with the living pulse of energy between them rather than immediately chasing it." },
+      { id: "samadhi", label: "SAMĀDHI", title: "The Dissolution", body: "In classical yoga, samādhi is the dissolution of the boundary between observer and observed — non-dual awareness in which the separate self temporarily ceases. Tantra locates this possibility within the erotic body. At the depth of genuine conscious lovemaking, the boundary between two selves becomes permeable, and what is experienced is not two people touching but one field of awareness moving within itself. This state cannot be forced. It arises when presence, breath, polarity, and devotion are all fully inhabited." },
+      { id: "samskara", label: "SAṂSKĀRA", title: "The Closing Ritual", body: "How a couple closes an intimate encounter is as important as how they enter it. Saṃskāra — the impressions left on consciousness by lived experience — determines how intimacy accumulates over time. Couples who close their encounters with care: a held stillness, a breath taken together, a whispered truth, or a moment of silent gratitude, create a different quality of shared history. The closing ritual is where the experience is received and allowed to settle as a genuine resource." },
     ],
     premium_features: [
-      { id: "guided_tracks", label: "GUIDED TRACKS", description: "Audio-led tantric couple sessions from short resets to deep evening rituals." },
-      { id: "energy_maps", label: "ENERGY MAPS", description: "Visual subtle-body maps for practical use in partnered practice." },
-      { id: "sacred_love_library", label: "SACRED LOVE LIBRARY", description: "Expanded lineage notes and deep links across relevant authors and traditions." },
+      { id: "guided_tracks", label: "GUIDED TRACKS", description: "Full audio-guided Tantric journeys for couples, from 10-minute presence practices to 60-minute conscious lovemaking rituals." },
+      { id: "energy_maps", label: "ENERGY MAPS", description: "Visual guides to the subtle body: chakra systems, prāṇa channels, and the energetic anatomy of conscious union." },
+      { id: "sacred_love_library", label: "SACRED LOVE LIBRARY", description: "The complete Tantric Wisdom teaching library: practices by Osho, Margot Anand, Daniel Odier, Sally Kempton, and Charles Muir." },
     ],
   },
   {
     id: "taoist_alchemy",
     name: "Taoist Alchemy",
-    icon: "wave",
-    tier: "premium",
-    tagline: "Sexual energy as vital medicine",
+    tagline: "Sexual energy as vital medicine, not expenditure",
     subtitle: "Through circulation, refinement, and shared life force",
-    short_description: "A Taoist path for couples who want intimacy to nourish vitality instead of draining it.",
+    short_description: "The ancient Taoist science of sexual energy — translated into sustainable vitality and deepening love.",
     full_description:
-      "Taoist intimacy views sexual energy as life force. The goal is not suppression and not over-discharge, but smart circulation that supports health, steadiness, and connection.\n\nThis path is especially valuable for stress-heavy life seasons. It teaches softness before escalation and continuity over peak-chasing.",
-    for_couples: "For couples who want intimacy to leave both partners more alive and connected.",
+      "Taoism recognized two thousand years ago what modern medicine is only beginning to map: that sexual energy and life energy are the same force. How a couple manages that force determines not only the quality of their intimate life but the health of their bodies and the depth of their bond over decades. The Taoist path does not suppress desire — it transforms it. From a brief peak that depletes, into a circulating current that heals, vitalizes, and deepens the love between two people with each encounter.",
+    for_couples: "For couples who want their intimate life to leave them more alive, more in love, and more energized — not less.",
     sacred_invitation: {
       title: "Who This Path Calls",
-      body: "This path calls couples who feel depletion after intimacy and want a more sustainable erotic rhythm built on flow, timing, and regulation.",
+      body: "This path calls to couples who have noticed that conventional lovemaking often leaves a subtle depletion in its wake — a flatness after the peak, a quiet withdrawal in the hours that follow. Couples who are curious about the body's deeper intelligence and want their erotic life to contribute to their health and vitality rather than drawing from it.",
       resonances: [
-        "You want replenishment, not crash cycles.",
-        "You want practical energetic literacy.",
-        "You want attraction with less pressure.",
-        "You want long-term vitality as a couple practice.",
+        "You want your intimate life to leave both of you feeling more energized, not less.",
+        "You are curious about the body's subtle energetic architecture.",
+        "You want a practice that deepens over decades rather than depending on novelty.",
+        "You are drawn to ancient science applied with practical precision.",
+        "You want both partners to benefit equally and lastingly from what flows between you.",
       ],
     },
     pillars: [
-      { id: "jing", label: "JING", title: "Vital essence", body: "Treat sexual essence as a resource to cultivate and circulate." },
-      { id: "chi", label: "CHI", title: "Life current", body: "Track and guide subtle energy through breath, attention, and coordinated pacing." },
-      { id: "shen", label: "SHEN", title: "Spirit and luminosity", body: "Refine erotic energy into heartful presence and clearer consciousness." },
-      { id: "orbit", label: "MICROCOSMIC ORBIT", title: "Shared circulation", body: "Create synchronized energetic loops that increase coherence and nourishment." },
-      { id: "yin_yang", label: "YIN YANG", title: "Complementary balance", body: "Use dynamic balance of receptive and active qualities in both partners." },
+      { id: "jing", label: "JĪNG", title: "Vital Essence", body: "Jīng is the most fundamental form of life force in Taoist physiology — the concentrated essence stored in the kidneys that governs vitality, creativity, and longevity. Sexual energy is jīng in its most potent form. The Taoist path begins with the recognition that jīng can be cultivated and redirected through the body rather than discharged — and that this redirection is not deprivation but expansion: more sensation, more aliveness, more genuine connection, sustained and compounding over time." },
+      { id: "chi", label: "CHĪ", title: "Life Current", body: "Chī is the animating current that flows through the body's meridian system — the same energy acupuncture works with, that martial artists cultivate through chi kung. In lovemaking, chī determines whether touch feels alive or mechanical, whether presence feels mutual or absent. Learning to feel chī in your own body — and then the current between your body and your partner's — transforms physical intimacy from sensation alone into genuine energy exchange." },
+      { id: "shen", label: "SHÉN", title: "Spirit & Luminosity", body: "Shén governs consciousness, emotional radiance, and genuine presence. In intimate life, shén is what you feel when your partner is truly with you rather than merely physically close — the lit quality in the eyes, the attention that feels complete. Taoist sexual cultivation aims ultimately at shén: the refinement of sexual and vital energy all the way up through the heart and mind, until lovemaking becomes an act of full spiritual presence." },
+      { id: "microcosmic_orbit", label: "MICROCOSMIC ORBIT", title: "Shared Energy Circulation", body: "The Microcosmic Orbit — the conscious circulation of chī up the spine, over the crown, and down through the front of the body — is the foundational Taoist internal practice. As a couples practice, it becomes extraordinary: two bodies learning to share and circulate their combined energy field through synchronized breath, intention, and conscious touch — creating a circuit of vitality that belongs to neither partner alone but to the living relationship between them." },
+      { id: "yin_yang", label: "YĪN YÁNG", title: "The Dance of Complementary Energies", body: "Yīn and yáng are not opposites in conflict but complementary principles in dynamic balance. In relationship, they describe the specific energetic qualities each partner brings in any given moment: the receptive, cooling, lunar quality of yīn; the active, warming, solar quality of yáng. Genuine intimacy requires the fluid, conscious exchange of both, with each partner capable of inhabiting either pole as the living moment requires." },
+      { id: "valley_orgasm", label: "VALLEY ORGASM", title: "Pleasure That Expands", body: "The Taoist teaching on orgasm is its most radical gift to modern couples: the distinction between peak orgasm, which discharges vital energy, and valley orgasm, which expands and circulates it. Valley orgasm is pleasure sustained and deepened over time — full-body waves of sensation that build without the conventional arc of tension and release, leaving both partners more alive and more deeply connected rather than temporarily depleted." },
+      { id: "healing_love", label: "HEALING LOVE", title: "Lovemaking as Medicine", body: "The ancient Taoist physicians documented what modern endocrinology confirms: that conscious, loving sexual practice has measurable effects on hormonal balance, immune function, and longevity. Chia's Healing Love practices systematize this ancient wisdom for modern couples — transforming lovemaking from a recreational act into a genuine and renewable health practice that both partners benefit from across a lifetime together." },
     ],
     premium_features: [
-      { id: "chi_cultivation", label: "CHI CULTIVATION TRACKS", description: "Guided Taoist couple cultivation paths from foundations to advanced circulation." },
-      { id: "meridian_maps", label: "MERIDIAN MAPS", description: "Readable meridian and organ-energy visuals for practical home practice." },
-      { id: "chia_library", label: "MANTAK CHIA LIBRARY", description: "Deeper source pathways tied to classic Taoist couple cultivation teachings." },
+      { id: "chi_cultivation", label: "CHI CULTIVATION TRACKS", description: "Audio-guided Taoist energy practices for couples: from the Microcosmic Orbit to the full Healing Love sequence." },
+      { id: "body_maps", label: "MERIDIAN MAPS", description: "Visual guides to the Taoist subtle body: chī channels, organ energy systems, and the energetic anatomy of Taoist lovemaking." },
+      { id: "chia_library", label: "MANTAK CHIA LIBRARY", description: "The complete Taoist Alchemy teaching library, drawn from Mantak Chia's forty-year body of work." },
+    ],
+  },
+  {
+    id: "sacred_polarity",
+    name: "Sacred Polarity",
+    tagline: "The living charge between two people",
+    subtitle: "Restoring desire through presence, direction, and radiance",
+    short_description: "For couples who want the magnetic charge back — through genuine presence and radiance, not performance.",
+    full_description:
+      "Most couples don't fall out of love. They fall out of polarity. The qualities that created the initial attraction — the decisive, directional presence in one partner that felt magnetic, the radiant openness in the other that felt like home — gradually collapse under the demands of modern equality and shared logistics. When the energetic difference flattens, desire has nothing to arc across. This path restores that living charge: not through role-playing, but through the genuine cultivation of directed presence and luminous radiance as spiritual practices.",
+    for_couples: "For couples who remember what it felt like to be magnetically drawn to each other — and want that alive quality back.",
+    sacred_invitation: {
+      title: "Who This Path Calls",
+      body: "This path calls to couples who sense that the energetic difference between them has flattened — that they are more colleagues than lovers, more comfortable than turned on. It calls to the partner who wants to rediscover genuine presence, and to the partner who wants to rediscover genuine opening.",
+      resonances: [
+        "You want to feel magnetically drawn to each other again.",
+        "You sense that something has flattened between you and don't know how to restore it.",
+        "You want more aliveness in the space between you, not more management.",
+        "You are willing to stop negotiating and start inhabiting.",
+        "You are curious about the role of energetic difference in sustained desire.",
+      ],
+    },
+    pillars: [
+      { id: "presence", label: "PRESENCE", title: "Directed Consciousness", body: "The masculine principle — regardless of who embodies it — is consciousness that has a direction. Not aggression, but the specific quality of attention that moves toward, commits fully, and holds steady under relational pressure. Presence is what a partner feels when the other is truly here — not managing from a slight distance, not performing connection, but actually, bodily, unavoidably here. Its cultivation is the central masculine spiritual practice." },
+      { id: "radiance", label: "RADIANCE", title: "Luminous Life Force", body: "The feminine principle — regardless of who embodies it — is energy that moves outward: the natural radiance that animates a space, expresses feeling fully, and creates the living field of aliveness a relationship exists within. Radiance is not performance. It is what happens when a person stops managing their expression and allows their aliveness to move through the body without restriction." },
+      { id: "the_edge", label: "THE EDGE", title: "Growth as Devotion", body: "Genuine polarity requires both partners to be continuously growing into their deepest capacity. The masculine edge is the willingness to feel fear and move forward into love anyway. The feminine edge is the willingness to trust — to open to genuine depth rather than testing and contracting when that depth is offered. Both edges are forms of love. Both require courage. Both, practiced together, continuously renew the living charge between two people." },
+      { id: "the_gift", label: "THE GIFT", title: "Full Offering", body: "Love is not primarily a feeling but an offering. The deepest masculine gift is undivided presence — the full force of conscious attention offered without reservation. The deepest feminine gift is radiant openness — the full expression of aliveness and feeling, offered without guarding. When both gifts are given simultaneously, the couple enters a living circuit that is indistinguishable from spiritual experience." },
+      { id: "devotion", label: "DEVOTION", title: "Seeing the Sacred in the Beloved", body: "Genuine erotic devotion — the capacity to see through the surface of the beloved to the Śakti or divine consciousness moving within them — is not romantic sentiment but a cultivated perceptual practice. It is what distinguishes adoration from objectification, devotion from possession." },
+      { id: "surrender", label: "SURRENDER", title: "The Practice of Opening", body: "Surrender is not submission. It is the conscious choice to trust a partner's genuine presence enough to release the management that keeps a person safe and slightly contracted. For the feminine-identified partner, surrender to authentic masculine presence is one of the most profound spiritual practices available. For the masculine-identified partner, surrender is the release of outcome — the giving of full presence with no expectation of return." },
+    ],
+    premium_features: [
+      { id: "polarity_practices", label: "POLARITY PRACTICES", description: "Partner practices specifically designed to restore energetic distinction and the living charge between two people." },
+      { id: "deida_library", label: "DEIDA & LONG LIBRARY", description: "The complete Sacred Polarity teaching library drawn from David Deida and Barry Long's full bodies of work." },
+      { id: "polarity_maps", label: "POLARITY MAPS", description: "Visual frameworks for understanding, diagnosing, and restoring energetic polarity in long-term relationships." },
     ],
   },
   {
     id: "embodied_heart",
     name: "The Embodied Heart",
-    icon: "heart",
-    tier: "premium",
     tagline: "Where the nervous system meets the sacred",
     subtitle: "Through somatic truth, emotional courage, and body-led love",
-    short_description: "A path for couples who need safety, honesty, and repair as foundations for lasting desire.",
+    short_description: "For couples who know that the heart must open before the body can — and want the practices that make that opening real.",
     full_description:
-      "The Embodied Heart path begins with a direct truth: if bodies do not feel safe, erotic depth does not stabilize. This work builds attunement through somatic awareness, disclosure, and co-regulation.\n\nIt is less about intensity and more about contact quality. As shame and protection soften, tenderness and eros can coexist again.",
-    for_couples: "For couples who want emotional depth and erotic aliveness to reinforce each other.",
+      "The most sophisticated erotic techniques in the world cannot open a body that does not feel genuinely safe. Most couples carry, in their tissues and nervous systems, the accumulated history of every moment they were not fully received. This path works where that accumulation lives — in the body itself — offering the specific practices of somatic honesty, emotional courage, and genuine nervous system safety that allow love to arrive all the way in.",
+    for_couples: "For couples who want their love to feel as deep as they know it is — and want to remove what stands between them and that depth.",
     sacred_invitation: {
       title: "Who This Path Calls",
-      body: "This path calls couples who love each other but still feel defended, misunderstood, or subtly guarded in intimate moments.",
+      body: "This path calls to couples who have noticed that something in them stays slightly guarded even with the person they love most. Who sense that their intimate life could be more honest, more vulnerable, more alive — but who have not found the specific practice that makes that openness feel genuinely safe.",
       resonances: [
-        "You want to feel known, not managed.",
-        "You want body-led truth without blame cycles.",
-        "You want practical repair pathways.",
-        "You want safer nervous-system intimacy.",
+        "You want to feel genuinely known — not just loved.",
+        "You sense that protection has quietly replaced presence in your intimate life.",
+        "You are willing to feel what is actually true in your body, even when it is difficult.",
+        "You want both partners to feel safe to be fully themselves in each other's presence.",
+        "You believe that emotional honesty and erotic aliveness are not in conflict — they are the same movement.",
       ],
     },
     pillars: [
-      { id: "soma", label: "SOMA", title: "The body knows", body: "Track what the body says before the story takes over." },
-      { id: "ns", label: "NERVOUS SYSTEM", title: "Safety as eros", body: "Co-regulation is a core erotic skill in long-term intimacy." },
-      { id: "disclosure", label: "DISCLOSURE", title: "Body-led truth", body: "Share sensation-level truth to create cleaner contact and less defensiveness." },
-      { id: "shame", label: "SHAME", title: "Dissolving armor", body: "Gentle exposure in safe connection reduces hidden shame loops." },
-      { id: "repair", label: "REPAIR", title: "Rupture as doorway", body: "Repair skill predicts long-term trust and relational resilience." },
+      { id: "soma", label: "SOMA", title: "The Body Knows", body: "The body holds a quality of knowledge the mind cannot manufacture. It knows whether it is genuinely safe or merely reassured. It knows whether desire is authentic or performed. Somatic practice begins with the demanding discipline of learning to feel what the body actually knows — and trusting that intelligence as the primary guide to what intimacy needs in any given moment." },
+      { id: "nervous_system", label: "NERVOUS SYSTEM", title: "Safety as Eros", body: "Genuine eros in a long-term relationship requires the parasympathetic state — the physiological condition of rest, openness, and receptivity. Creating genuine felt safety for a partner is not a preliminary to desire. It is one of the most intimate and erotic acts available between two people." },
+      { id: "disclosure", label: "DISCLOSURE", title: "Body-Led Truth", body: "Body-led disclosure is the practice of sharing what is present in the body — the tightening, the warmth, the held breath — without the narrative mind's interpretation layered over it. Not 'I feel hurt because you did X,' but the actual sensation, disclosed as it is, in real time. This quality of somatic honesty creates over time a mutual knowing that no amount of conventional communication can substitute for." },
+      { id: "shame", label: "SHAME", title: "The Dissolution of Armor", body: "Shame lives in the body before it lives in the mind. It quietly determines which dimensions of desire and authentic self can be expressed — and which must remain hidden. Its dissolution is not a single moment but a gradual, body-led process of discovering, again and again, that genuine exposure to a genuinely safe partner changes what shame said was true about you." },
+      { id: "contact", label: "CONTACT", title: "Meeting Without Merging", body: "Genuine contact is rarer than it sounds. Most couples do not lack closeness — they lack genuine contact: two distinct, fully present people actually meeting rather than two familiar patterns interacting from comfortable habit. Contact requires the willingness to be surprised by the beloved — which requires the willingness to actually look." },
+      { id: "repair", label: "REPAIR", title: "Rupture as Doorway", body: "The quality of a relationship is not determined by the absence of rupture but by what happens in its aftermath. Couples who learn to repair well develop something more valuable than the absence of conflict: a trust in the relationship's resilience that creates the safety in which genuine vulnerability — and therefore genuine eros — becomes available." },
     ],
     premium_features: [
-      { id: "somatic_practices", label: "SOMATIC PRACTICES", description: "Guided regulation and disclosure drills for couple coherence." },
-      { id: "boehm_day_library", label: "BOEHM AND DAY LIBRARY", description: "Expanded source tracks for nervous-system-aware intimacy and repair." },
-      { id: "repair_toolkit", label: "REPAIR TOOLKIT", description: "Structured repair frameworks for conflict, distance, and reconnection." },
+      { id: "somatic_practices", label: "SOMATIC PRACTICES", description: "Body-centered partner practices for nervous system regulation, somatic disclosure, and the cultivation of genuine felt safety." },
+      { id: "boehm_day_library", label: "BOEHM & DAY LIBRARY", description: "The complete Embodied Heart teaching library drawn from Michaela Boehm and Jan Day's full bodies of work." },
+      { id: "repair_tools", label: "REPAIR TOOLKIT", description: "Guided repair practices for couples: body-led reconnection after conflict, somatic forgiveness, and rebuilding genuine erotic trust." },
     ],
   },
   {
     id: "slow_love",
     name: "Slow Love",
-    icon: "lotus",
-    tier: "premium",
-    tagline: "What arrives when you stop rushing",
-    subtitle: "Through stillness, inner awareness, and unhurried contact",
-    short_description: "A Slow Love path that shifts couples from pressure and performance to sustained presence.",
+    tagline: "What arrives when you finally stop rushing",
+    subtitle: "Through stillness, internal awareness, and the intelligence of unhurried contact",
+    short_description: "The Tantric discovery that slowing down is not settling for less — it is the path to everything intimacy has been trying to offer.",
     full_description:
-      "Slow Love teaches that stillness is not less intimacy. It is the condition for deeper intimacy. Instead of chasing outcomes, couples inhabit sensation and awareness with less force.\n\nThis path often reopens desire after burnout because it removes pressure and restores body trust.",
-    for_couples: "For couples who want slower, deeper, more sustainable intimacy.",
+      "Every conventional approach to improving intimate life adds something — more technique, more variety, more novelty, more effort. Diana Richardson's approach, refined through thousands of hours working directly with couples, subtracts. And in the subtraction, something arrives that no technique can manufacture: the quality of erotic presence and genuine connection only available in genuine stillness.",
+    for_couples: "For couples who sense that something quieter, deeper, and more sustaining than what they've known is possible — and are willing to slow down to find it.",
     sacred_invitation: {
       title: "Who This Path Calls",
-      body: "This path calls couples tired of trying harder and ready to practice less force, more presence, and cleaner pacing.",
+      body: "This path calls to couples who are tired of trying harder. Who have added enough — enough techniques, enough workshops, enough well-intentioned effort — and who sense that the intimacy they want is not on the other side of more, but on the other side of less.",
       resonances: [
-        "You want connection over performance.",
-        "You want pressure-free erotic growth.",
-        "You want steadier intimacy in real life rhythms.",
-        "You want to rediscover sensation from the inside out.",
+        "You want genuine connection more than performed passion.",
+        "You sense that your intimate life would deepen if it slowed down.",
+        "You are willing to give up the peak if it means gaining something more lasting.",
+        "You want both partners to feel genuinely arrived — not arriving.",
+        "You are curious about what the body knows when it is not being directed.",
       ],
     },
     pillars: [
-      { id: "stillness", label: "STILLNESS", title: "Ground of eros", body: "Stillness stabilizes attention and opens subtler sensation." },
-      { id: "inner_touch", label: "INNER TOUCH", title: "Awareness inside the body", body: "Feel from within, not only from external stimulation." },
-      { id: "non_goal", label: "NON-GOAL", title: "Release destination pressure", body: "Drop outcome obsession to let aliveness expand naturally." },
-      { id: "relaxation", label: "RELAXATION", title: "Erotic letting go", body: "Relaxation increases receptivity, safety, and depth." },
-      { id: "time", label: "TIME", title: "Inhabit duration", body: "Unhurried time is a practical erotic technology." },
+      { id: "stillness", label: "STILLNESS", title: "The Ground of Eros", body: "Stillness is not the absence of desire. It is the specific quality of inner presence — relaxed, alert, genuinely arrived in the body — in which desire can move freely without being chased or managed. Most conventional lovemaking is an unconscious flight from stillness: a continuous escalation designed to stay ahead of the discomfort of genuine presence. The Slow Love path reverses this." },
+      { id: "internal_touch", label: "INNER TOUCH", title: "Awareness Inside the Body", body: "Richardson's central practice innovation is 'inner touch' — the cultivation of awareness inside the body during lovemaking rather than projection of attention onto sensation. Instead of experiencing touch as something that happens to the surface, inner touch means inhabiting the body so completely that sensation is felt from within. This simple redirection of attention transforms the quality of intimate contact more profoundly than any external technique." },
+      { id: "non_goal", label: "NON-GOAL", title: "Releasing the Destination", body: "Conventional sexuality moves toward orgasm with the same directed effort that drives most of modern life — carrying the same quality of performance pressure and disappointment when the destination is not reached. Non-goal lovemaking liberates pleasure from the tyranny of destination. When neither partner is trying to get anywhere, time expands, sensation deepens, and something arrives that contains more aliveness than orgasm itself." },
+      { id: "relaxation", label: "RELAXATION", title: "The Erotic Power of Letting Go", body: "A genuinely relaxed body — the specific quality of deep physiological ease — is among the most erotic states available. A relaxed body is a receptive body. Its capacity for sensation and energetic exchange is orders of magnitude greater than those available in a contracted, goal-seeking body. Learning to genuinely relax in the presence of the beloved, as a practice, is the primary skill of Slow Love." },
+      { id: "body_intelligence", label: "BODY INTELLIGENCE", title: "Trust the Deeper Knowing", body: "When two bodies are genuinely present to each other, relaxed, and free from the direction of goal-seeking mind, the energy between them knows what it wants to do. Couples who learn to follow the body's own intelligence rather than the mind's concepts of what should be happening discover an erotic creativity and depth that deliberate effort never achieves." },
+      { id: "time", label: "TIME", title: "Inhabiting Duration", body: "One of the most immediate and transformative practices of Slow Love is simply more time: unhurried, without destination, given to the experience of being genuinely present with another person's body. When couples cease to treat intimate time as a task to be completed and begin to inhabit it as a dimension of life worthy of genuine spaciousness, something changes fundamentally in what is available there." },
     ],
     premium_features: [
-      { id: "slow_practices", label: "SLOW LOVE PRACTICES", description: "Guided stillness and inner-awareness pathways for couples." },
-      { id: "richardson_library", label: "DIANA RICHARDSON LIBRARY", description: "Expanded source teachings for non-goal intimate presence." },
-      { id: "integration", label: "DAILY INTEGRATION", description: "Micro-practices that carry slow intimacy into everyday contact." },
+      { id: "slow_practices", label: "SLOW LOVE PRACTICES", description: "Guided partner practices in stillness, inner touch, and non-goal lovemaking — from brief daily encounters to extended evening rituals." },
+      { id: "richardson_library", label: "DIANA RICHARDSON LIBRARY", description: "The complete Slow Love teaching library drawn from Diana Richardson's thirty years of couples work." },
+      { id: "integration_practices", label: "INTEGRATION PRACTICES", description: "Daily micro-practices that bring Slow Love awareness into ordinary moments of physical contact." },
     ],
   },
   {
     id: "conscious_union",
     name: "Conscious Union",
-    icon: "feather",
-    tier: "premium",
-    tagline: "Two people genuinely meeting",
-    subtitle: "Through presence, ceremony, and conscious recognition",
-    short_description: "A Conscious Union path for couples who want relationship itself to become sacred daily practice.",
+    tagline: "Two people genuinely meeting — body, heart, and awareness",
+    subtitle: "Through presence, ceremony, and the art of mutual recognition",
+    short_description: "For couples ready to bring the full force of conscious awareness to every dimension of their life together.",
     full_description:
-      "Conscious Union integrates ritual, presence, and honest love into the full relationship lifecycle, not only explicit intimacy windows.\n\nIts focus is continuity: transitions, repair, devotional attention, and shared silence as living relational disciplines.",
-    for_couples: "For couples who want their entire relationship field to feel intentional, alive, and sacred.",
+      "Conscious union is not a technique or a tradition. It is the distillation of what every authentic intimacy path is pointing toward: two people who are genuinely present to each other, genuinely honest with each other, and genuinely growing together into the fullest expression of what their love makes possible. This path synthesizes the teachings of Barry Long, Charles Muir, and Jan Day into a complete framework for couples who want their entire relationship to be a conscious spiritual practice.",
+    for_couples: "For couples who want their relationship to be the most alive, most honest, and most deeply nourishing thing in their lives.",
     sacred_invitation: {
       title: "Who This Path Calls",
-      body: "This path calls couples ready to move from passive relationship maintenance to active daily practice in love.",
+      body: "This path calls to couples who sense that their relationship has more potential than it has yet realized — not just in the bedroom but in the full fabric of daily life together. Couples who want their ordinary moments to carry the same quality of genuine presence they aspire to bring to formal practice.",
       resonances: [
-        "You want your ordinary moments to carry sacred quality.",
-        "You want deeper mutual recognition over time.",
-        "You value ceremony and consistency.",
-        "You are ready to practice love as devotion.",
+        "You want your entire relationship to feel like a sacred practice, not just the intimate parts.",
+        "You are drawn to bringing ceremony and intention to ordinary moments.",
+        "You want to be genuinely known by your partner — and to genuinely know them.",
+        "You want love to be the most serious and the most joyful thing in your life.",
+        "You are ready to stop coasting on the assumption of love and begin the practice of it.",
       ],
     },
     pillars: [
-      { id: "presence", label: "FULL PRESENCE", title: "Arriving completely", body: "Bring body, heart, and attention fully into contact." },
-      { id: "ceremony", label: "CEREMONY", title: "Ordinary life made sacred", body: "Use threshold rituals to transform daily transitions." },
-      { id: "recognition", label: "RECOGNITION", title: "See the beloved truly", body: "Meet the living person, not the old relational image." },
-      { id: "honest_love", label: "HONEST LOVE", title: "Love without concealment", body: "Truthful disclosure with care deepens trust and eros." },
-      { id: "silence", label: "SACRED SILENCE", title: "Shared stillness", body: "Practice being together without filling every space." },
+      { id: "presence_full", label: "FULL PRESENCE", title: "Arriving Completely", body: "Conscious union begins with the simplest and most demanding of all practices: arriving completely. Not coming to the relationship with half your attention elsewhere, but actually arriving — body, heart, and awareness fully present in this moment, with this person, without reservation. The quality of everything else — communication, lovemaking, shared silence, conflict, repair — depends on this single foundational quality." },
+      { id: "ceremony", label: "CEREMONY", title: "Ordinary Life Made Sacred", body: "Ceremony is the practice of bringing conscious attention and genuine intention to an ordinary act — and in doing so, transforming its quality entirely. Couples who bring ceremony to their intimate life discover that the threshold moments — the beginning and end of a lovemaking encounter, the morning greeting, the parting before a day apart — are among the most powerful opportunities available for deepening genuine connection." },
+      { id: "recognition", label: "RECOGNITION", title: "Seeing the Beloved Truly", body: "One of the quiet tragedies of long-term relationships is the gradual replacement of the living person with the concept of the person. Partners stop seeing each other — they see their accumulated image, their expectations, their history. The practice of recognition is the ongoing discipline of looking again — meeting the beloved as if for the first time, as the living, changing, fundamentally mysterious person they actually are." },
+      { id: "honest_love", label: "HONEST LOVE", title: "Love Without Concealment", body: "Most couples are not living in love but in the fear of losing love — and that fear quietly determines what they say, what they withhold, and what they conceal. Honest love requires being exactly who you are in the presence of the beloved — not the edited, managed version, but the complete truth of this moment's experience. This honesty, when met with genuine acceptance, creates a depth of intimacy no romantic gesture can substitute for." },
+      { id: "devotional_practice", label: "DEVOTION", title: "The Daily Practice of Love", body: "Conscious union is not established once and maintained. It is a daily practice — the ongoing choice to bring genuine attention and care to the relationship rather than assuming it will sustain itself on history and romantic residue. Love is not a state you arrive at. It is something you do, every day, with the full force of your conscious attention." },
+      { id: "sacred_silence", label: "SACRED SILENCE", title: "Being Together Without Filling", body: "Shared silence — not the silence of emotional withdrawal, but the specific quality of two people genuinely at ease in each other's presence — reveals dimensions of connection that speech cannot reach. In it, something very quiet and very deep has room to move. Cultivating this silence as a conscious practice, rather than allowing it only by accident, is one of the most intimate acts available to a couple." },
     ],
     premium_features: [
-      { id: "union_practices", label: "UNION PRACTICES", description: "Daily conscious-contact templates for real couple life." },
-      { id: "ceremony_library", label: "CEREMONY LIBRARY", description: "Ritual frameworks for mornings, evenings, milestones, and repair." },
-      { id: "lineage_links", label: "LINEAGE LINKS", description: "Cross-linked source pathways connecting authors, traditions, and practice." },
+      { id: "union_practices", label: "UNION PRACTICES", description: "Daily partner practices for full presence, recognition, and genuine conscious contact in ordinary life." },
+      { id: "ceremony_library", label: "CEREMONY LIBRARY", description: "Complete ritual frameworks: honoring practices, closing rituals, morning unions, and the sacred marking of relationship milestones." },
+      { id: "long_muir_library", label: "LONG & MUIR LIBRARY", description: "The complete Conscious Union teaching library drawn from Barry Long and Charles Muir's full bodies of work." },
     ],
   },
 ];
 
+// ─────────────────────────────────────────────────────────────────────────────
+// PATH LONGFORM (keyed by slug for detail views)
+// ─────────────────────────────────────────────────────────────────────────────
+
 export const PATH_LONGFORM_BY_SLUG: Record<string, LongformPath> = {
-  tantra: {
+
+  "tantric-wisdom": {
     tagline: "An ancient path translated for modern couples",
     subtitle: "Through breath, presence, polarity, and the sacred body",
-    shortDescription: "A body-inclusive path where erotic aliveness and spiritual awareness develop together.",
+    shortDescription: "The five-thousand-year-old map of consciousness that locates the sacred inside the erotic body.",
     fullDescription:
-      "Tantric practice treats the body as a doorway to consciousness rather than a distraction from it. For couples, this means pacing intimacy through breath, awareness, and consent so trust and desire can grow together.\n\nThe practical shift is from performance to practice: arrive, regulate, attune, and then intensify only when both partners are genuinely available.",
-    forCouples: "For couples who want intimacy to feel conscious tonight and deepen over time.",
+      "Tantra is not a technique for better sex. It is a five-thousand-year-old map of consciousness that recognized, long before modern psychology, that the erotic body and the spiritual body are not separate. They are the same body, approached with different qualities of attention. Where most spiritual paths asked practitioners to transcend the senses, Tantra insisted on inhabiting them completely — recognizing in pleasure, sensation, and the living charge between two bodies the most immediate expression of the divine available to human beings.",
+    forCouples: "For couples who want intimacy to feel conscious tonight and grow spiritually over time.",
     sacredInvitation: {
       title: "Who This Path Calls",
-      body: "This path calls couples who feel that intimacy can be both sacred and practical. It serves pairs who want deeper presence, cleaner consent, and relational warmth without losing erotic current.",
+      body: "This path calls to couples who sense that something more is possible — not simply more pleasure or more frequency, but a different quality of contact altogether. Couples who have noticed that even in their most intimate moments, something in them is still watching, waiting, slightly elsewhere.",
       resonances: [
         "You want depth more than technique.",
-        "You want to feel seen, not only desired.",
-        "You want sacred language with practical steps.",
-        "You are ready to move from rushing to attunement.",
+        "You sense that your lovemaking has more silence, more reverence, and more aliveness available than you have yet discovered.",
+        "You are drawn to the idea that spiritual practice and erotic life belong together.",
+        "You want both partners to feel genuinely seen — not merely desired.",
+        "You are willing to be changed by intimacy, not just satisfied by it.",
       ],
     },
     pillars: [
-      {
-        id: "shiva_shakti",
-        label: "SHIVA AND SHAKTI",
-        title: "Sacred polarity",
-        body: "Consciousness and energy meet as complementary currents. The quality of that meeting shapes desire and trust.",
-      },
-      {
-        id: "prana",
-        label: "PRANA",
-        title: "Breath as bridge",
-        body: "Breath regulates nervous systems and synchronizes relational presence before intensity rises.",
-      },
-      {
-        id: "deha",
-        label: "DEHA",
-        title: "Body as temple",
-        body: "Approach the beloved with reverence, patience, and curiosity. This transforms contact quality.",
-      },
-      {
-        id: "bhakti",
-        label: "BHAKTI",
-        title: "Devotion",
-        body: "Devotion is a discipline of attention and care, not only an emotion. It keeps eros connected to love.",
-      },
-      {
-        id: "spanda",
-        label: "SPANDA",
-        title: "Divine pulse",
-        body: "Recognize subtle aliveness already present between you and stay with it instead of forcing escalation.",
-      },
+      { id: "shiva_shakti", label: "ŚIVA & ŚAKTI", title: "Sacred Polarity", body: "At the heart of Tantra is the recognition that existence itself is a dance between pure witnessing consciousness (Śiva) and living creative energy (Śakti). In your relationship, these poles are alive in every moment of genuine contact. One partner holds space; the other fills it. The quality of your intimacy depends on how consciously you inhabit and honor these complementary currents." },
+      { id: "prana", label: "PRĀṆA", title: "Breath as Bridge", body: "In Tantric physiology, breath is the vehicle of prāṇa — the animating life force that flows through the subtle body. Conscious breathing during intimacy transforms the quality of contact: it regulates the nervous system, opens the body to deeper sensation, and creates a shared rhythm that synchronizes two subtle bodies before the physical bodies even touch." },
+      { id: "deha", label: "DEHA", title: "Body as Living Temple", body: "Tantra was the first tradition to fully consecrate the physical body — to insist that the body is not an obstacle to the sacred but its most immediate and complete expression. Every part of it is worthy of reverence. In relationship, this means approaching your partner's body with the quality of attention you would bring to a genuinely holy space: unhurried, curious, full of gratitude." },
+      { id: "bhakti", label: "BHAKTI", title: "Devotion", body: "Bhakti is the yogic path of love as spiritual practice. In Tantric relationship, it transforms how partners meet: not as two individuals negotiating needs, but as two expressions of divine consciousness recognizing each other. It requires the willingness to look at your partner as if for the first time — and to let that aliveness land in the body as genuine reverence." },
+      { id: "spanda", label: "SPANDA", title: "The Divine Pulse", body: "Spanda — the vibrant, pulsing aliveness at the heart of Kashmir Shaivism — is not something to be created in intimacy. It is something to be recognized: already present in the trembling of genuine excitement, in the pause between exhale and inhale, in the moment when two bodies first touch with full awareness." },
+      { id: "samadhi", label: "SAMĀDHI", title: "The Dissolution", body: "At the depth of genuine conscious lovemaking, the boundary between two selves becomes permeable, and what is experienced is not two people touching but one field of awareness moving within itself. This state cannot be forced. It arises when presence, breath, polarity, and devotion are all fully and honestly inhabited." },
+      { id: "samskara", label: "SAṂSKĀRA", title: "The Closing Ritual", body: "How a couple closes an intimate encounter is as important as how they enter it. Couples who close with care — a held stillness, a breath taken together, a whispered truth, or a moment of silent gratitude — create a different quality of shared history. The closing ritual is where the experience settles as a genuine resource." },
     ],
     premiumFeatures: [
-      { id: "guided_tracks", label: "GUIDED TRACKS", description: "Audio-led tantric couple sessions from short resets to deep evening rituals." },
-      { id: "energy_maps", label: "ENERGY MAPS", description: "Visual subtle-body maps for practical use in partnered practice." },
-      { id: "sacred_love_library", label: "SACRED LOVE LIBRARY", description: "Expanded lineage notes and deep links across relevant authors and traditions." },
+      { id: "guided_tracks", label: "GUIDED TRACKS", description: "Full audio-guided Tantric journeys for couples, from 10-minute presence practices to 60-minute conscious lovemaking rituals." },
+      { id: "energy_maps", label: "ENERGY MAPS", description: "Visual guides to the subtle body: chakra systems, prāṇa channels, and the energetic anatomy of conscious union." },
+      { id: "sacred_love_library", label: "SACRED LOVE LIBRARY", description: "The complete Tantric Wisdom teaching library: practices by Osho, Margot Anand, Daniel Odier, Sally Kempton, and Charles Muir." },
     ],
   },
-  tao: {
-    tagline: "Sexual energy as vital medicine",
+
+  "taoist-alchemy": {
+    tagline: "Sexual energy as vital medicine, not expenditure",
     subtitle: "Through circulation, refinement, and shared life force",
-    shortDescription: "A Taoist path for couples who want intimacy to nourish vitality instead of draining it.",
+    shortDescription: "The ancient Taoist science of sexual energy — translated into sustainable vitality and deepening love.",
     fullDescription:
-      "Taoist intimacy views sexual energy as life force. The goal is not suppression and not over-discharge, but smart circulation that supports health, steadiness, and connection.\n\nThis path is especially valuable for stress-heavy life seasons. It teaches softness before escalation and continuity over peak-chasing.",
-    forCouples: "For couples who want intimacy to leave both partners more alive and connected.",
+      "Taoism recognized two thousand years ago what modern medicine is only beginning to map: that sexual energy and life energy are the same force. How a couple manages that force determines not only the quality of their intimate life but the health of their bodies and the depth of their bond over decades. The Taoist path transforms desire from a brief peak that depletes into a circulating current that heals, vitalizes, and deepens love with each encounter.",
+    forCouples: "For couples who want their intimate life to leave them more alive, more in love, and more energized — not less.",
     sacredInvitation: {
       title: "Who This Path Calls",
-      body: "This path calls couples who feel depletion after intimacy and want a more sustainable erotic rhythm built on flow, timing, and regulation.",
+      body: "This path calls to couples who have noticed that conventional lovemaking often leaves a subtle depletion in its wake. Couples who are curious about the body's deeper intelligence and want their erotic life to contribute to their health and vitality rather than drawing from it.",
       resonances: [
-        "You want replenishment, not crash cycles.",
-        "You want practical energetic literacy.",
-        "You want attraction with less pressure.",
-        "You want long-term vitality as a couple practice.",
+        "You want your intimate life to leave both of you feeling more energized, not less.",
+        "You are curious about the body's subtle energetic architecture.",
+        "You want a practice that deepens over decades rather than depending on novelty.",
+        "You are drawn to ancient science applied with practical precision.",
+        "You want both partners to benefit equally and lastingly from what flows between you.",
       ],
     },
     pillars: [
-      { id: "jing", label: "JING", title: "Vital essence", body: "Treat sexual essence as a resource to cultivate and circulate." },
-      { id: "chi", label: "CHI", title: "Life current", body: "Track and guide subtle energy through breath, attention, and coordinated pacing." },
-      { id: "shen", label: "SHEN", title: "Spirit and luminosity", body: "Refine erotic energy into heartful presence and clearer consciousness." },
-      { id: "orbit", label: "MICROCOSMIC ORBIT", title: "Shared circulation", body: "Create synchronized energetic loops that increase coherence and nourishment." },
-      { id: "yin_yang", label: "YIN YANG", title: "Complementary balance", body: "Use dynamic balance of receptive and active qualities in both partners." },
+      { id: "jing", label: "JĪNG", title: "Vital Essence", body: "Jīng is the most fundamental form of life force in Taoist physiology — the concentrated vital essence governing vitality, creativity, and longevity. The Taoist path begins with the recognition that jīng can be cultivated and redirected through the body rather than discharged — not deprivation but expansion: more aliveness, more connection, sustained and compounding over time." },
+      { id: "chi", label: "CHĪ", title: "Life Current", body: "Chī is the animating current flowing through the body's meridian system. In lovemaking, chī determines whether touch feels alive or mechanical, whether presence feels mutual or absent. Learning to feel chī in your own body — and then the current between your body and your partner's — transforms physical intimacy into genuine energy exchange." },
+      { id: "shen", label: "SHÉN", title: "Spirit & Luminosity", body: "Shén governs consciousness, emotional radiance, and genuine presence — the lit quality in the eyes, the attention that feels complete. Taoist sexual cultivation aims ultimately at shén: the refinement of sexual and vital energy all the way through the heart and mind, until lovemaking becomes an act of full spiritual presence." },
+      { id: "microcosmic_orbit", label: "MICROCOSMIC ORBIT", title: "Shared Energy Circulation", body: "The Microcosmic Orbit — the conscious circulation of chī up the spine, over the crown, and down through the front of the body — becomes extraordinary as a couples practice: two bodies learning to share and circulate their combined energy field through synchronized breath, intention, and conscious touch." },
+      { id: "yin_yang", label: "YĪN YÁNG", title: "The Dance of Complementary Energies", body: "Yīn and yáng are not opposites in conflict but complementary principles in dynamic balance. Genuine intimacy requires the fluid, conscious exchange of both, with each partner capable of inhabiting either pole as the living moment requires." },
+      { id: "valley_orgasm", label: "VALLEY ORGASM", title: "Pleasure That Expands", body: "The distinction between peak orgasm, which discharges vital energy, and valley orgasm, which expands and circulates it, is the gateway to a dimension of erotic experience most couples never reach: full-body waves of sensation that build without the conventional arc of tension and release, leaving both partners more alive and more deeply connected." },
+      { id: "healing_love", label: "HEALING LOVE", title: "Lovemaking as Medicine", body: "The ancient Taoist physicians documented what modern endocrinology confirms: that conscious, loving sexual practice has measurable effects on hormonal balance, immune function, and longevity — transforming lovemaking from a recreational act into a genuine and renewable health practice." },
     ],
     premiumFeatures: [
-      { id: "chi_cultivation", label: "CHI CULTIVATION TRACKS", description: "Guided Taoist couple cultivation paths from foundations to advanced circulation." },
-      { id: "meridian_maps", label: "MERIDIAN MAPS", description: "Readable meridian and organ-energy visuals for practical home practice." },
-      { id: "chia_library", label: "MANTAK CHIA LIBRARY", description: "Deeper source pathways tied to classic Taoist couple cultivation teachings." },
+      { id: "chi_cultivation", label: "CHI CULTIVATION TRACKS", description: "Audio-guided Taoist energy practices for couples: from the Microcosmic Orbit to the full Healing Love sequence." },
+      { id: "body_maps", label: "MERIDIAN MAPS", description: "Visual guides to the Taoist subtle body: chī channels, organ energy systems, and the energetic anatomy of Taoist lovemaking." },
+      { id: "chia_library", label: "MANTAK CHIA LIBRARY", description: "The complete Taoist Alchemy teaching library, drawn from Mantak Chia's forty-year body of work." },
     ],
   },
-  polarity: {
+
+  "sacred-polarity": {
     tagline: "The living charge between two people",
-    subtitle: "Restoring magnetism through presence, direction, and radiance",
-    shortDescription: "A polarity path for couples who are loving but want desire and energetic contrast alive again.",
+    subtitle: "Restoring desire through presence, direction, and radiance",
+    shortDescription: "For couples who want the magnetic charge back — through genuine presence and radiance, not performance.",
     fullDescription:
-      "Sacred polarity work restores contrast without rigid role scripts. It is about conscious energetic differentiation, consent, and emotional accountability.\n\nWhen practiced well, polarity brings back anticipation, attraction, and relational aliveness while preserving tenderness and safety.",
-    forCouples: "For couples who want magnetic attraction to return without abandoning relational maturity.",
+      "Most couples don't fall out of love. They fall out of polarity. The qualities that created the initial attraction gradually collapse under the demands of modern equality and shared logistics. When the energetic difference flattens, desire has nothing to arc across. This path restores that living charge: not through role-playing, but through the genuine cultivation of directed presence and luminous radiance as spiritual practices.",
+    forCouples: "For couples who remember what it felt like to be magnetically drawn to each other — and want that alive quality back.",
     sacredInvitation: {
       title: "Who This Path Calls",
-      body: "This path calls couples who feel relationally loyal but erotically flat and want to rebuild charge with integrity.",
+      body: "This path calls to couples who sense that the energetic difference between them has flattened — that they are more colleagues than lovers, more comfortable than turned on. It calls to the partner who wants to rediscover genuine presence, and to the partner who wants to rediscover genuine opening.",
       resonances: [
-        "You want attraction without drama games.",
-        "You want conscious lead-receive dynamics.",
-        "You want devotion and desire in the same field.",
-        "You are willing to practice, not just discuss.",
+        "You want to feel magnetically drawn to each other again.",
+        "You sense that something has flattened between you and don't know how to restore it.",
+        "You want more aliveness in the space between you, not more management.",
+        "You are willing to stop negotiating and start inhabiting.",
+        "You are curious about the role of energetic difference in sustained desire.",
       ],
     },
     pillars: [
-      { id: "presence", label: "PRESENCE", title: "Directed consciousness", body: "Presence that moves toward the beloved with steadiness and care." },
-      { id: "radiance", label: "RADIANCE", title: "Luminous life force", body: "Expression that is alive, embodied, and relationally connected." },
-      { id: "edge", label: "THE EDGE", title: "Growth as devotion", body: "Each partner trains where they habitually collapse, defend, or withdraw." },
-      { id: "gift", label: "THE GIFT", title: "Full offering", body: "Erotic charge deepens when presence and openness are genuinely offered." },
-      { id: "surrender", label: "SURRENDER", title: "Conscious opening", body: "Release management only where trust and attunement are real." },
+      { id: "presence", label: "PRESENCE", title: "Directed Consciousness", body: "The masculine principle is consciousness that has a direction — the specific quality of attention that moves toward, commits fully, and holds steady under relational pressure. Presence is what a partner feels when the other is truly here — not managing from a slight distance, but actually, bodily, unavoidably here." },
+      { id: "radiance", label: "RADIANCE", title: "Luminous Life Force", body: "The feminine principle is energy that moves outward: the natural radiance that animates a space, expresses feeling fully, and creates the living field of aliveness a relationship exists within. Radiance is what happens when a person stops managing their expression and allows their aliveness to move through the body without restriction." },
+      { id: "the_edge", label: "THE EDGE", title: "Growth as Devotion", body: "Genuine polarity requires both partners to be continuously growing into their deepest capacity. The masculine edge is the willingness to feel fear and move forward into love anyway. The feminine edge is the willingness to trust — to open to genuine depth rather than testing and contracting when that depth is offered." },
+      { id: "the_gift", label: "THE GIFT", title: "Full Offering", body: "The deepest masculine gift is undivided presence — the full force of conscious attention offered without reservation. The deepest feminine gift is radiant openness — the full expression of aliveness and feeling, offered without guarding. When both gifts are given simultaneously, the couple enters a living circuit indistinguishable from spiritual experience." },
+      { id: "devotion", label: "DEVOTION", title: "Seeing the Sacred in the Beloved", body: "Genuine erotic devotion — the capacity to see through the surface of the beloved to the divine consciousness moving within them — is not romantic sentiment but a cultivated perceptual practice. It is what distinguishes adoration from objectification, devotion from possession." },
+      { id: "surrender", label: "SURRENDER", title: "The Practice of Opening", body: "Surrender is the conscious choice to trust a partner's genuine presence enough to release the management that keeps a person safe and slightly contracted. For the feminine-identified partner, surrender to authentic masculine presence is one of the most profound spiritual practices available." },
     ],
     premiumFeatures: [
-      { id: "polarity_practices", label: "POLARITY PRACTICES", description: "Layered drills for restoring charge with consent and regulation." },
-      { id: "deida_library", label: "DEIDA AND LONG LIBRARY", description: "Expanded source pathways for polarity, devotion, and conscious union." },
-      { id: "polarity_maps", label: "POLARITY MAPS", description: "Decision maps to diagnose and repair flattened attraction patterns." },
+      { id: "polarity_practices", label: "POLARITY PRACTICES", description: "Partner practices specifically designed to restore energetic distinction and the living charge between two people." },
+      { id: "deida_library", label: "DEIDA & LONG LIBRARY", description: "The complete Sacred Polarity teaching library drawn from David Deida and Barry Long's full bodies of work." },
+      { id: "polarity_maps", label: "POLARITY MAPS", description: "Visual frameworks for understanding, diagnosing, and restoring energetic polarity in long-term relationships." },
     ],
   },
-  "sacred-desire": {
+
+  "embodied-heart": {
     tagline: "Where the nervous system meets the sacred",
     subtitle: "Through somatic truth, emotional courage, and body-led love",
-    shortDescription: "A path for couples who need safety, honesty, and repair as foundations for lasting desire.",
+    shortDescription: "For couples who know that the heart must open before the body can — and want the practices that make that opening real.",
     fullDescription:
-      "The Embodied Heart path begins with a direct truth: if bodies do not feel safe, erotic depth does not stabilize. This work builds attunement through somatic awareness, disclosure, and co-regulation.\n\nIt is less about intensity and more about contact quality. As shame and protection soften, tenderness and eros can coexist again.",
-    forCouples: "For couples who want emotional depth and erotic aliveness to reinforce each other.",
+      "The most sophisticated erotic techniques in the world cannot open a body that does not feel genuinely safe. Most couples carry, in their tissues and nervous systems, the accumulated history of every moment they were not fully received. This path works where that accumulation lives — in the body itself — offering the specific practices of somatic honesty, emotional courage, and genuine nervous system safety that allow love to arrive all the way in.",
+    forCouples: "For couples who want their love to feel as deep as they know it is — and want to remove what stands between them and that depth.",
     sacredInvitation: {
       title: "Who This Path Calls",
-      body: "This path calls couples who love each other but still feel defended, misunderstood, or subtly guarded in intimate moments.",
+      body: "This path calls to couples who have noticed that something in them stays slightly guarded even with the person they love most. Who sense that their intimate life could be more honest, more vulnerable, more alive — but who have not found the specific practice that makes that openness feel genuinely safe.",
       resonances: [
-        "You want to feel known, not managed.",
-        "You want body-led truth without blame cycles.",
-        "You want practical repair pathways.",
-        "You want safer nervous-system intimacy.",
+        "You want to feel genuinely known — not just loved.",
+        "You sense that protection has quietly replaced presence in your intimate life.",
+        "You are willing to feel what is actually true in your body, even when it is difficult.",
+        "You want both partners to feel safe to be fully themselves in each other's presence.",
+        "You believe that emotional honesty and erotic aliveness are the same movement.",
       ],
     },
     pillars: [
-      { id: "soma", label: "SOMA", title: "The body knows", body: "Track what the body says before the story takes over." },
-      { id: "ns", label: "NERVOUS SYSTEM", title: "Safety as eros", body: "Co-regulation is a core erotic skill in long-term intimacy." },
-      { id: "disclosure", label: "DISCLOSURE", title: "Body-led truth", body: "Share sensation-level truth to create cleaner contact and less defensiveness." },
-      { id: "shame", label: "SHAME", title: "Dissolving armor", body: "Gentle exposure in safe connection reduces hidden shame loops." },
-      { id: "repair", label: "REPAIR", title: "Rupture as doorway", body: "Repair skill predicts long-term trust and relational resilience." },
+      { id: "soma", label: "SOMA", title: "The Body Knows", body: "The body holds a quality of knowledge the mind cannot manufacture. It knows whether it is genuinely safe or merely reassured. Somatic practice begins with the demanding discipline of learning to feel what the body actually knows — and trusting that intelligence as the primary guide to what intimacy needs." },
+      { id: "nervous_system", label: "NERVOUS SYSTEM", title: "Safety as Eros", body: "Genuine eros in a long-term relationship requires the parasympathetic state — the physiological condition of rest, openness, and receptivity. Creating genuine felt safety for a partner is not a preliminary to desire. It is one of the most intimate and erotic acts available between two people." },
+      { id: "disclosure", label: "DISCLOSURE", title: "Body-Led Truth", body: "Body-led disclosure is the practice of sharing what is present in the body — the tightening, the warmth, the held breath — without the narrative mind's interpretation layered over it. This quality of somatic honesty creates over time a mutual knowing that no amount of conventional communication can substitute for." },
+      { id: "shame", label: "SHAME", title: "The Dissolution of Armor", body: "Shame lives in the body before it lives in the mind. It quietly determines which dimensions of desire and authentic self can be expressed. Its dissolution is a gradual, body-led process of discovering, again and again, that genuine exposure to a genuinely safe partner changes what shame said was true about you." },
+      { id: "contact", label: "CONTACT", title: "Meeting Without Merging", body: "Genuine contact requires two distinct, fully present people actually meeting rather than two familiar patterns interacting from comfortable habit. Contact requires the willingness to be surprised by the beloved — which requires the willingness to actually look." },
+      { id: "repair", label: "REPAIR", title: "Rupture as Doorway", body: "Couples who learn to repair well develop something more valuable than the absence of conflict: a trust in the relationship's resilience that creates the safety in which genuine vulnerability — and therefore genuine eros — becomes available." },
     ],
     premiumFeatures: [
-      { id: "somatic_practices", label: "SOMATIC PRACTICES", description: "Guided regulation and disclosure drills for couple coherence." },
-      { id: "boehm_day_library", label: "BOEHM AND DAY LIBRARY", description: "Expanded source tracks for nervous-system-aware intimacy and repair." },
-      { id: "repair_toolkit", label: "REPAIR TOOLKIT", description: "Structured repair frameworks for conflict, distance, and reconnection." },
+      { id: "somatic_practices", label: "SOMATIC PRACTICES", description: "Body-centered partner practices for nervous system regulation, somatic disclosure, and the cultivation of genuine felt safety." },
+      { id: "boehm_day_library", label: "BOEHM & DAY LIBRARY", description: "The complete Embodied Heart teaching library drawn from Michaela Boehm and Jan Day's full bodies of work." },
+      { id: "repair_tools", label: "REPAIR TOOLKIT", description: "Guided repair practices for couples: body-led reconnection after conflict, somatic forgiveness, and rebuilding genuine erotic trust." },
     ],
   },
-  "neo-tantra": {
-    tagline: "What arrives when you stop rushing",
-    subtitle: "Through stillness, inner awareness, and unhurried contact",
-    shortDescription: "A Slow Love path that shifts couples from pressure and performance to sustained presence.",
+
+  "slow-love": {
+    tagline: "What arrives when you finally stop rushing",
+    subtitle: "Through stillness, internal awareness, and the intelligence of unhurried contact",
+    shortDescription: "The Tantric discovery that slowing down is not settling for less — it is the path to everything intimacy has been trying to offer.",
     fullDescription:
-      "Slow Love teaches that stillness is not less intimacy. It is the condition for deeper intimacy. Instead of chasing outcomes, couples inhabit sensation and awareness with less force.\n\nThis path often reopens desire after burnout because it removes pressure and restores body trust.",
-    forCouples: "For couples who want slower, deeper, more sustainable intimacy.",
+      "Every conventional approach to improving intimate life adds something — more technique, more variety, more novelty, more effort. Diana Richardson's approach, refined through thousands of hours working directly with couples, subtracts. And in the subtraction, something arrives that no technique can manufacture: the quality of erotic presence and genuine connection only available in genuine stillness.",
+    forCouples: "For couples who sense that something quieter, deeper, and more sustaining than what they've known is possible.",
     sacredInvitation: {
       title: "Who This Path Calls",
-      body: "This path calls couples tired of trying harder and ready to practice less force, more presence, and cleaner pacing.",
+      body: "This path calls to couples who are tired of trying harder — who have added enough techniques, enough workshops, enough well-intentioned effort — and who sense that the intimacy they want is not on the other side of more, but on the other side of less.",
       resonances: [
-        "You want connection over performance.",
-        "You want pressure-free erotic growth.",
-        "You want steadier intimacy in real life rhythms.",
-        "You want to rediscover sensation from the inside out.",
+        "You want genuine connection more than performed passion.",
+        "You sense that your intimate life would deepen if it slowed down.",
+        "You are willing to give up the peak if it means gaining something more lasting.",
+        "You want both partners to feel genuinely arrived — not arriving.",
+        "You are curious about what the body knows when it is not being directed.",
       ],
     },
     pillars: [
-      { id: "stillness", label: "STILLNESS", title: "Ground of eros", body: "Stillness stabilizes attention and opens subtler sensation." },
-      { id: "inner_touch", label: "INNER TOUCH", title: "Awareness inside the body", body: "Feel from within, not only from external stimulation." },
-      { id: "non_goal", label: "NON-GOAL", title: "Release destination pressure", body: "Drop outcome obsession to let aliveness expand naturally." },
-      { id: "relaxation", label: "RELAXATION", title: "Erotic letting go", body: "Relaxation increases receptivity, safety, and depth." },
-      { id: "time", label: "TIME", title: "Inhabit duration", body: "Unhurried time is a practical erotic technology." },
+      { id: "stillness", label: "STILLNESS", title: "The Ground of Eros", body: "Stillness is not the absence of desire. It is the specific quality of inner presence — relaxed, alert, genuinely arrived in the body — in which desire can move freely without being chased or managed. The Slow Love path makes stillness not the problem to be solved by action but the ground from which genuine erotic intelligence naturally moves." },
+      { id: "internal_touch", label: "INNER TOUCH", title: "Awareness Inside the Body", body: "Richardson's central practice innovation is 'inner touch' — the cultivation of awareness inside the body during lovemaking. Instead of experiencing touch as something that happens to the surface, inner touch means inhabiting the body so completely that sensation is felt from within. This simple redirection transforms the quality of intimate contact more profoundly than any external technique." },
+      { id: "non_goal", label: "NON-GOAL", title: "Releasing the Destination", body: "Non-goal lovemaking liberates pleasure from the tyranny of destination. When neither partner is trying to get anywhere, time expands, sensation deepens, and something arrives that contains more aliveness than orgasm itself — without the depletion." },
+      { id: "relaxation", label: "RELAXATION", title: "The Erotic Power of Letting Go", body: "A genuinely relaxed body is among the most erotic states available. Its capacity for sensation and energetic exchange is orders of magnitude greater than those available in a contracted, goal-seeking body. Learning to genuinely relax in the presence of the beloved, as a practice, is the primary skill of Slow Love." },
+      { id: "body_intelligence", label: "BODY INTELLIGENCE", title: "Trust the Deeper Knowing", body: "When two bodies are genuinely present to each other, relaxed, and free from the direction of goal-seeking mind, the energy between them knows what it wants to do. Couples who learn to follow the body's own intelligence discover an erotic creativity and depth that deliberate effort never achieves." },
+      { id: "time", label: "TIME", title: "Inhabiting Duration", body: "One of the most immediate and transformative practices of Slow Love is simply more time: unhurried, without destination, given to the experience of being genuinely present with another person's body. When couples treat intimate time as worthy of genuine spaciousness, something changes fundamentally in what is available there." },
     ],
     premiumFeatures: [
-      { id: "slow_practices", label: "SLOW LOVE PRACTICES", description: "Guided stillness and inner-awareness pathways for couples." },
-      { id: "richardson_library", label: "DIANA RICHARDSON LIBRARY", description: "Expanded source teachings for non-goal intimate presence." },
-      { id: "integration", label: "DAILY INTEGRATION", description: "Micro-practices that carry slow intimacy into everyday contact." },
+      { id: "slow_practices", label: "SLOW LOVE PRACTICES", description: "Guided partner practices in stillness, inner touch, and non-goal lovemaking — from brief daily encounters to extended evening rituals." },
+      { id: "richardson_library", label: "DIANA RICHARDSON LIBRARY", description: "The complete Slow Love teaching library drawn from Diana Richardson's thirty years of couples work." },
+      { id: "integration_practices", label: "INTEGRATION PRACTICES", description: "Daily micro-practices that bring Slow Love awareness into ordinary moments of physical contact." },
     ],
   },
-  "vajrayana-kashmir-shaivism": {
-    tagline: "Two people genuinely meeting",
-    subtitle: "Through presence, ceremony, and conscious recognition",
-    shortDescription: "A Conscious Union path for couples who want relationship itself to become sacred daily practice.",
+
+  "conscious-union": {
+    tagline: "Two people genuinely meeting — body, heart, and awareness",
+    subtitle: "Through presence, ceremony, and the art of mutual recognition",
+    shortDescription: "For couples ready to bring the full force of conscious awareness to every dimension of their life together.",
     fullDescription:
-      "Conscious Union integrates ritual, presence, and honest love into the full relationship lifecycle, not only explicit intimacy windows.\n\nIts focus is continuity: transitions, repair, devotional attention, and shared silence as living relational disciplines.",
-    forCouples: "For couples who want their entire relationship field to feel intentional, alive, and sacred.",
+      "Conscious union is the distillation of what every authentic intimacy path is pointing toward: two people who are genuinely present to each other, genuinely honest with each other, and genuinely growing together into the fullest expression of what their love makes possible. This path synthesizes the teachings of Barry Long, Charles Muir, and Jan Day into a complete framework for couples who want their entire relationship to be a conscious spiritual practice.",
+    forCouples: "For couples who want their relationship to be the most alive, most honest, and most deeply nourishing thing in their lives.",
     sacredInvitation: {
       title: "Who This Path Calls",
-      body: "This path calls couples ready to move from passive relationship maintenance to active daily practice in love.",
+      body: "This path calls to couples who sense that their relationship has more potential than it has yet realized — not just in the bedroom but in the full fabric of daily life together. Couples who want their ordinary moments to carry the same quality of genuine presence they aspire to bring to formal practice.",
       resonances: [
-        "You want your ordinary moments to carry sacred quality.",
-        "You want deeper mutual recognition over time.",
-        "You value ceremony and consistency.",
-        "You are ready to practice love as devotion.",
+        "You want your entire relationship to feel like a sacred practice, not just the intimate parts.",
+        "You are drawn to bringing ceremony and intention to ordinary moments.",
+        "You want to be genuinely known by your partner — and to genuinely know them.",
+        "You want love to be the most serious and the most joyful thing in your life.",
+        "You are ready to stop coasting on the assumption of love and begin the practice of it.",
       ],
     },
     pillars: [
-      { id: "presence", label: "FULL PRESENCE", title: "Arriving completely", body: "Bring body, heart, and attention fully into contact." },
-      { id: "ceremony", label: "CEREMONY", title: "Ordinary life made sacred", body: "Use threshold rituals to transform daily transitions." },
-      { id: "recognition", label: "RECOGNITION", title: "See the beloved truly", body: "Meet the living person, not the old relational image." },
-      { id: "honest_love", label: "HONEST LOVE", title: "Love without concealment", body: "Truthful disclosure with care deepens trust and eros." },
-      { id: "silence", label: "SACRED SILENCE", title: "Shared stillness", body: "Practice being together without filling every space." },
+      { id: "presence_full", label: "FULL PRESENCE", title: "Arriving Completely", body: "Conscious union begins with the simplest and most demanding of all practices: arriving completely — body, heart, and awareness fully present in this moment, with this person, without reservation. The quality of everything else depends on this single foundational quality." },
+      { id: "ceremony", label: "CEREMONY", title: "Ordinary Life Made Sacred", body: "Ceremony is the practice of bringing conscious attention and genuine intention to an ordinary act. Couples who bring ceremony to their intimate life discover that the threshold moments — the beginning and end of a lovemaking encounter, the morning greeting, the parting before a day apart — are among the most powerful opportunities for deepening genuine connection." },
+      { id: "recognition", label: "RECOGNITION", title: "Seeing the Beloved Truly", body: "One of the quiet tragedies of long-term relationships is the gradual replacement of the living person with the concept of the person. The practice of recognition is the ongoing discipline of looking again — meeting the beloved as if for the first time, as the living, changing, fundamentally mysterious person they actually are." },
+      { id: "honest_love", label: "HONEST LOVE", title: "Love Without Concealment", body: "Honest love requires being exactly who you are in the presence of the beloved — not the edited, managed version, but the complete truth of this moment's experience. This honesty, when met with genuine acceptance, creates a depth of intimacy no romantic gesture can substitute for." },
+      { id: "devotional_practice", label: "DEVOTION", title: "The Daily Practice of Love", body: "Conscious union is a daily practice — the ongoing choice to bring genuine attention and care to the relationship rather than assuming it will sustain itself on history and romantic residue. Love is not a state you arrive at. It is something you do, every day, with the full force of your conscious attention." },
+      { id: "sacred_silence", label: "SACRED SILENCE", title: "Being Together Without Filling", body: "Shared silence — the specific quality of two people genuinely at ease in each other's presence — reveals dimensions of connection that speech cannot reach. In it, something very quiet and very deep has room to move. Cultivating this silence as a conscious practice is one of the most intimate acts available to a couple." },
     ],
     premiumFeatures: [
-      { id: "union_practices", label: "UNION PRACTICES", description: "Daily conscious-contact templates for real couple life." },
-      { id: "ceremony_library", label: "CEREMONY LIBRARY", description: "Ritual frameworks for mornings, evenings, milestones, and repair." },
-      { id: "lineage_links", label: "LINEAGE LINKS", description: "Cross-linked source pathways connecting authors, traditions, and practice." },
+      { id: "union_practices", label: "UNION PRACTICES", description: "Daily partner practices for full presence, recognition, and genuine conscious contact in ordinary life." },
+      { id: "ceremony_library", label: "CEREMONY LIBRARY", description: "Complete ritual frameworks: honoring practices, closing rituals, morning unions, and the sacred marking of relationship milestones." },
+      { id: "long_muir_library", label: "LONG & MUIR LIBRARY", description: "The complete Conscious Union teaching library drawn from Barry Long and Charles Muir's full bodies of work." },
     ],
   },
 };
