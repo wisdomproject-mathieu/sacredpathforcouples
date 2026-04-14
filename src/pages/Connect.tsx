@@ -444,38 +444,42 @@ const Connect = () => {
         </div>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-3">
-        {[
-          {
-            icon: Sparkles,
-            iconClass: "text-cyan-300",
-            title: copy.weather,
-            desc: copy.weatherDesc,
-          },
-          {
-            icon: MessageCircleHeart,
-            iconClass: "text-violet-300",
-            title: copy.unsaid,
-            desc: copy.unsaidDesc,
-          },
-          {
-            icon: Users,
-            iconClass: "text-emerald-300",
-            title: copy.thread,
-            desc: copy.threadDesc,
-          },
-        ].map((item) => {
-          const Icon = item.icon;
-          return (
-            <div key={item.title} className="rounded-[26px] border border-border/30 bg-card/45 p-5">
-              <div className={`inline-flex rounded-2xl border border-border/30 bg-background/45 p-3 ${item.iconClass}`}>
-                <Icon className="h-5 w-5" />
-              </div>
-              <h3 className="mt-4 font-display text-xl text-foreground">{item.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.desc}</p>
-            </div>
-          );
-        })}
+      <section className="rounded-[28px] border border-amber-300/25 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.14),transparent_60%),linear-gradient(135deg,rgba(245,158,11,0.10),rgba(15,23,42,0.06))] p-6 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.45)]">
+        <p className="text-xs uppercase tracking-[0.28em] text-amber-300">Sacred Temple</p>
+        <h3 className="mt-3 font-display text-3xl text-foreground md:text-4xl">Your daily practice, together.</h3>
+        <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
+          The Temple is where your relationship becomes a living practice. Each day you arrive together — or return alone — and let one small act of presence open what words cannot. Weather, ritual, body, message, pathway, memory: six doorways into the same sacred ground.
+        </p>
+
+        <blockquote className="mt-5 border-l-2 border-amber-400/50 pl-4">
+          <p className="text-sm leading-7 text-muted-foreground italic">
+            "The body is the doorway. When two people slow down and arrive in their bodies together, everything changes. Presence is the practice."
+          </p>
+          <footer className="mt-2 text-xs uppercase tracking-[0.18em] text-amber-300/80">Diana Richardson</footer>
+        </blockquote>
+
+        <ul className="mt-5 space-y-2">
+          {[
+            "Read the emotional climate before choosing any practice",
+            "Open guided rituals for softness, longing, devotion, or repair",
+            "Let the body lead when words have run dry",
+          ].map((line) => (
+            <li key={line} className="flex items-start gap-3 text-sm text-muted-foreground">
+              <span className="mt-0.5 text-amber-400">✦</span>
+              <span className="leading-6">{line}</span>
+            </li>
+          ))}
+        </ul>
+
+        <a
+          href="/app/space"
+          className="mt-6 inline-flex items-center gap-2 rounded-2xl border border-amber-400/30 bg-amber-400/12 px-5 py-3 text-sm text-foreground transition-all hover:border-amber-400/50 hover:bg-amber-400/18"
+        >
+          Enter the Temple
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4 text-amber-400">
+            <path fillRule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clipRule="evenodd" />
+          </svg>
+        </a>
       </section>
 
       {message && (
