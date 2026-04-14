@@ -506,11 +506,174 @@ const authors: Author[] = [
     overviewLine: "Ancient Taoist mechanics for modern couples who want lasting erotic energy.",
     icon: Waves,
     iconClass: "text-cyan-300",
-    teaser: [
-      "Learn the practical architecture of Taoist couple energy work for modern relationship life.",
-      "Move from depletion cycles to circulation-based intimacy that leaves both partners nourished.",
-      "Premium includes guided progression from first practices to advanced couple sequencing.",
-    ],
+    content: {
+      heroIntro: [
+        "Mantak Chia spent decades translating sealed Taoist sexual classics into practices any couple can learn. His central discovery: the depletion couples feel after lovemaking is not inevitable — it is a choice that can be reversed.",
+        "His Universal Tao system teaches couples to redirect sexual energy through the body rather than discharge it, transforming lovemaking from a brief peak into a renewable source of vitality and deepening love.",
+      ],
+      whoItsFor: [
+        {
+          title: "Couples who feel depleted after sex",
+          body: "The flatness, mild withdrawal, or quiet emotional distance after lovemaking is the body signaling energy loss. Chia's practices stop the leak.",
+        },
+        {
+          title: "Couples who want their intimate life to build health",
+          body: "Learn to circulate rather than discharge vital essence — turning each encounter into a net gain rather than a net loss of life force.",
+        },
+        {
+          title: "Couples ready for a practice that deepens over decades",
+          body: "Unlike novelty-based approaches, Taoist cultivation builds capacity over time. A couple who practices for ten years has something extraordinary.",
+        },
+        {
+          title: "Partners curious about the body's subtle architecture",
+          body: "If you've sensed that there's more happening energetically during intimacy than physical sensation alone, this framework maps that territory precisely.",
+        },
+      ],
+      practicePreview: {
+        title: "Synchronized Belly Breath",
+        body: "The entry point to all Taoist couples work. Two bodies synchronizing their breath activates the shared energy field before any other practice begins.",
+        steps: [
+          "Sit facing each other, one hand on your own belly, one hand on your partner's belly.",
+          "Breathe slowly and deeply together for two minutes, feeling the rise and fall synchronize.",
+          "On each exhale, consciously relax the pelvic floor and lower belly.",
+          "On each inhale, draw energy upward from the base of the spine toward the heart.",
+          "Close with thirty seconds of held eye contact and one full breath taken together.",
+        ],
+      },
+      beginnerTrack: {
+        title: "Beginner Track: Learning to Feel Energy",
+        body: "Before circulating energy, couples must learn to feel it. The first weeks are about developing sensitivity — noticing what is already moving.",
+        steps: [
+          "Practice synchronized belly breath daily for one week before any other technique.",
+          "After lovemaking, instead of separating immediately, lie together for ten minutes with hands on each other's hearts.",
+          "Begin learning the solo Microcosmic Orbit before attempting it as a couple.",
+          "Track energy levels before and after intimacy — this builds the self-knowledge that makes practice meaningful.",
+        ],
+      },
+      advancedTrack: {
+        title: "Advanced Track: Shared Microcosmic Orbit",
+        body: "Once both partners can feel chi moving independently, the shared orbit becomes available — two bodies creating one continuous circuit.",
+        steps: [
+          "Both partners establish their individual orbit through breath and intention before physical contact.",
+          "In seated embrace, synchronize breath and imagine a single current flowing from your base up your partner's spine and back down through yours.",
+          "Practice the Big Draw together — coordinated muscle contractions that move energy upward simultaneously.",
+          "Extend sessions gradually: quality of attention matters more than duration.",
+        ],
+      },
+      quote: {
+        text: "The goal is not to suppress sexual energy but to transform and recycle it — to use it as fuel for higher consciousness and lasting vitality.",
+        source: "Mantak Chia, Healing Love Through the Tao",
+      },
+      whyMatters: [
+        "He is one of the only teachers who approaches sexuality as a health science, not just a spiritual metaphor — the practices have measurable physiological effects.",
+        "His work addresses the energy depletion problem directly — something most intimacy traditions ignore entirely.",
+        "The multi-orgasmic practices he systematized give couples access to sustained erotic states rather than brief peaks followed by withdrawal.",
+        "His emphasis on both partners' cultivation creates genuine energetic reciprocity — nobody is being drained to satisfy the other.",
+      ],
+      coreTeachings: [
+        {
+          title: "Jīng is currency, not waste",
+          body: "Sexual energy is the body's most refined vital essence. Spending it carelessly is the energetic equivalent of spending savings without earning. Cultivation means managing this resource consciously.",
+          beginnerReframe: "After sex, notice how you feel. Track whether you feel more or less alive than before. This awareness is the beginning of the practice.",
+          advancedReframe: "Use the Big Draw to redirect orgasmic energy upward before discharge. Practice extending the plateau phase before any peak.",
+        },
+        {
+          title: "The valley is deeper than the peak",
+          body: "Peak orgasm is the most familiar but least sustainable form of erotic pleasure. Valley orgasm — waves of full-body aliveness without the discharge arc — is available through relaxation and conscious redirection.",
+          beginnerReframe: "Slow down ten minutes before orgasm. Let sensation spread through the whole body rather than concentrate toward release.",
+          advancedReframe: "Practice sustaining the pre-orgasmic state for twenty to thirty minutes. Let the energy circulate rather than crest.",
+        },
+        {
+          title: "Both partners must cultivate",
+          body: "The Taoist system requires both partners to develop their own energy cultivation capacity. This is not a one-sided technique — it is a mutual practice.",
+          beginnerReframe: "Each partner learns the solo Microcosmic Orbit first. Bring that capacity into shared practice.",
+          advancedReframe: "Practice synchronized Big Draw — both partners drawing energy upward simultaneously, combining the current.",
+        },
+        {
+          title: "Lovemaking heals the organs",
+          body: "Each organ system corresponds to specific emotional and energetic qualities. Conscious lovemaking can direct healing energy to areas of depletion or holding in the body.",
+          beginnerReframe: "After lovemaking, place both hands on the area of your body that feels most in need of nourishment. Breathe there for two minutes.",
+          advancedReframe: "Use the organ-sound healing sequence from Chia's Healing Love to direct energy to specific organ systems during practice.",
+        },
+      ],
+      modernUse: [
+        {
+          title: "When exhaustion makes intimacy feel impossible",
+          body: "The Taoist approach is particularly valuable here: practices that restore rather than deplete energy make intimacy something to look forward to even when tired.",
+        },
+        {
+          title: "When one partner's libido is significantly lower",
+          body: "Often this reflects genuine energy depletion rather than lack of desire. Cultivation practices restore the underlying vitality from which desire naturally rises.",
+        },
+        {
+          title: "When couples want a practice that grows with age",
+          body: "Unlike approaches dependent on physical intensity, Taoist cultivation deepens as practitioners age — the energy becomes subtler and more refined, not less available.",
+        },
+      ],
+      shadowToAvoid: [
+        {
+          title: "Technique replacing presence",
+          body: "Chia's practices require genuine presence to work. If executing technique becomes the goal, the energetic connection — which is the actual point — evaporates.",
+          beginnerReframe: "If a practice feels mechanical, stop the technique and simply breathe together for two minutes. Reconnect before continuing.",
+          advancedReframe: "Use technique as a scaffold to enter deeper states of presence, then release the technique and inhabit the state directly.",
+        },
+        {
+          title: "Pressure around non-ejaculation",
+          body: "Chia's teachings on conserving ejaculation can become a performance demand that creates anxiety and shame. This defeats the entire purpose.",
+          beginnerReframe: "Begin with extending the plateau phase, not eliminating orgasm. Gradual expansion is sustainable; rigid rules are not.",
+          advancedReframe: "When the energy is genuinely cultivated rather than suppressed, the body naturally prefers circulation over discharge. Don't force it.",
+        },
+        {
+          title: "Spiritual bypassing through energy work",
+          body: "Energy practices can become an escape from emotional truth. If both partners are not genuinely honest with each other, no amount of chi cultivation creates real intimacy.",
+          beginnerReframe: "Check in emotionally before any energy practice. Five minutes of honest check-in changes the quality of everything that follows.",
+          advancedReframe: "Use the energy sensitivity developed through cultivation to feel your partner's emotional state directly — and respond to what you feel.",
+        },
+      ],
+      exercises: [
+        {
+          title: "Microcosmic Orbit — Solo Foundation (10 minutes)",
+          setup: "Sit quietly alone before attempting this as a couple.",
+          steps: [
+            "Close eyes and breathe slowly into the lower belly.",
+            "On each inhale, imagine energy rising from the base of the spine, up through each vertebra to the crown.",
+            "On each exhale, imagine energy flowing down through the forehead, throat, chest, belly, returning to the base.",
+            "Complete nine full circuits of this orbit.",
+            "Rest for two minutes, feeling the energy settle.",
+          ],
+          integration: "Practice solo for one week before attempting with a partner.",
+          beginnerNote: "Visualization is enough — you do not need to feel physical sensation for the practice to work.",
+          advancedNote: "Add the three locks (root, abdominal, throat) to amplify the circulation on the inhale.",
+        },
+        {
+          title: "Synchronized Heart-Genital Circuit (15 minutes)",
+          setup: "Sit in yab-yum (one partner in the other's lap, facing each other) or stand in close embrace.",
+          steps: [
+            "Both partners close eyes and establish individual belly breath.",
+            "After two minutes, open eyes and synchronize breath rhythm.",
+            "Imagine a figure-eight circuit: energy rising from your pelvis to your partner's heart, and from their pelvis to your heart.",
+            "Sustain this visualization through ten complete breath cycles.",
+            "Close with foreheads touching and one minute of shared silence.",
+          ],
+          integration: "Use before lovemaking to pre-activate the shared energy field.",
+          beginnerNote: "If visualization is difficult, simply feel the warmth of physical contact and let that be the 'energy.'",
+          advancedNote: "Add sound — a sustained hum on each exhale amplifies the circuit significantly.",
+        },
+      ],
+      reflectionPrompts: [
+        "Where do I notice energy leaving my body during or after intimacy? Where does it feel like it goes?",
+        "What would it feel like if lovemaking left me more energized than before it began?",
+        "Do I approach my partner's body as a source of pleasure for me, or as a living system I am in relationship with?",
+        "What is the difference between satisfied and genuinely nourished? When did I last feel the second?",
+        "What would a ten-year Taoist cultivation practice with my partner look like — and what might we have built by then?",
+      ],
+      relatedPaths: [
+        { name: "Taoist Alchemy", note: "The path built directly around Chia's complete system — energy maps, chi cultivation tracks, and the full Healing Love sequence." },
+        { name: "Tantric Wisdom", note: "Parallel subtle-body framework from the Indian tradition — the two systems inform and deepen each other." },
+        { name: "Slow Love", note: "Diana Richardson's approach shares Chia's emphasis on non-goal lovemaking and the body's own intelligence." },
+      ],
+      premiumBanner: "Access Chia's complete Universal Tao couples system: the Microcosmic Orbit as a shared practice, the full Healing Love sequence, valley orgasm training, and the meridian maps that make the invisible architecture of sexual energy visible.",
+    },
   },
   {
     slug: "margot-anand",
@@ -522,11 +685,170 @@ const authors: Author[] = [
     overviewLine: "Ceremonial Tantra for partners growing closer through beauty and intention.",
     icon: Sparkles,
     iconClass: "text-rose-300",
-    teaser: [
-      "Bring play and reverence into the same erotic field without losing emotional safety.",
-      "Explore ceremonial frameworks that feel alive, tasteful, and usable in modern life.",
-      "Premium includes guided rituals, scripts, and progression maps toward sacred love.",
-    ],
+    content: {
+      heroIntro: [
+        "Margot Anand's SkyDancing Tantra refuses the split between the sacred and the erotic — insisting that beauty, ritual, and genuine aliveness are not decorations around intimacy but the very substance of it.",
+        "Her four-decade teaching lineage, transmitted to tens of thousands of couples internationally, centers on one discovery: ecstasy is not a peak to chase but a quality of presence to inhabit — and it is available in any moment of genuine sacred contact.",
+      ],
+      whoItsFor: [
+        {
+          title: "Couples who want their intimate life to feel ceremonial",
+          body: "When lovemaking is approached with the same care and intention as a sacred ritual, its quality transforms entirely. SkyDancing teaches exactly how to create that atmosphere.",
+        },
+        {
+          title: "Couples where playfulness and depth feel mutually exclusive",
+          body: "Anand's work dissolves this false choice. In SkyDancing, laughter and reverence coexist — erotic play and genuine spiritual contact are not in tension but expressions of the same energy.",
+        },
+        {
+          title: "Couples ready to work with the chakra system as a living reality",
+          body: "Not as a belief system but as a practical map for exploring different dimensions of erotic and spiritual experience together.",
+        },
+        {
+          title: "Couples who want beauty as a spiritual practice",
+          body: "SkyDancing treats the creation of beautiful intimate space — lighting, music, scent, intention — as genuine sadhana, not superficial decoration.",
+        },
+      ],
+      practicePreview: {
+        title: "Sacred Space Creation",
+        body: "Before any touch, both partners spend twenty minutes creating the space and themselves. In SkyDancing, this preparation is not preliminary — it is the practice.",
+        steps: [
+          "Together, prepare the physical space: soft lighting, meaningful objects, a scent that feels sacred, music that opens rather than distracts.",
+          "Separately, bathe or shower mindfully — treating the body as a temple being prepared for ceremony.",
+          "Dress in something that makes you feel beautiful, or undress with conscious intention.",
+          "Sit facing each other at the threshold of the prepared space. Take three breaths together.",
+          "Enter the space as if crossing into sacred territory — because you are.",
+        ],
+      },
+      beginnerTrack: {
+        title: "Beginner Track: Learning Sacred Space",
+        body: "The most immediate and transformative entry point in SkyDancing is simply learning to create conditions of genuine beauty and reverence before intimacy begins.",
+        steps: [
+          "Once a week, take thirty minutes to prepare the space before intimacy — not as foreplay, but as ceremony.",
+          "Agree on one element of beauty to add each time: a candle, a flower, music that feels sacred.",
+          "Begin each encounter with eye contact in the prepared space before any touch.",
+          "Notice how the quality of everything that follows differs from encounters that begin without this preparation.",
+        ],
+      },
+      advancedTrack: {
+        title: "Advanced Track: Chakra Awakening Sequence",
+        body: "Moving through the seven chakras as a couples practice opens distinct dimensions of erotic and spiritual experience that random intimacy cannot reach.",
+        steps: [
+          "Learn the location and quality of each chakra before attempting to work with them together.",
+          "Begin each session by awakening the root — grounding, presence, safety — through breath and conscious touch at the base of the spine.",
+          "Move upward through the centers: sacral (pleasure, flow), solar plexus (power, will), heart (love, connection), throat (truth, expression), third eye (vision, intuition), crown (transcendence).",
+          "Allow each center its own time — don't rush the ascent. Some sessions may never leave the heart.",
+        ],
+      },
+      quote: {
+        text: "When two people meet in genuine sacred space — when beauty has been honored and bodies have been prepared — what happens between them is no longer ordinary. It is a form of prayer.",
+        source: "Margot Anand, The Art of Sexual Ecstasy",
+      },
+      whyMatters: [
+        "She bridges the gap between spiritual practice and erotic aliveness more elegantly than any other teacher — making both accessible without diminishing either.",
+        "Her emphasis on sacred atmosphere addresses the single most common intimacy failure: coming to lovemaking without any transition from ordinary consciousness.",
+        "The SkyDancing chakra work gives couples a practical map for exploring different dimensions of intimacy systematically rather than randomly.",
+        "Her integration of play and reverence gives couples permission to be both joyful and sacred — dissolving the false seriousness that burdens many spiritual approaches to sex.",
+      ],
+      coreTeachings: [
+        {
+          title: "Preparation is the practice",
+          body: "The quality of what happens during intimacy is almost entirely determined by the quality of transition that precedes it. Arriving consciously, in a prepared space, changes everything.",
+          beginnerReframe: "Spend fifteen minutes preparing the space before any intimate encounter this week. Notice the difference.",
+          advancedReframe: "Extend the preparation into your own inner state — meditate, move, or breathe alone for ten minutes before meeting your partner.",
+        },
+        {
+          title: "Beauty is a spiritual technology",
+          body: "Creating beauty — in the space, in the body, in the atmosphere — shifts the nervous system into a receptive, open state. This is not aesthetics; it is applied spirituality.",
+          beginnerReframe: "Add one element of genuine beauty to your intimate space. Not because it looks good, but because beauty genuinely shifts your inner state.",
+          advancedReframe: "Create a dedicated sacred space in your home — even a single corner — that holds the energy of your practice.",
+        },
+        {
+          title: "Play and reverence are the same energy",
+          body: "In SkyDancing, laughter and joy are not interruptions to sacred intimacy but expressions of it. The body's delight and the spirit's reverence arise from the same open, undefended place.",
+          beginnerReframe: "If something funny happens during intimacy, let the laughter be complete before returning. Suppressed laughter is suppressed aliveness.",
+          advancedReframe: "Deliberately introduce elements of play into your practice — not to make it lighter, but to keep it alive.",
+        },
+        {
+          title: "Ecstasy is ordinary presence fully inhabited",
+          body: "The ecstatic states described in Tantric texts are not special altered states requiring years of practice. They are what ordinary presence feels like when performance, protection, and goal-seeking have been set aside.",
+          beginnerReframe: "For one minute during intimacy, drop every agenda and simply be completely here. That quality of presence — even for sixty seconds — is what ecstasy is.",
+          advancedReframe: "Practice sustaining this quality of presence for increasingly longer periods. Ecstasy is not intensity; it is depth of presence.",
+        },
+      ],
+      modernUse: [
+        {
+          title: "When intimacy feels mechanical despite genuine love",
+          body: "The missing ingredient is almost always atmosphere and intention. SkyDancing's sacred space practices address this directly — adding the ceremonial quality that transforms mechanical into meaningful.",
+        },
+        {
+          title: "When couples want to celebrate their relationship, not just maintain it",
+          body: "SkyDancing offers specific rituals for milestones, anniversaries, and conscious renewal — ways of marking the relationship's depth and trajectory with genuine ceremony.",
+        },
+        {
+          title: "When spiritual life and erotic life feel disconnected",
+          body: "For couples where one or both partners have active spiritual practices that feel separate from their intimate life, SkyDancing provides the bridge that makes both richer.",
+        },
+      ],
+      shadowToAvoid: [
+        {
+          title: "Ceremony replacing genuine contact",
+          body: "Beautiful ritual can become elaborate avoidance of genuine intimacy. The preparation must serve genuine meeting — not replace it.",
+          beginnerReframe: "Check: is the preparation creating genuine openness, or is it becoming another performance? Simplify if it feels theatrical.",
+          advancedReframe: "Periodically strip back all ritual and meet simply, with nothing prepared. Notice what the ritual actually provides versus what you assumed it provided.",
+        },
+        {
+          title: "Spiritual intensity as spiritual bypassing",
+          body: "Powerful Tantric experiences can be used to avoid the ordinary emotional work a relationship requires. Ecstasy does not substitute for honest communication.",
+          beginnerReframe: "After powerful sessions, check in about ordinary relationship truth — not just the transcendent experience.",
+          advancedReframe: "Integrate insights from sacred practice into ordinary relationship behavior. Spiritual experience that doesn't change daily life is incomplete.",
+        },
+      ],
+      exercises: [
+        {
+          title: "The Greeting Ceremony (10 minutes)",
+          setup: "Use at the beginning of any dedicated intimate time together.",
+          steps: [
+            "Stand facing each other at arm's length. Close your eyes and take three slow breaths alone.",
+            "Open your eyes and meet your partner's gaze. Take three more breaths together.",
+            "Place your right hand on your own heart and bow slightly, silently acknowledging: 'I see you as sacred.'",
+            "Step forward into an embrace. Feel the full contact of your bodies.",
+            "Rest in the embrace for one minute, not moving, simply arriving.",
+          ],
+          integration: "Use before any intimate encounter. Takes ten minutes and changes everything that follows.",
+          beginnerNote: "If this feels awkward, that awkwardness is the ordinary mind's resistance to genuine ceremony. Let it be awkward and continue.",
+          advancedNote: "Add a spoken element: each partner says one true thing they love about the other before the embrace.",
+        },
+        {
+          title: "Chakra Awakening Touch (20 minutes)",
+          setup: "One partner lies comfortably. The other moves slowly up the body.",
+          steps: [
+            "Begin with both hands resting lightly on the feet. Feel the ground quality of the root chakra.",
+            "Move slowly to the pelvis and lower belly — the center of pleasure and creative life force.",
+            "Continue to the solar plexus — the seat of personal power and embodied confidence.",
+            "Rest at the heart for the longest time — hands on the chest, feeling the warmth and aliveness there.",
+            "Brief touch at the throat (truth), third eye (vision), crown (openness to the infinite).",
+            "Then reverse — descend back to the earth, grounding the energy before completing.",
+            "Switch and repeat.",
+          ],
+          integration: "Use as preparation before lovemaking or as a complete practice in itself.",
+          beginnerNote: "This is not massage. Move slowly enough that presence, not technique, is what the receiver feels.",
+          advancedNote: "As the giver, tune into each center as you touch it. Feel what is open and what is contracted. Let your touch respond to what you feel.",
+        },
+      ],
+      reflectionPrompts: [
+        "What does sacred space mean to me? When have I felt it — in any context — and what created it?",
+        "Where in my life do I allow genuine beauty to affect my inner state? Why not in my intimate life?",
+        "What would it feel like to approach my partner's body with the same quality of attention I would bring to something genuinely holy?",
+        "When was the last time I felt genuinely ecstatic — not intense, but fully alive and open? What were the conditions?",
+        "What is the one element of ceremony or beauty that would most change the quality of our intimate life if I introduced it consistently?",
+      ],
+      relatedPaths: [
+        { name: "Tantric Wisdom", note: "The complete Tantric framework that SkyDancing draws from — presence, polarity, breath, and the sacred body." },
+        { name: "Conscious Union", note: "The path of ceremony and recognition that shares SkyDancing's emphasis on intentional, beautiful intimate space." },
+        { name: "Sacred Polarity", note: "Deida's framework pairs naturally with SkyDancing — polarity creates the charge that SkyDancing's sacred space allows to move freely." },
+      ],
+      premiumBanner: "Access Anand's complete SkyDancing system: the full chakra awakening sequence as a couples practice, the sacred space creation rituals, the SkyDancing approach to ecstatic states, and the ceremony library for marking relationship milestones.",
+    },
   },
   {
     slug: "daniel-odier",
