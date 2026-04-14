@@ -7,6 +7,7 @@ import {
   Heart,
   Lock,
   LockOpen,
+  Shield,
   Sparkles,
   Waves,
   type LucideIcon,
@@ -773,6 +774,20 @@ const pathDetails: PathDetail[] = [
       "Bring ritual quality and deliberate intention into ordinary daily moments together.",
       "Practice recognition, truth, and shared silence as living relational disciplines.",
       "Premium includes ceremony frameworks and conscious union practice maps.",
+    ],
+  },
+  {
+    slug: "semen-retention",
+    name: "Semen Retention",
+    tier: "premium",
+    oneLine: "Last longer, feel deeper, and channel your energy into the love she actually wants from you.",
+    overviewLine: "Premium path for men who want to stop losing energy after sex and start building real magnetic presence.",
+    icon: Shield,
+    iconClass: "text-sky-300",
+    teaser: [
+      "Learn valley orgasm techniques that replace 10-second peaks with 30-minute full-body waves of pleasure — for both of you.",
+      "Stop the post-sex crash. Retain your vitality, clarity, and desire to be close to her the morning after.",
+      "Premium includes progressive retention drills, couple integration sequences, and the science behind why this transforms relationships.",
     ],
   },
 ];
