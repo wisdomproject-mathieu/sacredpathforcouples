@@ -2364,7 +2364,7 @@ const Authors = () => {
           })}
           <Link
             to="/pricing"
-            className="md:col-span-2 xl:col-span-4 rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-6 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)] transition-all hover:border-amber-300/45 hover:shadow-[0_24px_70px_-40px_rgba(255,173,70,0.68)]"
+            className="xl:col-span-3 rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-6 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)] transition-all hover:border-amber-300/45 hover:shadow-[0_24px_70px_-40px_rgba(255,173,70,0.68)]"
           >
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
