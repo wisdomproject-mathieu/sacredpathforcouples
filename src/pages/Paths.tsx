@@ -20,8 +20,17 @@ import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
 type Tier = "free" | "premium";
 
 type Pillar = {
-  name: string;
+  id?: string;
+  label?: string;
+  title?: string;
+  name?: string;
   body: string;
+};
+
+type SacredInvitation = {
+  title: string;
+  body: string;
+  resonances: string[];
 };
 
 type Block = {
@@ -67,7 +76,8 @@ type PathContent = {
     text: string;
     source: string;
   };
-  whatItIsNot: string[];
+  whatItIsNot?: string[];
+  sacredInvitation?: SacredInvitation;
   pillars: Pillar[];
   modernCouples: Block[];
   misunderstandings: Block[];
@@ -193,21 +203,60 @@ const pathDetails: PathDetail[] = [
         text: "Tantric intimacy grows when attention, consent, and devotion stay alive in the same breath.",
         source: "Sacred Path Tantric editorial synthesis",
       },
-      whatItIsNot: [
-        "It is not spiritual aesthetics layered over disconnection.",
-        "It is not pressure for endless intensity or perfect performance.",
-        "It is not permission to bypass consent or emotional accountability.",
-        "It is not a shortcut that avoids emotional repair or honest communication.",
-        "It is not about exotic novelty; it is about consistency, depth, and embodied truth.",
-      ],
+      sacredInvitation: {
+        title: "Who This Path Calls",
+        body: "This path calls to couples who sense that something more is possible — not just more pleasure or more frequency, but a different quality of contact altogether. Couples who have noticed that even in their most intimate moments, something in them is watching, waiting, slightly elsewhere. Couples who want the body to be a doorway rather than a destination, and who are willing to slow down, breathe, and learn to inhabit each moment of love with full awareness.",
+        resonances: [
+          "You want depth more than technique.",
+          "You sense that your lovemaking has more silence, more reverence, and more aliveness available than you have yet discovered.",
+          "You are drawn to the idea that spiritual practice and erotic life belong together.",
+          "You want both partners to feel genuinely seen — not merely desired.",
+          "You are willing to be changed by intimacy, not just satisfied by it.",
+        ],
+      },
       pillars: [
-        { name: "Presence", body: "Returning attention to what is truly alive right now." },
-        { name: "Breath", body: "Using breath to regulate emotion, arousal, and safety." },
-        { name: "Polarity", body: "Cultivating conscious contrast so charge can move." },
-        { name: "Devotion", body: "Holding intimacy with reverence, care, and intention." },
-        { name: "Embodied Awareness", body: "Tracking sensation and truth in the body first." },
-        { name: "Consent Language", body: "Keeping every step explicit, mutual, and adjustable in real time." },
-        { name: "Integration", body: "Closing intimate moments with reflection so trust compounds over time." },
+        {
+          id: "shiva_shakti",
+          label: "SHIVA & SHAKTI",
+          title: "Sacred Polarity",
+          body: "At the heart of Tantra is the recognition that existence itself is a dance between two principles: pure witnessing consciousness (Shiva) and living creative energy (Shakti). In your relationship, these poles are alive and present in every moment of genuine contact. One partner holds space; the other fills it. One is still; the other moves. The quality of your intimacy depends on how consciously you inhabit and honor these complementary currents — not as fixed roles, but as a living exchange that flows and changes between you.",
+        },
+        {
+          id: "prana",
+          label: "PRĀṆA",
+          title: "Breath as Bridge",
+          body: "In Tantric physiology, breath is not merely oxygenation. It is the vehicle of prana — the animating life force that flows through the subtle body. Conscious breathing during intimacy transforms the quality of contact: it regulates the nervous system, opens the body to deeper sensation, and carries awareness into the areas where holding and protection have accumulated over time. In partner breathing practices, it creates a shared rhythm that synchronizes the subtle bodies before the physical bodies even touch. Learning to breathe together is among the most intimate things two people can do.",
+        },
+        {
+          id: "deha",
+          label: "DEHA",
+          title: "Body as Temple",
+          body: "Tantra was the first tradition to fully consecrate the physical body — to insist, against prevailing spiritual currents of its time, that the body is not an obstacle to the sacred but its most immediate home. The Tantric body is not a machine of sensation. It is a living temple of intelligence, memory, and divine energy. Every part of it is worthy of reverence. In relationship, this means learning to approach your partner's body — and your own — with the quality of attention you would bring to a sacred space: unhurried, genuinely curious, and full of gratitude.",
+        },
+        {
+          id: "bhakti",
+          label: "BHAKTI",
+          title: "Devotion",
+          body: "Bhakti is the yogic path of love as spiritual practice — the recognition that devotion is not a sentiment but a discipline. In Tantric relationship, bhakti transforms how partners meet: not as two individuals negotiating needs and differences, but as two expressions of divine consciousness recognizing each other. This does not require religious belief. It requires the willingness to look at your partner as if for the first time, to see past the familiar image to the aliveness beneath it — and to let that aliveness actually land in the body. That landing is devotion.",
+        },
+        {
+          id: "spanda",
+          label: "SPANDA",
+          title: "The Divine Pulse",
+          body: "Spanda — the vibrant, pulsing aliveness that Kashmir Shaivism recognizes as the fundamental nature of reality — is not something to be created in intimacy. It is something to be recognized. It is already present in the trembling of genuine excitement, in the pause between exhale and inhale, in the moment when two bodies first touch with full awareness. Tantric practice teaches couples to recognize Spanda and stay with it rather than immediately redirecting it. Learning to simply be with the living pulse of energy — rather than managing, performing, or chasing it — is one of the deepest skills in intimate life.",
+        },
+        {
+          id: "samadhi",
+          label: "SAMĀDHI",
+          title: "Union",
+          body: "In classical yoga, samadhi is the dissolution of the boundary between the observer and the observed — a state of non-dual awareness in which the separate self temporarily ceases. Tantra locates this possibility within the erotic body. At the depth of genuine conscious lovemaking, something occurs beyond pleasure: the boundary between two selves becomes permeable, and for a moment, the couple is not two people experiencing each other but one field of awareness experiencing itself. This state cannot be forced. It arises when everything else — presence, breath, polarity, devotion, pulse — is fully and honestly inhabited.",
+        },
+        {
+          id: "samskara",
+          label: "SAṂSKĀRA",
+          title: "Completion Ritual",
+          body: "In Tantric practice, how a couple closes an intimate encounter is as important as how they enter it. Samskara — the impressions left on consciousness by lived experience — determines how intimacy accumulates over time. Couples who close their encounters with care: a moment of held stillness, a gentle breath together, whispered truth, or silent gratitude, create a different quality of shared history than those who immediately return to ordinary distraction. The closing ritual is where the experience is fully received and allowed to settle into the body and the relationship as a genuine resource.",
+        },
       ],
       modernCouples: [
         {
@@ -334,10 +383,10 @@ const pathDetails: PathDetail[] = [
   },
   {
     slug: "tao",
-    name: "Tao",
+    name: "Taoist Alchemy",
     tier: "free",
-    oneLine: "Flow, breath, and sensual longevity from ancient Taoist practice for modern couples.",
-    overviewLine: "For couples who want calm intensity now and sustainable erotic energy long-term.",
+    oneLine: "Taoist sexual medicine translated into sustainable vitality and deep intimacy for modern couples.",
+    overviewLine: "For couples who want their intimate life to leave them more alive, more in love, and more energized — not less.",
     icon: Waves,
     iconClass: "text-cyan-300",
     content: {
@@ -407,21 +456,60 @@ const pathDetails: PathDetail[] = [
         text: "Tao intimacy is measured by nourishment, steadiness, and the quality of connection you can sustain.",
         source: "Sacred Path Tao editorial synthesis",
       },
-      whatItIsNot: [
-        "It is not repression or anti-passion restraint.",
-        "It is not emotional detachment disguised as calm.",
-        "It is not only solo energetics; it is a partner skillset.",
-        "It is not avoidance of desire; it is desire with steadier regulation.",
-        "It is not endless slowness; pace can rise once both bodies are resourced.",
-      ],
+      sacredInvitation: {
+        title: "Who This Path Calls",
+        body: "This path calls to couples who have noticed that conventional lovemaking often leaves a subtle depletion in its wake — a flatness after the peak, a quiet withdrawal from each other in the hours that follow. Couples who are curious about the body's deeper intelligence. Who want their erotic life to contribute to their health and vitality rather than drawing from it. Who sense that pleasure and energy need not be opposites.",
+        resonances: [
+          "You want your intimate life to leave you feeling more energized, not less.",
+          "You are curious about the body's subtle energetic architecture.",
+          "You want a practice that can deepen over decades rather than depend on novelty.",
+          "You are drawn to ancient science applied with practical precision.",
+          "You want both partners to benefit equally from the energy between you.",
+        ],
+      },
       pillars: [
-        { name: "Softness", body: "Relaxation enables deeper sensation and better flow." },
-        { name: "Breath Rhythm", body: "Breath sets pace and prevents overwhelm." },
-        { name: "Conservation", body: "Stewarding energy supports long-term vitality." },
-        { name: "Circulation", body: "Distributing warmth through the body reduces depletion." },
-        { name: "Nourishment", body: "The aim is restorative intimacy for both partners." },
-        { name: "Grounding", body: "Anchor contact in lower-body awareness to reduce reactivity." },
-        { name: "Recovery", body: "Use aftercare and closure so connection leaves both partners clearer." },
+        {
+          id: "jing",
+          label: "JĪNG",
+          title: "Vital Essence",
+          body: "Jing is the most fundamental form of life force in Taoist physiology — the concentrated essence stored in the kidneys that governs vitality, sexual function, and longevity. Sexual energy is jing in its most potent, accessible form. Conventional lovemaking spends it. The Taoist path begins with the simple recognition that jing can be cultivated, conserved, and redirected through the body rather than discharged — and that this redirection is not deprivation but expansion: more sensation, more aliveness, more connection, sustained over time.",
+        },
+        {
+          id: "chi",
+          label: "CHI",
+          title: "Life Current",
+          body: "Chi is the animating current that flows through the body's meridian system — the same energy acupuncture works with, the same force that martial artists cultivate in chi kung. In lovemaking, chi determines the quality of energetic contact between partners: whether touch feels alive or mechanical, whether presence feels mutual or absent. Learning to feel chi in your own body, and then to feel the current between your body and your partner's, transforms the experience of physical intimacy from sensation alone into something that can genuinely be called energy exchange.",
+        },
+        {
+          id: "shen",
+          label: "SHÉN",
+          title: "Spirit & Luminosity",
+          body: "The third Taoist treasure, shen governs consciousness, emotional radiance, and the quality of genuine presence. In intimate life, shen is what you feel when a partner is truly with you rather than merely physically close — the lit-quality in the eyes, the attention that feels complete. Taoist sexual cultivation aims ultimately at shen: the refinement of sexual and vital energy all the way up through the heart and mind, until lovemaking becomes an act of full spiritual presence, and physical union opens into conscious union.",
+        },
+        {
+          id: "microcosmic_orbit",
+          label: "MICROCOSMIC ORBIT",
+          title: "Shared Energy Circulation",
+          body: "The Microcosmic Orbit is the foundational Taoist internal practice: the conscious circulation of chi up the spine, over the crown, and down through the front of the body in a continuous loop. As a solo practice, it integrates and vitalizes the entire energy system. As a couples practice, it becomes something extraordinary: two bodies learning to share and circulate their combined energy field through synchronized breath, attention, and touch — creating a circuit of vitality that belongs to neither partner alone but to the living relationship between them.",
+        },
+        {
+          id: "yin_yang",
+          label: "YĪN YÁNG",
+          title: "Complementary Energies",
+          body: "In Taoist cosmology, yin and yang are not opposites in conflict but complementary principles in dynamic balance. In relationship, they describe the specific energetic qualities each partner brings: the receptive, cooling, lunar quality of yin; the active, warming, solar quality of yang. Healthy Taoist lovemaking honors both qualities in both partners — recognizing that genuine intimacy requires not the dominance of one force but the fluid, conscious exchange of both, with each partner capable of inhabiting either pole as the moment requires.",
+        },
+        {
+          id: "valley_orgasm",
+          label: "VALLEY ORGASM",
+          title: "Expanded Pleasure",
+          body: "The Taoist teaching on orgasm is its most radical and practical gift to modern couples: the distinction between peak orgasm, which discharges energy, and valley orgasm, which expands and circulates it. Valley orgasm is not the absence of pleasure — it is pleasure sustained and deepened over time, without the arc of tension and release that leaves both partners depleted. Couples who learn to ride the valley together discover a dimension of erotic experience that is not available through conventional lovemaking: waves of full-body sensation that build without cresting, deepening the connection between partners rather than temporarily resolving it.",
+        },
+        {
+          id: "healing_love",
+          label: "HEALING LOVE",
+          title: "Lovemaking as Medicine",
+          body: "The ancient Taoist physicians were among the first to document what modern endocrinology confirms: that conscious, loving sexual practice has measurable effects on hormonal balance, immune function, and longevity. The Healing Love practices of Mantak Chia systematize this ancient medical wisdom for modern couples: specific techniques for circulating sexual energy through the body's organ systems, transforming lovemaking from a recreational act into a genuine health practice that both partners can benefit from over the course of a lifetime.",
+        },
       ],
       modernCouples: [
         {
@@ -1895,25 +1983,40 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
         </section>
       ) : null}
 
-      <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.whatThisPathIsNot}</p>
-        <div className="mt-4 space-y-3">
-          {data.whatItIsNot.map((item) => (
-            <div key={item} className="flex items-start gap-3 text-sm leading-7 text-foreground/90">
-              <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-              <span>{item}</span>
-            </div>
-          ))}
-        </div>
-      </section>
+      {data.sacredInvitation ? (
+        <section className="rounded-[24px] border border-primary/20 bg-primary/8 p-5">
+          <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{data.sacredInvitation.title}</p>
+          <p className="mt-3 text-sm leading-7 text-foreground/90">{data.sacredInvitation.body}</p>
+          <div className="mt-4 space-y-2">
+            {data.sacredInvitation.resonances.map((item) => (
+              <div key={item} className="flex items-start gap-3 text-sm leading-7 text-foreground/90">
+                <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+                <span>{item}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : data.whatItIsNot?.length ? (
+        <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.whatThisPathIsNot}</p>
+          <div className="mt-4 space-y-3">
+            {data.whatItIsNot.map((item) => (
+              <div key={item} className="flex items-start gap-3 text-sm leading-7 text-foreground/90">
+                <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+                <span>{item}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
         <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.corePillars}</p>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           {data.pillars.map((pillar, index) => (
-            <article key={pillar.name} className="rounded-2xl border border-border/25 bg-card/35 p-4">
-              <p className="text-[11px] uppercase tracking-[0.14em] text-primary/80">{ui.pillar} {index + 1}</p>
-              <h4 className="mt-2 font-body text-sm text-foreground">{pillar.name}</h4>
+            <article key={pillar.id ?? pillar.name ?? String(index)} className="rounded-2xl border border-border/25 bg-card/35 p-4">
+              <p className="text-[11px] uppercase tracking-[0.14em] text-primary/80">{pillar.label ?? `${ui.pillar} ${index + 1}`}</p>
+              <h4 className="mt-2 font-body text-sm text-foreground">{pillar.title ?? pillar.name}</h4>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">{pillar.body}</p>
             </article>
           ))}
