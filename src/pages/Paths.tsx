@@ -1568,6 +1568,16 @@ const pathUpgradeCopy: Record<
     ],
     cta: "Unlock Conscious Union Premium",
   },
+  "semen-retention": {
+    headline: "Last longer. Feel more. Become the partner she dreams about.",
+    benefit: "Most men lose energy, presence, and desire to connect after sex. This path reverses that — you'll learn to sustain pleasure, stay present, and wake up the next morning wanting to be closer, not distant.",
+    bullets: [
+      "Valley orgasm techniques that replace quick peaks with 30-minute full-body waves — for both of you.",
+      "Retention drills that build stamina, emotional presence, and magnetic confidence over weeks.",
+      "Couple integration practices so she feels the difference too — more attention, more touch, more you.",
+    ],
+    cta: "Unlock Semen Retention Path",
+  },
 };
 
 const shellCardClass =
