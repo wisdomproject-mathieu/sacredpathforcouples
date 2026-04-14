@@ -7,6 +7,7 @@ import {
   Heart,
   Lock,
   LockOpen,
+  Shield,
   Sparkles,
   Waves,
   type LucideIcon,
@@ -773,6 +774,20 @@ const pathDetails: PathDetail[] = [
       "Bring ritual quality and deliberate intention into ordinary daily moments together.",
       "Practice recognition, truth, and shared silence as living relational disciplines.",
       "Premium includes ceremony frameworks and conscious union practice maps.",
+    ],
+  },
+  {
+    slug: "semen-retention",
+    name: "Semen Retention",
+    tier: "premium",
+    oneLine: "Last longer, feel deeper, and channel your energy into the love she actually wants from you.",
+    overviewLine: "Premium path for men who want to stop losing energy after sex and start building real magnetic presence.",
+    icon: Shield,
+    iconClass: "text-sky-300",
+    teaser: [
+      "Learn valley orgasm techniques that replace 10-second peaks with 30-minute full-body waves of pleasure — for both of you.",
+      "Stop the post-sex crash. Retain your vitality, clarity, and desire to be close to her the morning after.",
+      "Premium includes progressive retention drills, couple integration sequences, and the science behind why this transforms relationships.",
     ],
   },
 ];
@@ -1553,6 +1568,16 @@ const pathUpgradeCopy: Record<
     ],
     cta: "Unlock Conscious Union Premium",
   },
+  "semen-retention": {
+    headline: "Last longer. Feel more. Become the partner she dreams about.",
+    benefit: "Most men lose energy, presence, and desire to connect after sex. This path reverses that — you'll learn to sustain pleasure, stay present, and wake up the next morning wanting to be closer, not distant.",
+    bullets: [
+      "Valley orgasm techniques that replace quick peaks with 30-minute full-body waves — for both of you.",
+      "Retention drills that build stamina, emotional presence, and magnetic confidence over weeks.",
+      "Couple integration practices so she feels the difference too — more attention, more touch, more you.",
+    ],
+    cta: "Unlock Semen Retention Path",
+  },
 };
 
 const shellCardClass =
@@ -1859,8 +1884,8 @@ const PremiumMiniCard = ({ path }: { path: PathDetail }) => {
       {miniLine}
     </p>
     <div className="mt-3 flex flex-wrap gap-2">
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{ui.guidedTracks}</span>
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{ui.energyMaps}</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">One sub · Both partners</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Retention & Stamina</span>
       <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{ui.sacredLoveLibrary}</span>
     </div>
     {hasPremiumAccess ? null : (
@@ -2465,9 +2490,10 @@ const Paths = () => {
         <h2 className="mt-2 font-display text-3xl text-foreground">{ui.overviewTitle}</h2>
 
         <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-          {localizedPathDetails.map((path) => {
+          {localizedPathDetails.map((path, idx) => {
             const Icon = path.icon;
             const isSelected = selectedSlug === path.slug;
+            const isLastAlone = idx === localizedPathDetails.length - 1 && localizedPathDetails.length % 4 !== 0;
             return (
               <button
                 key={path.slug}
@@ -2477,7 +2503,7 @@ const Paths = () => {
                   isSelected
                     ? "border-primary/30 bg-primary/10 shadow-[0_16px_50px_-40px_rgba(255,173,70,0.45)]"
                     : "border-border/30 bg-background/45 hover:border-primary/20 hover:bg-card/55"
-                }`}
+                } ${isLastAlone ? "xl:col-span-4 xl:max-w-none" : ""}`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-3 ${path.iconClass}`}>
