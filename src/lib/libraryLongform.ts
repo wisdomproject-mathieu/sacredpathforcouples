@@ -496,7 +496,7 @@ export const CONTENT_PATHS: ContentPathEntry[] = [
 
 export const PATH_LONGFORM_BY_SLUG: Record<string, LongformPath> = {
 
-  "tantric-wisdom": {
+  "tantra": {
     tagline: "An ancient path translated for modern couples",
     subtitle: "Through breath, presence, polarity, and the sacred body",
     shortDescription: "The five-thousand-year-old map of consciousness that locates the sacred inside the erotic body.",
@@ -530,7 +530,7 @@ export const PATH_LONGFORM_BY_SLUG: Record<string, LongformPath> = {
     ],
   },
 
-  "taoist-alchemy": {
+  "tao": {
     tagline: "Sexual energy as vital medicine, not expenditure",
     subtitle: "Through circulation, refinement, and shared life force",
     shortDescription: "The ancient Taoist science of sexual energy — translated into sustainable vitality and deepening love.",
@@ -564,7 +564,7 @@ export const PATH_LONGFORM_BY_SLUG: Record<string, LongformPath> = {
     ],
   },
 
-  "sacred-polarity": {
+  "polarity": {
     tagline: "The living charge between two people",
     subtitle: "Restoring desire through presence, direction, and radiance",
     shortDescription: "For couples who want the magnetic charge back — through genuine presence and radiance, not performance.",
@@ -597,7 +597,7 @@ export const PATH_LONGFORM_BY_SLUG: Record<string, LongformPath> = {
     ],
   },
 
-  "embodied-heart": {
+  "sacred-desire": {
     tagline: "Where the nervous system meets the sacred",
     subtitle: "Through somatic truth, emotional courage, and body-led love",
     shortDescription: "For couples who know that the heart must open before the body can — and want the practices that make that opening real.",
@@ -630,7 +630,7 @@ export const PATH_LONGFORM_BY_SLUG: Record<string, LongformPath> = {
     ],
   },
 
-  "slow-love": {
+  "neo-tantra": {
     tagline: "What arrives when you finally stop rushing",
     subtitle: "Through stillness, internal awareness, and the intelligence of unhurried contact",
     shortDescription: "The Tantric discovery that slowing down is not settling for less — it is the path to everything intimacy has been trying to offer.",
@@ -663,7 +663,7 @@ export const PATH_LONGFORM_BY_SLUG: Record<string, LongformPath> = {
     ],
   },
 
-  "conscious-union": {
+  "vajrayana-kashmir-shaivism": {
     tagline: "Two people genuinely meeting — body, heart, and awareness",
     subtitle: "Through presence, ceremony, and the art of mutual recognition",
     shortDescription: "For couples ready to bring the full force of conscious awareness to every dimension of their life together.",
