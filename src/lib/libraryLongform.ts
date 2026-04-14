@@ -43,6 +43,38 @@ export type LongformPath = {
   premiumFeatures: LongformPremiumFeature[];
 };
 
+export type ContentPathPillar = {
+  id: string;
+  label: string;
+  title: string;
+  body: string;
+};
+
+export type ContentPathFeature = {
+  id: string;
+  label: string;
+  description: string;
+};
+
+export type ContentPathEntry = {
+  id: string;
+  name: string;
+  icon: string;
+  tier: "open" | "premium";
+  tagline: string;
+  subtitle: string;
+  short_description: string;
+  full_description: string;
+  for_couples: string;
+  sacred_invitation: {
+    title: string;
+    body: string;
+    resonances: string[];
+  };
+  pillars: ContentPathPillar[];
+  premium_features: ContentPathFeature[];
+};
+
 export const AUTHOR_LONGFORM_BY_SLUG: Record<string, LongformAuthor> = {
   deida: {
     tagline: "The living edge of love, presence, and polarity",
@@ -224,6 +256,204 @@ export const AUTHOR_LONGFORM_BY_SLUG: Record<string, LongformAuthor> = {
     keyWorks: [],
   },
 };
+
+export const CONTENT_PATHS: ContentPathEntry[] = [
+  {
+    id: "tantric_wisdom",
+    name: "Tantric Wisdom",
+    icon: "sparkle-pink",
+    tier: "premium",
+    tagline: "An ancient path translated for modern couples",
+    subtitle: "Through breath, presence, polarity, and the sacred body",
+    short_description: "A body-inclusive path where erotic aliveness and spiritual awareness develop together.",
+    full_description:
+      "Tantric practice treats the body as a doorway to consciousness rather than a distraction from it. For couples, this means pacing intimacy through breath, awareness, and consent so trust and desire can grow together.\n\nThe practical shift is from performance to practice: arrive, regulate, attune, and then intensify only when both partners are genuinely available.",
+    for_couples: "For couples who want intimacy to feel conscious tonight and deepen over time.",
+    sacred_invitation: {
+      title: "Who This Path Calls",
+      body: "This path calls couples who feel that intimacy can be both sacred and practical. It serves pairs who want deeper presence, cleaner consent, and relational warmth without losing erotic current.",
+      resonances: [
+        "You want depth more than technique.",
+        "You want to feel seen, not only desired.",
+        "You want sacred language with practical steps.",
+        "You are ready to move from rushing to attunement.",
+      ],
+    },
+    pillars: [
+      {
+        id: "shiva_shakti",
+        label: "SHIVA AND SHAKTI",
+        title: "Sacred polarity",
+        body: "Consciousness and energy meet as complementary currents. The quality of that meeting shapes desire and trust.",
+      },
+      {
+        id: "prana",
+        label: "PRANA",
+        title: "Breath as bridge",
+        body: "Breath regulates nervous systems and synchronizes relational presence before intensity rises.",
+      },
+      {
+        id: "deha",
+        label: "DEHA",
+        title: "Body as temple",
+        body: "Approach the beloved with reverence, patience, and curiosity. This transforms contact quality.",
+      },
+      {
+        id: "bhakti",
+        label: "BHAKTI",
+        title: "Devotion",
+        body: "Devotion is a discipline of attention and care, not only an emotion. It keeps eros connected to love.",
+      },
+      {
+        id: "spanda",
+        label: "SPANDA",
+        title: "Divine pulse",
+        body: "Recognize subtle aliveness already present between you and stay with it instead of forcing escalation.",
+      },
+    ],
+    premium_features: [
+      { id: "guided_tracks", label: "GUIDED TRACKS", description: "Audio-led tantric couple sessions from short resets to deep evening rituals." },
+      { id: "energy_maps", label: "ENERGY MAPS", description: "Visual subtle-body maps for practical use in partnered practice." },
+      { id: "sacred_love_library", label: "SACRED LOVE LIBRARY", description: "Expanded lineage notes and deep links across relevant authors and traditions." },
+    ],
+  },
+  {
+    id: "taoist_alchemy",
+    name: "Taoist Alchemy",
+    icon: "wave",
+    tier: "premium",
+    tagline: "Sexual energy as vital medicine",
+    subtitle: "Through circulation, refinement, and shared life force",
+    short_description: "A Taoist path for couples who want intimacy to nourish vitality instead of draining it.",
+    full_description:
+      "Taoist intimacy views sexual energy as life force. The goal is not suppression and not over-discharge, but smart circulation that supports health, steadiness, and connection.\n\nThis path is especially valuable for stress-heavy life seasons. It teaches softness before escalation and continuity over peak-chasing.",
+    for_couples: "For couples who want intimacy to leave both partners more alive and connected.",
+    sacred_invitation: {
+      title: "Who This Path Calls",
+      body: "This path calls couples who feel depletion after intimacy and want a more sustainable erotic rhythm built on flow, timing, and regulation.",
+      resonances: [
+        "You want replenishment, not crash cycles.",
+        "You want practical energetic literacy.",
+        "You want attraction with less pressure.",
+        "You want long-term vitality as a couple practice.",
+      ],
+    },
+    pillars: [
+      { id: "jing", label: "JING", title: "Vital essence", body: "Treat sexual essence as a resource to cultivate and circulate." },
+      { id: "chi", label: "CHI", title: "Life current", body: "Track and guide subtle energy through breath, attention, and coordinated pacing." },
+      { id: "shen", label: "SHEN", title: "Spirit and luminosity", body: "Refine erotic energy into heartful presence and clearer consciousness." },
+      { id: "orbit", label: "MICROCOSMIC ORBIT", title: "Shared circulation", body: "Create synchronized energetic loops that increase coherence and nourishment." },
+      { id: "yin_yang", label: "YIN YANG", title: "Complementary balance", body: "Use dynamic balance of receptive and active qualities in both partners." },
+    ],
+    premium_features: [
+      { id: "chi_cultivation", label: "CHI CULTIVATION TRACKS", description: "Guided Taoist couple cultivation paths from foundations to advanced circulation." },
+      { id: "meridian_maps", label: "MERIDIAN MAPS", description: "Readable meridian and organ-energy visuals for practical home practice." },
+      { id: "chia_library", label: "MANTAK CHIA LIBRARY", description: "Deeper source pathways tied to classic Taoist couple cultivation teachings." },
+    ],
+  },
+  {
+    id: "embodied_heart",
+    name: "The Embodied Heart",
+    icon: "heart",
+    tier: "premium",
+    tagline: "Where the nervous system meets the sacred",
+    subtitle: "Through somatic truth, emotional courage, and body-led love",
+    short_description: "A path for couples who need safety, honesty, and repair as foundations for lasting desire.",
+    full_description:
+      "The Embodied Heart path begins with a direct truth: if bodies do not feel safe, erotic depth does not stabilize. This work builds attunement through somatic awareness, disclosure, and co-regulation.\n\nIt is less about intensity and more about contact quality. As shame and protection soften, tenderness and eros can coexist again.",
+    for_couples: "For couples who want emotional depth and erotic aliveness to reinforce each other.",
+    sacred_invitation: {
+      title: "Who This Path Calls",
+      body: "This path calls couples who love each other but still feel defended, misunderstood, or subtly guarded in intimate moments.",
+      resonances: [
+        "You want to feel known, not managed.",
+        "You want body-led truth without blame cycles.",
+        "You want practical repair pathways.",
+        "You want safer nervous-system intimacy.",
+      ],
+    },
+    pillars: [
+      { id: "soma", label: "SOMA", title: "The body knows", body: "Track what the body says before the story takes over." },
+      { id: "ns", label: "NERVOUS SYSTEM", title: "Safety as eros", body: "Co-regulation is a core erotic skill in long-term intimacy." },
+      { id: "disclosure", label: "DISCLOSURE", title: "Body-led truth", body: "Share sensation-level truth to create cleaner contact and less defensiveness." },
+      { id: "shame", label: "SHAME", title: "Dissolving armor", body: "Gentle exposure in safe connection reduces hidden shame loops." },
+      { id: "repair", label: "REPAIR", title: "Rupture as doorway", body: "Repair skill predicts long-term trust and relational resilience." },
+    ],
+    premium_features: [
+      { id: "somatic_practices", label: "SOMATIC PRACTICES", description: "Guided regulation and disclosure drills for couple coherence." },
+      { id: "boehm_day_library", label: "BOEHM AND DAY LIBRARY", description: "Expanded source tracks for nervous-system-aware intimacy and repair." },
+      { id: "repair_toolkit", label: "REPAIR TOOLKIT", description: "Structured repair frameworks for conflict, distance, and reconnection." },
+    ],
+  },
+  {
+    id: "slow_love",
+    name: "Slow Love",
+    icon: "lotus",
+    tier: "premium",
+    tagline: "What arrives when you stop rushing",
+    subtitle: "Through stillness, inner awareness, and unhurried contact",
+    short_description: "A Slow Love path that shifts couples from pressure and performance to sustained presence.",
+    full_description:
+      "Slow Love teaches that stillness is not less intimacy. It is the condition for deeper intimacy. Instead of chasing outcomes, couples inhabit sensation and awareness with less force.\n\nThis path often reopens desire after burnout because it removes pressure and restores body trust.",
+    for_couples: "For couples who want slower, deeper, more sustainable intimacy.",
+    sacred_invitation: {
+      title: "Who This Path Calls",
+      body: "This path calls couples tired of trying harder and ready to practice less force, more presence, and cleaner pacing.",
+      resonances: [
+        "You want connection over performance.",
+        "You want pressure-free erotic growth.",
+        "You want steadier intimacy in real life rhythms.",
+        "You want to rediscover sensation from the inside out.",
+      ],
+    },
+    pillars: [
+      { id: "stillness", label: "STILLNESS", title: "Ground of eros", body: "Stillness stabilizes attention and opens subtler sensation." },
+      { id: "inner_touch", label: "INNER TOUCH", title: "Awareness inside the body", body: "Feel from within, not only from external stimulation." },
+      { id: "non_goal", label: "NON-GOAL", title: "Release destination pressure", body: "Drop outcome obsession to let aliveness expand naturally." },
+      { id: "relaxation", label: "RELAXATION", title: "Erotic letting go", body: "Relaxation increases receptivity, safety, and depth." },
+      { id: "time", label: "TIME", title: "Inhabit duration", body: "Unhurried time is a practical erotic technology." },
+    ],
+    premium_features: [
+      { id: "slow_practices", label: "SLOW LOVE PRACTICES", description: "Guided stillness and inner-awareness pathways for couples." },
+      { id: "richardson_library", label: "DIANA RICHARDSON LIBRARY", description: "Expanded source teachings for non-goal intimate presence." },
+      { id: "integration", label: "DAILY INTEGRATION", description: "Micro-practices that carry slow intimacy into everyday contact." },
+    ],
+  },
+  {
+    id: "conscious_union",
+    name: "Conscious Union",
+    icon: "feather",
+    tier: "premium",
+    tagline: "Two people genuinely meeting",
+    subtitle: "Through presence, ceremony, and conscious recognition",
+    short_description: "A Conscious Union path for couples who want relationship itself to become sacred daily practice.",
+    full_description:
+      "Conscious Union integrates ritual, presence, and honest love into the full relationship lifecycle, not only explicit intimacy windows.\n\nIts focus is continuity: transitions, repair, devotional attention, and shared silence as living relational disciplines.",
+    for_couples: "For couples who want their entire relationship field to feel intentional, alive, and sacred.",
+    sacred_invitation: {
+      title: "Who This Path Calls",
+      body: "This path calls couples ready to move from passive relationship maintenance to active daily practice in love.",
+      resonances: [
+        "You want your ordinary moments to carry sacred quality.",
+        "You want deeper mutual recognition over time.",
+        "You value ceremony and consistency.",
+        "You are ready to practice love as devotion.",
+      ],
+    },
+    pillars: [
+      { id: "presence", label: "FULL PRESENCE", title: "Arriving completely", body: "Bring body, heart, and attention fully into contact." },
+      { id: "ceremony", label: "CEREMONY", title: "Ordinary life made sacred", body: "Use threshold rituals to transform daily transitions." },
+      { id: "recognition", label: "RECOGNITION", title: "See the beloved truly", body: "Meet the living person, not the old relational image." },
+      { id: "honest_love", label: "HONEST LOVE", title: "Love without concealment", body: "Truthful disclosure with care deepens trust and eros." },
+      { id: "silence", label: "SACRED SILENCE", title: "Shared stillness", body: "Practice being together without filling every space." },
+    ],
+    premium_features: [
+      { id: "union_practices", label: "UNION PRACTICES", description: "Daily conscious-contact templates for real couple life." },
+      { id: "ceremony_library", label: "CEREMONY LIBRARY", description: "Ritual frameworks for mornings, evenings, milestones, and repair." },
+      { id: "lineage_links", label: "LINEAGE LINKS", description: "Cross-linked source pathways connecting authors, traditions, and practice." },
+    ],
+  },
+];
 
 export const PATH_LONGFORM_BY_SLUG: Record<string, LongformPath> = {
   tantra: {

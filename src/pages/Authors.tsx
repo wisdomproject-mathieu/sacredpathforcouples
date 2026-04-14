@@ -1230,6 +1230,9 @@ const authorsUiCopy: Record<Language, Record<string, string>> = {
     premiumAuthor: "Premium Author",
     lockedAuthor: "Locked Author",
     whatThisAuthorOffers: "What This Author Offers",
+    whatYouWillDiscover: "What you'll discover",
+    coreThemesLabel: "Core themes",
+    keyWorksLabel: "Key works",
     unlockThisAuthorJourney: "Unlock this author journey",
     whyItMattersForCouples: "Why It Matters For Couples",
     premiumWhoCard1Title: "Couples craving deeper guidance",
@@ -1304,6 +1307,9 @@ const authorsUiCopy: Record<Language, Record<string, string>> = {
     premiumAuthor: "Auteur premium",
     lockedAuthor: "Auteur verrouillé",
     whatThisAuthorOffers: "Ce que cet auteur apporte",
+    whatYouWillDiscover: "Ce que vous allez découvrir",
+    coreThemesLabel: "Thèmes centraux",
+    keyWorksLabel: "Lectures clés",
     unlockThisAuthorJourney: "Déverrouiller cet auteur",
     whyItMattersForCouples: "Pourquoi c'est important pour les couples",
     premiumWhoCard1Title: "Couples en quête de guidance plus profonde",
@@ -1378,6 +1384,9 @@ const authorsUiCopy: Record<Language, Record<string, string>> = {
     premiumAuthor: "Premium autor",
     lockedAuthor: "Uzamčený autor",
     whatThisAuthorOffers: "Co tento autor nabízí",
+    whatYouWillDiscover: "Co objevíte",
+    coreThemesLabel: "Hlavní témata",
+    keyWorksLabel: "Klíčová díla",
     unlockThisAuthorJourney: "Odemknout tuto autorskou cestu",
     whyItMattersForCouples: "Proč je to důležité pro páry",
     premiumWhoCard1Title: "Páry toužící po hlubším vedení",
@@ -1727,9 +1736,6 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => {
   const hasPremiumAccess = usePremiumAccess();
   const longform = AUTHOR_LONGFORM_BY_SLUG[author.slug];
   const longformParagraphs = longform?.fullDescription.split("\n\n") ?? [];
-  const previewHeading = longform?.practicePreview ? longform.practicePreview.title : ui.premiumPracticeTitle;
-  const previewBody = longform?.practicePreview?.description ?? longform?.premiumPreview ?? ui.premiumPracticeBody;
-  const previewDuration = longform?.practicePreview?.durationMinutes;
   const topThemes = longform?.coreThemes.slice(0, 6) ?? [];
   const works = longform?.keyWorks.slice(0, 6) ?? [];
 
@@ -1765,51 +1771,22 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => {
       )}
     </section>
 
-    <section className="rounded-[24px] border border-primary/20 bg-primary/8 p-5">
-      <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{ui.whyItMattersForCouples}</p>
-      <div className="mt-4 space-y-2">
-        {(topThemes.length ? topThemes : [ui.premiumWhy1, ui.premiumWhy2, ui.premiumWhy3]).map((line) => (
-          <div key={line} className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-            <span>{line}</span>
-          </div>
+    <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.whyThisAuthorMatters}</p>
+      <div className="mt-4 space-y-3 text-sm leading-7 text-foreground/90">
+        {(longformParagraphs.length ? longformParagraphs : author.teaser ?? []).map((line) => (
+          <p key={line}>{line}</p>
         ))}
       </div>
     </section>
 
     <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.whoThisIsFor}</p>
-      <div className="mt-4 grid gap-3 md:grid-cols-2">
-        <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard1Title}</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">{longform?.shortDescription ?? ui.premiumWhoCard1Body}</p>
-        </article>
-        <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard2Title}</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">{longform?.premiumPreview ?? ui.premiumWhoCard2Body}</p>
-        </article>
-        <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard3Title}</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">{longform?.tradition ?? ui.premiumWhoCard3Body}</p>
-        </article>
-        <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard4Title}</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            {works.length ? works.join(", ") : ui.premiumWhoCard4Body}
-          </p>
-        </article>
-      </div>
+      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.whatYouWillDiscover}</p>
+      <p className="mt-3 text-sm leading-7 text-foreground/90">{longform?.premiumPreview ?? ui.premiumPracticeBody}</p>
     </section>
 
     <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.concretePracticePreview}</p>
-      <h4 className="mt-2 font-display text-2xl text-foreground">{previewHeading}</h4>
-      {previewDuration ? (
-        <p className="mt-2 text-xs uppercase tracking-[0.12em] text-primary/80">{previewDuration} min</p>
-      ) : null}
-      <p className="mt-2 text-sm leading-7 text-foreground/90">
-        {previewBody}
-      </p>
+      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.coreThemesLabel}</p>
       {topThemes.length ? (
         <div className="mt-3 flex flex-wrap gap-2">
           {topThemes.map((theme) => (
@@ -1825,18 +1802,22 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => {
         <div className="mt-3 space-y-2">
           <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
             <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-            <span>{ui.premiumPracticeStep1}</span>
-          </div>
-          <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-            <span>{ui.premiumPracticeStep2}</span>
-          </div>
-          <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-            <span>{ui.premiumPracticeStep3}</span>
+            <span>{ui.premiumWhy1}</span>
           </div>
         </div>
       )}
+    </section>
+
+    <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.keyWorksLabel}</p>
+      <div className="mt-4 space-y-2">
+        {(works.length ? works : [ui.premiumWhoCard4Body]).map((work) => (
+          <div key={work} className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+            <span>{work}</span>
+          </div>
+        ))}
+      </div>
     </section>
 
     <AuthorPremiumBlock author={author} />
@@ -2063,7 +2044,7 @@ const Authors = () => {
                 <p className="mt-2 text-xs leading-5 text-foreground/80">
                   {author.tier === "free"
                     ? `${ui.practicePreview}: ${author.content?.exercises[0]?.title ?? ui.practicePreviewFallback}`
-                    : `${ui.premiumPreview}: ${AUTHOR_LONGFORM_BY_SLUG[author.slug]?.shortDescription ?? author.teaser?.[0] ?? ui.premiumPreviewFallback}`}
+                    : `${ui.premiumPreview}: ${AUTHOR_LONGFORM_BY_SLUG[author.slug]?.tagline ?? author.oneLiner ?? ui.premiumPreviewFallback}`}
                 </p>
               </button>
             );
