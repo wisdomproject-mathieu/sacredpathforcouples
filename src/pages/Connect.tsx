@@ -132,6 +132,7 @@ const Connect = () => {
   const [status, setStatus] = useState<"idle" | "copied" | "error">("idle");
   const [message, setMessage] = useState("");
   const [isConnected, setIsConnected] = useState(false);
+  const [myDisplayName, setMyDisplayName] = useState("");
 
   const loadCoupleState = useCallback(async () => {
     if (!user) {
@@ -263,6 +264,13 @@ const Connect = () => {
       setStatus("error");
       setMessage(copy.errOwnCode);
       return;
+    }
+
+    if (myDisplayName.trim()) {
+      await supabase
+        .from("profiles")
+        .update({ display_name: myDisplayName.trim() })
+        .eq("user_id", user.id);
     }
 
     const { error: updateError } = await supabase
@@ -405,6 +413,19 @@ const Connect = () => {
           </p>
 
           <div className="mt-6 rounded-[24px] border border-border/30 bg-background/45 p-4">
+            <div className="mb-4">
+              <label className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                Your name (so your partner can see it)
+              </label>
+              <input
+                type="text"
+                value={myDisplayName}
+                onChange={(e) => setMyDisplayName(e.target.value)}
+                placeholder="Enter your name"
+                className="mt-2 w-full rounded-[16px] border border-border/30 bg-background/45 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-border"
+                maxLength={40}
+              />
+            </div>
             <label className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{copy.inviteCode}</label>
             <input
               value={code}

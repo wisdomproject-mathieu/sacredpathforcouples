@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 interface Props {
   coupleId: string;
   onNavigate: (tab: string) => void;
+  partnerName?: string;
 }
 
 interface WeatherEntry {
@@ -29,7 +30,7 @@ interface RitualItem {
   category: string;
 }
 
-const TempleHome = ({ coupleId, onNavigate }: Props) => {
+const TempleHome = ({ coupleId, onNavigate, partnerName }: Props) => {
   const { user } = useAuth();
   const [myWeather, setMyWeather] = useState<WeatherEntry | null>(null);
   const [partnerWeather, setPartnerWeather] = useState<WeatherEntry | null>(null);
@@ -187,7 +188,7 @@ const TempleHome = ({ coupleId, onNavigate }: Props) => {
               </div>
             </div>
             <div className="rounded-[22px] border border-border/30 bg-background/45 p-4">
-              <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Partner</div>
+              <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{partnerName ?? "Partner"}</div>
               <div className="mt-2 flex items-center gap-3">
                 <span className="text-2xl">{partnerWeather ? weatherEmoji[partnerWeather.state] || "✦" : "—"}</span>
                 <span className="text-sm text-foreground">{partnerWeather ? partnerWeather.state : "No check-in yet"}</span>

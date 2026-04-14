@@ -137,7 +137,7 @@ const homeCopy: Record<Language, Record<string, string>> = {
     heroTitle: "Daily Sacred Starter for Modern Couples",
     heroDesc: "Six preselected cards. Calm direction. Shared intimacy momentum. This page renews every day to support your path toward infinite love.",
     relationship: "Relationship",
-    partnerFallback: "Partner",
+    partnerFallback: "your love",
     journeyLine: "On a journey to sacred intimacy.",
     notConnectedLine: "Not connected yet. Invite your partner to begin your shared path.",
     connected: "Connected",
@@ -225,7 +225,7 @@ const homeCopy: Record<Language, Record<string, string>> = {
     heroTitle: "Démarrage sacré du jour pour couples modernes",
     heroDesc: "Six cartes présélectionnées. Direction calme. Élan d'intimité partagé. Cette page se renouvelle chaque jour.",
     relationship: "Relation",
-    partnerFallback: "Partenaire",
+    partnerFallback: "ton amour",
     journeyLine: "En chemin vers une intimité sacrée.",
     notConnectedLine: "Pas encore connectés. Invitez votre partenaire pour commencer votre chemin partagé.",
     connected: "Connectés",
@@ -313,7 +313,7 @@ const homeCopy: Record<Language, Record<string, string>> = {
     heroTitle: "Denní posvátný start pro moderní páry",
     heroDesc: "Šest předvybraných karet. Klidný směr. Sdílená intimní dynamika. Tato stránka se obnovuje každý den.",
     relationship: "Vztah",
-    partnerFallback: "Partner",
+    partnerFallback: "tvá láska",
     journeyLine: "Na cestě k posvátné intimitě.",
     notConnectedLine: "Ještě nejste propojeni. Pozvěte partnera a začněte společnou cestu.",
     connected: "Propojeno",
@@ -483,6 +483,21 @@ const AppHome = () => {
     if (emailPrefix) return emailPrefix;
 
     return copy.beloved;
+  };
+
+  const saveDisplayNameIfMissing = async (name: string) => {
+    if (!user) return;
+    const { data: existing } = await supabase
+      .from("profiles")
+      .select("display_name")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (!existing?.display_name && name.trim()) {
+      await supabase
+        .from("profiles")
+        .update({ display_name: name.trim() })
+        .eq("user_id", user.id);
+    }
   };
 
   useEffect(() => {
@@ -757,7 +772,7 @@ const AppHome = () => {
               <div>
                   <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">{copy.relationship}</p>
                   <h2 className="mt-2 font-display text-2xl text-foreground">
-                    {relationshipConnected ? `${myName} + ${partnerName ?? copy.partnerFallback}` : myName}
+                    {relationshipConnected ? `${myName} & ${partnerName ?? copy.partnerFallback}` : myName}
                   </h2>
                   <p className="mt-2 text-sm leading-6 text-muted-foreground">
                     {loading
