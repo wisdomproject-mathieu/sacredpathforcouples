@@ -2364,22 +2364,68 @@ const Authors = () => {
           })}
           <Link
             to="/pricing"
-            className="xl:col-span-3 rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-6 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)] transition-all hover:border-amber-300/45 hover:shadow-[0_24px_70px_-40px_rgba(255,173,70,0.68)]"
+            className="xl:col-span-3 rounded-[24px] border border-amber-400/20 bg-gradient-to-br from-amber-950/40 via-card/60 to-card/40 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)] transition-all hover:border-amber-400/35 hover:shadow-[0_24px_70px_-40px_rgba(255,173,70,0.68)]"
           >
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex h-full flex-col justify-between p-6">
+              {/* Top section */}
               <div>
-                <p className="text-xs uppercase tracking-[0.22em] text-amber-300">Sacred Library</p>
-                <h3 className="mt-2 font-display text-2xl text-foreground md:text-3xl">12 Voices. One Practice.</h3>
-                <p className="mt-2 max-w-xl text-sm leading-7 text-foreground/80">
-                  Unlock the complete Sacred Library — every author, every path, every guided practice. The teachers gathered here have changed thousands of relationships. Let them change yours.
+                <span className="text-xs uppercase tracking-[0.22em] text-amber-400/80">
+                  SACRED LIBRARY
+                </span>
+                <h3 className="mt-2 font-display text-2xl text-foreground">
+                  12 Voices. One Practice.
+                </h3>
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                  Unlock every author, every path, and every guided practice.
+                  The teachers gathered here have changed thousands of
+                  relationships. Let them change yours.
                 </p>
               </div>
-              <div className="shrink-0">
-                <span className="inline-flex items-center gap-2 rounded-2xl border border-amber-300/35 bg-amber-500/18 px-5 py-3 text-sm text-foreground">
-                  Unlock Premium
-                  <ArrowRight className="h-4 w-4" />
+
+              {/* Author avatar stack */}
+              <div className="mt-4 flex items-center gap-2">
+                <div className="flex -space-x-2">
+                  {["🔥", "✨", "〰", "⭐", "💫"].map((icon, i) => (
+                    <div
+                      key={i}
+                      className="flex h-7 w-7 items-center justify-center rounded-full border border-border/40 bg-card/80 text-xs"
+                    >
+                      {icon}
+                    </div>
+                  ))}
+                </div>
+                <span className="text-xs text-muted-foreground">
+                  +7 more voices
                 </span>
               </div>
+
+              {/* Divider */}
+              <div className="mt-4 h-px w-full bg-border/20" />
+
+              {/* Feature list */}
+              <ul className="mt-4 space-y-2">
+                {[
+                  "All 6 Wisdom Paths — full pillar content",
+                  "Guided audio practices per tradition",
+                  "Partner rituals & exercises",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2 text-xs text-muted-foreground">
+                    <span className="mt-0.5 text-amber-400/70">◆</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+
+              {/* CTA */}
+              <button className="mt-5 flex w-full items-center justify-center gap-2 rounded-[14px] border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm font-medium text-amber-300 transition-colors hover:bg-amber-400/20">
+                Unlock Premium
+                <span>→</span>
+              </button>
+
+              {/* Trial note */}
+              <p className="mt-2 text-center text-[10px] text-muted-foreground/60">
+                7-day free trial · $2.99/month
+              </p>
             </div>
           </Link>
         </div>
