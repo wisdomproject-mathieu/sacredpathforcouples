@@ -20,6 +20,17 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
 import { AUTHOR_LONGFORM_BY_SLUG } from "@/lib/libraryLongform";
+import {
+  dianaRichardsonContent,
+  danielOdierContent,
+  michaelaBoehmContent,
+  barryLongContent,
+  janDayContent,
+  charlesMuirContent,
+  sallyKemptonContent,
+  maxBushContent,
+  victorGoldContent,
+} from "@/lib/authorsRichContent";
 
 type Tier = "free" | "premium";
 
@@ -851,6 +862,18 @@ const authors: Author[] = [
     },
   },
   {
+    slug: "diana-richardson",
+    name: "Diana Richardson",
+    tier: "premium",
+    descriptor: "Slow Sex pioneer teaching couples to access the body's own erotic intelligence through stillness.",
+    tradition: "Slow Sex & Meditative Intimacy",
+    oneLiner: "The body knows — when the mind gets out of the way",
+    overviewLine: "Stillness-based intimacy for couples ready to trade performance for genuine presence.",
+    icon: Heart,
+    iconClass: "text-pink-300",
+    content: dianaRichardsonContent,
+  },
+  {
     slug: "daniel-odier",
     name: "Daniel Odier",
     tier: "premium",
@@ -860,11 +883,7 @@ const authors: Author[] = [
     overviewLine: "Contemplative intimacy for partners who value depth over performance pressure.",
     icon: Star,
     iconClass: "text-violet-300",
-    teaser: [
-      "Subtle tantric teachings for meditative relational work that supports modern couples.",
-      "Bridge sensuality and non-dual awareness with practical methods you can apply gently.",
-      "Premium includes paired contemplative practices and integration guides for ongoing closeness.",
-    ],
+    content: danielOdierContent,
   },
   {
     slug: "michaela-boehm",
@@ -876,11 +895,7 @@ const authors: Author[] = [
     overviewLine: "Somatic relational skills for attraction, regulation, and honest connection.",
     icon: Heart,
     iconClass: "text-orange-300",
-    teaser: [
-      "Translate body intelligence into better connection and desire in everyday relationship moments.",
-      "Work with tension, shutdown, and over-activation in real time, together.",
-      "Premium includes embodied drills and partner regulation maps for durable closeness.",
-    ],
+    content: michaelaBoehmContent,
   },
   {
     slug: "barry-long",
@@ -892,11 +907,7 @@ const authors: Author[] = [
     overviewLine: "Presence-led relational integrity for modern couples seeking grounded sacred love.",
     icon: Feather,
     iconClass: "text-emerald-300",
-    teaser: [
-      "Cut through noise and performative relationship habits that create distance.",
-      "Practice direct honesty with emotional sobriety and mutual care.",
-      "Premium includes clarity practices for long-term partnership and daily repair.",
-    ],
+    content: barryLongContent,
   },
   {
     slug: "jan-day",
@@ -908,11 +919,7 @@ const authors: Author[] = [
     overviewLine: "Embodied intimacy repair with practical exercises for deeper connection.",
     icon: Compass,
     iconClass: "text-violet-300",
-    teaser: [
-      "Use body-awareness to repair disconnect and shame patterns without overwhelm.",
-      "Build communication that feels honest and gentle at the same time.",
-      "Premium includes guided repair rituals for modern couples moving toward sacred partnership.",
-    ],
+    content: janDayContent,
   },
   {
     slug: "max-bush",
@@ -924,11 +931,7 @@ const authors: Author[] = [
     overviewLine: "Practical erotic craft with confidence-building progression for long-term love.",
     icon: Flame,
     iconClass: "text-amber-300",
-    teaser: [
-      "Turn intention into embodied erotic skill step by step, with relational integrity.",
-      "Build confidence without losing tenderness, consent, or emotional attunement.",
-      "Premium includes practical progression drills and partner scripts for real-life use.",
-    ],
+    content: maxBushContent,
   },
   {
     slug: "victor-gold",
@@ -940,11 +943,7 @@ const authors: Author[] = [
     overviewLine: "Advanced relational erotics with structure, depth, and sacred intentionality.",
     icon: Star,
     iconClass: "text-rose-300",
-    teaser: [
-      "Explore nuanced erotic form without performative excess or pressure.",
-      "Integrate devotion, structure, and sensual intelligence in a grounded way.",
-      "Premium includes layered pathways for advanced couples growing sacred love.",
-    ],
+    content: victorGoldContent,
   },
   {
     slug: "charles-muir",
@@ -956,11 +955,7 @@ const authors: Author[] = [
     overviewLine: "Applied Neo-Tantra sequencing that turns insight into embodied closeness.",
     icon: Waves,
     iconClass: "text-cyan-300",
-    teaser: [
-      "Learn modernized tantric partner rituals built for real relationship life.",
-      "Bridge sensual exploration, communication, and emotional safety in one coherent arc.",
-      "Premium includes modular ritual scripts and progression tracks for couples growing together.",
-    ],
+    content: charlesMuirContent,
   },
   {
     slug: "sally-kempton",
@@ -972,11 +967,7 @@ const authors: Author[] = [
     overviewLine: "Kashmir Shaivism depth translated for modern couples seeking sacred love.",
     icon: SunMoon,
     iconClass: "text-violet-300",
-    teaser: [
-      "Work with recognition-based practice rather than performance-heavy spirituality.",
-      "Unify meditation, tenderness, and intimate presence through non-dual awareness.",
-      "Premium includes guided contemplations, partner prompts, and integration rituals for daily life.",
-    ],
+    content: sallyKemptonContent,
   },
 ];
 
