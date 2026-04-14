@@ -2370,15 +2370,13 @@ const Authors = () => {
               {/* Top section */}
               <div>
                 <span className="text-xs uppercase tracking-[0.22em] text-amber-400/80">
-                  SACRED LIBRARY
+                  ONE SUBSCRIPTION · TWO HEARTS
                 </span>
                 <h3 className="mt-2 font-display text-2xl text-foreground">
-                  12 Voices. One Practice.
+                  Give her the gift of a deeper you.
                 </h3>
                 <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                  Unlock every author, every path, and every guided practice.
-                  The teachers gathered here have changed thousands of
-                  relationships. Let them change yours.
+                  One subscription unlocks the full Sacred Library for both of you — every path, every guided practice, every repair tool. She'll feel the difference in how you show up. That's the real gift.
                 </p>
               </div>
 
@@ -2405,9 +2403,9 @@ const Authors = () => {
               {/* Feature list */}
               <ul className="mt-4 space-y-2">
                 {[
-                  "All 6 Wisdom Paths — full pillar content",
-                  "Guided audio practices per tradition",
-                  "Partner rituals & exercises",
+                  "Semen retention & valley orgasm — last longer, feel closer",
+                  "Guided repair tools — fix what's broken, rebuild trust",
+                  "All 13 Wisdom Paths — full content for both partners",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-2 text-xs text-muted-foreground">
                     <span className="mt-0.5 text-amber-400/70">◆</span>
@@ -2418,13 +2416,13 @@ const Authors = () => {
 
               {/* CTA */}
               <button className="mt-5 flex w-full items-center justify-center gap-2 rounded-[14px] border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm font-medium text-amber-300 transition-colors hover:bg-amber-400/20">
-                Unlock Premium
+                Unlock for both of you
                 <span>→</span>
               </button>
 
               {/* Trial note */}
               <p className="mt-2 text-center text-[10px] text-muted-foreground/60">
-                7-day free trial · $2.99/month
+                7-day free trial · one subscription covers your partner too
               </p>
             </div>
           </Link>

@@ -1390,12 +1390,12 @@ const PartnerSpace = () => {
                     body={
                       `${matchTriggerCopy.body} ` +
                       l(
-                        "One Temple Access membership extends the deeper couple experience across your shared space.",
-                        "Un abonnement Accès Temple étend l'expérience profonde du couple dans tout votre espace partagé.",
-                        "Jedno členství Chrámový přístup rozšíří hlubší párový zážitek napříč vaším sdíleným prostorem.",
+                        "One subscription unlocks the deeper couple experience for both of you — the best investment you'll make in your relationship.",
+                        "Un abonnement déverrouille l'expérience profonde du couple pour vous deux — le meilleur investissement dans votre relation.",
+                        "Jedno předplatné odemkne hlubší párový zážitek pro vás oba — nejlepší investice do vašeho vztahu.",
                       )
                     }
-                    ctaLabel={l("Enter the deeper temple", "Entrer dans le temple profond", "Vstoupit do hlubšího chrámu")}
+                    ctaLabel={l("Unlock for both of you", "Déverrouiller pour vous deux", "Odemknout pro vás oba")}
                     to="/pricing?entry=match-unlock"
                     compact
                   />
@@ -1484,7 +1484,7 @@ const PartnerSpace = () => {
                     eyebrow={templeAccessName}
                     title={journeyProgramTriggerCopy.title}
                     body={journeyProgramTriggerCopy.body}
-                    ctaLabel={l("Go deeper together", "Aller plus loin ensemble", "Jít hlouběji spolu")}
+                    ctaLabel={l("Unlock for both of you", "Déverrouiller pour vous deux", "Odemknout pro vás oba")}
                     to="/pricing?entry=journey-program"
                     compact
                   />
