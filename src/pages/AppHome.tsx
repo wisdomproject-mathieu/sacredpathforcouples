@@ -150,8 +150,8 @@ const homeCopy: Record<Language, Record<string, string>> = {
     signalThread: "Shared thread",
     signalDaily: "Daily rhythm",
     signalDailyDetail: "A gentle daily plan for modern couples who want depth without decision fatigue.",
-    todayFlowLabel: "Today's fixed flow",
-    todayFlowTitle: "6 cards selected for your relationship today",
+    todayFlowLabel: "Draw closer today",
+    todayFlowTitle: "One small act of presence changes everything between two people.",
     selecting: "Selecting...",
     calibrating: "Calibrating your daily relationship guidance.",
     labelRitual: "Today Ritual",
@@ -238,8 +238,8 @@ const homeCopy: Record<Language, Record<string, string>> = {
     signalThread: "Fil partagé",
     signalDaily: "Rythme quotidien",
     signalDailyDetail: "Un plan quotidien doux pour les couples modernes qui veulent de la profondeur sans fatigue décisionnelle.",
-    todayFlowLabel: "Flow fixe du jour",
-    todayFlowTitle: "6 cartes sélectionnées pour votre relation aujourd'hui",
+    todayFlowLabel: "Rapprochez-vous aujourd'hui",
+    todayFlowTitle: "Un petit geste de présence change tout entre deux personnes.",
     selecting: "Sélection...",
     calibrating: "Calibrage de votre guidance relationnelle du jour.",
     labelRitual: "Rituel du jour",
@@ -326,8 +326,8 @@ const homeCopy: Record<Language, Record<string, string>> = {
     signalThread: "Sdílené vlákno",
     signalDaily: "Denní rytmus",
     signalDailyDetail: "Jemný denní plán pro moderní páry, které chtějí hloubku bez rozhodovací únavy.",
-    todayFlowLabel: "Dnešní pevný flow",
-    todayFlowTitle: "6 karet vybraných pro váš vztah na dnešek",
+    todayFlowLabel: "Přibližte se dnes",
+    todayFlowTitle: "Jeden malý čin přítomnosti změní vše mezi dvěma lidmi.",
     selecting: "Vybírám...",
     calibrating: "Kalibruji vaše dnešní vztahové vedení.",
     labelRitual: "Dnešní rituál",
@@ -755,7 +755,7 @@ const AppHome = () => {
   }, [copy.beloved]);
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <section className="rounded-[28px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-6 shadow-[0_24px_80px_-40px_rgba(255,170,70,0.35)] md:p-8">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-4xl">
@@ -813,13 +813,13 @@ const AppHome = () => {
         )}
       </section>
 
-      <section>
-        <div className="mb-4">
-          <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">{copy.todayFlowLabel}</p>
+      <section className="rounded-[28px] border-t border-[rgba(200,146,74,0.2)] bg-[rgba(200,146,74,0.06)] px-5 pb-6 pt-5">
+        <div className="mb-5">
+          <p className="text-xs uppercase tracking-[0.22em] text-amber-400/70">{copy.todayFlowLabel}</p>
           <h2 className="mt-2 font-display text-3xl text-foreground">{copy.todayFlowTitle}</h2>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {dailyCards.map((card) => {
             const Icon = card.icon;
             const expanded = expandedCardId === card.id;
@@ -893,7 +893,9 @@ const AppHome = () => {
       </section>
 
       {!hasPremiumAccess ? (
-        <section className="grid gap-4 md:grid-cols-2">
+        <section className="rounded-[28px] bg-[rgba(255,255,255,0.02)] px-5 pb-6 pt-5">
+          <p className="mb-4 text-xs uppercase tracking-[0.22em] text-amber-400/70">{copy.lockedDaily}</p>
+          <div className="grid gap-5 md:grid-cols-2">
           <div className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.18),rgba(15,23,42,0.12))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.5)]">
             <div className="flex items-center gap-2 text-amber-200">
               <Lock className="h-4 w-4" />
@@ -938,6 +940,7 @@ const AppHome = () => {
               {copy.buttonFullPlans}
               <ArrowRight className="h-4 w-4" />
             </Link>
+          </div>
           </div>
         </section>
       ) : (
