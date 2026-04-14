@@ -2362,6 +2362,26 @@ const Authors = () => {
               </button>
             );
           })}
+          <Link
+            to="/pricing"
+            className="md:col-span-2 xl:col-span-4 rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-6 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)] transition-all hover:border-amber-300/45 hover:shadow-[0_24px_70px_-40px_rgba(255,173,70,0.68)]"
+          >
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-[0.22em] text-amber-300">Sacred Library</p>
+                <h3 className="mt-2 font-display text-2xl text-foreground md:text-3xl">12 Voices. One Practice.</h3>
+                <p className="mt-2 max-w-xl text-sm leading-7 text-foreground/80">
+                  Unlock the complete Sacred Library — every author, every path, every guided practice. The teachers gathered here have changed thousands of relationships. Let them change yours.
+                </p>
+              </div>
+              <div className="shrink-0">
+                <span className="inline-flex items-center gap-2 rounded-2xl border border-amber-300/35 bg-amber-500/18 px-5 py-3 text-sm text-foreground">
+                  Unlock Premium
+                  <ArrowRight className="h-4 w-4" />
+                </span>
+              </div>
+            </div>
+          </Link>
         </div>
 
         <div className="mt-4 grid gap-3 md:grid-cols-2">
