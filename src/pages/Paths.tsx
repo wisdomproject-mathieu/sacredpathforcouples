@@ -2619,6 +2619,22 @@ const Paths = () => {
       ) : null}
 
       {showBrowse ? (
+      <section className="rounded-[28px] border border-amber-300/25 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.14),transparent_60%),linear-gradient(135deg,rgba(245,158,11,0.10),rgba(15,23,42,0.06))] p-6">
+        <p className="text-xs uppercase tracking-[0.28em] text-amber-300">Daily Practice</p>
+        <h2 className="mt-3 font-display text-3xl text-foreground">Reconnect</h2>
+        <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
+          Seven ancient practices for returning to each other. From three breaths to twenty minutes — always available, always enough.
+        </p>
+        <Link
+          to="/app/reconnect"
+          className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-amber-400/30 bg-amber-400/12 px-4 py-2.5 text-sm text-foreground transition-all hover:border-amber-400/50 hover:bg-amber-400/18"
+        >
+          Open practices →
+        </Link>
+      </section>
+      ) : null}
+
+      {showBrowse ? (
       <section className={shellCardClass}>
         <p className="text-xs uppercase tracking-[0.22em] text-primary/80">{ui.overviewEyebrow}</p>
         <h2 className="mt-2 font-display text-3xl text-foreground">{ui.overviewTitle}</h2>

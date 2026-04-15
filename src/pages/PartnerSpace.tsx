@@ -1244,6 +1244,19 @@ const PartnerSpace = () => {
                   );
                 })}
               </div>
+              <div className="mt-5 rounded-[24px] border border-amber-300/20 bg-amber-500/6 p-4">
+                <p className="text-xs uppercase tracking-[0.2em] text-amber-300/80">Daily Practice</p>
+                <h3 className="mt-2 font-display text-2xl text-foreground">Reconnect</h3>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  Seven practices for returning to each other — from three breaths to twenty minutes.
+                </p>
+                <Link
+                  to="/app/reconnect"
+                  className="mt-3 inline-flex items-center gap-2 rounded-2xl border border-amber-400/25 bg-amber-400/10 px-3 py-2 text-sm text-foreground transition-all hover:border-amber-400/40 hover:bg-amber-400/16"
+                >
+                  Open Reconnect practices →
+                </Link>
+              </div>
             </section>
             ) : null}
 
