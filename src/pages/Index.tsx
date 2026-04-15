@@ -1,293 +1,85 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { HeartHandshake, Menu, MessageCircleHeart, Sparkles, X } from "lucide-react";
 
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 import { Button } from "@/components/ui/button";
-import LotusIcon from "@/components/tantra-icons/LotusIcon";
-import SacredGeometryIcon from "@/components/tantra-icons/SacredGeometryIcon";
-import ChakraIcon from "@/components/tantra-icons/ChakraIcon";
-import FlameIcon from "@/components/tantra-icons/FlameIcon";
-import BreathIcon from "@/components/tantra-icons/BreathIcon";
-import YinYangIcon from "@/components/tantra-icons/YinYangIcon";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import { useLanguage, type Language } from "@/contexts/LanguageContext";
-
-type Teacher = { name: string; tradition: string };
-
-const teachersByLanguage: Record<Language, Teacher[]> = {
-  en: [
-    { name: "Osho", tradition: "Neo-Tantra" },
-    { name: "David Deida", tradition: "Masculine-Feminine Polarity" },
-    { name: "Mantak Chia", tradition: "Taoist Sexual Alchemy" },
-    { name: "Diana Richardson", tradition: "Slow Love" },
-    { name: "Barry Long", tradition: "Making Love" },
-    { name: "Margot Anand", tradition: "SkyDancing Tantra" },
-  ],
-  fr: [
-    { name: "Osho", tradition: "Néo-Tantra" },
-    { name: "David Deida", tradition: "Polarité masculin-féminin" },
-    { name: "Mantak Chia", tradition: "Alchimie sexuelle taoïste" },
-    { name: "Diana Richardson", tradition: "Amour lent" },
-    { name: "Barry Long", tradition: "Faire l'amour en conscience" },
-    { name: "Margot Anand", tradition: "Tantra SkyDancing" },
-  ],
-  cs: [
-    { name: "Osho", tradition: "Neo-tantra" },
-    { name: "David Deida", tradition: "Polarita mužského a ženského" },
-    { name: "Mantak Chia", tradition: "Taoistická sexuální alchymie" },
-    { name: "Diana Richardson", tradition: "Pomalá láska" },
-    { name: "Barry Long", tradition: "Vědomé milování" },
-    { name: "Margot Anand", tradition: "SkyDancing tantra" },
-  ],
-};
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Index = () => {
-  const { t, lang } = useLanguage();
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  useEffect(() => {
-    const scrollToHashTarget = () => {
-      const hash = window.location.hash;
-      if (!hash) return;
-      const target = document.getElementById(hash.slice(1));
-      if (!target) return;
-      target.scrollIntoView({ behavior: "auto", block: "start" });
-    };
-
-    const frame = window.requestAnimationFrame(scrollToHashTarget);
-    window.addEventListener("hashchange", scrollToHashTarget);
-
-    return () => {
-      window.cancelAnimationFrame(frame);
-      window.removeEventListener("hashchange", scrollToHashTarget);
-    };
-  }, []);
-
-  const features = [
-    { icon: YinYangIcon, title: t("landing.feature.couple_code.title"), desc: t("landing.feature.couple_code.desc") },
-    { icon: FlameIcon, title: t("landing.feature.join_partner.title"), desc: t("landing.feature.join_partner.desc") },
-    { icon: LotusIcon, title: t("landing.feature.intimacy_weather.title"), desc: t("landing.feature.intimacy_weather.desc") },
-    { icon: ChakraIcon, title: t("landing.feature.unsaid.title"), desc: t("landing.feature.unsaid.desc") },
-    { icon: BreathIcon, title: t("landing.feature.thread.title"), desc: t("landing.feature.thread.desc") },
-    { icon: SacredGeometryIcon, title: t("landing.feature.library.title"), desc: t("landing.feature.library.desc") },
-  ];
-
-  const teachers = teachersByLanguage[lang];
+  const { t } = useLanguage();
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Nav */}
       <nav className="fixed top-0 z-50 w-full border-b border-border/50 bg-background/85 backdrop-blur-lg">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-3">
             <img src={shivaShaktiIcon} alt="Sacred Path" className="h-8 w-8" />
             <span className="font-heading text-xl font-semibold text-foreground">{t("landing.brand")}</span>
           </div>
-
-          <button
-            type="button"
-            onClick={() => setMobileOpen((prev) => !prev)}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border/35 bg-card/45 text-foreground md:hidden"
-            aria-label="Open menu"
-          >
-            {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-          </button>
-
-          <div className="hidden items-center gap-4 md:flex">
-            <a href="#features" className="text-sm text-muted-foreground transition-colors hover:text-foreground font-body">
-              {t("nav.features")}
-            </a>
-            <Link to="/connect" className="text-sm text-muted-foreground transition-colors hover:text-foreground font-body">
-              {t("nav.connect_partner")}
-            </Link>
-            <Link to="/pricing" className="text-sm text-muted-foreground transition-colors hover:text-foreground font-body">
-              {t("nav.pricing")}
-            </Link>
+          <div className="flex items-center gap-3">
             <LanguageSwitcher />
             <Link to="/auth">
               <Button variant="outline" size="sm" className="font-body">
                 {t("nav.login")}
               </Button>
             </Link>
-            <Link to="/connect">
-              <Button size="sm" className="font-body">
-                {t("cta.connect_partner")}
-              </Button>
-            </Link>
           </div>
         </div>
-
-        {mobileOpen ? (
-          <div className="border-t border-border/35 bg-background px-4 py-4 md:hidden">
-            <div className="flex flex-col gap-3">
-              <a
-                href="#features"
-                onClick={() => setMobileOpen(false)}
-                className="rounded-xl border border-border/35 bg-card/45 px-3 py-2 text-sm text-foreground"
-              >
-                {t("nav.features")}
-              </a>
-              <Link
-                to="/connect"
-                onClick={() => setMobileOpen(false)}
-                className="rounded-xl border border-primary/30 bg-primary/12 px-3 py-2 text-sm text-foreground"
-              >
-                {t("nav.connect_partner")}
-              </Link>
-              <Link
-                to="/pricing"
-                onClick={() => setMobileOpen(false)}
-                className="rounded-xl border border-border/35 bg-card/45 px-3 py-2 text-sm text-foreground"
-              >
-                {t("nav.pricing")}
-              </Link>
-              <Link
-                to="/auth"
-                onClick={() => setMobileOpen(false)}
-                className="rounded-xl border border-border/35 bg-card/45 px-3 py-2 text-sm text-foreground"
-              >
-                {t("nav.login")}
-              </Link>
-              <div className="rounded-xl border border-border/35 bg-card/45 px-3 py-2">
-                <LanguageSwitcher />
-              </div>
-            </div>
-          </div>
-        ) : null}
       </nav>
 
+      {/* Hero */}
       <section className="flex min-h-screen flex-col items-center justify-center px-4 pt-16 text-center">
-        <img src={shivaShaktiIcon} alt="Shiva Shakti" className="mb-8 h-24 w-24 animate-float md:h-28 md:w-28" />
-        <h1 className="font-heading text-4xl font-bold leading-tight md:text-7xl">
-          <span className="gold-gradient">{t("landing.title_1")}</span>
-          <br />
-          <span className="text-foreground">{t("landing.title_2")}</span>
+        <img
+          src={shivaShaktiIcon}
+          alt="Sacred Path for Couples"
+          className="w-28 h-28 rounded-[28px] shadow-[0_0_60px_rgba(200,146,74,0.3)]"
+        />
+
+        <h1 className="mt-8 leading-tight">
+          <span className="block font-display text-5xl md:text-6xl text-amber-300/90">Sacred Path</span>
+          <span className="block font-display text-5xl md:text-6xl text-white font-light">for Couples</span>
         </h1>
-        <p className="mt-6 max-w-2xl text-lg text-muted-foreground font-body">{t("landing.subtitle")}</p>
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+
+        <p className="mt-6 text-base md:text-lg text-muted-foreground max-w-md text-center leading-8">
+          Where ancient Tantric and Taoist wisdom becomes<br className="hidden md:block" />
+          a daily practice between two people.<br className="hidden md:block" />
+          Presence. Desire. Sacred connection.
+        </p>
+
+        <div className="mt-10 flex flex-col items-center gap-3">
           <Link to="/connect">
-            <Button size="lg" className="font-body text-base px-8">
-              {t("cta.connect_partner")}
+            <Button size="lg" className="font-body text-base px-10">
+              Begin Together
             </Button>
           </Link>
-          <a href="#features">
-            <Button variant="outline" size="lg" className="font-body text-base px-8">
-              {t("landing.explore")}
+          <Link to="/app/paths">
+            <Button variant="outline" size="lg" className="font-body text-base px-10">
+              Explore the Library
             </Button>
-          </a>
+          </Link>
           <Link to="/auth">
-            <Button variant="outline" size="lg" className="font-body text-base px-8">
-              {t("cta.continue_without_account")}
-            </Button>
+            <button type="button" className="mt-1 text-sm text-muted-foreground/60 hover:text-muted-foreground transition-colors">
+              Continue without account
+            </button>
           </Link>
         </div>
+
+        <p className="text-xs text-muted-foreground/50 text-center mt-6">
+          Tantra · Taoism · David Deida · Diana Richardson · Osho
+        </p>
       </section>
 
-      <section id="features" className="scroll-mt-24 py-24 px-4">
-        <div className="container">
-          <h2 className="text-center font-heading text-4xl font-semibold text-foreground mb-4">{t("landing.features_title")}</h2>
-          <p className="text-center text-muted-foreground mb-16 max-w-3xl mx-auto font-body">
-            {t("landing.features_desc")}
-          </p>
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {features.map((f) => (
-              <div key={f.title} className="group rounded-xl border border-border bg-card p-8 transition-all hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5">
-                <f.icon className="text-primary mb-4" size={48} />
-                <h3 className="font-heading text-xl font-semibold text-foreground mb-2">{f.title}</h3>
-                <p className="text-sm text-muted-foreground font-body">{f.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-24 px-4 bg-card/50">
-        <div className="container">
-          <div className="mx-auto max-w-4xl rounded-[26px] border border-primary/20 bg-primary/10 p-6 md:p-8">
-            <div className="inline-flex rounded-2xl border border-border/30 bg-card/45 p-3 text-rose-300">
-              <HeartHandshake className="h-6 w-6" />
-            </div>
-            <h2 className="mt-4 font-heading text-3xl font-semibold text-foreground md:text-4xl">{t("landing.partner_block_title")}</h2>
-            <p className="mt-3 text-sm leading-7 text-muted-foreground md:text-base">
-              {t("landing.partner_block_desc")}
-            </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link to="/connect">
-                <Button size="lg" className="font-body text-base px-8">
-                  {t("cta.connect_partner")}
-                </Button>
-              </Link>
-              <Link to="/app">
-                <Button variant="outline" size="lg" className="font-body text-base px-8">
-                  {t("cta.enter_app")}
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-24 px-4">
-        <div className="container">
-          <h2 className="text-center font-heading text-4xl font-semibold text-foreground mb-4">{t("landing.wisdom_lineage")}</h2>
-          <p className="text-center text-muted-foreground mb-16 max-w-2xl mx-auto font-body">{t("landing.wisdom_lineage_desc")}</p>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {teachers.map((teacher) => (
-              <div key={teacher.name} className="flex items-center gap-4 rounded-lg border border-border bg-card p-6 transition-all hover:border-primary/30">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary font-heading text-xl font-bold">{teacher.name[0]}</div>
-                <div>
-                  <h3 className="font-heading text-lg font-semibold text-foreground">{teacher.name}</h3>
-                  <p className="text-sm text-muted-foreground font-body">{teacher.tradition}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-24 px-4 text-center">
-        <div className="container max-w-2xl">
-          <MessageCircleHeart className="text-primary mx-auto mb-6 h-16 w-16" />
-          <h2 className="font-heading text-4xl font-semibold text-foreground mb-4">{t("landing.final_cta_title")}</h2>
-          <p className="text-muted-foreground mb-8 font-body">
-            {t("landing.final_cta_desc")}
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            <Link to="/connect">
-              <Button size="lg" className="font-body text-base px-10">
-                {t("cta.connect_partner")}
-              </Button>
-            </Link>
-            <Link to="/auth">
-              <Button variant="outline" size="lg" className="font-body text-base px-10">
-                {t("landing.start_trial")}
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <footer className="border-t border-border py-12 px-4">
-        <div className="container flex flex-col items-center gap-4 md:flex-row md:justify-between">
+      {/* Footer */}
+      <footer className="border-t border-border py-8 px-4">
+        <div className="container flex flex-col items-center gap-3 md:flex-row md:justify-between">
           <div className="flex items-center gap-2">
-            <img src={shivaShaktiIcon} alt="Sacred Path" className="h-6 w-6" />
+            <img src={shivaShaktiIcon} alt="Sacred Path" className="h-5 w-5" />
             <span className="font-heading text-sm text-muted-foreground">{t("landing.brand_full")}</span>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-3 text-sm text-muted-foreground font-body">
-            <Link to="/privacy" className="hover:text-foreground transition-colors">
-              {t("landing.privacy")}
-            </Link>
-            <Link to="/pricing" className="hover:text-foreground transition-colors">
-              {t("nav.pricing")}
-            </Link>
-            <Link to="/connect" className="inline-flex items-center gap-2 rounded-xl border border-primary/30 bg-primary/10 px-3 py-2 text-foreground transition-all hover:border-primary/45 hover:bg-primary/15">
-              {t("cta.connect_partner")}
-              <HeartHandshake className="h-4 w-4" />
-            </Link>
-            <Link to="/app" className="inline-flex items-center gap-2 rounded-xl border border-border/35 bg-card/45 px-3 py-2 text-foreground transition-all hover:border-border/55 hover:bg-card/60">
-              {t("cta.enter_app")}
-              <Sparkles className="h-4 w-4" />
-            </Link>
+          <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground font-body">
+            <Link to="/privacy" className="hover:text-foreground transition-colors">{t("landing.privacy")}</Link>
+            <Link to="/pricing" className="hover:text-foreground transition-colors">{t("nav.pricing")}</Link>
           </div>
           <p className="text-xs text-muted-foreground font-body">&copy; 2026 Sacred Path. All rights reserved.</p>
         </div>
