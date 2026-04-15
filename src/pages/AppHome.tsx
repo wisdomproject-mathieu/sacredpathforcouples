@@ -7,7 +7,6 @@ import {
   ChevronDown,
   ChevronUp,
   Heart,
-  HeartHandshake,
   Lock,
   MessageCircle,
   Sparkles,
@@ -476,6 +475,7 @@ const AppHome = () => {
   const [partnerWeatherEntry, setPartnerWeatherEntry] = useState<{ state: string; user_id: string } | null>(null);
   const [myWeatherSelected, setMyWeatherSelected] = useState<string | null>(null);
   const [savingWeather, setSavingWeather] = useState(false);
+  const [weatherPickerVisible, setWeatherPickerVisible] = useState(false);
 
   const resolvePreferredName = (profile: Pick<Profile, "display_name"> | null, fallbackUser = user) => {
     const profileName = profile?.display_name?.trim();
@@ -785,6 +785,22 @@ const AppHome = () => {
     setSavingWeather(false);
   };
 
+  const handleWeatherSelect = async (key: string) => {
+    setMyWeatherSelected(key);
+    if (!user || !coupleId) return;
+    setSavingWeather(true);
+    const { error } = await supabase.from("weather_entries").insert({
+      couple_id: coupleId,
+      user_id: user.id,
+      state: key,
+    });
+    if (!error) {
+      setMyWeatherEntry({ state: key, user_id: user.id });
+      setWeatherPickerVisible(false);
+    }
+    setSavingWeather(false);
+  };
+
   useEffect(() => {
     setMyName((current) => (fallbackBelovedValues.has(current) ? copy.beloved : current));
   }, [copy.beloved]);
@@ -859,155 +875,164 @@ const AppHome = () => {
     [bothCheckedIn, lang, myWeatherEntry, partnerWeatherEntry],
   );
 
+  const weatherCardState: "picker" | "mine_only" | "both" =
+    weatherPickerVisible || !myWeatherEntry
+      ? "picker"
+      : bothCheckedIn && weatherMatch
+      ? "both"
+      : "mine_only";
+
   return (
-    <div className="space-y-4">
-      <section className="rounded-[28px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-5 shadow-[0_24px_80px_-40px_rgba(255,170,70,0.35)] md:p-6">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div className="max-w-4xl">
-            <p className="text-xs uppercase tracking-[0.28em] text-primary/80">{todayLabel}</p>
-            <h1 className="mt-3 font-display text-4xl leading-tight text-foreground md:text-5xl">{copy.heroTitle}</h1>
-            <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground md:text-base">
-              {copy.heroDesc}
-            </p>
-          </div>
+    <div className="space-y-4 md:space-y-5">
+      {/* Block 1: Hero greeting */}
+      <div className="rounded-[24px] border border-border/20 bg-card/30 p-6">
+        <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground/60">
+          {todayLabel}
+        </p>
+        <h1 className="mt-2 font-display text-3xl text-foreground">
+          {myName}
+          <span className="text-amber-400/60"> &amp; </span>
+          {partnerName ?? copy.partnerFallback}
+        </h1>
+        <p className="mt-1 text-sm italic text-muted-foreground/70">
+          {relationshipConnected ? copy.journeyLine : copy.notConnectedLine}
+        </p>
+      </div>
 
-          <aside className="lg:w-[360px] lg:shrink-0">
-            <div className="rounded-[22px] border border-border/30 bg-card/45 p-4">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                  <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">{copy.relationship}</p>
-                  <h2 className="mt-2 font-display text-2xl text-foreground">
-                    {relationshipConnected ? `${myName} & ${partnerName ?? copy.partnerFallback}` : myName}
-                  </h2>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    {loading
-                      ? copy.syncingLine
-                      : relationshipConnected
-                        ? copy.journeyLine
-                        : copy.notConnectedLine}
-                  </p>
-                </div>
-                <div className={`inline-flex rounded-2xl border p-3 ${relationshipConnected ? "border-emerald-300/30 bg-emerald-500/10 text-emerald-200" : "border-amber-300/35 bg-amber-500/10 text-amber-200"}`}>
-                  <HeartHandshake className="h-5 w-5" />
-                </div>
-              </div>
-              <div className="mt-4 inline-flex rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.14em] text-foreground/90">
-                {loading ? copy.syncing : relationshipConnected ? copy.connected : copy.solo}
-              </div>
-            </div>
-          </aside>
-        </div>
-
-        <div className="mt-4 rounded-[20px] border border-border/30 bg-card/40 p-3">
-          <div className="flex items-center gap-2 text-violet-300">
-            <MessageCircle className="h-4 w-4" />
-            <span className="text-xs uppercase tracking-[0.18em]">{signal.title}</span>
-          </div>
-          <p className="mt-2 text-sm leading-6 text-foreground/90">{loading ? copy.signalPreparing : signal.detail}</p>
-        </div>
-
-      </section>
-
+      {/* Block 2: Intimacy Weather — single unified card */}
       {relationshipConnected && (
-        <section className="rounded-[24px] border border-border/30 bg-card/45 p-4">
-          <div className="mb-3">
-            <p className="text-xs uppercase tracking-[0.2em] text-amber-400/70">{weatherUi.sectionLabel}</p>
-            <h2 className="mt-1.5 font-display text-xl text-foreground">{weatherUi.sectionTitle}</h2>
-          </div>
+        <div className="overflow-hidden rounded-[24px] border border-amber-400/20 bg-card/50">
 
-          <div className="grid gap-2 sm:grid-cols-2">
-            <div className="rounded-2xl border border-border/30 bg-background/45 p-3">
-              <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">{weatherUi.yourWeather}</p>
-              <p className="mt-1.5 text-base text-foreground">{myMood ? `${myMood.label} ${myMood.emoji}` : "—"}</p>
-            </div>
-            <div className="rounded-2xl border border-border/30 bg-background/45 p-3">
-              <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">{weatherUi.belovedWeather}</p>
-              <p className="mt-1.5 text-base text-foreground">{partnerMood ? `${partnerMood.label} ${partnerMood.emoji}` : "—"}</p>
-            </div>
-          </div>
-
-          {bothCheckedIn && weatherMatch ? (
-            <div className="mt-3">
-              <article className="flex flex-col gap-3 rounded-[20px] border border-primary/20 bg-primary/8 p-3.5 sm:flex-row sm:items-center sm:justify-between">
-                <div className="min-w-0 flex-1">
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-primary/70">{weatherUi.sectionLabel}</p>
-                  <h3 className="mt-1 font-display text-xl leading-snug text-foreground">{weatherMatch.archetype.title}</h3>
-                  <p className="mt-0.5 line-clamp-1 text-sm text-foreground/85">{weatherMatch.interpretation}</p>
-                  <p className="mt-1.5 text-xs text-muted-foreground">
-                    {myMood?.emoji} {myMood?.label} + {partnerMood?.emoji} {partnerMood?.label}
-                  </p>
-                  <Link
-                    to="/app/space?view=journey"
-                    className="mt-2.5 inline-flex items-center gap-1.5 rounded-xl border border-primary/25 bg-primary/12 px-3 py-1.5 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
-                  >
-                    {weatherUi.openTonightPath} →
-                  </Link>
-                </div>
-                <div className="h-[72px] w-[72px] shrink-0 self-start overflow-hidden rounded-xl border border-border/20 sm:h-20 sm:w-20">
-                  <img src={shivaShaktiIcon} alt="" className="h-full w-full object-cover opacity-60" />
-                </div>
-              </article>
-            </div>
-          ) : myMood ? (
-            <div className="mt-3 space-y-2">
-              <div className="flex items-center gap-2.5 rounded-2xl border border-emerald-300/25 bg-emerald-500/8 p-3">
-                <span className="text-xl">{myMood.emoji}</span>
-                <div>
-                  <p className="text-[11px] uppercase tracking-[0.14em] text-emerald-200">{weatherUi.yourWeatherSealed}</p>
-                  <p className="text-sm text-foreground">{myMood.label}</p>
-                </div>
-              </div>
-              <p className="text-sm text-muted-foreground">{weatherUi.waitingForBeloved}</p>
-            </div>
-          ) : (
-            <div className="mt-3 space-y-2.5">
-              <div className="grid grid-cols-2 gap-1.5 md:grid-cols-4">
+          {/* STATE A: picker — user hasn't sealed weather today, or wants to change */}
+          {weatherCardState === "picker" && (
+            <div className="p-5">
+              <p className="text-xs uppercase tracking-[0.22em] text-amber-400/70">
+                {weatherUi.sectionLabel}
+              </p>
+              <h3 className="mt-2 font-display text-xl text-foreground">
+                {weatherUi.sectionTitle}
+              </h3>
+              <div className="mt-4 grid grid-cols-4 gap-2">
                 {weatherMoods.map((mood) => {
                   const active = myWeatherSelected === mood.key;
                   return (
                     <button
                       key={mood.key}
                       type="button"
-                      onClick={() => setMyWeatherSelected(mood.key)}
-                      className={`flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs transition-all ${
+                      disabled={savingWeather}
+                      onClick={() => handleWeatherSelect(mood.key)}
+                      className={`flex flex-col items-center gap-1.5 rounded-[12px] border px-2 py-3 text-center transition-all disabled:opacity-50 ${
                         active
-                          ? "border-amber-400/60 bg-amber-400/15 text-amber-300"
-                          : "border-border/30 bg-card/40 text-muted-foreground hover:border-amber-400/40 hover:bg-amber-400/10"
+                          ? "border-amber-400/50 bg-amber-400/15"
+                          : "border-border/30 bg-background/40 hover:border-amber-400/40 hover:bg-amber-400/10"
                       }`}
                     >
-                      <span>{mood.emoji}</span>
-                      <span>{mood.label}</span>
+                      <span className="text-xl">{mood.emoji}</span>
+                      <span className="text-[11px] leading-tight text-muted-foreground">{mood.label}</span>
                     </button>
                   );
                 })}
               </div>
-
-              {myWeatherSelected && (
-                <button
-                  type="button"
-                  onClick={saveWeather}
-                  disabled={savingWeather}
-                  className="rounded-xl border border-primary/25 bg-primary/12 px-4 py-1.5 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16 disabled:opacity-60"
-                >
-                  {savingWeather ? weatherUi.sealing : weatherUi.sealMyWeather}
-                </button>
-              )}
-
-              {partnerName && (
-                <p className="text-sm text-muted-foreground">{weatherUi.waitingForBeloved}</p>
+              {savingWeather && (
+                <p className="mt-3 text-xs text-muted-foreground/60">{weatherUi.sealing}</p>
               )}
             </div>
           )}
 
-          <div className="mt-3 border-t border-border/20 pt-3">
-            <Link
-              to="/app/reconnect"
-              className="text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"
-            >
-              {weatherUi.reconnectFirst}
-            </Link>
-          </div>
-        </section>
+          {/* STATE B: mine only — user sealed, waiting for partner */}
+          {weatherCardState === "mine_only" && myMood && (
+            <div className="p-5">
+              <p className="text-xs uppercase tracking-[0.22em] text-amber-400/70">
+                {weatherUi.sectionLabel}
+              </p>
+              <div className="mt-3 flex gap-3">
+                <div className="flex-1 rounded-[14px] bg-background/40 p-3">
+                  <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
+                    {weatherUi.yourWeather}
+                  </p>
+                  <p className="mt-1 font-display text-lg">
+                    {myMood.emoji} {myMood.label}
+                  </p>
+                </div>
+                <div className="flex-1 rounded-[14px] border border-dashed border-border/30 p-3">
+                  <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
+                    {weatherUi.belovedWeather}
+                  </p>
+                  <p className="mt-1 text-sm italic text-muted-foreground/50">
+                    {partnerName ? `Waiting for ${partnerName}…` : weatherUi.waitingForBeloved}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* STATE C: both — the beautiful combined view */}
+          {weatherCardState === "both" && myMood && partnerMood && weatherMatch && (
+            <div>
+              {/* Top row: both weathers + artwork */}
+              <div className="flex items-stretch">
+                <div className="flex-1 p-5">
+                  <p className="text-xs uppercase tracking-[0.22em] text-amber-400/70">
+                    {weatherUi.sectionLabel}
+                  </p>
+                  <div className="mt-3 flex items-center gap-3">
+                    <div>
+                      <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground/60">
+                        {weatherUi.yourWeather}
+                      </p>
+                      <p className="font-display text-lg">
+                        {myMood.emoji} {myMood.label}
+                      </p>
+                    </div>
+                    <span className="text-xl text-amber-400/40">+</span>
+                    <div>
+                      <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground/60">
+                        {weatherUi.belovedWeather}
+                      </p>
+                      <p className="font-display text-lg">
+                        {partnerMood.emoji} {partnerMood.label}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="relative w-24 shrink-0 overflow-hidden sm:w-28">
+                  <img
+                    src={shivaShaktiIcon}
+                    alt=""
+                    className="h-full w-full object-cover opacity-50"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-l from-transparent to-card/70" />
+                </div>
+              </div>
+
+              {/* Bottom: combined result */}
+              <div className="border-t border-amber-400/10 bg-gradient-to-r from-amber-950/30 to-transparent p-5">
+                <p className="text-xs uppercase tracking-[0.18em] text-amber-400/60">
+                  {weatherMatch.archetype.title}
+                </p>
+                <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                  {weatherMatch.interpretation}
+                </p>
+                <div className="mt-4 flex flex-wrap items-center gap-3">
+                  <Link
+                    to="/app/space?view=journey"
+                    className="inline-flex items-center gap-1.5 rounded-[12px] border border-amber-400/30 bg-amber-400/10 px-4 py-2.5 text-sm text-amber-300 transition-all hover:bg-amber-400/20"
+                  >
+                    {weatherUi.openTonightPath} →
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setWeatherPickerVisible(true)}
+                    className="text-xs text-muted-foreground/40 transition-colors hover:text-muted-foreground/70"
+                  >
+                    {lang === "fr" ? "Changer ma météo" : lang === "cs" ? "Změnit počasí" : "Change my weather"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+        </div>
       )}
 
       <section className="rounded-[24px] border-t border-[rgba(200,146,74,0.2)] bg-[rgba(200,146,74,0.06)] px-4 pb-4 pt-4">
