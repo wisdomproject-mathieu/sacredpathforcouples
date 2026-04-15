@@ -2367,76 +2367,48 @@ const Authors = () => {
             className="xl:col-span-3 rounded-[24px] border border-amber-400/20 bg-gradient-to-br from-amber-950/40 via-card/60 to-card/40 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)] transition-all hover:border-amber-400/35 hover:shadow-[0_24px_70px_-40px_rgba(255,173,70,0.68)]"
           >
             <div className="flex h-full flex-col justify-between p-6">
-              {/* Top section */}
               <div>
                 <span className="text-xs uppercase tracking-[0.22em] text-amber-400/80">
-                  ONE SUBSCRIPTION · TWO HEARTS
+                  DEEPER PATH FOR TWO
                 </span>
                 <h3 className="mt-2 font-display text-2xl text-foreground">
-                  Give her the gift of a deeper you.
+                  Open the door to deeper intimacy.
                 </h3>
                 <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                  One subscription unlocks the full Sacred Library for both of you — every path, every guided practice, every repair tool. She'll feel the difference in how you show up. That's the real gift.
+                  Premium is for couples who want more than inspiration. It helps you reconnect when distance appears, repair what feels fragile, explore new rituals together, and build a love life that feels more alive, loving, and fulfilling.
                 </p>
               </div>
 
-              {/* Author avatar stack */}
-              <div className="mt-4 flex items-center gap-2">
-                <div className="flex -space-x-2">
-                  {["🔥", "✨", "〰", "⭐", "💫"].map((icon, i) => (
-                    <div
-                      key={i}
-                      className="flex h-7 w-7 items-center justify-center rounded-full border border-border/40 bg-card/80 text-xs"
-                    >
-                      {icon}
-                    </div>
-                  ))}
-                </div>
-                <span className="text-xs text-muted-foreground">
-                  +7 more voices
-                </span>
-              </div>
-
-              {/* Divider */}
-              <div className="mt-4 h-px w-full bg-border/20" />
-
-              {/* Feature list */}
-              <ul className="mt-4 space-y-2">
+              <div className="mt-4 space-y-2">
                 {[
-                  "Semen retention & valley orgasm — last longer, feel closer",
-                  "Guided repair tools — fix what's broken, rebuild trust",
-                  "All 13 Wisdom Paths — full content for both partners",
+                  "Reconnect what feels distant",
+                  "Repair what has been strained",
+                  "Try new rituals that bring joy",
                 ].map((item) => (
-                  <li key={item} className="flex items-start gap-2 text-xs text-muted-foreground">
+                  <div key={item} className="flex items-start gap-2 text-xs text-muted-foreground">
                     <span className="mt-0.5 text-amber-400/70">◆</span>
                     {item}
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
 
-              {/* CTA */}
-              <button className="mt-5 flex w-full items-center justify-center gap-2 rounded-[14px] border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm font-medium text-amber-300 transition-colors hover:bg-amber-400/20">
-                Unlock for both of you
+              <div className="mt-4 h-px w-full bg-border/20" />
+
+              <button className="mt-4 flex w-full items-center justify-center gap-2 rounded-[14px] border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm font-medium text-amber-300 transition-colors hover:bg-amber-400/20">
+                Deepen intimacy together
                 <span>→</span>
               </button>
 
-              {/* Trial note */}
               <p className="mt-2 text-center text-[10px] text-muted-foreground/60">
-                7-day free trial · one subscription covers your partner too
+                One shared path for both hearts.
               </p>
             </div>
           </Link>
         </div>
 
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
-          <div className="rounded-2xl border border-emerald-400/25 bg-emerald-500/8 p-4">
-            <p className="text-xs uppercase tracking-[0.14em] text-emerald-200">{ui.openAuthors}</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">{freeAuthors.map((author) => author.name).join(authorJoinWord)} {ui.openAuthorsBodySuffix}</p>
-          </div>
-          <div className="rounded-2xl border border-amber-400/25 bg-amber-500/8 p-4">
-            <p className="text-xs uppercase tracking-[0.14em] text-amber-200">{ui.lockedAuthors}</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">{premiumAuthors.length} {ui.lockedAuthorsBody}</p>
-          </div>
+        <div className="mt-4 rounded-2xl border border-amber-400/20 bg-amber-500/6 p-4">
+          <p className="text-xs uppercase tracking-[0.14em] text-amber-200">WHY GO DEEPER</p>
+          <p className="mt-2 text-sm leading-6 text-foreground/90">Some wisdom can inspire in a moment. Deeper guidance helps you live it together, especially when love needs renewal, courage, and care.</p>
         </div>
       </section>
       ) : null}
