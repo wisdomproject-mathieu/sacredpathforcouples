@@ -94,15 +94,15 @@ const ConnectLanding = () => {
             <div className="inline-flex rounded-2xl border border-amber-300/35 bg-amber-500/14 p-3 text-amber-200">
               <Lock className="h-5 w-5" />
             </div>
-            <h3 className="mt-4 font-display text-2xl text-foreground">{t("connect.premium_title")}</h3>
+            <h3 className="mt-4 font-display text-2xl text-foreground">Make this a journey for two.</h3>
             <p className="mt-2 text-sm leading-7 text-foreground/90">
-              {t("connect.premium_body")}
+              When both partners can explore, reflect, and grow together, intimacy becomes easier to protect, repair, and deepen.
             </p>
             <Link
               to="/pricing"
               className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-amber-300/35 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/50 hover:bg-amber-500/20"
             >
-              {t("cta.view_plans")}
+              Open the shared path
               <Sparkles className="h-4 w-4" />
             </Link>
           </article>

@@ -137,7 +137,7 @@ const homeCopy: Record<Language, Record<string, string>> = {
     heroTitle: "Daily Sacred Starter for Modern Couples",
     heroDesc: "Six preselected cards. Calm direction. Shared intimacy momentum. This page renews every day to support your path toward infinite love.",
     relationship: "Relationship",
-    partnerFallback: "Partner",
+    partnerFallback: "your love",
     journeyLine: "On a journey to sacred intimacy.",
     notConnectedLine: "Not connected yet. Invite your partner to begin your shared path.",
     connected: "Connected",
@@ -150,8 +150,8 @@ const homeCopy: Record<Language, Record<string, string>> = {
     signalThread: "Shared thread",
     signalDaily: "Daily rhythm",
     signalDailyDetail: "A gentle daily plan for modern couples who want depth without decision fatigue.",
-    todayFlowLabel: "Today's fixed flow",
-    todayFlowTitle: "6 cards selected for your relationship today",
+    todayFlowLabel: "Draw closer today",
+    todayFlowTitle: "One small act of presence changes everything between two people.",
     selecting: "Selecting...",
     calibrating: "Calibrating your daily relationship guidance.",
     labelRitual: "Today Ritual",
@@ -168,8 +168,8 @@ const homeCopy: Record<Language, Record<string, string>> = {
     fallbackInsightCardDesc: "One practical learning insight for couples building lasting intimacy.",
     quickInsight: "Quick insight",
     stepByStep: "Step by step",
-    goDeeper: "Go deeper",
-    goDeeperDesc: "Unlock 14 additional daily cards built from your couple rhythm for richer sensual progression.",
+    goDeeper: "Deepen intimacy together",
+    goDeeperDesc: "Premium helps couples reconnect, heal what feels strained, and discover new ways to love.",
     useful: "Was this useful?",
     ritualInsight: "A short ritual lowers stress and raises emotional and erotic safety in minutes.",
     quoteInsight: "Use one line of wisdom as tonight's shared intention.",
@@ -181,20 +181,20 @@ const homeCopy: Record<Language, Record<string, string>> = {
     saveThisPractice: "Save this practice",
     savedToYourPath: "Saved to your path",
     fromAuthorPattern: "From {author}",
-    lockedDaily: "Locked Daily Expansion",
-    lockedDailyTitle: "More of this page: 14 extra daily cards",
-    lockedDailyDesc: "Keep your daily rhythm fresh with additional rituals, quotes, insights, positions, and temple pulses shaped for modern couples.",
-    chipExtraCards: "14 Extra Cards",
-    chipDailyRefresh: "Daily Refresh",
-    chipSensualGuidance: "Sensual Guidance",
-    buttonDailyPlans: "See daily expansion plans",
-    lockedFull: "Locked Full Experience",
-    lockedFullTitle: "More of Sacred Path across the entire app",
-    lockedFullDesc: "Unlock all eight temple doorways, full Sacred Library depth, advanced reconnect systems, Wisdom Oracle innovation, and complete journey intelligence.",
-    chipTemple: "Sacred Temple",
-    chipLibrary: "Sacred Library",
-    chipOracle: "Wisdom Oracle",
-    buttonFullPlans: "View full plans",
+    lockedDaily: "FOR THE TWO OF YOU",
+    lockedDailyTitle: "Grow closer, gently.",
+    lockedDailyDesc: "Reconnect intimacy, repair what feels strained, and try something new together.",
+    chipExtraCards: "Reconnect",
+    chipDailyRefresh: "Heal",
+    chipSensualGuidance: "Discover",
+    buttonDailyPlans: "Explore your shared path",
+    lockedFull: "DEEPER PATH FOR TWO",
+    lockedFullTitle: "Open the door to deeper intimacy.",
+    lockedFullDesc: "Premium is for couples who want more than inspiration. It helps you reconnect when distance appears, repair what feels fragile, explore new rituals together, and build a love life that feels more alive, loving, and fulfilling.",
+    chipTemple: "Feel closer",
+    chipLibrary: "Heal what's stuck",
+    chipOracle: "Discover new ways",
+    buttonFullPlans: "Deepen intimacy together",
     premiumActive: "Premium Active",
     premiumActiveTitle: "Your full Sacred Path is unlocked",
     premiumActiveDesc:
@@ -225,7 +225,7 @@ const homeCopy: Record<Language, Record<string, string>> = {
     heroTitle: "Démarrage sacré du jour pour couples modernes",
     heroDesc: "Six cartes présélectionnées. Direction calme. Élan d'intimité partagé. Cette page se renouvelle chaque jour.",
     relationship: "Relation",
-    partnerFallback: "Partenaire",
+    partnerFallback: "ton amour",
     journeyLine: "En chemin vers une intimité sacrée.",
     notConnectedLine: "Pas encore connectés. Invitez votre partenaire pour commencer votre chemin partagé.",
     connected: "Connectés",
@@ -238,8 +238,8 @@ const homeCopy: Record<Language, Record<string, string>> = {
     signalThread: "Fil partagé",
     signalDaily: "Rythme quotidien",
     signalDailyDetail: "Un plan quotidien doux pour les couples modernes qui veulent de la profondeur sans fatigue décisionnelle.",
-    todayFlowLabel: "Flow fixe du jour",
-    todayFlowTitle: "6 cartes sélectionnées pour votre relation aujourd'hui",
+    todayFlowLabel: "Rapprochez-vous aujourd'hui",
+    todayFlowTitle: "Un petit geste de présence change tout entre deux personnes.",
     selecting: "Sélection...",
     calibrating: "Calibrage de votre guidance relationnelle du jour.",
     labelRitual: "Rituel du jour",
@@ -313,7 +313,7 @@ const homeCopy: Record<Language, Record<string, string>> = {
     heroTitle: "Denní posvátný start pro moderní páry",
     heroDesc: "Šest předvybraných karet. Klidný směr. Sdílená intimní dynamika. Tato stránka se obnovuje každý den.",
     relationship: "Vztah",
-    partnerFallback: "Partner",
+    partnerFallback: "tvá láska",
     journeyLine: "Na cestě k posvátné intimitě.",
     notConnectedLine: "Ještě nejste propojeni. Pozvěte partnera a začněte společnou cestu.",
     connected: "Propojeno",
@@ -326,8 +326,8 @@ const homeCopy: Record<Language, Record<string, string>> = {
     signalThread: "Sdílené vlákno",
     signalDaily: "Denní rytmus",
     signalDailyDetail: "Jemný denní plán pro moderní páry, které chtějí hloubku bez rozhodovací únavy.",
-    todayFlowLabel: "Dnešní pevný flow",
-    todayFlowTitle: "6 karet vybraných pro váš vztah na dnešek",
+    todayFlowLabel: "Přibližte se dnes",
+    todayFlowTitle: "Jeden malý čin přítomnosti změní vše mezi dvěma lidmi.",
     selecting: "Vybírám...",
     calibrating: "Kalibruji vaše dnešní vztahové vedení.",
     labelRitual: "Dnešní rituál",
@@ -469,6 +469,11 @@ const AppHome = () => {
   const [pathways, setPathways] = useState<Pathway[]>([]);
   const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
   const [savedCards, setSavedCards] = useState<SavedMap>({});
+  const [coupleId, setCoupleId] = useState<string | null>(null);
+  const [myWeatherEntry, setMyWeatherEntry] = useState<{ state: string; user_id: string } | null>(null);
+  const [partnerWeatherEntry, setPartnerWeatherEntry] = useState<{ state: string; user_id: string } | null>(null);
+  const [myWeatherSelected, setMyWeatherSelected] = useState<string | null>(null);
+  const [savingWeather, setSavingWeather] = useState(false);
 
   const resolvePreferredName = (profile: Pick<Profile, "display_name"> | null, fallbackUser = user) => {
     const profileName = profile?.display_name?.trim();
@@ -483,6 +488,21 @@ const AppHome = () => {
     if (emailPrefix) return emailPrefix;
 
     return copy.beloved;
+  };
+
+  const saveDisplayNameIfMissing = async (name: string) => {
+    if (!user) return;
+    const { data: existing } = await supabase
+      .from("profiles")
+      .select("display_name")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (!existing?.display_name && name.trim()) {
+      await supabase
+        .from("profiles")
+        .update({ display_name: name.trim() })
+        .eq("user_id", user.id);
+    }
   };
 
   useEffect(() => {
@@ -542,6 +562,25 @@ const AppHome = () => {
       }
       const connected = coupleState.connected || stickyConnected || stickyCoupleId === activeCouple.id;
       setRelationshipConnected(connected);
+
+      setCoupleId(activeCouple.id);
+
+      // Load today's weather entries
+      const todayStr = new Date().toISOString().slice(0, 10);
+      const { data: weatherData } = await supabase
+        .from("weather_entries")
+        .select("state, user_id")
+        .eq("couple_id", activeCouple.id)
+        .gte("created_at", todayStr)
+        .order("created_at", { ascending: false });
+
+      if (weatherData) {
+        const myW = weatherData.find((w: { state: string; user_id: string }) => w.user_id === user.id) ?? null;
+        const partnerW = weatherData.find((w: { state: string; user_id: string }) => w.user_id !== user.id) ?? null;
+        setMyWeatherEntry(myW);
+        setPartnerWeatherEntry(partnerW);
+        if (myW?.state) setMyWeatherSelected(myW.state);
+      }
 
       const partnerId = coupleState.partnerId;
 
@@ -735,12 +774,26 @@ const AppHome = () => {
     writeSavedCards(next);
   };
 
+  const saveWeather = async () => {
+    if (!user || !myWeatherSelected || !coupleId) return;
+    setSavingWeather(true);
+    const { error } = await supabase.from("weather_entries").insert({
+      couple_id: coupleId,
+      user_id: user.id,
+      state: myWeatherSelected,
+    });
+    if (!error) {
+      setMyWeatherEntry({ state: myWeatherSelected, user_id: user.id });
+    }
+    setSavingWeather(false);
+  };
+
   useEffect(() => {
     setMyName((current) => (fallbackBelovedValues.has(current) ? copy.beloved : current));
   }, [copy.beloved]);
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <section className="rounded-[28px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-6 shadow-[0_24px_80px_-40px_rgba(255,170,70,0.35)] md:p-8">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-4xl">
@@ -757,7 +810,7 @@ const AppHome = () => {
               <div>
                   <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">{copy.relationship}</p>
                   <h2 className="mt-2 font-display text-2xl text-foreground">
-                    {relationshipConnected ? `${myName} + ${partnerName ?? copy.partnerFallback}` : myName}
+                    {relationshipConnected ? `${myName} & ${partnerName ?? copy.partnerFallback}` : myName}
                   </h2>
                   <p className="mt-2 text-sm leading-6 text-muted-foreground">
                     {loading
@@ -786,26 +839,157 @@ const AppHome = () => {
           <p className="mt-3 text-sm leading-6 text-foreground/90">{loading ? copy.signalPreparing : signal.detail}</p>
         </div>
 
-        {relationshipConnected && (
-          <Link
-            to="/app/space?tab=weather"
-            className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/10 px-4 py-2.5 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
-          >
-            <Cloud className="h-4 w-4 text-primary/80" />
-            <span>{copy.checkIntimacyWeather}</span>
-            <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
-          </Link>
-        )}
       </section>
 
-      <section>
-        <div className="mb-4">
-          <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">{copy.todayFlowLabel}</p>
+      {relationshipConnected && (
+        <section className="rounded-[28px] border border-border/30 bg-card/45 p-5">
+          <div className="mb-4">
+            <p className="text-xs uppercase tracking-[0.22em] text-amber-400/70">INTIMACY WEATHER</p>
+            <h2 className="mt-2 font-display text-2xl text-foreground">How are you arriving tonight?</h2>
+          </div>
+
+          {(() => {
+            const moods = [
+              { key: "open", emoji: "🌞", label: "Open" },
+              { key: "tender", emoji: "💗", label: "Tender" },
+              { key: "playful", emoji: "✨", label: "Playful" },
+              { key: "stressed", emoji: "☁️", label: "Stressed" },
+              { key: "longing", emoji: "🌙", label: "Longing" },
+              { key: "erotic", emoji: "🔥", label: "Erotic" },
+              { key: "tired", emoji: "🫧", label: "Tired" },
+              { key: "reassurance", emoji: "⚡", label: "Reassurance" },
+            ];
+
+            const getRecommendation = (myState: string, partnerState: string) => {
+              const pair = [myState, partnerState].sort().join("+");
+              const recs: Record<string, string> = {
+                "erotic+erotic": "Tonight, you are both alive. Use the Directional Breath Frame before touching — 8 minutes that transforms charge into conscious contact.",
+                "erotic+tender": "One partner is electric, one is soft. Let tenderness lead — slow arrival, full presence, no destination. Let the erotic follow the tender.",
+                "erotic+playful": "Eros meets laughter. Let play be the door. Begin with something light and let the charge build naturally.",
+                "tender+tender": "Both of you are soft tonight. This is for closeness, not intensity. The 20-Second Hold, then simply be together without agenda.",
+                "open+open": "You are both spacious and ready. Your openness is the gift tonight — let the practice choose itself.",
+                "playful+playful": "Tonight is for delight. Let it be genuinely fun. Laughter is Śakti.",
+              };
+              if (recs[pair]) return recs[pair];
+              if (myState === "stressed" || partnerState === "stressed") return "One of you is carrying the day. Begin with the Three-Breath Return. Nothing else until the nervous system settles.";
+              if (myState === "tired" || partnerState === "tired") return "Low energy is honest. The 20-Second Hold requires nothing. Let that be enough and let it be sacred.";
+              if (myState === "longing" || partnerState === "longing") return "Something is missing and wants to be found. Name it before touching. The Unsaid Round opens what longing is pointing to.";
+              if (myState === "open" || partnerState === "open") return "You are spacious and ready. Meet your partner where they are. Your openness is the gift tonight.";
+              return "Your two weathers have met. Let that meeting be conscious. Go to Sacred Temple to find the practice that fits tonight.";
+            };
+
+            const bothCheckedIn = Boolean(myWeatherEntry && partnerWeatherEntry);
+            const myConfirmed = Boolean(myWeatherEntry);
+
+            if (bothCheckedIn && myWeatherEntry && partnerWeatherEntry) {
+              const myMood = moods.find((m) => m.key === myWeatherEntry.state);
+              const partnerMood = moods.find((m) => m.key === partnerWeatherEntry.state);
+              return (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="rounded-[20px] border border-border/30 bg-background/45 p-4">
+                      <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Your weather</p>
+                      <div className="mt-2 text-2xl">{myMood?.emoji ?? "•"}</div>
+                      <div className="mt-1 font-display text-lg text-foreground">{myMood?.label ?? myWeatherEntry.state}</div>
+                    </div>
+                    <div className="rounded-[20px] border border-border/30 bg-background/45 p-4">
+                      <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Beloved weather</p>
+                      <div className="mt-2 text-2xl">{partnerMood?.emoji ?? "•"}</div>
+                      <div className="mt-1 font-display text-lg text-foreground">{partnerMood?.label ?? partnerWeatherEntry.state}</div>
+                    </div>
+                  </div>
+                  <div className="rounded-[20px] border border-primary/20 bg-primary/8 p-4">
+                    <p className="text-xs uppercase tracking-[0.14em] text-primary/80">Tonight's practice</p>
+                    <p className="mt-2 text-sm leading-7 text-foreground/90">
+                      {getRecommendation(myWeatherEntry.state, partnerWeatherEntry.state)}
+                    </p>
+                  </div>
+                  <Link
+                    to="/app/space?tab=weather"
+                    className="inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-2.5 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
+                  >
+                    Go deeper in Sacred Temple →
+                  </Link>
+                </div>
+              );
+            }
+
+            if (myConfirmed && myWeatherEntry) {
+              const myMood = moods.find((m) => m.key === myWeatherEntry.state);
+              return (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 rounded-[20px] border border-emerald-300/25 bg-emerald-500/8 p-4">
+                    <span className="text-2xl">{myMood?.emoji ?? "•"}</span>
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.14em] text-emerald-200">Your weather sealed</p>
+                      <p className="font-display text-lg text-foreground">{myMood?.label ?? myWeatherEntry.state}</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Waiting for {partnerName ?? "your beloved"} to share their weather…
+                  </p>
+                </div>
+              );
+            }
+
+            return (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
+                  {moods.map((mood) => {
+                    const active = myWeatherSelected === mood.key;
+                    return (
+                      <button
+                        key={mood.key}
+                        type="button"
+                        onClick={() => setMyWeatherSelected(mood.key)}
+                        className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-all ${
+                          active
+                            ? "border-amber-400/60 bg-amber-400/15 text-amber-300"
+                            : "border-border/30 bg-card/40 text-muted-foreground hover:border-amber-400/40 hover:bg-amber-400/10"
+                        }`}
+                      >
+                        <span>{mood.emoji}</span>
+                        <span>{mood.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+                {myWeatherSelected && (
+                  <button
+                    type="button"
+                    onClick={saveWeather}
+                    disabled={savingWeather}
+                    className="rounded-2xl border border-primary/25 bg-primary/12 px-5 py-2.5 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16 disabled:opacity-60"
+                  >
+                    {savingWeather ? "Sealing…" : "Seal my weather"}
+                  </button>
+                )}
+                {partnerName && (
+                  <p className="text-sm text-muted-foreground">Waiting for {partnerName} to share their weather…</p>
+                )}
+              </div>
+            );
+          })()}
+
+          <div className="mt-4 pt-4 border-t border-border/20">
+            <Link
+              to="/app/reconnect"
+              className="text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+            >
+              Need to reconnect first? → Reconnect practices
+            </Link>
+          </div>
+        </section>
+      )}
+
+      <section className="rounded-[28px] border-t border-[rgba(200,146,74,0.2)] bg-[rgba(200,146,74,0.06)] px-5 pb-6 pt-5">
+        <div className="mb-5">
+          <p className="text-xs uppercase tracking-[0.22em] text-amber-400/70">{copy.todayFlowLabel}</p>
           <h2 className="mt-2 font-display text-3xl text-foreground">{copy.todayFlowTitle}</h2>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {dailyCards.map((card) => {
+        <div className="grid gap-5 md:grid-cols-3">
+          {dailyCards.slice(0, 3).map((card) => {
             const Icon = card.icon;
             const expanded = expandedCardId === card.id;
             const saved = savedCards[card.id] ?? false;
@@ -838,25 +1022,18 @@ const AppHome = () => {
                       <p className="text-xs uppercase tracking-[0.16em] text-primary/80">{copy.quickInsight}</p>
                       <p className="mt-2 text-sm leading-6 text-foreground/90">{card.quickInsight}</p>
                     </div>
-
                     <div>
                       <p className="text-xs uppercase tracking-[0.16em] text-primary/80">{copy.stepByStep}</p>
                       <ol className="mt-2 space-y-2 text-sm leading-6 text-foreground/90">
                         {card.steps.map((step, index) => (
-                          <li key={step}>
-                            {index + 1}. {step}
-                          </li>
+                          <li key={step}>{index + 1}. {step}</li>
                         ))}
                       </ol>
                     </div>
-
                     <div className="rounded-xl border border-amber-300/30 bg-amber-500/8 p-3">
                       <p className="text-xs uppercase tracking-[0.14em] text-amber-200">{copy.goDeeper}</p>
-                      <p className="mt-1 text-sm leading-6 text-foreground/90">
-                        {copy.goDeeperDesc}
-                      </p>
+                      <p className="mt-1 text-sm leading-6 text-foreground/90">{copy.goDeeperDesc}</p>
                     </div>
-
                     <button
                       type="button"
                       onClick={() => handleSaveCard(card.id)}
@@ -878,7 +1055,9 @@ const AppHome = () => {
       </section>
 
       {!hasPremiumAccess ? (
-        <section className="grid gap-4 md:grid-cols-2">
+        <section className="rounded-[28px] bg-[rgba(255,255,255,0.02)] px-5 pb-6 pt-5">
+          <p className="mb-4 text-xs uppercase tracking-[0.22em] text-amber-400/70">{copy.lockedDaily}</p>
+          <div className="grid gap-5 md:grid-cols-2">
           <div className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.18),rgba(15,23,42,0.12))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.5)]">
             <div className="flex items-center gap-2 text-amber-200">
               <Lock className="h-4 w-4" />
@@ -923,6 +1102,7 @@ const AppHome = () => {
               {copy.buttonFullPlans}
               <ArrowRight className="h-4 w-4" />
             </Link>
+          </div>
           </div>
         </section>
       ) : (

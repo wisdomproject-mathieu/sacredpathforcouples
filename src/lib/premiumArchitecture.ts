@@ -263,24 +263,24 @@ const templeJourneysByLanguage: Record<Language, TempleJourneyTemplate[]> = {
 const premiumTriggerByLanguage: Record<Language, Record<PremiumTriggerKey, { title: string; body: string }>> = {
   en: {
     match_unlock: {
-      title: "Your first doorway is open",
-      body: "You already have a real ritual for this match. Temple Access unlocks the deeper ritual chambers.",
+      title: "One subscription. Both of you go deeper.",
+      body: "You already have a real ritual for this match. Unlock the deeper chambers — your partner gets full access too.",
     },
     deeper_ritual: {
-      title: "Open the deeper ritual path",
-      body: "Unlock alternate pathways for the same shared weather, including gentle and deep variations.",
+      title: "She'll feel the difference tonight",
+      body: "Unlock deeper ritual paths for the same weather — gentle, medium, and deep. One subscription covers both of you.",
     },
     source_depth: {
-      title: "Open the wisdom behind this",
-      body: "See the full lineage notes and linked Tantra, Tao, Kama, and polarity pathways.",
+      title: "Become the man who understands why",
+      body: "See the full lineage notes and linked pathways. Knowledge changes how you show up — she'll notice.",
     },
     journey_memory: {
-      title: "Expand your sacred memory",
-      body: "Keep your full couple story, patterns, favorites, and milestones in one living archive.",
+      title: "Your couple story, preserved",
+      body: "Keep your full journey — patterns, favorites, milestones — in one living archive. One subscription, both partners.",
     },
     journey_program: {
-      title: "Enter guided couple journeys",
-      body: "Step into multi-day journeys for repair, desire, rest, and reconnection.",
+      title: "Guided journeys for repair, desire & closeness",
+      body: "Step into multi-day journeys built for real couples. Repair what's broken. Reignite what's faded. One subscription for both of you.",
     },
   },
   fr: {

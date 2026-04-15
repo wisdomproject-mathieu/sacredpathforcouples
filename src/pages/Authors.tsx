@@ -19,6 +19,18 @@ import { useSeoMetadata } from "@/lib/seo";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
+import { AUTHOR_LONGFORM_BY_SLUG } from "@/lib/libraryLongform";
+import {
+  dianaRichardsonContent,
+  danielOdierContent,
+  michaelaBoehmContent,
+  barryLongContent,
+  janDayContent,
+  charlesMuirContent,
+  sallyKemptonContent,
+  maxBushContent,
+  victorGoldContent,
+} from "@/lib/authorsRichContent";
 
 type Tier = "free" | "premium";
 
@@ -505,11 +517,174 @@ const authors: Author[] = [
     overviewLine: "Ancient Taoist mechanics for modern couples who want lasting erotic energy.",
     icon: Waves,
     iconClass: "text-cyan-300",
-    teaser: [
-      "Learn the practical architecture of Taoist couple energy work for modern relationship life.",
-      "Move from depletion cycles to circulation-based intimacy that leaves both partners nourished.",
-      "Premium includes guided progression from first practices to advanced couple sequencing.",
-    ],
+    content: {
+      heroIntro: [
+        "Mantak Chia spent decades translating sealed Taoist sexual classics into practices any couple can learn. His central discovery: the depletion couples feel after lovemaking is not inevitable — it is a choice that can be reversed.",
+        "His Universal Tao system teaches couples to redirect sexual energy through the body rather than discharge it, transforming lovemaking from a brief peak into a renewable source of vitality and deepening love.",
+      ],
+      whoItsFor: [
+        {
+          title: "Couples who feel depleted after sex",
+          body: "The flatness, mild withdrawal, or quiet emotional distance after lovemaking is the body signaling energy loss. Chia's practices stop the leak.",
+        },
+        {
+          title: "Couples who want their intimate life to build health",
+          body: "Learn to circulate rather than discharge vital essence — turning each encounter into a net gain rather than a net loss of life force.",
+        },
+        {
+          title: "Couples ready for a practice that deepens over decades",
+          body: "Unlike novelty-based approaches, Taoist cultivation builds capacity over time. A couple who practices for ten years has something extraordinary.",
+        },
+        {
+          title: "Partners curious about the body's subtle architecture",
+          body: "If you've sensed that there's more happening energetically during intimacy than physical sensation alone, this framework maps that territory precisely.",
+        },
+      ],
+      practicePreview: {
+        title: "Synchronized Belly Breath",
+        body: "The entry point to all Taoist couples work. Two bodies synchronizing their breath activates the shared energy field before any other practice begins.",
+        steps: [
+          "Sit facing each other, one hand on your own belly, one hand on your partner's belly.",
+          "Breathe slowly and deeply together for two minutes, feeling the rise and fall synchronize.",
+          "On each exhale, consciously relax the pelvic floor and lower belly.",
+          "On each inhale, draw energy upward from the base of the spine toward the heart.",
+          "Close with thirty seconds of held eye contact and one full breath taken together.",
+        ],
+      },
+      beginnerTrack: {
+        title: "Beginner Track: Learning to Feel Energy",
+        body: "Before circulating energy, couples must learn to feel it. The first weeks are about developing sensitivity — noticing what is already moving.",
+        steps: [
+          "Practice synchronized belly breath daily for one week before any other technique.",
+          "After lovemaking, instead of separating immediately, lie together for ten minutes with hands on each other's hearts.",
+          "Begin learning the solo Microcosmic Orbit before attempting it as a couple.",
+          "Track energy levels before and after intimacy — this builds the self-knowledge that makes practice meaningful.",
+        ],
+      },
+      advancedTrack: {
+        title: "Advanced Track: Shared Microcosmic Orbit",
+        body: "Once both partners can feel chi moving independently, the shared orbit becomes available — two bodies creating one continuous circuit.",
+        steps: [
+          "Both partners establish their individual orbit through breath and intention before physical contact.",
+          "In seated embrace, synchronize breath and imagine a single current flowing from your base up your partner's spine and back down through yours.",
+          "Practice the Big Draw together — coordinated muscle contractions that move energy upward simultaneously.",
+          "Extend sessions gradually: quality of attention matters more than duration.",
+        ],
+      },
+      quote: {
+        text: "The goal is not to suppress sexual energy but to transform and recycle it — to use it as fuel for higher consciousness and lasting vitality.",
+        source: "Mantak Chia, Healing Love Through the Tao",
+      },
+      whyMatters: [
+        "He is one of the only teachers who approaches sexuality as a health science, not just a spiritual metaphor — the practices have measurable physiological effects.",
+        "His work addresses the energy depletion problem directly — something most intimacy traditions ignore entirely.",
+        "The multi-orgasmic practices he systematized give couples access to sustained erotic states rather than brief peaks followed by withdrawal.",
+        "His emphasis on both partners' cultivation creates genuine energetic reciprocity — nobody is being drained to satisfy the other.",
+      ],
+      coreTeachings: [
+        {
+          title: "Jīng is currency, not waste",
+          body: "Sexual energy is the body's most refined vital essence. Spending it carelessly is the energetic equivalent of spending savings without earning. Cultivation means managing this resource consciously.",
+          beginnerReframe: "After sex, notice how you feel. Track whether you feel more or less alive than before. This awareness is the beginning of the practice.",
+          advancedReframe: "Use the Big Draw to redirect orgasmic energy upward before discharge. Practice extending the plateau phase before any peak.",
+        },
+        {
+          title: "The valley is deeper than the peak",
+          body: "Peak orgasm is the most familiar but least sustainable form of erotic pleasure. Valley orgasm — waves of full-body aliveness without the discharge arc — is available through relaxation and conscious redirection.",
+          beginnerReframe: "Slow down ten minutes before orgasm. Let sensation spread through the whole body rather than concentrate toward release.",
+          advancedReframe: "Practice sustaining the pre-orgasmic state for twenty to thirty minutes. Let the energy circulate rather than crest.",
+        },
+        {
+          title: "Both partners must cultivate",
+          body: "The Taoist system requires both partners to develop their own energy cultivation capacity. This is not a one-sided technique — it is a mutual practice.",
+          beginnerReframe: "Each partner learns the solo Microcosmic Orbit first. Bring that capacity into shared practice.",
+          advancedReframe: "Practice synchronized Big Draw — both partners drawing energy upward simultaneously, combining the current.",
+        },
+        {
+          title: "Lovemaking heals the organs",
+          body: "Each organ system corresponds to specific emotional and energetic qualities. Conscious lovemaking can direct healing energy to areas of depletion or holding in the body.",
+          beginnerReframe: "After lovemaking, place both hands on the area of your body that feels most in need of nourishment. Breathe there for two minutes.",
+          advancedReframe: "Use the organ-sound healing sequence from Chia's Healing Love to direct energy to specific organ systems during practice.",
+        },
+      ],
+      modernUse: [
+        {
+          title: "When exhaustion makes intimacy feel impossible",
+          body: "The Taoist approach is particularly valuable here: practices that restore rather than deplete energy make intimacy something to look forward to even when tired.",
+        },
+        {
+          title: "When one partner's libido is significantly lower",
+          body: "Often this reflects genuine energy depletion rather than lack of desire. Cultivation practices restore the underlying vitality from which desire naturally rises.",
+        },
+        {
+          title: "When couples want a practice that grows with age",
+          body: "Unlike approaches dependent on physical intensity, Taoist cultivation deepens as practitioners age — the energy becomes subtler and more refined, not less available.",
+        },
+      ],
+      shadowToAvoid: [
+        {
+          title: "Technique replacing presence",
+          body: "Chia's practices require genuine presence to work. If executing technique becomes the goal, the energetic connection — which is the actual point — evaporates.",
+          beginnerReframe: "If a practice feels mechanical, stop the technique and simply breathe together for two minutes. Reconnect before continuing.",
+          advancedReframe: "Use technique as a scaffold to enter deeper states of presence, then release the technique and inhabit the state directly.",
+        },
+        {
+          title: "Pressure around non-ejaculation",
+          body: "Chia's teachings on conserving ejaculation can become a performance demand that creates anxiety and shame. This defeats the entire purpose.",
+          beginnerReframe: "Begin with extending the plateau phase, not eliminating orgasm. Gradual expansion is sustainable; rigid rules are not.",
+          advancedReframe: "When the energy is genuinely cultivated rather than suppressed, the body naturally prefers circulation over discharge. Don't force it.",
+        },
+        {
+          title: "Spiritual bypassing through energy work",
+          body: "Energy practices can become an escape from emotional truth. If both partners are not genuinely honest with each other, no amount of chi cultivation creates real intimacy.",
+          beginnerReframe: "Check in emotionally before any energy practice. Five minutes of honest check-in changes the quality of everything that follows.",
+          advancedReframe: "Use the energy sensitivity developed through cultivation to feel your partner's emotional state directly — and respond to what you feel.",
+        },
+      ],
+      exercises: [
+        {
+          title: "Microcosmic Orbit — Solo Foundation (10 minutes)",
+          setup: "Sit quietly alone before attempting this as a couple.",
+          steps: [
+            "Close eyes and breathe slowly into the lower belly.",
+            "On each inhale, imagine energy rising from the base of the spine, up through each vertebra to the crown.",
+            "On each exhale, imagine energy flowing down through the forehead, throat, chest, belly, returning to the base.",
+            "Complete nine full circuits of this orbit.",
+            "Rest for two minutes, feeling the energy settle.",
+          ],
+          integration: "Practice solo for one week before attempting with a partner.",
+          beginnerNote: "Visualization is enough — you do not need to feel physical sensation for the practice to work.",
+          advancedNote: "Add the three locks (root, abdominal, throat) to amplify the circulation on the inhale.",
+        },
+        {
+          title: "Synchronized Heart-Genital Circuit (15 minutes)",
+          setup: "Sit in yab-yum (one partner in the other's lap, facing each other) or stand in close embrace.",
+          steps: [
+            "Both partners close eyes and establish individual belly breath.",
+            "After two minutes, open eyes and synchronize breath rhythm.",
+            "Imagine a figure-eight circuit: energy rising from your pelvis to your partner's heart, and from their pelvis to your heart.",
+            "Sustain this visualization through ten complete breath cycles.",
+            "Close with foreheads touching and one minute of shared silence.",
+          ],
+          integration: "Use before lovemaking to pre-activate the shared energy field.",
+          beginnerNote: "If visualization is difficult, simply feel the warmth of physical contact and let that be the 'energy.'",
+          advancedNote: "Add sound — a sustained hum on each exhale amplifies the circuit significantly.",
+        },
+      ],
+      reflectionPrompts: [
+        "Where do I notice energy leaving my body during or after intimacy? Where does it feel like it goes?",
+        "What would it feel like if lovemaking left me more energized than before it began?",
+        "Do I approach my partner's body as a source of pleasure for me, or as a living system I am in relationship with?",
+        "What is the difference between satisfied and genuinely nourished? When did I last feel the second?",
+        "What would a ten-year Taoist cultivation practice with my partner look like — and what might we have built by then?",
+      ],
+      relatedPaths: [
+        { name: "Taoist Alchemy", note: "The path built directly around Chia's complete system — energy maps, chi cultivation tracks, and the full Healing Love sequence." },
+        { name: "Tantric Wisdom", note: "Parallel subtle-body framework from the Indian tradition — the two systems inform and deepen each other." },
+        { name: "Slow Love", note: "Diana Richardson's approach shares Chia's emphasis on non-goal lovemaking and the body's own intelligence." },
+      ],
+      premiumBanner: "Access Chia's complete Universal Tao couples system: the Microcosmic Orbit as a shared practice, the full Healing Love sequence, valley orgasm training, and the meridian maps that make the invisible architecture of sexual energy visible.",
+    },
   },
   {
     slug: "margot-anand",
@@ -521,11 +696,182 @@ const authors: Author[] = [
     overviewLine: "Ceremonial Tantra for partners growing closer through beauty and intention.",
     icon: Sparkles,
     iconClass: "text-rose-300",
-    teaser: [
-      "Bring play and reverence into the same erotic field without losing emotional safety.",
-      "Explore ceremonial frameworks that feel alive, tasteful, and usable in modern life.",
-      "Premium includes guided rituals, scripts, and progression maps toward sacred love.",
-    ],
+    content: {
+      heroIntro: [
+        "Margot Anand's SkyDancing Tantra refuses the split between the sacred and the erotic — insisting that beauty, ritual, and genuine aliveness are not decorations around intimacy but the very substance of it.",
+        "Her four-decade teaching lineage, transmitted to tens of thousands of couples internationally, centers on one discovery: ecstasy is not a peak to chase but a quality of presence to inhabit — and it is available in any moment of genuine sacred contact.",
+      ],
+      whoItsFor: [
+        {
+          title: "Couples who want their intimate life to feel ceremonial",
+          body: "When lovemaking is approached with the same care and intention as a sacred ritual, its quality transforms entirely. SkyDancing teaches exactly how to create that atmosphere.",
+        },
+        {
+          title: "Couples where playfulness and depth feel mutually exclusive",
+          body: "Anand's work dissolves this false choice. In SkyDancing, laughter and reverence coexist — erotic play and genuine spiritual contact are not in tension but expressions of the same energy.",
+        },
+        {
+          title: "Couples ready to work with the chakra system as a living reality",
+          body: "Not as a belief system but as a practical map for exploring different dimensions of erotic and spiritual experience together.",
+        },
+        {
+          title: "Couples who want beauty as a spiritual practice",
+          body: "SkyDancing treats the creation of beautiful intimate space — lighting, music, scent, intention — as genuine sadhana, not superficial decoration.",
+        },
+      ],
+      practicePreview: {
+        title: "Sacred Space Creation",
+        body: "Before any touch, both partners spend twenty minutes creating the space and themselves. In SkyDancing, this preparation is not preliminary — it is the practice.",
+        steps: [
+          "Together, prepare the physical space: soft lighting, meaningful objects, a scent that feels sacred, music that opens rather than distracts.",
+          "Separately, bathe or shower mindfully — treating the body as a temple being prepared for ceremony.",
+          "Dress in something that makes you feel beautiful, or undress with conscious intention.",
+          "Sit facing each other at the threshold of the prepared space. Take three breaths together.",
+          "Enter the space as if crossing into sacred territory — because you are.",
+        ],
+      },
+      beginnerTrack: {
+        title: "Beginner Track: Learning Sacred Space",
+        body: "The most immediate and transformative entry point in SkyDancing is simply learning to create conditions of genuine beauty and reverence before intimacy begins.",
+        steps: [
+          "Once a week, take thirty minutes to prepare the space before intimacy — not as foreplay, but as ceremony.",
+          "Agree on one element of beauty to add each time: a candle, a flower, music that feels sacred.",
+          "Begin each encounter with eye contact in the prepared space before any touch.",
+          "Notice how the quality of everything that follows differs from encounters that begin without this preparation.",
+        ],
+      },
+      advancedTrack: {
+        title: "Advanced Track: Chakra Awakening Sequence",
+        body: "Moving through the seven chakras as a couples practice opens distinct dimensions of erotic and spiritual experience that random intimacy cannot reach.",
+        steps: [
+          "Learn the location and quality of each chakra before attempting to work with them together.",
+          "Begin each session by awakening the root — grounding, presence, safety — through breath and conscious touch at the base of the spine.",
+          "Move upward through the centers: sacral (pleasure, flow), solar plexus (power, will), heart (love, connection), throat (truth, expression), third eye (vision, intuition), crown (transcendence).",
+          "Allow each center its own time — don't rush the ascent. Some sessions may never leave the heart.",
+        ],
+      },
+      quote: {
+        text: "When two people meet in genuine sacred space — when beauty has been honored and bodies have been prepared — what happens between them is no longer ordinary. It is a form of prayer.",
+        source: "Margot Anand, The Art of Sexual Ecstasy",
+      },
+      whyMatters: [
+        "She bridges the gap between spiritual practice and erotic aliveness more elegantly than any other teacher — making both accessible without diminishing either.",
+        "Her emphasis on sacred atmosphere addresses the single most common intimacy failure: coming to lovemaking without any transition from ordinary consciousness.",
+        "The SkyDancing chakra work gives couples a practical map for exploring different dimensions of intimacy systematically rather than randomly.",
+        "Her integration of play and reverence gives couples permission to be both joyful and sacred — dissolving the false seriousness that burdens many spiritual approaches to sex.",
+      ],
+      coreTeachings: [
+        {
+          title: "Preparation is the practice",
+          body: "The quality of what happens during intimacy is almost entirely determined by the quality of transition that precedes it. Arriving consciously, in a prepared space, changes everything.",
+          beginnerReframe: "Spend fifteen minutes preparing the space before any intimate encounter this week. Notice the difference.",
+          advancedReframe: "Extend the preparation into your own inner state — meditate, move, or breathe alone for ten minutes before meeting your partner.",
+        },
+        {
+          title: "Beauty is a spiritual technology",
+          body: "Creating beauty — in the space, in the body, in the atmosphere — shifts the nervous system into a receptive, open state. This is not aesthetics; it is applied spirituality.",
+          beginnerReframe: "Add one element of genuine beauty to your intimate space. Not because it looks good, but because beauty genuinely shifts your inner state.",
+          advancedReframe: "Create a dedicated sacred space in your home — even a single corner — that holds the energy of your practice.",
+        },
+        {
+          title: "Play and reverence are the same energy",
+          body: "In SkyDancing, laughter and joy are not interruptions to sacred intimacy but expressions of it. The body's delight and the spirit's reverence arise from the same open, undefended place.",
+          beginnerReframe: "If something funny happens during intimacy, let the laughter be complete before returning. Suppressed laughter is suppressed aliveness.",
+          advancedReframe: "Deliberately introduce elements of play into your practice — not to make it lighter, but to keep it alive.",
+        },
+        {
+          title: "Ecstasy is ordinary presence fully inhabited",
+          body: "The ecstatic states described in Tantric texts are not special altered states requiring years of practice. They are what ordinary presence feels like when performance, protection, and goal-seeking have been set aside.",
+          beginnerReframe: "For one minute during intimacy, drop every agenda and simply be completely here. That quality of presence — even for sixty seconds — is what ecstasy is.",
+          advancedReframe: "Practice sustaining this quality of presence for increasingly longer periods. Ecstasy is not intensity; it is depth of presence.",
+        },
+      ],
+      modernUse: [
+        {
+          title: "When intimacy feels mechanical despite genuine love",
+          body: "The missing ingredient is almost always atmosphere and intention. SkyDancing's sacred space practices address this directly — adding the ceremonial quality that transforms mechanical into meaningful.",
+        },
+        {
+          title: "When couples want to celebrate their relationship, not just maintain it",
+          body: "SkyDancing offers specific rituals for milestones, anniversaries, and conscious renewal — ways of marking the relationship's depth and trajectory with genuine ceremony.",
+        },
+        {
+          title: "When spiritual life and erotic life feel disconnected",
+          body: "For couples where one or both partners have active spiritual practices that feel separate from their intimate life, SkyDancing provides the bridge that makes both richer.",
+        },
+      ],
+      shadowToAvoid: [
+        {
+          title: "Ceremony replacing genuine contact",
+          body: "Beautiful ritual can become elaborate avoidance of genuine intimacy. The preparation must serve genuine meeting — not replace it.",
+          beginnerReframe: "Check: is the preparation creating genuine openness, or is it becoming another performance? Simplify if it feels theatrical.",
+          advancedReframe: "Periodically strip back all ritual and meet simply, with nothing prepared. Notice what the ritual actually provides versus what you assumed it provided.",
+        },
+        {
+          title: "Spiritual intensity as spiritual bypassing",
+          body: "Powerful Tantric experiences can be used to avoid the ordinary emotional work a relationship requires. Ecstasy does not substitute for honest communication.",
+          beginnerReframe: "After powerful sessions, check in about ordinary relationship truth — not just the transcendent experience.",
+          advancedReframe: "Integrate insights from sacred practice into ordinary relationship behavior. Spiritual experience that doesn't change daily life is incomplete.",
+        },
+      ],
+      exercises: [
+        {
+          title: "The Greeting Ceremony (10 minutes)",
+          setup: "Use at the beginning of any dedicated intimate time together.",
+          steps: [
+            "Stand facing each other at arm's length. Close your eyes and take three slow breaths alone.",
+            "Open your eyes and meet your partner's gaze. Take three more breaths together.",
+            "Place your right hand on your own heart and bow slightly, silently acknowledging: 'I see you as sacred.'",
+            "Step forward into an embrace. Feel the full contact of your bodies.",
+            "Rest in the embrace for one minute, not moving, simply arriving.",
+          ],
+          integration: "Use before any intimate encounter. Takes ten minutes and changes everything that follows.",
+          beginnerNote: "If this feels awkward, that awkwardness is the ordinary mind's resistance to genuine ceremony. Let it be awkward and continue.",
+          advancedNote: "Add a spoken element: each partner says one true thing they love about the other before the embrace.",
+        },
+        {
+          title: "Chakra Awakening Touch (20 minutes)",
+          setup: "One partner lies comfortably. The other moves slowly up the body.",
+          steps: [
+            "Begin with both hands resting lightly on the feet. Feel the ground quality of the root chakra.",
+            "Move slowly to the pelvis and lower belly — the center of pleasure and creative life force.",
+            "Continue to the solar plexus — the seat of personal power and embodied confidence.",
+            "Rest at the heart for the longest time — hands on the chest, feeling the warmth and aliveness there.",
+            "Brief touch at the throat (truth), third eye (vision), crown (openness to the infinite).",
+            "Then reverse — descend back to the earth, grounding the energy before completing.",
+            "Switch and repeat.",
+          ],
+          integration: "Use as preparation before lovemaking or as a complete practice in itself.",
+          beginnerNote: "This is not massage. Move slowly enough that presence, not technique, is what the receiver feels.",
+          advancedNote: "As the giver, tune into each center as you touch it. Feel what is open and what is contracted. Let your touch respond to what you feel.",
+        },
+      ],
+      reflectionPrompts: [
+        "What does sacred space mean to me? When have I felt it — in any context — and what created it?",
+        "Where in my life do I allow genuine beauty to affect my inner state? Why not in my intimate life?",
+        "What would it feel like to approach my partner's body with the same quality of attention I would bring to something genuinely holy?",
+        "When was the last time I felt genuinely ecstatic — not intense, but fully alive and open? What were the conditions?",
+        "What is the one element of ceremony or beauty that would most change the quality of our intimate life if I introduced it consistently?",
+      ],
+      relatedPaths: [
+        { name: "Tantric Wisdom", note: "The complete Tantric framework that SkyDancing draws from — presence, polarity, breath, and the sacred body." },
+        { name: "Conscious Union", note: "The path of ceremony and recognition that shares SkyDancing's emphasis on intentional, beautiful intimate space." },
+        { name: "Sacred Polarity", note: "Deida's framework pairs naturally with SkyDancing — polarity creates the charge that SkyDancing's sacred space allows to move freely." },
+      ],
+      premiumBanner: "Access Anand's complete SkyDancing system: the full chakra awakening sequence as a couples practice, the sacred space creation rituals, the SkyDancing approach to ecstatic states, and the ceremony library for marking relationship milestones.",
+    },
+  },
+  {
+    slug: "diana-richardson",
+    name: "Diana Richardson",
+    tier: "premium",
+    descriptor: "Slow Sex pioneer teaching couples to access the body's own erotic intelligence through stillness.",
+    tradition: "Slow Sex & Meditative Intimacy",
+    oneLiner: "The body knows — when the mind gets out of the way",
+    overviewLine: "Stillness-based intimacy for couples ready to trade performance for genuine presence.",
+    icon: Heart,
+    iconClass: "text-pink-300",
+    content: dianaRichardsonContent,
   },
   {
     slug: "daniel-odier",
@@ -537,11 +883,7 @@ const authors: Author[] = [
     overviewLine: "Contemplative intimacy for partners who value depth over performance pressure.",
     icon: Star,
     iconClass: "text-violet-300",
-    teaser: [
-      "Subtle tantric teachings for meditative relational work that supports modern couples.",
-      "Bridge sensuality and non-dual awareness with practical methods you can apply gently.",
-      "Premium includes paired contemplative practices and integration guides for ongoing closeness.",
-    ],
+    content: danielOdierContent,
   },
   {
     slug: "michaela-boehm",
@@ -553,11 +895,7 @@ const authors: Author[] = [
     overviewLine: "Somatic relational skills for attraction, regulation, and honest connection.",
     icon: Heart,
     iconClass: "text-orange-300",
-    teaser: [
-      "Translate body intelligence into better connection and desire in everyday relationship moments.",
-      "Work with tension, shutdown, and over-activation in real time, together.",
-      "Premium includes embodied drills and partner regulation maps for durable closeness.",
-    ],
+    content: michaelaBoehmContent,
   },
   {
     slug: "barry-long",
@@ -569,11 +907,7 @@ const authors: Author[] = [
     overviewLine: "Presence-led relational integrity for modern couples seeking grounded sacred love.",
     icon: Feather,
     iconClass: "text-emerald-300",
-    teaser: [
-      "Cut through noise and performative relationship habits that create distance.",
-      "Practice direct honesty with emotional sobriety and mutual care.",
-      "Premium includes clarity practices for long-term partnership and daily repair.",
-    ],
+    content: barryLongContent,
   },
   {
     slug: "jan-day",
@@ -585,11 +919,7 @@ const authors: Author[] = [
     overviewLine: "Embodied intimacy repair with practical exercises for deeper connection.",
     icon: Compass,
     iconClass: "text-violet-300",
-    teaser: [
-      "Use body-awareness to repair disconnect and shame patterns without overwhelm.",
-      "Build communication that feels honest and gentle at the same time.",
-      "Premium includes guided repair rituals for modern couples moving toward sacred partnership.",
-    ],
+    content: janDayContent,
   },
   {
     slug: "max-bush",
@@ -601,11 +931,7 @@ const authors: Author[] = [
     overviewLine: "Practical erotic craft with confidence-building progression for long-term love.",
     icon: Flame,
     iconClass: "text-amber-300",
-    teaser: [
-      "Turn intention into embodied erotic skill step by step, with relational integrity.",
-      "Build confidence without losing tenderness, consent, or emotional attunement.",
-      "Premium includes practical progression drills and partner scripts for real-life use.",
-    ],
+    content: maxBushContent,
   },
   {
     slug: "victor-gold",
@@ -617,11 +943,7 @@ const authors: Author[] = [
     overviewLine: "Advanced relational erotics with structure, depth, and sacred intentionality.",
     icon: Star,
     iconClass: "text-rose-300",
-    teaser: [
-      "Explore nuanced erotic form without performative excess or pressure.",
-      "Integrate devotion, structure, and sensual intelligence in a grounded way.",
-      "Premium includes layered pathways for advanced couples growing sacred love.",
-    ],
+    content: victorGoldContent,
   },
   {
     slug: "charles-muir",
@@ -633,11 +955,7 @@ const authors: Author[] = [
     overviewLine: "Applied Neo-Tantra sequencing that turns insight into embodied closeness.",
     icon: Waves,
     iconClass: "text-cyan-300",
-    teaser: [
-      "Learn modernized tantric partner rituals built for real relationship life.",
-      "Bridge sensual exploration, communication, and emotional safety in one coherent arc.",
-      "Premium includes modular ritual scripts and progression tracks for couples growing together.",
-    ],
+    content: charlesMuirContent,
   },
   {
     slug: "sally-kempton",
@@ -649,11 +967,7 @@ const authors: Author[] = [
     overviewLine: "Kashmir Shaivism depth translated for modern couples seeking sacred love.",
     icon: SunMoon,
     iconClass: "text-violet-300",
-    teaser: [
-      "Work with recognition-based practice rather than performance-heavy spirituality.",
-      "Unify meditation, tenderness, and intimate presence through non-dual awareness.",
-      "Premium includes guided contemplations, partner prompts, and integration rituals for daily life.",
-    ],
+    content: sallyKemptonContent,
   },
 ];
 
@@ -1186,10 +1500,10 @@ const authorsUiCopy: Record<Language, Record<string, string>> = {
     lockedInPremium: "Locked in premium",
     openAccess: "Open access",
     relatedAuthors: "Related Authors",
-    heroEyebrow: "Sacred Library · Authors",
-    heroTitle: "Ancient voices for modern couples in real relationship life",
+    heroEyebrow: "ANCIENT WISDOM FOR MODERN LOVE",
+    heroTitle: "Sacred Library",
     heroDesc:
-      "Read for one minute and feel closer tonight, or study deeply when you have time. Every page is designed to turn timeless wisdom into practical closeness with your partner.",
+      "The teachers and paths gathered here have changed thousands of relationships — not by adding techniques, but by restoring what was always possible between two people willing to go deeper. Start anywhere. Something here will change you.",
     sacredPages: "Sacred pages",
     overviewEyebrow: "Authors Overview",
     overviewTitle: "Choose an author for immediate closeness and deeper shared growth",
@@ -1229,6 +1543,9 @@ const authorsUiCopy: Record<Language, Record<string, string>> = {
     premiumAuthor: "Premium Author",
     lockedAuthor: "Locked Author",
     whatThisAuthorOffers: "What This Author Offers",
+    whatYouWillDiscover: "What you'll discover",
+    coreThemesLabel: "Core themes",
+    keyWorksLabel: "Key works",
     unlockThisAuthorJourney: "Unlock this author journey",
     whyItMattersForCouples: "Why It Matters For Couples",
     premiumWhoCard1Title: "Couples craving deeper guidance",
@@ -1260,10 +1577,10 @@ const authorsUiCopy: Record<Language, Record<string, string>> = {
     lockedInPremium: "Verrouillé en premium",
     openAccess: "Accès libre",
     relatedAuthors: "Auteurs liés",
-    heroEyebrow: "Bibliothèque sacrée · Auteurs",
-    heroTitle: "Des voix anciennes pour les couples modernes dans la vraie vie relationnelle",
+    heroEyebrow: "SAGESSE ANCIENNE POUR L'AMOUR MODERNE",
+    heroTitle: "Bibliothèque sacrée",
     heroDesc:
-      "Lisez une minute et sentez-vous plus proches ce soir, ou étudiez en profondeur quand vous avez du temps. Chaque page transforme une sagesse intemporelle en proximité concrète avec votre partenaire.",
+      "Les enseignants et les chemins réunis ici ont transformé des milliers de relations — non pas en ajoutant des techniques, mais en restaurant ce qui a toujours été possible entre deux personnes prêtes à aller plus loin. Commencez n'importe où. Quelque chose ici vous changera.",
     sacredPages: "Pages sacrées",
     overviewEyebrow: "Vue d'ensemble des auteurs",
     overviewTitle: "Choisissez un auteur pour une proximité immédiate et une croissance partagée plus profonde",
@@ -1303,6 +1620,9 @@ const authorsUiCopy: Record<Language, Record<string, string>> = {
     premiumAuthor: "Auteur premium",
     lockedAuthor: "Auteur verrouillé",
     whatThisAuthorOffers: "Ce que cet auteur apporte",
+    whatYouWillDiscover: "Ce que vous allez découvrir",
+    coreThemesLabel: "Thèmes centraux",
+    keyWorksLabel: "Lectures clés",
     unlockThisAuthorJourney: "Déverrouiller cet auteur",
     whyItMattersForCouples: "Pourquoi c'est important pour les couples",
     premiumWhoCard1Title: "Couples en quête de guidance plus profonde",
@@ -1334,10 +1654,10 @@ const authorsUiCopy: Record<Language, Record<string, string>> = {
     lockedInPremium: "Uzamčeno v premium",
     openAccess: "Volný přístup",
     relatedAuthors: "Související autoři",
-    heroEyebrow: "Posvátná knihovna · Autoři",
-    heroTitle: "Starověké hlasy pro moderní páry v reálném vztahovém životě",
+    heroEyebrow: "STARODÁVNÁ MOUDROST PRO MODERNÍ LÁSKU",
+    heroTitle: "Posvátná knihovna",
     heroDesc:
-      "Čti jednu minutu a už dnes večer se cítíte blíž, nebo studujte do hloubky, když máte čas. Každá stránka převádí nadčasovou moudrost do praktické blízkosti s partnerem.",
+      "Učitelé a cesty zde shromážděné změnily tisíce vztahů — ne přidáváním technik, ale obnovením toho, co bylo vždy možné mezi dvěma lidmi ochotnými jít hlouběji. Začněte kdekoliv. Něco tady vás změní.",
     sacredPages: "Posvátné stránky",
     overviewEyebrow: "Přehled autorů",
     overviewTitle: "Vyber autora pro okamžitou blízkost a hlubší společný růst",
@@ -1377,6 +1697,9 @@ const authorsUiCopy: Record<Language, Record<string, string>> = {
     premiumAuthor: "Premium autor",
     lockedAuthor: "Uzamčený autor",
     whatThisAuthorOffers: "Co tento autor nabízí",
+    whatYouWillDiscover: "Co objevíte",
+    coreThemesLabel: "Hlavní témata",
+    keyWorksLabel: "Klíčová díla",
     unlockThisAuthorJourney: "Odemknout tuto autorskou cestu",
     whyItMattersForCouples: "Proč je to důležité pro páry",
     premiumWhoCard1Title: "Páry toužící po hlubším vedení",
@@ -1477,9 +1800,9 @@ const PremiumMiniCard = ({ author }: { author: Author }) => {
       {miniLine}
     </p>
     <div className="mt-3 flex flex-wrap gap-2">
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{ui.guidedJourneys}</span>
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{ui.practiceScripts}</span>
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{ui.sacredLovePaths}</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Feel closer</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Heal what's stuck</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Grow together</span>
     </div>
     {hasPremiumAccess ? null : (
       <Link
@@ -1498,36 +1821,18 @@ const AuthorPremiumBlock = ({ author }: { author: Author }) => {
   const { lang } = useLanguage();
   const ui = authorsUiCopy[lang];
   const hasPremiumAccess = usePremiumAccess();
-  const upgradeCopy = authorUpgradeCopy[author.slug] ?? {
-    headline: `Go deeper with ${author.name}`,
-    benefit: "Turn insight into guided couple practice with structure that lasts.",
-    bullets: [
-      "Expanded modules translated into direct relational application.",
-      "Step-by-step partner exercises for communication, sensuality, and integration.",
-      "Cross-library progression linking authors, paths, and reconnect flows.",
-    ],
-    cta: "Unlock Author Premium",
-  };
 
   return (
     <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
-      <p className="text-xs uppercase tracking-[0.2em] text-amber-300">{ui.premiumValue}</p>
-      <h4 className="mt-2 font-display text-2xl text-foreground">{upgradeCopy.headline}</h4>
-      <p className="mt-3 text-sm leading-7 text-foreground/90">{upgradeCopy.benefit}</p>
-      <div className="mt-4 space-y-2">
-        {upgradeCopy.bullets.map((bullet) => (
-          <div key={bullet} className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-amber-300" />
-            <span>{bullet}</span>
-          </div>
-        ))}
-      </div>
+      <p className="text-xs uppercase tracking-[0.2em] text-amber-300">READY TO GO DEEPER</p>
+      <h4 className="mt-2 font-display text-2xl text-foreground">Bring this wisdom into your relationship.</h4>
+      <p className="mt-3 text-sm leading-7 text-foreground/90">Reading can open the heart. Premium helps you turn insight into lived intimacy through guided exploration, deeper teachings, and shared practices that nourish love.</p>
       {hasPremiumAccess ? null : (
         <Link
           to="/pricing"
           className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
         >
-          {upgradeCopy.cta}
+          Continue the journey together
           <ArrowRight className="h-4 w-4" />
         </Link>
       )}
@@ -1724,6 +2029,10 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => {
   const { lang } = useLanguage();
   const ui = authorsUiCopy[lang];
   const hasPremiumAccess = usePremiumAccess();
+  const longform = AUTHOR_LONGFORM_BY_SLUG[author.slug];
+  const longformParagraphs = longform?.fullDescription.split("\n\n") ?? [];
+  const topThemes = longform?.coreThemes.slice(0, 6) ?? [];
+  const works = longform?.keyWorks.slice(0, 6) ?? [];
 
   return (
   <main className="space-y-5">
@@ -1736,10 +2045,13 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => {
       </div>
       <p className="mt-3 text-xs uppercase tracking-[0.2em] text-primary/80">{ui.whatThisAuthorOffers}</p>
       <h3 className="mt-2 font-display text-3xl text-foreground">{author.name}</h3>
-      <p className="mt-3 text-sm leading-7 text-foreground/90">{author.descriptor}</p>
-      <p className="mt-2 text-sm leading-7 text-muted-foreground">{author.oneLiner}</p>
+      <p className="mt-3 text-sm leading-7 text-foreground/90">{longform?.shortDescription ?? author.descriptor}</p>
+      <p className="mt-2 text-sm leading-7 text-muted-foreground">{longform?.tagline ?? author.oneLiner}</p>
+      {longform?.tradition ? (
+        <p className="mt-2 text-xs uppercase tracking-[0.12em] text-primary/80">{longform.tradition}</p>
+      ) : null}
       <div className="mt-4 space-y-3 text-sm leading-7 text-muted-foreground">
-        {author.teaser?.map((line) => (
+        {(longformParagraphs.length ? longformParagraphs : author.teaser ?? []).map((line) => (
           <p key={line}>{line}</p>
         ))}
       </div>
@@ -1754,65 +2066,52 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => {
       )}
     </section>
 
-    <section className="rounded-[24px] border border-primary/20 bg-primary/8 p-5">
-      <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{ui.whyItMattersForCouples}</p>
+    <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.whyThisAuthorMatters}</p>
+      <div className="mt-4 space-y-3 text-sm leading-7 text-foreground/90">
+        {(longformParagraphs.length ? longformParagraphs : author.teaser ?? []).map((line) => (
+          <p key={line}>{line}</p>
+        ))}
+      </div>
+    </section>
+
+    <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.whatYouWillDiscover}</p>
+      <p className="mt-3 text-sm leading-7 text-foreground/90">{longform?.premiumPreview ?? ui.premiumPracticeBody}</p>
+    </section>
+
+    <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.coreThemesLabel}</p>
+      {topThemes.length ? (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {topThemes.map((theme) => (
+            <span
+              key={theme}
+              className="rounded-full border border-primary/25 bg-primary/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-primary/85"
+            >
+              {theme}
+            </span>
+          ))}
+        </div>
+      ) : (
+        <div className="mt-3 space-y-2">
+          <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+            <span>{ui.premiumWhy1}</span>
+          </div>
+        </div>
+      )}
+    </section>
+
+    <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.keyWorksLabel}</p>
       <div className="mt-4 space-y-2">
-        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>{ui.premiumWhy1}</span>
-        </div>
-        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>{ui.premiumWhy2}</span>
-        </div>
-        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>{ui.premiumWhy3}</span>
-        </div>
-      </div>
-    </section>
-
-    <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.whoThisIsFor}</p>
-      <div className="mt-4 grid gap-3 md:grid-cols-2">
-        <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard1Title}</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard1Body}</p>
-        </article>
-        <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard2Title}</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard2Body}</p>
-        </article>
-        <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard3Title}</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard3Body}</p>
-        </article>
-        <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard4Title}</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard4Body}</p>
-        </article>
-      </div>
-    </section>
-
-    <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.concretePracticePreview}</p>
-      <h4 className="mt-2 font-display text-2xl text-foreground">{ui.premiumPracticeTitle}</h4>
-      <p className="mt-2 text-sm leading-7 text-foreground/90">
-        {ui.premiumPracticeBody}
-      </p>
-      <div className="mt-3 space-y-2">
-        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>{ui.premiumPracticeStep1}</span>
-        </div>
-        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>{ui.premiumPracticeStep2}</span>
-        </div>
-        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>{ui.premiumPracticeStep3}</span>
-        </div>
+        {(works.length ? works : [ui.premiumWhoCard4Body]).map((work) => (
+          <div key={work} className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+            <span>{work}</span>
+          </div>
+        ))}
       </div>
     </section>
 
@@ -2034,26 +2333,64 @@ const Authors = () => {
                   <TierBadge tier={author.tier} />
                 </div>
                 <h3 className="mt-3 font-display text-2xl text-foreground">{author.name}</h3>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">{author.descriptor}</p>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  {AUTHOR_LONGFORM_BY_SLUG[author.slug]?.shortDescription ?? author.descriptor}
+                </p>
                 <p className="mt-2 text-xs leading-5 text-foreground/80">
                   {author.tier === "free"
                     ? `${ui.practicePreview}: ${author.content?.exercises[0]?.title ?? ui.practicePreviewFallback}`
-                    : `${ui.premiumPreview}: ${author.teaser?.[0] ?? ui.premiumPreviewFallback}`}
+                    : `${ui.premiumPreview}: ${AUTHOR_LONGFORM_BY_SLUG[author.slug]?.tagline ?? author.oneLiner ?? ui.premiumPreviewFallback}`}
                 </p>
               </button>
             );
           })}
+          <Link
+            to="/pricing"
+            className="xl:col-span-3 rounded-[24px] border border-amber-400/20 bg-gradient-to-br from-amber-950/40 via-card/60 to-card/40 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)] transition-all hover:border-amber-400/35 hover:shadow-[0_24px_70px_-40px_rgba(255,173,70,0.68)]"
+          >
+            <div className="flex h-full flex-col justify-between p-6">
+              <div>
+                <span className="text-xs uppercase tracking-[0.22em] text-amber-400/80">
+                  DEEPER PATH FOR TWO
+                </span>
+                <h3 className="mt-2 font-display text-2xl text-foreground">
+                  Open the door to deeper intimacy.
+                </h3>
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                  Premium is for couples who want more than inspiration. It helps you reconnect when distance appears, repair what feels fragile, explore new rituals together, and build a love life that feels more alive, loving, and fulfilling.
+                </p>
+              </div>
+
+              <div className="mt-4 space-y-2">
+                {[
+                  "Reconnect what feels distant",
+                  "Repair what has been strained",
+                  "Try new rituals that bring joy",
+                ].map((item) => (
+                  <div key={item} className="flex items-start gap-2 text-xs text-muted-foreground">
+                    <span className="mt-0.5 text-amber-400/70">◆</span>
+                    {item}
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-4 h-px w-full bg-border/20" />
+
+              <button className="mt-4 flex w-full items-center justify-center gap-2 rounded-[14px] border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm font-medium text-amber-300 transition-colors hover:bg-amber-400/20">
+                Deepen intimacy together
+                <span>→</span>
+              </button>
+
+              <p className="mt-2 text-center text-[10px] text-muted-foreground/60">
+                One shared path for both hearts.
+              </p>
+            </div>
+          </Link>
         </div>
 
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
-          <div className="rounded-2xl border border-emerald-400/25 bg-emerald-500/8 p-4">
-            <p className="text-xs uppercase tracking-[0.14em] text-emerald-200">{ui.openAuthors}</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">{freeAuthors.map((author) => author.name).join(authorJoinWord)} {ui.openAuthorsBodySuffix}</p>
-          </div>
-          <div className="rounded-2xl border border-amber-400/25 bg-amber-500/8 p-4">
-            <p className="text-xs uppercase tracking-[0.14em] text-amber-200">{ui.lockedAuthors}</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">{premiumAuthors.length} {ui.lockedAuthorsBody}</p>
-          </div>
+        <div className="mt-4 rounded-2xl border border-amber-400/20 bg-amber-500/6 p-4">
+          <p className="text-xs uppercase tracking-[0.14em] text-amber-200">WHY GO DEEPER</p>
+          <p className="mt-2 text-sm leading-6 text-foreground/90">Some wisdom can inspire in a moment. Deeper guidance helps you live it together, especially when love needs renewal, courage, and care.</p>
         </div>
       </section>
       ) : null}

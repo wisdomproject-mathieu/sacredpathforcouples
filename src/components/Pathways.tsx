@@ -78,11 +78,14 @@ const Pathways = ({ coupleId }: Props) => {
 
     setProgress((prev) => ({ ...prev, [pathwayId]: nextValue }));
 
-    await supabase.from("pathway_progress").upsert({
-      couple_id: coupleId,
-      pathway_id: pathwayId,
-      progress_percent: nextValue,
-    });
+    await supabase.from("pathway_progress").upsert(
+      {
+        couple_id: coupleId,
+        pathway_id: pathwayId,
+        current_day: nextValue,
+      },
+      { onConflict: "couple_id,pathway_id" } as any
+    );
   };
 
   return (

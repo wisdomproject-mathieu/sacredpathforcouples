@@ -7,6 +7,7 @@ import {
   Heart,
   Lock,
   LockOpen,
+  Shield,
   Sparkles,
   Waves,
   type LucideIcon,
@@ -16,6 +17,7 @@ import { useSeoMetadata } from "@/lib/seo";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
+import { PATH_LONGFORM_BY_SLUG } from "@/lib/libraryLongform";
 
 type Tier = "free" | "premium";
 
@@ -664,16 +666,16 @@ const pathDetails: PathDetail[] = [
   },
   {
     slug: "sacred-desire",
-    name: "Sacred Desire",
+    name: "The Embodied Heart",
     tier: "premium",
-    oneLine: "A devotional-erotic path for couples cultivating longing, reverence, and embodied magnetism.",
-    overviewLine: "Premium path for couples who want intimacy to feel sacred, alive, and deeply connected.",
+    oneLine: "Where the nervous system meets the sacred through somatic truth, emotional courage, and body-led love.",
+    overviewLine: "Premium path for couples who know safety and honesty are the doorway to lasting desire.",
     icon: Heart,
     iconClass: "text-orange-300",
     teaser: [
-      "Integrate longing, tenderness, and erotic intensity without fragmentation.",
-      "Learn devotional practices that keep desire emotionally connected in daily life.",
-      "Premium includes advanced rituals, pacing maps, and partner prompts for sacred partnership.",
+      "Build real co-regulation and emotional honesty before pushing intensity.",
+      "Use body-led disclosure and repair rituals that restore trust and attraction together.",
+      "Premium includes guided somatic practices and repair pathways for modern couples.",
     ],
   },
   {
@@ -692,16 +694,16 @@ const pathDetails: PathDetail[] = [
   },
   {
     slug: "neo-tantra",
-    name: "Neo-Tantra",
+    name: "Slow Love",
     tier: "premium",
-    oneLine: "A modern synthesis of classical Tantra and contemporary psychological insight for couples.",
-    overviewLine: "Premium path focused on sacred sexuality, shared empowerment, and conscious intimacy.",
+    oneLine: "What arrives when you finally stop rushing: stillness, internal awareness, and unhurried contact.",
+    overviewLine: "Premium path for couples who want deeper intimacy through relaxation instead of performance.",
     icon: Sparkles,
     iconClass: "text-fuchsia-300",
     teaser: [
-      "Blend ancient tantric principles with modern relational and therapeutic language.",
-      "Practice intimacy as both personal healing and bonded erotic awakening.",
-      "Premium includes guided modules, communication scripts, and integration sequences for partners.",
+      "Learn non-goal lovemaking, inner touch, and pressure-free erotic pacing.",
+      "Replace urgency and performance loops with steady embodied presence.",
+      "Premium includes Slow Love sequences and daily integration practices.",
     ],
   },
   {
@@ -762,17 +764,183 @@ const pathDetails: PathDetail[] = [
   },
   {
     slug: "vajrayana-kashmir-shaivism",
-    name: "Vajrayana & Kashmir Shaivism",
+    name: "Conscious Union",
     tier: "premium",
-    oneLine: "Diamond-vehicle energy transformation meets non-dual recognition of divine consciousness.",
-    overviewLine: "Premium path combining Vajrayana and Shaivism for couples seeking sacred, embodied intimacy.",
+    oneLine: "Two people genuinely meeting through presence, ceremony, and conscious recognition.",
+    overviewLine: "Premium path for couples ready to make the whole relationship a daily sacred practice.",
     icon: Crown,
     iconClass: "text-indigo-300",
     teaser: [
-      "Work with mantra, visualization, channels, winds, and meditative concentration responsibly.",
-      "Integrate recognition-based Kashmir Shaivism practice into modern relational intimacy.",
-      "Premium includes safety-aware energetic sequencing and deep integration maps for couple practice.",
+      "Bring ritual quality and deliberate intention into ordinary daily moments together.",
+      "Practice recognition, truth, and shared silence as living relational disciplines.",
+      "Premium includes ceremony frameworks and conscious union practice maps.",
     ],
+  },
+  {
+    slug: "semen-retention",
+    name: "Semen Retention",
+    tier: "premium",
+    oneLine: "Last longer, feel deeper, and channel your energy into the love she actually wants from you.",
+    overviewLine: "Premium path for men who want to stop losing energy after sex and start building real magnetic presence.",
+    icon: Shield,
+    iconClass: "text-sky-300",
+    content: {
+      hero: [
+        "Most men experience sex as a build-up toward a peak that lasts a few seconds — followed by a crash of energy, presence, and desire for closeness. Semen retention is the ancient practice of redirecting that energy instead of losing it. The result is not suppression. It is amplification: longer lovemaking, deeper full-body sensation, sustained presence, and the kind of magnetic vitality that transforms how she experiences you.",
+        "Valley orgasm — the extended, non-ejaculatory climax described in Taoist and Tantric traditions — replaces the 10-second spike with rolling 20- to 40-minute waves of whole-body pleasure. Both partners feel it. The practice is not about denial. It is about discovering that what lies beyond the habitual peak is orders of magnitude more pleasurable, more connecting, and more sustainable.",
+        "Men who practice retention consistently report higher energy, sharper mental clarity, deeper emotional availability, and a dramatic increase in their partner's attraction and trust. The post-sex distance that silently erodes so many relationships disappears. You wake up the next morning wanting to be closer — and she feels the difference immediately.",
+        "This path gives you the progressive techniques, the science, and the couple integration practices to make retention a sustainable, relationship-transforming reality — not a willpower exercise.",
+      ],
+      whyMatters: [
+        "It solves the number-one unspoken frustration in most bedrooms: it ends too quickly and he disappears afterward.",
+        "Valley orgasm gives both partners access to a quality of pleasure and intimacy most couples never knew existed.",
+        "Retained energy translates directly into emotional presence, physical vitality, and magnetic confidence outside the bedroom.",
+        "It reverses the post-sex crash cycle that quietly teaches her body that intimacy costs her your closeness.",
+        "Research in Taoist medicine and modern bioenergetics supports the link between conservation and sustained relational vitality.",
+        "It gives men a concrete, progressive practice path instead of vague advice about 'being more present.'",
+      ],
+      whoItsFor: [
+        {
+          title: "Men who want to last longer and feel more",
+          body: "Progressive retention drills build stamina week by week while increasing — not decreasing — the quality of sensation and pleasure.",
+        },
+        {
+          title: "Couples where he crashes and she feels abandoned after sex",
+          body: "Retention eliminates the energetic withdrawal that makes her body learn to guard itself. She feels you stay — and opens further.",
+        },
+        {
+          title: "Men who want to be the partner she brags about",
+          body: "The combination of sustained presence, extended lovemaking, and morning-after closeness creates the kind of relationship women describe to their closest friends.",
+        },
+        {
+          title: "Couples ready to discover valley orgasm together",
+          body: "When peak-chasing stops, something far deeper arrives — rolling waves of shared full-body sensation that can last 30 minutes or more.",
+        },
+      ],
+      practicePreview: {
+        title: "The Retention Breath Cycle",
+        body: "A foundational 10-minute practice that teaches the body to circulate arousal energy upward instead of releasing it downward. Done solo or with a partner.",
+        steps: [
+          "Breathe slowly into the belly for 2 minutes, grounding attention below the navel.",
+          "As arousal builds, inhale deeply and draw energy upward from the base of the spine to the heart center using intention and pelvic floor engagement.",
+          "Exhale slowly, relaxing the pelvic floor completely. Feel the energy distribute through the chest and limbs.",
+          "Repeat this cycle 8–12 times, noticing how arousal transforms from localized pressure into full-body warmth.",
+        ],
+      },
+      beginnerTrack: {
+        title: "Weeks 1–3: Building the foundation",
+        body: "Start with solo breathwork and PC muscle awareness. The goal is not willpower — it is teaching your body a new way to process arousal that feels better than the old way.",
+        steps: [
+          "Practice the Retention Breath Cycle daily for 10 minutes — morning or evening.",
+          "Learn to identify your point of no return and practice pausing 2 levels before it.",
+          "Introduce slow, non-goal lovemaking with your partner: 20 minutes minimum, no climax as target.",
+          "Journal energy levels, mood, and morning-after closeness each session.",
+        ],
+      },
+      advancedTrack: {
+        title: "Weeks 4–8: Valley orgasm integration",
+        body: "With the foundation stable, begin exploring full valley orgasm sequences with your partner. The body now knows how to circulate rather than release.",
+        steps: [
+          "Extend lovemaking sessions to 30–45 minutes using wave-riding breath patterns.",
+          "Practice synchronized breathing with your partner at arousal peaks — her inhale draws your energy upward.",
+          "Introduce micro-pauses at high arousal: 30-second stillness while maintaining full contact and eye connection.",
+          "Debrief together: what opened, what surprised you, what she felt differently.",
+        ],
+      },
+      quote: {
+        text: "The man who learns to keep his seed learns to keep his presence. And presence is the one thing she has always been asking for.",
+        source: "Mantak Chia, adapted",
+      },
+      whatItIsNot: [
+        "It is not celibacy or suppression — it is redirection toward deeper pleasure.",
+        "It is not a solo willpower challenge — it is a couple practice that transforms both partners' experience.",
+        "It is not anti-orgasm — valley orgasm is far more intense and lasting than conventional climax.",
+        "It is not pseudoscience — Taoist, Tantric, and modern somatic traditions all converge on these principles.",
+      ],
+      sacredInvitation: {
+        title: "Who This Path Calls",
+        body: "This path calls to men who sense that something important is being lost every time sex ends in the usual way — and to couples who want to discover what becomes possible when that energy is kept, circulated, and shared instead of spent.",
+        resonances: [
+          "You want to last longer — not through numbing or distraction, but through genuine mastery of your own energy.",
+          "You want to wake up the morning after feeling more connected to her, not less.",
+          "You want the kind of magnetic presence that makes her feel safe, desired, and genuinely met.",
+          "You are curious about valley orgasm — the extended, full-body climax that Taoist and Tantric masters describe.",
+          "You want a concrete, progressive practice — not vague spiritual advice.",
+        ],
+      },
+      pillars: [
+        { name: "Conservation", body: "The foundational principle: what is not lost can be transmuted. Learning to conserve is not deprivation — it is the beginning of a completely different relationship with your own vital energy." },
+        { name: "Circulation", body: "Retained energy must move. Breathwork, spinal awareness, and pelvic floor engagement teach the body to circulate arousal upward through the torso, heart, and crown — transforming localized pressure into full-body aliveness." },
+        { name: "Valley Orgasm", body: "The peak-and-crash pattern is not the only possibility. Valley orgasm is the extended, rolling, full-body climax that arrives when energy circulates instead of discharges. Both partners can experience it simultaneously." },
+        { name: "Stamina", body: "Progressive training builds the capacity to sustain high arousal without crossing into the ejaculatory reflex. This is not about holding back — it is about expanding what the body can contain and enjoy." },
+        { name: "Couple Integration", body: "Retention practiced solo is useful. Retention practiced as a couple is transformational. Synchronized breathing, shared stillness at peaks, and mutual energy circulation create a quality of union most couples never access." },
+        { name: "Morning-After Presence", body: "The clearest sign that retention is working: the morning after intimacy, you feel more energized, more emotionally available, and more magnetically drawn to your partner than before. She notices before you do." },
+      ],
+      modernCouples: [
+        {
+          title: "From 'it ended too quickly' to 'we lost track of time'",
+          body: "Retention naturally extends lovemaking from minutes to the better part of an hour. The shift is not effort — it is learning to ride waves instead of chasing a cliff.",
+        },
+        {
+          title: "From post-sex distance to morning-after magnetism",
+          body: "The energetic crash after ejaculation is real and measurable. Partners feel it as withdrawal, emotional absence, or reduced desire for touch. Retention eliminates this pattern entirely.",
+        },
+        {
+          title: "From performance anxiety to embodied confidence",
+          body: "When the goal shifts from 'lasting long enough' to 'circulating energy together,' performance pressure dissolves. What replaces it is a grounded, magnetic confidence she can feel.",
+        },
+      ],
+      misunderstandings: [
+        {
+          title: "\"It means never having an orgasm\"",
+          body: "Valley orgasm is an orgasm — a longer, deeper, full-body version. Retention is about choosing a superior experience, not eliminating pleasure.",
+        },
+        {
+          title: "\"It's just willpower and frustration\"",
+          body: "Proper retention technique involves breathwork, circulation, and relaxation. When done correctly, the body does not feel frustrated — it feels expanded and alive.",
+        },
+        {
+          title: "\"It's only for the man — she won't notice\"",
+          body: "Partners consistently report dramatic differences: longer sessions, more present attention, sustained desire for closeness, and a quality of touch that feels unhurried and fully arrived.",
+        },
+      ],
+      practices: [
+        {
+          title: "The Retention Breath Cycle",
+          setup: "Seated or lying down, alone or with your partner present.",
+          steps: [
+            "Breathe into the lower belly for 2 minutes, grounding awareness below the navel.",
+            "On the inhale, gently engage the pelvic floor and draw energy upward along the spine.",
+            "On the exhale, release the pelvic floor completely and let warmth spread through the chest.",
+            "Repeat 8–12 cycles. Notice the shift from localized arousal to distributed warmth.",
+          ],
+          integration: "Practice daily for one week before introducing into partnered intimacy. Notice energy and mood shifts throughout the day.",
+        },
+        {
+          title: "Wave-Riding with a Partner",
+          setup: "During intimate contact, when arousal reaches approximately 7/10.",
+          steps: [
+            "Signal your partner with a word or touch that you are approaching a wave crest.",
+            "Both partners pause all movement. Maintain full body contact and eye connection.",
+            "Breathe together: slow, synchronized inhale for 4 counts, exhale for 6 counts.",
+            "After 3–5 breath cycles, resume movement slowly. Notice how arousal has redistributed.",
+          ],
+          integration: "Aim for 3–5 wave-riding pauses per session. Over time, the pauses become shorter as the body learns to circulate automatically.",
+        },
+      ],
+      reflections: [
+        "What would change in your relationship if you woke up the morning after intimacy wanting to be closer?",
+        "What would it mean for her if your presence and desire for touch increased — instead of disappeared — after sex?",
+        "What becomes possible in a 40-minute lovemaking session that is simply unavailable in a 10-minute one?",
+        "If the goal is no longer climax, what is the goal? And what opens when you find it?",
+      ],
+      relatedAuthors: [
+        { name: "Mantak Chia", tier: "premium", note: "The foundational Taoist teacher of sexual energy cultivation and the Inner Smile meditation." },
+        { name: "Diana Richardson", tier: "premium", note: "Pioneer of slow, non-goal lovemaking — the natural complement to retention practice." },
+        { name: "David Deida", tier: "free", note: "The teacher of masculine presence and polarity — what retention enables in its fullest expression." },
+      ],
+      premiumBanner: "Your subscription unlocks the complete Semen Retention path for both of you — progressive retention drills, valley orgasm sequences, couple integration practices, and the guided journey that transforms how you show up as a man and as a lover. One subscription. Both partners. The deepest investment you can make in your intimacy.",
+    },
   },
 ];
 
@@ -1473,14 +1641,14 @@ const pathUpgradeCopy: Record<
     cta: "Unlock Polarity Premium",
   },
   "sacred-desire": {
-    headline: "Let longing become a devotional force between you.",
-    benefit: "Blend reverence, tenderness, and erotic intensity in one coherent couple practice.",
+    headline: "Open the embodied heart before asking for more intensity.",
+    benefit: "Build safety, somatic honesty, and repair capacity so desire can return with trust.",
     bullets: [
-      "Ritual maps for building anticipation and emotional resonance.",
-      "Guided partner sequences for embodied magnetism and trust.",
-      "Integration prompts that carry sacred intimacy into daily life.",
+      "Guided nervous-system regulation and body-led disclosure practices.",
+      "Repair-first sequences for reconnecting after shutdown or conflict.",
+      "Somatic intimacy pathways that support both tenderness and eros.",
     ],
-    cta: "Unlock Sacred Desire Premium",
+    cta: "Unlock Embodied Heart Premium",
   },
   shamanism: {
     headline: "Explore altered-state intimacy with grounded structure.",
@@ -1493,14 +1661,14 @@ const pathUpgradeCopy: Record<
     cta: "Unlock Shamanism Premium",
   },
   "neo-tantra": {
-    headline: "Modernize sacred sexuality without losing depth.",
-    benefit: "Combine classical tantric principles with clear modern relationship language.",
+    headline: "Let slowness become your intimacy advantage.",
+    benefit: "Replace pressure with presence using stillness, inner touch, and non-goal connection.",
     bullets: [
-      "Module-based partner journeys from basics to advanced practice.",
-      "Communication scripts that keep vulnerability embodied and practical.",
-      "Progression maps linking intimacy, healing, and relational growth.",
+      "Guided Slow Love rituals for low-pressure, high-presence connection.",
+      "Body-awareness and relaxation tracks that deepen sensation naturally.",
+      "Daily micro-practices that keep intimacy alive during real-life stress.",
     ],
-    cta: "Unlock Neo-Tantra Premium",
+    cta: "Unlock Slow Love Premium",
   },
   "qigong-neidan": {
     headline: "Build couple vitality that lasts.",
@@ -1543,14 +1711,24 @@ const pathUpgradeCopy: Record<
     cta: "Unlock Buddhism Premium",
   },
   "vajrayana-kashmir-shaivism": {
-    headline: "Integrate subtle energy and non-dual intimacy with precision.",
-    benefit: "Study advanced sacred frameworks inside a grounded modern couple pathway.",
+    headline: "Make your whole relationship a conscious union practice.",
+    benefit: "Use presence, ceremony, and recognition to deepen intimacy across everyday life, not only special nights.",
     bullets: [
-      "Guided mantra, visualization, and channel-awareness progression.",
-      "Recognition-based Shaivism practices adapted for relational life.",
-      "Safety-aware sequencing that protects emotional and energetic stability.",
+      "Ceremony frameworks for openings, closings, and key relational transitions.",
+      "Recognition and truth practices that keep contact alive and honest.",
+      "Union pathways linking devotion, repair, and daily relational discipline.",
     ],
-    cta: "Unlock Vajrayana & Shaivism Premium",
+    cta: "Unlock Conscious Union Premium",
+  },
+  "semen-retention": {
+    headline: "Last longer. Feel more. Become the partner she dreams about.",
+    benefit: "Most men lose energy, presence, and desire to connect after sex. This path reverses that — you'll learn to sustain pleasure, stay present, and wake up the next morning wanting to be closer, not distant.",
+    bullets: [
+      "Valley orgasm techniques that replace quick peaks with 30-minute full-body waves — for both of you.",
+      "Retention drills that build stamina, emotional presence, and magnetic confidence over weeks.",
+      "Couple integration practices so she feels the difference too — more attention, more touch, more you.",
+    ],
+    cta: "Unlock Semen Retention Path",
   },
 };
 
@@ -1858,9 +2036,9 @@ const PremiumMiniCard = ({ path }: { path: PathDetail }) => {
       {miniLine}
     </p>
     <div className="mt-3 flex flex-wrap gap-2">
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{ui.guidedTracks}</span>
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{ui.energyMaps}</span>
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{ui.sacredLoveLibrary}</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Feel closer</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Heal what's stuck</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Grow together</span>
     </div>
     {hasPremiumAccess ? null : (
       <Link
@@ -1879,36 +2057,18 @@ const PathPremiumBlock = ({ path }: { path: PathDetail }) => {
   const { lang } = useLanguage();
   const ui = pathsUiCopy[lang];
   const hasPremiumAccess = usePremiumAccess();
-  const upgradeCopy = pathUpgradeCopy[path.slug] ?? {
-    headline: `Go deeper with ${path.name}`,
-    benefit: "Add guided depth, clearer progression, and stronger partner integration.",
-    bullets: [
-      "Layered lessons translated for real modern couple life.",
-      "Stepwise practice progression with practical implementation prompts.",
-      "Cross-library bridges into Authors and Reconnect for continuity.",
-    ],
-    cta: "Unlock Premium Path",
-  };
 
   return (
     <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
-      <p className="text-xs uppercase tracking-[0.2em] text-amber-300">{ui.premiumValue}</p>
-      <h4 className="mt-2 font-display text-2xl text-foreground">{upgradeCopy.headline}</h4>
-      <p className="mt-3 text-sm leading-7 text-foreground/90">{upgradeCopy.benefit}</p>
-      <div className="mt-4 space-y-2">
-        {upgradeCopy.bullets.map((bullet) => (
-          <div key={bullet} className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-amber-300" />
-            <span>{bullet}</span>
-          </div>
-        ))}
-      </div>
+      <p className="text-xs uppercase tracking-[0.2em] text-amber-300">TAKE THIS PATH FURTHER</p>
+      <h4 className="mt-2 font-display text-2xl text-foreground">Let this become a lived experience.</h4>
+      <p className="mt-3 text-sm leading-7 text-foreground/90">Go beyond understanding. Premium helps you practice, reconnect, and embody these teachings together so your relationship becomes more conscious, intimate, and alive.</p>
       {hasPremiumAccess ? null : (
         <Link
           to="/pricing"
           className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
         >
-          {upgradeCopy.cta}
+          Walk the deeper path
           <ArrowRight className="h-4 w-4" />
         </Link>
       )}
@@ -2132,6 +2292,8 @@ const PremiumPathContent = ({ path }: { path: PathDetail }) => {
   const { lang } = useLanguage();
   const ui = pathsUiCopy[lang];
   const hasPremiumAccess = usePremiumAccess();
+  const longform = PATH_LONGFORM_BY_SLUG[path.slug];
+  const longformParagraphs = longform?.fullDescription.split("\n\n") ?? [];
 
   return (
   <main className="space-y-5">
@@ -2144,10 +2306,13 @@ const PremiumPathContent = ({ path }: { path: PathDetail }) => {
       </div>
       <p className="mt-3 text-xs uppercase tracking-[0.2em] text-primary/80">{ui.premiumPathWhatItIs}</p>
       <h3 className="mt-2 font-display text-3xl text-foreground">{path.name}</h3>
-      <p className="mt-3 text-sm leading-7 text-foreground/90">{path.oneLine}</p>
-      <p className="mt-2 text-sm leading-7 text-muted-foreground">{path.overviewLine}</p>
+      <p className="mt-3 text-sm leading-7 text-foreground/90">{longform?.shortDescription ?? path.oneLine}</p>
+      <p className="mt-2 text-sm leading-7 text-muted-foreground">{longform?.tagline ?? path.overviewLine}</p>
+      {longform?.subtitle ? (
+        <p className="mt-2 text-xs uppercase tracking-[0.12em] text-primary/80">{longform.subtitle}</p>
+      ) : null}
       <div className="mt-4 space-y-3 text-sm leading-7 text-muted-foreground">
-        {path.teaser?.map((line) => (
+        {(longformParagraphs.length ? longformParagraphs : path.teaser ?? []).map((line) => (
           <p key={line}>{line}</p>
         ))}
       </div>
@@ -2165,63 +2330,102 @@ const PremiumPathContent = ({ path }: { path: PathDetail }) => {
     <section className="rounded-[24px] border border-primary/20 bg-primary/8 p-5">
       <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{ui.whyItMattersForCouples}</p>
       <div className="mt-4 space-y-2">
-        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>{ui.premiumWhy1}</span>
-        </div>
-        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>{ui.premiumWhy2}</span>
-        </div>
-        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>{ui.premiumWhy3}</span>
-        </div>
+        {(longform?.forCouples
+          ? [longform.forCouples, ...longformParagraphs.slice(0, 2)]
+          : [ui.premiumWhy1, ui.premiumWhy2, ui.premiumWhy3]
+        ).map((line) => (
+          <div key={line} className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+            <span>{line}</span>
+          </div>
+        ))}
       </div>
     </section>
 
-    <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.premiumWhoThisIsFor}</p>
-      <div className="mt-4 grid gap-3 md:grid-cols-2">
-        <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard1Title}</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard1Body}</p>
-        </article>
-        <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard2Title}</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard2Body}</p>
-        </article>
-        <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard3Title}</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard3Body}</p>
-        </article>
-        <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
-          <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard4Title}</h4>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard4Body}</p>
-        </article>
-      </div>
-    </section>
+    {longform?.sacredInvitation ? (
+      <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{longform.sacredInvitation.title}</p>
+        <p className="mt-3 text-sm leading-7 text-foreground/90">{longform.sacredInvitation.body}</p>
+        <div className="mt-4 grid gap-3 md:grid-cols-2">
+          {longform.sacredInvitation.resonances.map((item) => (
+            <article key={item} className="rounded-2xl border border-border/25 bg-card/35 p-4 text-sm leading-6 text-muted-foreground">
+              {item}
+            </article>
+          ))}
+        </div>
+      </section>
+    ) : (
+      <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.premiumWhoThisIsFor}</p>
+        <div className="mt-4 grid gap-3 md:grid-cols-2">
+          <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
+            <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard1Title}</h4>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard1Body}</p>
+          </article>
+          <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
+            <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard2Title}</h4>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard2Body}</p>
+          </article>
+          <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
+            <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard3Title}</h4>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard3Body}</p>
+          </article>
+          <article className="rounded-2xl border border-border/25 bg-card/35 p-4">
+            <h4 className="font-body text-sm text-foreground">{ui.premiumWhoCard4Title}</h4>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">{ui.premiumWhoCard4Body}</p>
+          </article>
+        </div>
+      </section>
+    )}
+
+    {longform?.pillars.length ? (
+      <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.corePillars}</p>
+        <div className="mt-4 grid gap-3 md:grid-cols-2">
+          {longform.pillars.map((pillar) => (
+            <article key={pillar.id} className="rounded-2xl border border-border/25 bg-card/35 p-4">
+              <p className="text-[11px] uppercase tracking-[0.14em] text-primary/80">{pillar.label}</p>
+              <h4 className="mt-2 font-body text-sm text-foreground">{pillar.title}</h4>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">{pillar.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+    ) : null}
 
     <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
       <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.concretePracticePreview}</p>
       <h4 className="mt-2 font-display text-2xl text-foreground">{ui.premiumOrientationTitle}</h4>
       <p className="mt-2 text-sm leading-7 text-foreground/90">
-        {ui.premiumOrientationBody}
+        {longform?.shortDescription ?? ui.premiumOrientationBody}
       </p>
-      <div className="mt-3 space-y-2">
-        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>{ui.premiumOrientationStep1}</span>
+      {longform?.premiumFeatures.length ? (
+        <div className="mt-3 space-y-2">
+          {longform.premiumFeatures.map((feature) => (
+            <div key={feature.id} className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+              <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+              <span>
+                <span className="font-medium text-foreground">{feature.label}:</span> {feature.description}
+              </span>
+            </div>
+          ))}
         </div>
-        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>{ui.premiumOrientationStep2}</span>
+      ) : (
+        <div className="mt-3 space-y-2">
+          <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+            <span>{ui.premiumOrientationStep1}</span>
+          </div>
+          <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+            <span>{ui.premiumOrientationStep2}</span>
+          </div>
+          <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
+            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
+            <span>{ui.premiumOrientationStep3}</span>
+          </div>
         </div>
-        <div className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-          <span>{ui.premiumOrientationStep3}</span>
-        </div>
-      </div>
+      )}
     </section>
 
     <PathPremiumBlock path={path} />
@@ -2415,14 +2619,31 @@ const Paths = () => {
       ) : null}
 
       {showBrowse ? (
+      <section className="rounded-[28px] border border-amber-300/25 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.14),transparent_60%),linear-gradient(135deg,rgba(245,158,11,0.10),rgba(15,23,42,0.06))] p-6">
+        <p className="text-xs uppercase tracking-[0.28em] text-amber-300">Daily Practice</p>
+        <h2 className="mt-3 font-display text-3xl text-foreground">Reconnect</h2>
+        <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
+          Seven ancient practices for returning to each other. From three breaths to twenty minutes — always available, always enough.
+        </p>
+        <Link
+          to="/app/reconnect"
+          className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-amber-400/30 bg-amber-400/12 px-4 py-2.5 text-sm text-foreground transition-all hover:border-amber-400/50 hover:bg-amber-400/18"
+        >
+          Open practices →
+        </Link>
+      </section>
+      ) : null}
+
+      {showBrowse ? (
       <section className={shellCardClass}>
         <p className="text-xs uppercase tracking-[0.22em] text-primary/80">{ui.overviewEyebrow}</p>
         <h2 className="mt-2 font-display text-3xl text-foreground">{ui.overviewTitle}</h2>
 
         <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-          {localizedPathDetails.map((path) => {
+          {localizedPathDetails.map((path, idx) => {
             const Icon = path.icon;
             const isSelected = selectedSlug === path.slug;
+            const isLastAlone = idx === localizedPathDetails.length - 1 && localizedPathDetails.length % 4 !== 0;
             return (
               <button
                 key={path.slug}
@@ -2432,7 +2653,7 @@ const Paths = () => {
                   isSelected
                     ? "border-primary/30 bg-primary/10 shadow-[0_16px_50px_-40px_rgba(255,173,70,0.45)]"
                     : "border-border/30 bg-background/45 hover:border-primary/20 hover:bg-card/55"
-                }`}
+                } ${isLastAlone ? "xl:col-span-4 xl:max-w-none" : ""}`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-3 ${path.iconClass}`}>
@@ -2441,26 +2662,22 @@ const Paths = () => {
                   <TierBadge tier={path.tier} />
                 </div>
                 <h3 className="mt-3 font-display text-2xl text-foreground">{path.name}</h3>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">{path.oneLine}</p>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  {PATH_LONGFORM_BY_SLUG[path.slug]?.shortDescription ?? path.oneLine}
+                </p>
                 <p className="mt-2 text-xs leading-5 text-foreground/80">
                   {path.tier === "free"
                     ? `${ui.practicePreview}: ${path.content?.practices[0]?.title ?? ui.practicePreviewFallback}`
-                    : `${ui.premiumPreview}: ${path.teaser?.[0] ?? ui.premiumPreviewFallback}`}
+                    : `${ui.premiumPreview}: ${PATH_LONGFORM_BY_SLUG[path.slug]?.shortDescription ?? path.teaser?.[0] ?? ui.premiumPreviewFallback}`}
                 </p>
               </button>
             );
           })}
         </div>
 
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
-          <div className="rounded-2xl border border-emerald-400/25 bg-emerald-500/8 p-4">
-            <p className="text-xs uppercase tracking-[0.14em] text-emerald-200">{ui.openAccessPaths}</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">{freeCount} {ui.openAccessPathsBody}</p>
-          </div>
-          <div className="rounded-2xl border border-amber-400/25 bg-amber-500/8 p-4">
-            <p className="text-xs uppercase tracking-[0.14em] text-amber-200">{ui.lockedPaths}</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">{premiumCount} {ui.lockedPathsBody}</p>
-          </div>
+        <div className="mt-4 rounded-2xl border border-amber-400/20 bg-amber-500/6 p-4">
+          <p className="text-xs uppercase tracking-[0.14em] text-amber-200">WHY GO DEEPER</p>
+          <p className="mt-2 text-sm leading-6 text-foreground/90">Some wisdom can inspire in a moment. Deeper guidance helps you live it together, especially when love needs renewal, courage, and care.</p>
         </div>
       </section>
       ) : null}
