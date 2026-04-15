@@ -181,20 +181,20 @@ const homeCopy: Record<Language, Record<string, string>> = {
     saveThisPractice: "Save this practice",
     savedToYourPath: "Saved to your path",
     fromAuthorPattern: "From {author}",
-    lockedDaily: "Locked Daily Expansion",
-    lockedDailyTitle: "More of this page: 14 extra daily cards",
-    lockedDailyDesc: "Keep your daily rhythm fresh with additional rituals, quotes, insights, positions, and temple pulses shaped for modern couples.",
-    chipExtraCards: "14 Extra Cards",
-    chipDailyRefresh: "Daily Refresh",
-    chipSensualGuidance: "Sensual Guidance",
-    buttonDailyPlans: "See daily expansion plans",
-    lockedFull: "Locked Full Experience",
-    lockedFullTitle: "More of Sacred Path across the entire app",
-    lockedFullDesc: "Unlock all eight temple doorways, full Sacred Library depth, advanced reconnect systems, Wisdom Oracle innovation, and complete journey intelligence.",
-    chipTemple: "Sacred Temple",
-    chipLibrary: "Sacred Library",
-    chipOracle: "Wisdom Oracle",
-    buttonFullPlans: "View full plans",
+    lockedDaily: "FOR THE TWO OF YOU",
+    lockedDailyTitle: "Grow closer, gently.",
+    lockedDailyDesc: "Reconnect intimacy, repair what feels strained, and try something new together.",
+    chipExtraCards: "Reconnect",
+    chipDailyRefresh: "Heal",
+    chipSensualGuidance: "Discover",
+    buttonDailyPlans: "Explore your shared path",
+    lockedFull: "DEEPER PATH FOR TWO",
+    lockedFullTitle: "Open the door to deeper intimacy.",
+    lockedFullDesc: "Premium is for couples who want more than inspiration. It helps you reconnect when distance appears, repair what feels fragile, explore new rituals together, and build a love life that feels more alive, loving, and fulfilling.",
+    chipTemple: "Feel closer",
+    chipLibrary: "Heal what's stuck",
+    chipOracle: "Discover new ways",
+    buttonFullPlans: "Deepen intimacy together",
     premiumActive: "Premium Active",
     premiumActiveTitle: "Your full Sacred Path is unlocked",
     premiumActiveDesc:
@@ -871,6 +871,7 @@ const AppHome = () => {
                         {copy.goDeeperDesc}
                       </p>
                     </div>
+
 
                     <button
                       type="button"
