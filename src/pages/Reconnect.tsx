@@ -109,6 +109,197 @@ const libraryPages = [
 
 const reconnectTools: ReconnectTool[] = [
   {
+    slug: "three-breath-return",
+    title: "The Three-Breath Return",
+    tier: "free",
+    icon: Heart,
+    iconClass: "text-rose-300",
+    descriptor: "Three conscious breaths taken together — the simplest reconnection practice across all traditions.",
+    oneLiner: "Any moment of disconnection — after conflict, after a busy day, before sleep.",
+    overviewLine: "Universal practice for returning to each other in three minutes or less.",
+    content: {
+      heroIntro: [
+        "The simplest and most ancient reconnection practice across every tradition: three conscious breaths taken together. Not as a technique, but as a genuine act of return.",
+        "Barry Long called it 'coming home.' Osho called it 'the first meeting.' Three breaths is enough to dissolve the accumulated distance of an ordinary day.",
+      ],
+      quote: {
+        text: "Feel the breath of your partner as your own.",
+        source: "Vigyan Bhairav Tantra, Method 47",
+      },
+      useWhen: [
+        "After conflict, after a busy day, or before sleep.",
+        "Any moment you feel the distance between you growing.",
+        "When words feel too heavy and you need a simpler return.",
+      ],
+      whyItWorks: [
+        {
+          title: "Breath synchronises nervous systems",
+          body: "Matching breath rhythms triggers co-regulation — your autonomic systems begin to attune.",
+          beginnerReframe: "Start here every evening before any other practice.",
+          advancedReframe: "Extend to seven breaths and track the shift in body temperature and relaxation.",
+        },
+        {
+          title: "Touch activates oxytocin",
+          body: "A hand on the heart creates an immediate physiological bonding response.",
+          beginnerReframe: "If touch feels too much tonight, stand close enough to sense each other's warmth.",
+          advancedReframe: "Add eye contact on the third breath to deepen the bonding response.",
+        },
+        {
+          title: "The name as a sacred act",
+          body: "Silently saying your partner's name during the third breath reactivates recognition — the opposite of the invisible stranger feeling.",
+          beginnerReframe: "Keep it simple: just the name, nothing more.",
+          advancedReframe: "Add one quality you love about them as you exhale their name.",
+        },
+      ],
+      modernUse: [
+        { title: "Evening transition", body: "Three minutes of return before dinner after difficult days — before anything else." },
+        { title: "Post-conflict bridge", body: "Use as the first move after a rupture, before any repair conversation." },
+        { title: "Morning arrival", body: "Begin the day consciously — meeting each other before phones or logistics." },
+      ],
+      whatToAvoid: [
+        {
+          title: "Counting instead of feeling",
+          body: "Three breaths is not a timer. It is a quality of presence. Feel each one.",
+          beginnerReframe: "Slow down until each breath takes at least 10 seconds total.",
+          advancedReframe: "Practice until breath naturally synchronises without effort.",
+        },
+        {
+          title: "Skipping the eye contact",
+          body: "The 10 seconds of open gaze at the end is not optional — it is where the return completes.",
+          beginnerReframe: "Start with 5 seconds if 10 feels too intense.",
+          advancedReframe: "Try soft-gaze eye contact for the full duration of all three breaths.",
+        },
+        {
+          title: "Rushing to what comes next",
+          body: "Three breaths is complete in itself. Do not immediately launch into tasks or deep conversation.",
+          beginnerReframe: "After the three breaths, sit in silence for 30 more seconds.",
+          advancedReframe: "Use the silence after the third breath as an open space for whatever needs to emerge.",
+        },
+      ],
+      exercises: [
+        {
+          title: "Classic Three-Breath Return",
+          setup: "Both partners face each other. Each places their right hand on the other's heart.",
+          steps: [
+            "Close your eyes. Feel the warmth of your partner's hand on your heart.",
+            "Breath 1 — Inhale together slowly (4 counts). Exhale together (6 counts). On this breath: release the day.",
+            "Breath 2 — Inhale (4 counts). Exhale (6 counts). On this breath: feel the warmth of the hand on your heart.",
+            "Breath 3 — Inhale (4 counts). Exhale (6 counts). On this breath: silently say your partner's name.",
+            "Open your eyes and hold the gaze for 10 seconds.",
+            "That is enough. You are back.",
+          ],
+          integration: "That is enough. You are back.",
+          beginnerNote: "If 4-count inhale feels fast, use whatever speed feels natural.",
+          advancedNote: "Extend to seven breaths and notice the deepening quality of presence.",
+        },
+      ],
+      reflectionPrompts: [
+        "What does it feel like when we complete three breaths and I look into your eyes?",
+        "When during the day do we most need this practice?",
+        "What changes in the quality of our evening when we begin this way?",
+      ],
+      related: [],
+      premiumBanner:
+        "Unlock guided breath synchronisation sequences and extended co-regulation practices for deeper nervous system attunement.",
+    },
+  },
+  {
+    slug: "twenty-second-hold",
+    title: "The 20-Second Hold",
+    tier: "free",
+    icon: Heart,
+    iconClass: "text-emerald-300",
+    descriptor: "A held embrace of twenty seconds that triggers oxytocin release and begins to dissolve the physiological state of separation.",
+    oneLiner: "Daily — especially when leaving or arriving home.",
+    overviewLine: "Somatic research meets ancient embrace: the threshold where the body begins to believe it is safe.",
+    content: {
+      heroIntro: [
+        "Neuroscience confirms what Tantric teachers knew: a held embrace of twenty seconds or more triggers the release of oxytocin — the bonding hormone — and begins to dissolve the physiological state of separation.",
+        "The Taoist tradition called sustained physical contact 'merging the fields.' Twenty seconds is the threshold where the body begins to genuinely believe it is safe.",
+      ],
+      quote: {
+        text: "Sustained physical contact without agenda is the fastest route to genuine nervous system safety — the prerequisite for all Tantric practice.",
+        source: "Diana Richardson, Slow Sex research",
+      },
+      useWhen: [
+        "Daily — especially when leaving or arriving home.",
+        "When words feel inadequate but closeness is needed.",
+        "After long periods of parallel activity with no physical contact.",
+      ],
+      whyItWorks: [
+        {
+          title: "Oxytocin threshold at 20 seconds",
+          body: "Research confirms that embraces under 20 seconds do not trigger the same bonding hormonal response.",
+          beginnerReframe: "Count silently if you need to — 20 is the minimum, 40 is better.",
+          advancedReframe: "One full minute of held embrace transforms the nervous system state entirely.",
+        },
+        {
+          title: "Chest-to-chest activates the heart field",
+          body: "Both Tantric and cardiac coherence research show the heart generates its own electromagnetic field — full chest contact synchronises these fields.",
+          beginnerReframe: "Start with side-by-side if full chest contact feels too intimate right now.",
+          advancedReframe: "Add heart-focused intention: imagine warmth radiating from your chest to theirs.",
+        },
+        {
+          title: "No agenda removes performance pressure",
+          body: "Unlike sexual touch, a hold with no destination removes the pressure of where this is going.",
+          beginnerReframe: "Say out loud: 'This is complete in itself.' Then hold.",
+          advancedReframe: "Use the hold as a transition doorway into slower, conscious sensual contact.",
+        },
+      ],
+      modernUse: [
+        { title: "Arrival ritual", body: "20 seconds minimum upon arriving home — before phones, logistics, or conversation." },
+        { title: "Sleep transition", body: "Hold at bedtime before separating to sleep — closes the day with contact." },
+        { title: "Conflict reset", body: "After a difficult conversation: hold for 40 seconds before any further words." },
+      ],
+      whatToAvoid: [
+        {
+          title: "The pat-and-release",
+          body: "A back-pat signals the end of the hug. Stay completely still and let the hold deepen.",
+          beginnerReframe: "Drop the hands, soften the arms, and simply rest.",
+          advancedReframe: "Try exhaling completely at the 10-second mark and noticing what opens.",
+        },
+        {
+          title: "Keeping your pelvis back",
+          body: "Full body contact includes the lower body. Stepping closer is the physical act of arrival.",
+          beginnerReframe: "If this feels too much, start with heart-to-heart contact and build gradually.",
+          advancedReframe: "Full body contact in stillness, with matched breath — this is the complete practice.",
+        },
+        {
+          title: "Holding your breath",
+          body: "Held breath signals the nervous system to stay alert. Let the breath soften and slow as you hold.",
+          beginnerReframe: "Focus only on your exhale for the first 10 seconds.",
+          advancedReframe: "Let your breath naturally synchronise with your partner's chest movement.",
+        },
+      ],
+      exercises: [
+        {
+          title: "The Daily Hold",
+          setup: "Full embrace, chests touching, arms wrapped. Both close eyes.",
+          steps: [
+            "Come together in full body contact: chests, bellies, arms fully wrapped.",
+            "Both partners close their eyes.",
+            "Feel the other person's breath moving their chest against yours.",
+            "Let your own breathing slow to match theirs.",
+            "Release any agenda for what comes next.",
+            "Hold for at least 20 seconds — 40 is better. One minute transforms the nervous system state entirely.",
+            "Before separating: one partner whispers one true thing. As simple as: 'I'm glad you're here.'",
+          ],
+          integration: "The whispered truth before separating is not optional — it keeps the practice from becoming purely somatic.",
+          beginnerNote: "Set a gentle phone timer for 30 seconds so neither partner is counting.",
+          advancedNote: "Work toward 2-minute holds without speaking — let the body settle completely.",
+        },
+      ],
+      reflectionPrompts: [
+        "What happens in my body when we hold for longer than I expected to?",
+        "What true thing do I most need to whisper tonight?",
+        "How often do we actually stop and hold each other like this?",
+      ],
+      related: [],
+      premiumBanner:
+        "Unlock guided somatic attunement sequences and touch-based co-regulation practices for deeper physical bonding.",
+    },
+  },
+  {
     slug: "soft-landing",
     title: "Soft Landing",
     tier: "free",
