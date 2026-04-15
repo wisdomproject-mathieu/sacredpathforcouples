@@ -156,8 +156,14 @@ const Connect = () => {
     }
 
     setIsConnected(false);
-    setInviteCode(null);
+    setInviteCode("");
+    setPartnerName("");
+    setPartnerEmail("");
+    setConnectionStatus(null);
     setShowDisconnectConfirm(false);
+    setJoinCode("");
+    setJoinError("");
+    setJoinSuccess("");
     await loadCoupleState();
   };
 
