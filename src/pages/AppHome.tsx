@@ -469,6 +469,11 @@ const AppHome = () => {
   const [pathways, setPathways] = useState<Pathway[]>([]);
   const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
   const [savedCards, setSavedCards] = useState<SavedMap>({});
+  const [coupleId, setCoupleId] = useState<string | null>(null);
+  const [myWeatherEntry, setMyWeatherEntry] = useState<{ state: string; user_id: string } | null>(null);
+  const [partnerWeatherEntry, setPartnerWeatherEntry] = useState<{ state: string; user_id: string } | null>(null);
+  const [myWeatherSelected, setMyWeatherSelected] = useState<string | null>(null);
+  const [savingWeather, setSavingWeather] = useState(false);
 
   const resolvePreferredName = (profile: Pick<Profile, "display_name"> | null, fallbackUser = user) => {
     const profileName = profile?.display_name?.trim();
@@ -557,6 +562,25 @@ const AppHome = () => {
       }
       const connected = coupleState.connected || stickyConnected || stickyCoupleId === activeCouple.id;
       setRelationshipConnected(connected);
+
+      setCoupleId(activeCouple.id);
+
+      // Load today's weather entries
+      const todayStr = new Date().toISOString().slice(0, 10);
+      const { data: weatherData } = await supabase
+        .from("weather_entries")
+        .select("state, user_id")
+        .eq("couple_id", activeCouple.id)
+        .gte("created_at", todayStr)
+        .order("created_at", { ascending: false });
+
+      if (weatherData) {
+        const myW = weatherData.find((w: { state: string; user_id: string }) => w.user_id === user.id) ?? null;
+        const partnerW = weatherData.find((w: { state: string; user_id: string }) => w.user_id !== user.id) ?? null;
+        setMyWeatherEntry(myW);
+        setPartnerWeatherEntry(partnerW);
+        if (myW?.state) setMyWeatherSelected(myW.state);
+      }
 
       const partnerId = coupleState.partnerId;
 
@@ -750,6 +774,20 @@ const AppHome = () => {
     writeSavedCards(next);
   };
 
+  const saveWeather = async () => {
+    if (!user || !myWeatherSelected || !coupleId) return;
+    setSavingWeather(true);
+    const { error } = await supabase.from("weather_entries").insert({
+      couple_id: coupleId,
+      user_id: user.id,
+      state: myWeatherSelected,
+    });
+    if (!error) {
+      setMyWeatherEntry({ state: myWeatherSelected, user_id: user.id });
+    }
+    setSavingWeather(false);
+  };
+
   useEffect(() => {
     setMyName((current) => (fallbackBelovedValues.has(current) ? copy.beloved : current));
   }, [copy.beloved]);
@@ -801,97 +839,148 @@ const AppHome = () => {
           <p className="mt-3 text-sm leading-6 text-foreground/90">{loading ? copy.signalPreparing : signal.detail}</p>
         </div>
 
-        {relationshipConnected && (
-          <Link
-            to="/app/space?tab=weather"
-            className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/10 px-4 py-2.5 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
-          >
-            <Cloud className="h-4 w-4 text-primary/80" />
-            <span>{copy.checkIntimacyWeather}</span>
-            <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
-          </Link>
-        )}
       </section>
 
-      <section className="rounded-[28px] border-t border-[rgba(200,146,74,0.2)] bg-[rgba(200,146,74,0.06)] px-5 pb-6 pt-5">
-        <div className="mb-5">
-          <p className="text-xs uppercase tracking-[0.22em] text-amber-400/70">{copy.todayFlowLabel}</p>
-          <h2 className="mt-2 font-display text-3xl text-foreground">{copy.todayFlowTitle}</h2>
-        </div>
+      {relationshipConnected && (
+        <section className="rounded-[28px] border border-border/30 bg-card/45 p-5">
+          <div className="mb-4">
+            <p className="text-xs uppercase tracking-[0.22em] text-amber-400/70">INTIMACY WEATHER</p>
+            <h2 className="mt-2 font-display text-2xl text-foreground">How are you arriving tonight?</h2>
+          </div>
 
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {dailyCards.map((card) => {
-            const Icon = card.icon;
-            const expanded = expandedCardId === card.id;
-            const saved = savedCards[card.id] ?? false;
+          {(() => {
+            const moods = [
+              { key: "open", emoji: "🌞", label: "Open" },
+              { key: "tender", emoji: "💗", label: "Tender" },
+              { key: "playful", emoji: "✨", label: "Playful" },
+              { key: "stressed", emoji: "☁️", label: "Stressed" },
+              { key: "longing", emoji: "🌙", label: "Longing" },
+              { key: "erotic", emoji: "🔥", label: "Erotic" },
+              { key: "tired", emoji: "🫧", label: "Tired" },
+              { key: "reassurance", emoji: "⚡", label: "Reassurance" },
+            ];
+
+            const getRecommendation = (myState: string, partnerState: string) => {
+              const pair = [myState, partnerState].sort().join("+");
+              const recs: Record<string, string> = {
+                "erotic+erotic": "Tonight, you are both alive. Use the Directional Breath Frame before touching — 8 minutes that transforms charge into conscious contact.",
+                "erotic+tender": "One partner is electric, one is soft. Let tenderness lead — slow arrival, full presence, no destination. Let the erotic follow the tender.",
+                "erotic+playful": "Eros meets laughter. Let play be the door. Begin with something light and let the charge build naturally.",
+                "tender+tender": "Both of you are soft tonight. This is for closeness, not intensity. The 20-Second Hold, then simply be together without agenda.",
+                "open+open": "You are both spacious and ready. Your openness is the gift tonight — let the practice choose itself.",
+                "playful+playful": "Tonight is for delight. Let it be genuinely fun. Laughter is Śakti.",
+              };
+              if (recs[pair]) return recs[pair];
+              if (myState === "stressed" || partnerState === "stressed") return "One of you is carrying the day. Begin with the Three-Breath Return. Nothing else until the nervous system settles.";
+              if (myState === "tired" || partnerState === "tired") return "Low energy is honest. The 20-Second Hold requires nothing. Let that be enough and let it be sacred.";
+              if (myState === "longing" || partnerState === "longing") return "Something is missing and wants to be found. Name it before touching. The Unsaid Round opens what longing is pointing to.";
+              if (myState === "open" || partnerState === "open") return "You are spacious and ready. Meet your partner where they are. Your openness is the gift tonight.";
+              return "Your two weathers have met. Let that meeting be conscious. Go to Sacred Temple to find the practice that fits tonight.";
+            };
+
+            const bothCheckedIn = Boolean(myWeatherEntry && partnerWeatherEntry);
+            const myConfirmed = Boolean(myWeatherEntry);
+
+            if (bothCheckedIn && myWeatherEntry && partnerWeatherEntry) {
+              const myMood = moods.find((m) => m.key === myWeatherEntry.state);
+              const partnerMood = moods.find((m) => m.key === partnerWeatherEntry.state);
+              return (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="rounded-[20px] border border-border/30 bg-background/45 p-4">
+                      <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Your weather</p>
+                      <div className="mt-2 text-2xl">{myMood?.emoji ?? "•"}</div>
+                      <div className="mt-1 font-display text-lg text-foreground">{myMood?.label ?? myWeatherEntry.state}</div>
+                    </div>
+                    <div className="rounded-[20px] border border-border/30 bg-background/45 p-4">
+                      <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Beloved weather</p>
+                      <div className="mt-2 text-2xl">{partnerMood?.emoji ?? "•"}</div>
+                      <div className="mt-1 font-display text-lg text-foreground">{partnerMood?.label ?? partnerWeatherEntry.state}</div>
+                    </div>
+                  </div>
+                  <div className="rounded-[20px] border border-primary/20 bg-primary/8 p-4">
+                    <p className="text-xs uppercase tracking-[0.14em] text-primary/80">Tonight's practice</p>
+                    <p className="mt-2 text-sm leading-7 text-foreground/90">
+                      {getRecommendation(myWeatherEntry.state, partnerWeatherEntry.state)}
+                    </p>
+                  </div>
+                  <Link
+                    to="/app/space?tab=weather"
+                    className="inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-2.5 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
+                  >
+                    Go deeper in Sacred Temple →
+                  </Link>
+                </div>
+              );
+            }
+
+            if (myConfirmed && myWeatherEntry) {
+              const myMood = moods.find((m) => m.key === myWeatherEntry.state);
+              return (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 rounded-[20px] border border-emerald-300/25 bg-emerald-500/8 p-4">
+                    <span className="text-2xl">{myMood?.emoji ?? "•"}</span>
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.14em] text-emerald-200">Your weather sealed</p>
+                      <p className="font-display text-lg text-foreground">{myMood?.label ?? myWeatherEntry.state}</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Waiting for {partnerName ?? "your beloved"} to share their weather…
+                  </p>
+                </div>
+              );
+            }
 
             return (
-              <div key={card.id} className="h-full rounded-[24px] border border-border/30 bg-card/45 p-5">
-                <button type="button" onClick={() => setExpandedCardId(expanded ? null : card.id)} className="flex w-full flex-col text-left">
-                  <div className="flex min-h-[96px] flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{card.label}</p>
-                      <h3 className="mt-3 font-display text-2xl text-foreground">{loading ? copy.selecting : card.title}</h3>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className={`inline-flex rounded-2xl border border-border/30 bg-background/45 p-3 ${card.accentClass}`}>
-                        <Icon className="h-5 w-5" />
-                      </div>
-                      <div className="inline-flex rounded-xl border border-border/30 bg-background/45 p-2 text-muted-foreground">
-                        {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="mt-3 min-h-[48px] text-sm leading-6 text-muted-foreground">
-                    {loading ? copy.calibrating : card.description}
-                  </p>
-                </button>
-
-                {!loading && expanded && (
-                  <div className="mt-4 space-y-4 rounded-2xl border border-border/30 bg-background/45 p-4">
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.16em] text-primary/80">{copy.quickInsight}</p>
-                      <p className="mt-2 text-sm leading-6 text-foreground/90">{card.quickInsight}</p>
-                    </div>
-
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.16em] text-primary/80">{copy.stepByStep}</p>
-                      <ol className="mt-2 space-y-2 text-sm leading-6 text-foreground/90">
-                        {card.steps.map((step, index) => (
-                          <li key={step}>
-                            {index + 1}. {step}
-                          </li>
-                        ))}
-                      </ol>
-                    </div>
-
-                    <div className="rounded-xl border border-amber-300/30 bg-amber-500/8 p-3">
-                      <p className="text-xs uppercase tracking-[0.14em] text-amber-200">{copy.goDeeper}</p>
-                      <p className="mt-1 text-sm leading-6 text-foreground/90">
-                        {copy.goDeeperDesc}
-                      </p>
-                    </div>
-
-
-                    <button
-                      type="button"
-                      onClick={() => handleSaveCard(card.id)}
-                      className={`inline-flex items-center gap-2 rounded-xl border px-3 py-1.5 text-xs transition-all ${
-                        saved
-                          ? "border-rose-300/45 bg-rose-500/15 text-rose-200"
-                          : "border-border/30 bg-card/45 text-muted-foreground hover:border-rose-300/35 hover:text-rose-200"
-                      }`}
-                    >
-                      <Heart className={`h-3.5 w-3.5 ${saved ? "fill-current" : ""}`} />
-                      {saved ? copy.savedToYourPath : copy.saveThisPractice}
-                    </button>
-                  </div>
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
+                  {moods.map((mood) => {
+                    const active = myWeatherSelected === mood.key;
+                    return (
+                      <button
+                        key={mood.key}
+                        type="button"
+                        onClick={() => setMyWeatherSelected(mood.key)}
+                        className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-all ${
+                          active
+                            ? "border-amber-400/60 bg-amber-400/15 text-amber-300"
+                            : "border-border/30 bg-card/40 text-muted-foreground hover:border-amber-400/40 hover:bg-amber-400/10"
+                        }`}
+                      >
+                        <span>{mood.emoji}</span>
+                        <span>{mood.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+                {myWeatherSelected && (
+                  <button
+                    type="button"
+                    onClick={saveWeather}
+                    disabled={savingWeather}
+                    className="rounded-2xl border border-primary/25 bg-primary/12 px-5 py-2.5 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16 disabled:opacity-60"
+                  >
+                    {savingWeather ? "Sealing…" : "Seal my weather"}
+                  </button>
+                )}
+                {partnerName && (
+                  <p className="text-sm text-muted-foreground">Waiting for {partnerName} to share their weather…</p>
                 )}
               </div>
             );
-          })}
-        </div>
-      </section>
+          })()}
+
+          <div className="mt-4 pt-4 border-t border-border/20">
+            <Link
+              to="/app/reconnect"
+              className="text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+            >
+              Need to reconnect first? → Reconnect practices
+            </Link>
+          </div>
+        </section>
+      )}
 
       {!hasPremiumAccess ? (
         <section className="rounded-[28px] bg-[rgba(255,255,255,0.02)] px-5 pb-6 pt-5">
