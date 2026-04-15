@@ -546,8 +546,6 @@ const AppHome = () => {
       setPathways(pathwayData ?? []);
       setMyName(resolvePreferredName(ownProfile));
 
-      const stickyConnected = readEverConnected(user.id);
-      const stickyCoupleId = readConnectedCoupleId(user.id);
       const activeCouple = coupleState.activeCouple;
 
       if (!activeCouple || !coupleState.connected) {

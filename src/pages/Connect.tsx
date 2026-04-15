@@ -5,7 +5,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
-import { fetchCoupleStateForUser, markEverConnected, readEverConnected, storeConnectedCoupleId } from "@/lib/couples";
+import { fetchCoupleStateForUser, markEverConnected, storeConnectedCoupleId } from "@/lib/couples";
 
 const connectCopy: Record<Language, Record<string, string>> = {
   en: {
@@ -138,7 +138,6 @@ const Connect = () => {
   const disconnectPartner = async () => {
     if (!user) return;
 
-    // Find the active couple record
     const { data: couple } = await supabase
       .from("couples")
       .select("id")
@@ -149,13 +148,17 @@ const Connect = () => {
       await supabase.from("couples").delete().eq("id", couple.id);
     }
 
-    // Clear sticky localStorage flags
-    localStorage.removeItem(`sacred_path_ever_connected_${user.id}`);
-    localStorage.removeItem(`sacred_path_connected_couple_id_${user.id}`);
+    try {
+      localStorage.removeItem(`sacred_path_ever_connected_${user.id}`);
+      localStorage.removeItem(`sacred_path_connected_couple_id_${user.id}`);
+    } catch {
+      // Ignore storage cleanup issues.
+    }
 
-    // Reset local state
     setIsConnected(false);
-    window.location.reload();
+    setInviteCode(null);
+    setShowDisconnectConfirm(false);
+    await loadCoupleState();
   };
 
   const loadCoupleState = useCallback(async () => {
@@ -167,14 +170,12 @@ const Connect = () => {
     }
 
     const resolved = await fetchCoupleStateForUser(supabase, user.id);
-    const stickyConnected = readEverConnected(user.id);
-    const effectiveConnected = resolved.connected || stickyConnected;
     if (resolved.connected && resolved.activeCouple?.id) {
       markEverConnected(user.id);
       storeConnectedCoupleId(user.id, resolved.activeCouple.id);
     }
 
-    setIsConnected(effectiveConnected);
+    setIsConnected(resolved.connected);
     if (resolved.connected) {
       setInviteCode(resolved.activeCouple?.couple_code ?? null);
     } else {
