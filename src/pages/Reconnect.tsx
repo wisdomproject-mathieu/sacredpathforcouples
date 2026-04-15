@@ -1201,9 +1201,9 @@ const PremiumMiniCard = ({ tool }: { tool: ReconnectTool }) => {
       {miniLine}
     </p>
     <div className="mt-3 flex flex-wrap gap-2">
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{ui.guidedScripts}</span>
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{ui.repairTools}</span>
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{ui.sacredLoveBridges}</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Reconnect</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Heal</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Grow together</span>
     </div>
     {hasPremiumAccess ? null : (
       <Link
@@ -1222,36 +1222,18 @@ const ReconnectPremiumBlock = ({ tool }: { tool: ReconnectTool }) => {
   const { lang } = useLanguage();
   const ui = reconnectUiCopy[lang];
   const hasPremiumAccess = usePremiumAccess();
-  const upgradeCopy = reconnectUpgradeCopy[tool.slug] ?? {
-    headline: "Stop losing each other in stressful weeks.",
-    benefit: "Use premium reconnect tracks to move from friction to closeness with clear, repeatable structure.",
-    bullets: [
-      "Guided scripts for emotional repair without blame or shutdown loops.",
-      "Stepwise body-first reset sequences for high-intensity moments.",
-      "Progressive reconnect tracks from tender contact to renewed attraction.",
-    ],
-    cta: "Unlock Reconnect Premium",
-  };
 
   return (
   <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
-    <p className="text-xs uppercase tracking-[0.2em] text-amber-300">{ui.premiumValue}</p>
-    <h4 className="mt-2 font-display text-2xl text-foreground">{upgradeCopy.headline}</h4>
-    <p className="mt-3 text-sm leading-7 text-foreground/90">{upgradeCopy.benefit}</p>
-    <div className="mt-4 space-y-2">
-      {upgradeCopy.bullets.map((bullet) => (
-        <div key={bullet} className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-amber-300" />
-          <span>{bullet}</span>
-        </div>
-      ))}
-    </div>
+    <p className="text-xs uppercase tracking-[0.2em] text-amber-300">DEEPER TANTRIC JOURNEY</p>
+    <h4 className="mt-2 font-display text-2xl text-foreground">Turn sacred insight into shared experience.</h4>
+    <p className="mt-3 text-sm leading-7 text-foreground/90">Premium supports couples who want to move from beautiful ideas into real intimacy — through practices, reflection, repair, and new ways of meeting each other with presence and desire.</p>
     {hasPremiumAccess ? null : (
       <Link
         to="/pricing"
         className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
       >
-        {upgradeCopy.cta}
+        Enter the deeper journey
         <ArrowRight className="h-4 w-4" />
       </Link>
     )}
@@ -1669,15 +1651,9 @@ const Reconnect = () => {
           })}
         </div>
 
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
-          <div className="rounded-2xl border border-emerald-400/25 bg-emerald-500/8 p-4">
-            <p className="text-xs uppercase tracking-[0.14em] text-emerald-200">{ui.openTracks}</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">{freeCount} {ui.openTracksBody}</p>
-          </div>
-          <div className="rounded-2xl border border-amber-400/25 bg-amber-500/8 p-4">
-            <p className="text-xs uppercase tracking-[0.14em] text-amber-200">{ui.lockedTracks}</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">{premiumCount} {ui.lockedTracksBody}</p>
-          </div>
+        <div className="mt-4 rounded-2xl border border-amber-400/20 bg-amber-500/6 p-4">
+          <p className="text-xs uppercase tracking-[0.14em] text-amber-200">WHY GO DEEPER</p>
+          <p className="mt-2 text-sm leading-6 text-foreground/90">Some wisdom can inspire in a moment. Deeper guidance helps you live it together, especially when love needs renewal, courage, and care.</p>
         </div>
       </section>
       ) : null}
