@@ -723,59 +723,29 @@ const reconnectTools: ReconnectTool[] = [
     },
   },
   {
-    slug: "sacred-desire",
-    title: "Sacred Desire",
+    slug: "eye-gazing",
+    title: "Eye Gazing — The Soul Recognition",
     tier: "premium",
-    icon: Flame,
-    iconClass: "text-orange-300",
-    descriptor: "A sensual premium reconnect arc for magnetic tension, devotional longing, and bonded intimacy.",
-    oneLiner: "For couples ready to move from reconnection into embodied erotic depth.",
-    overviewLine: "Premium reconnect track for long-term attraction renewal and sacred love.",
+    icon: Heart,
+    iconClass: "text-rose-300",
+    descriptor: "5 minutes of unbroken eye contact that dissolves the accumulated image of the beloved and restores genuine seeing.",
+    oneLiner: "For couples who have stopped truly seeing each other beneath the roles, the routines, and the familiar.",
+    overviewLine: "Kashmir Shaivism and Osho both taught that the eyes are the first doorway — before touch, before words.",
     teaser: [
-      "Restore erotic aliveness with structure and emotional safety.",
-      "Blend anticipation, devotion, and embodied desire sequencing for modern partnership.",
-      "Premium includes progressive rituals and partner scripts for lasting closeness.",
-    ],
-  },
-  {
-    slug: "breath-bridge",
-    title: "Breath Bridge",
-    tier: "premium",
-    icon: Waves,
-    iconClass: "text-emerald-300",
-    descriptor: "Co-regulation reconnect protocol for moments when words are too sharp or exhausted.",
-    oneLiner: "For high-conflict or high-fatigue moments needing physiological reset first.",
-    overviewLine: "Premium nervous-system reconnect framework for difficult modern relationship days.",
-    teaser: [
-      "Use breath-led sequencing to rebuild contact safely after rupture.",
-      "Lower activation before attempting complex emotional dialogue together.",
-      "Premium includes guided pacing maps and escalation guardrails for couples.",
-    ],
-  },
-  {
-    slug: "speak-the-unsent",
-    title: "Speak The Unsent",
-    tier: "premium",
-    icon: MessageCircleHeart,
-    iconClass: "text-violet-300",
-    descriptor: "A structured language framework for what has been carried but not spoken.",
-    oneLiner: "For couples needing honest expression without collapse, shutdown, or blame loops.",
-    overviewLine: "Premium communication bridge for unresolved emotional backlog and deeper trust.",
-    teaser: [
-      "Turn emotional backlog into clear, kind, high-integrity conversation.",
-      "Use turn-based scripts that reduce reactivity and defensiveness.",
-      "Premium includes repair flows and follow-up integration prompts for lasting closeness.",
+      "Dissolve the habitual image of your partner and meet the person who is actually here.",
+      "Use structured gaze intervals that move from contact to recognition to devotion.",
+      "Premium includes guided eye-gazing sequences for different emotional temperatures.",
     ],
   },
   {
     slug: "polarity-reset",
-    title: "Polarity Reset",
+    title: "The Polarity Reset",
     tier: "premium",
     icon: Flame,
     iconClass: "text-rose-300",
-    descriptor: "A premium reconnect protocol for rebuilding erotic edge after emotional flattening.",
+    descriptor: "A 10-minute partner practice from David Deida that restores energetic distinction when sameness has flattened desire.",
     oneLiner: "For couples who still love each other but miss charge, anticipation, and directional tension.",
-    overviewLine: "Premium edge-restoration track for long-term chemistry renewal and relational devotion.",
+    overviewLine: "Sacred Polarity — the conscious restoration of masculine and feminine energetic difference.",
     teaser: [
       "Reintroduce conscious leading and receiving dynamics with precision and care.",
       "Use structured polarity drills that preserve consent and emotional safety.",
@@ -783,18 +753,48 @@ const reconnectTools: ReconnectTool[] = [
     ],
   },
   {
-    slug: "ritual-aftercare",
-    title: "Ritual Aftercare",
+    slug: "synchronized-heart-orbit",
+    title: "Synchronized Heart Orbit",
+    tier: "premium",
+    icon: Waves,
+    iconClass: "text-violet-300",
+    descriptor: "Mantak Chia's Microcosmic Orbit adapted for two bodies — creating a shared circuit of vital energy through breath alone.",
+    oneLiner: "For couples who want to create a tangible shared field through conscious breathing together.",
+    overviewLine: "Taoist Alchemy — circulating sexual energy into nourishment rather than depletion.",
+    teaser: [
+      "Build a shared energy circuit that both partners can feel during and after practice.",
+      "Use Taoist breath sequencing to transform arousal into bonding vitality.",
+      "Premium includes the full two-body Microcosmic Orbit with guided pacing for couples.",
+    ],
+  },
+  {
+    slug: "unsaid-round",
+    title: "The Unsaid Round",
+    tier: "premium",
+    icon: MessageCircleHeart,
+    iconClass: "text-amber-300",
+    descriptor: "A structured 15-minute practice for safely voicing the things that have been accumulating between you.",
+    oneLiner: "For couples with unspoken truths — things carried silently that slowly create invisible distance.",
+    overviewLine: "Jan Day / Conscious Relating — honest expression within a container that protects the bond.",
+    teaser: [
+      "Use timed, turn-based rounds that prevent reactivity and defensiveness.",
+      "Learn the Jan Day framework for honest speech that strengthens rather than damages trust.",
+      "Premium includes full facilitation scripts and repair integration for after the round.",
+    ],
+  },
+  {
+    slug: "sacred-space-creation",
+    title: "Sacred Space Creation",
     tier: "premium",
     icon: MoonStar,
     iconClass: "text-cyan-300",
-    descriptor: "A premium post-intimacy and post-conflict integration track that protects relational trust.",
-    oneLiner: "For couples who want closeness to stay stable after big emotional or erotic moments.",
-    overviewLine: "Premium aftercare system for emotional safety, bonding, and sacred continuity.",
+    descriptor: "Margot Anand's 20-minute ritual for transitioning from ordinary life into genuine sacred intimacy.",
+    oneLiner: "For couples who want the quality of their intimate time to be genuinely different from the rest of the day.",
+    overviewLine: "SkyDancing Tantra — the art of consciously crossing the threshold into sacred space together.",
     teaser: [
-      "Transform intense moments into secure attachment rather than confusion or crash.",
-      "Practice debrief, reassurance, and body-led recovery in a structured format.",
-      "Premium includes aftercare templates, check-ins, and next-day integration maps for modern couples.",
+      "Use Margot Anand's step-by-step space-creation ritual to signal the body that this time is different.",
+      "Incorporate altar, intention-setting, and opening invocation into a repeatable couple practice.",
+      "Premium includes the full SkyDancing Tantra space-creation sequence with guided partner roles.",
     ],
   },
 ];
@@ -1347,6 +1347,39 @@ const ReconnectHeroCard = ({ tool }: { tool: ReconnectTool }) => {
   const hasPremiumAccess = usePremiumAccess();
   const isLocked = tool.tier === "premium" && !hasPremiumAccess;
 
+  if (isLocked) {
+    return (
+      <section className={`${shellCardClass} relative overflow-hidden`}>
+        {/* Blurred content behind overlay */}
+        <div className="blur-sm select-none pointer-events-none">
+          <div className="flex items-start justify-between gap-3">
+            <div className={`inline-flex rounded-2xl border border-border/30 bg-background/55 p-3 ${tool.iconClass}`}>
+              <Icon className="h-5 w-5" />
+            </div>
+            <TierBadge tier={tool.tier} />
+          </div>
+          <h2 className="mt-4 font-display text-3xl text-foreground">{tool.title}</h2>
+          <p className="mt-3 text-sm leading-6 text-muted-foreground">{tool.descriptor}</p>
+          <p className="mt-3 text-sm leading-6 text-foreground/90">{tool.oneLiner}</p>
+        </div>
+        {/* Lock overlay */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-[28px] bg-gradient-to-b from-amber-500/8 via-background/75 to-background/95 px-6 text-center">
+          <div className="inline-flex rounded-2xl border border-amber-400/30 bg-amber-500/14 p-3 text-amber-300">
+            <Lock className="h-5 w-5" />
+          </div>
+          <p className="font-display text-xl text-foreground">{tool.title}</p>
+          <p className="max-w-[220px] text-xs leading-5 text-muted-foreground">{tool.oneLiner}</p>
+          <Link
+            to="/pricing"
+            className="mt-1 inline-flex items-center gap-2 rounded-2xl border border-amber-400/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-400/50 hover:bg-amber-500/20"
+          >
+            Unlock Premium
+          </Link>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className={shellCardClass}>
       <div className="flex items-start justify-between gap-3">
@@ -1358,15 +1391,6 @@ const ReconnectHeroCard = ({ tool }: { tool: ReconnectTool }) => {
       <h2 className="mt-4 font-display text-3xl text-foreground">{tool.title}</h2>
       <p className="mt-3 text-sm leading-6 text-muted-foreground">{tool.descriptor}</p>
       <p className="mt-3 text-sm leading-6 text-foreground/90">{tool.oneLiner}</p>
-      {isLocked ? (
-        <Link
-          to="/pricing"
-          className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-2 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/18"
-        >
-          <Lock className="h-4 w-4" />
-          {ui.unlockReconnectJourney}
-        </Link>
-      ) : null}
     </section>
   );
 };

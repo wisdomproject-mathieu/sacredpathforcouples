@@ -982,6 +982,78 @@ const AppHome = () => {
         </section>
       )}
 
+      <section className="rounded-[28px] border-t border-[rgba(200,146,74,0.2)] bg-[rgba(200,146,74,0.06)] px-5 pb-6 pt-5">
+        <div className="mb-5">
+          <p className="text-xs uppercase tracking-[0.22em] text-amber-400/70">{copy.todayFlowLabel}</p>
+          <h2 className="mt-2 font-display text-3xl text-foreground">{copy.todayFlowTitle}</h2>
+        </div>
+
+        <div className="grid gap-5 md:grid-cols-3">
+          {dailyCards.slice(0, 3).map((card) => {
+            const Icon = card.icon;
+            const expanded = expandedCardId === card.id;
+            const saved = savedCards[card.id] ?? false;
+
+            return (
+              <div key={card.id} className="h-full rounded-[24px] border border-border/30 bg-card/45 p-5">
+                <button type="button" onClick={() => setExpandedCardId(expanded ? null : card.id)} className="flex w-full flex-col text-left">
+                  <div className="flex min-h-[96px] flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{card.label}</p>
+                      <h3 className="mt-3 font-display text-2xl text-foreground">{loading ? copy.selecting : card.title}</h3>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className={`inline-flex rounded-2xl border border-border/30 bg-background/45 p-3 ${card.accentClass}`}>
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <div className="inline-flex rounded-xl border border-border/30 bg-background/45 p-2 text-muted-foreground">
+                        {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                      </div>
+                    </div>
+                  </div>
+                  <p className="mt-3 min-h-[48px] text-sm leading-6 text-muted-foreground">
+                    {loading ? copy.calibrating : card.description}
+                  </p>
+                </button>
+
+                {!loading && expanded && (
+                  <div className="mt-4 space-y-4 rounded-2xl border border-border/30 bg-background/45 p-4">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.16em] text-primary/80">{copy.quickInsight}</p>
+                      <p className="mt-2 text-sm leading-6 text-foreground/90">{card.quickInsight}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.16em] text-primary/80">{copy.stepByStep}</p>
+                      <ol className="mt-2 space-y-2 text-sm leading-6 text-foreground/90">
+                        {card.steps.map((step, index) => (
+                          <li key={step}>{index + 1}. {step}</li>
+                        ))}
+                      </ol>
+                    </div>
+                    <div className="rounded-xl border border-amber-300/30 bg-amber-500/8 p-3">
+                      <p className="text-xs uppercase tracking-[0.14em] text-amber-200">{copy.goDeeper}</p>
+                      <p className="mt-1 text-sm leading-6 text-foreground/90">{copy.goDeeperDesc}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleSaveCard(card.id)}
+                      className={`inline-flex items-center gap-2 rounded-xl border px-3 py-1.5 text-xs transition-all ${
+                        saved
+                          ? "border-rose-300/45 bg-rose-500/15 text-rose-200"
+                          : "border-border/30 bg-card/45 text-muted-foreground hover:border-rose-300/35 hover:text-rose-200"
+                      }`}
+                    >
+                      <Heart className={`h-3.5 w-3.5 ${saved ? "fill-current" : ""}`} />
+                      {saved ? copy.savedToYourPath : copy.saveThisPractice}
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
       {!hasPremiumAccess ? (
         <section className="rounded-[28px] bg-[rgba(255,255,255,0.02)] px-5 pb-6 pt-5">
           <p className="mb-4 text-xs uppercase tracking-[0.22em] text-amber-400/70">{copy.lockedDaily}</p>
