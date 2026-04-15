@@ -1800,9 +1800,9 @@ const PremiumMiniCard = ({ author }: { author: Author }) => {
       {miniLine}
     </p>
     <div className="mt-3 flex flex-wrap gap-2">
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{ui.guidedJourneys}</span>
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{ui.practiceScripts}</span>
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{ui.sacredLovePaths}</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Feel closer</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Heal what's stuck</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Grow together</span>
     </div>
     {hasPremiumAccess ? null : (
       <Link
@@ -1821,36 +1821,18 @@ const AuthorPremiumBlock = ({ author }: { author: Author }) => {
   const { lang } = useLanguage();
   const ui = authorsUiCopy[lang];
   const hasPremiumAccess = usePremiumAccess();
-  const upgradeCopy = authorUpgradeCopy[author.slug] ?? {
-    headline: `Go deeper with ${author.name}`,
-    benefit: "Turn insight into guided couple practice with structure that lasts.",
-    bullets: [
-      "Expanded modules translated into direct relational application.",
-      "Step-by-step partner exercises for communication, sensuality, and integration.",
-      "Cross-library progression linking authors, paths, and reconnect flows.",
-    ],
-    cta: "Unlock Author Premium",
-  };
 
   return (
     <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
-      <p className="text-xs uppercase tracking-[0.2em] text-amber-300">{ui.premiumValue}</p>
-      <h4 className="mt-2 font-display text-2xl text-foreground">{upgradeCopy.headline}</h4>
-      <p className="mt-3 text-sm leading-7 text-foreground/90">{upgradeCopy.benefit}</p>
-      <div className="mt-4 space-y-2">
-        {upgradeCopy.bullets.map((bullet) => (
-          <div key={bullet} className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-amber-300" />
-            <span>{bullet}</span>
-          </div>
-        ))}
-      </div>
+      <p className="text-xs uppercase tracking-[0.2em] text-amber-300">READY TO GO DEEPER</p>
+      <h4 className="mt-2 font-display text-2xl text-foreground">Bring this wisdom into your relationship.</h4>
+      <p className="mt-3 text-sm leading-7 text-foreground/90">Reading can open the heart. Premium helps you turn insight into lived intimacy through guided exploration, deeper teachings, and shared practices that nourish love.</p>
       {hasPremiumAccess ? null : (
         <Link
           to="/pricing"
           className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
         >
-          {upgradeCopy.cta}
+          Continue the journey together
           <ArrowRight className="h-4 w-4" />
         </Link>
       )}
