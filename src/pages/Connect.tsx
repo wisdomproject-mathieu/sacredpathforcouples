@@ -133,6 +133,30 @@ const Connect = () => {
   const [message, setMessage] = useState("");
   const [isConnected, setIsConnected] = useState(false);
   const [myDisplayName, setMyDisplayName] = useState("");
+  const [showDisconnectConfirm, setShowDisconnectConfirm] = useState(false);
+
+  const disconnectPartner = async () => {
+    if (!user) return;
+
+    // Find the active couple record
+    const { data: couple } = await supabase
+      .from("couples")
+      .select("id")
+      .or(`partner_a.eq.${user.id},partner_b.eq.${user.id}`)
+      .maybeSingle();
+
+    if (couple) {
+      await supabase.from("couples").delete().eq("id", couple.id);
+    }
+
+    // Clear sticky localStorage flags
+    localStorage.removeItem(`sacred_path_ever_connected_${user.id}`);
+    localStorage.removeItem(`sacred_path_connected_couple_id_${user.id}`);
+
+    // Reset local state
+    setIsConnected(false);
+    window.location.reload();
+  };
 
   const loadCoupleState = useCallback(async () => {
     if (!user) {
@@ -355,6 +379,36 @@ const Connect = () => {
                 <div className="text-sm text-muted-foreground">{isConnected ? copy.connectedSub : copy.waitingSub}</div>
               </div>
             </div>
+            {isConnected && (
+              <div className="mt-4 border-t border-border/20 pt-4">
+                {!showDisconnectConfirm ? (
+                  <button
+                    onClick={() => setShowDisconnectConfirm(true)}
+                    className="text-xs text-muted-foreground/40 hover:text-muted-foreground/70 transition-colors underline underline-offset-2"
+                  >
+                    Disconnect from partner
+                  </button>
+                ) : (
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-muted-foreground">
+                      Are you sure?
+                    </span>
+                    <button
+                      onClick={disconnectPartner}
+                      className="text-xs text-red-400/70 hover:text-red-400 transition-colors"
+                    >
+                      Yes, disconnect
+                    </button>
+                    <button
+                      onClick={() => setShowDisconnectConfirm(false)}
+                      className="text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </section>
