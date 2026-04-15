@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 import {
   ArrowRight,
   BookOpen,
@@ -804,6 +805,7 @@ const AppHome = () => {
         goTemple: "Go deeper in Sacred Temple",
         readEnergies: "Read the energies",
         reconnectFirst: "Besoin de se reconnecter ? → Pratiques Reconnect",
+        openTonightPath: "Ouvrir la voie de ce soir",
       }
     : lang === "cs"
       ? {
@@ -821,6 +823,7 @@ const AppHome = () => {
           goTemple: "Go deeper in Sacred Temple",
           readEnergies: "Read the energies",
           reconnectFirst: "Nejdřív reconnect? → Reconnect praxe",
+          openTonightPath: "Otevřít dnešní cestu",
         }
       : {
           sectionLabel: "INTIMACY WEATHER",
@@ -837,6 +840,7 @@ const AppHome = () => {
           goTemple: "Go deeper in Sacred Temple",
           readEnergies: "Read the energies",
           reconnectFirst: "Need to reconnect first? → Reconnect practices",
+          openTonightPath: "Open tonight's path",
         };
 
   const weatherMoods = useMemo(
@@ -923,63 +927,24 @@ const AppHome = () => {
           </div>
 
           {bothCheckedIn && weatherMatch ? (
-            <div className="mt-3 space-y-2">
-              <div className="flex flex-wrap gap-1.5">
-                <span className="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-primary/90">
-                  {weatherUi.bothShared}
-                </span>
-                <span className="rounded-full border border-border/35 bg-background/55 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/90">
-                  {weatherUi.latestMatch}: {weatherMatch.archetype.title}
-                </span>
-              </div>
-
-              <article className="rounded-[20px] border border-primary/20 bg-primary/8 p-3">
-                <p className="text-xs uppercase tracking-[0.16em] text-primary/80">{weatherUi.tonightPath}</p>
-                <h3 className="mt-1 font-display text-2xl text-foreground">{weatherMatch.archetype.title}</h3>
-                <p className="mt-0.5 text-sm text-foreground/90">{weatherMatch.interpretation}</p>
-
-                <div className="mt-2 flex flex-wrap gap-1.5">
-                  {weatherMatch.lineage.sourceTraditions.slice(0, 3).map((tradition) => (
-                    <span
-                      key={tradition}
-                      className="rounded-full border border-primary/25 bg-primary/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-primary/90"
-                    >
-                      {tradition}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="mt-2 rounded-xl border border-border/30 bg-background/45 px-2.5 py-2">
-                  <p className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">{weatherMatch.pairLabel}</p>
-                  <p className="mt-1 text-sm text-foreground/90">
-                    {weatherMatch.recommendations[0]?.title ?? weatherMatch.combinedMeaning}
+            <div className="mt-3">
+              <article className="flex flex-col gap-3 rounded-[20px] border border-primary/20 bg-primary/8 p-3.5 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0 flex-1">
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-primary/70">{weatherUi.sectionLabel}</p>
+                  <h3 className="mt-1 font-display text-xl leading-snug text-foreground">{weatherMatch.archetype.title}</h3>
+                  <p className="mt-0.5 line-clamp-1 text-sm text-foreground/85">{weatherMatch.interpretation}</p>
+                  <p className="mt-1.5 text-xs text-muted-foreground">
+                    {myMood?.emoji} {myMood?.label} + {partnerMood?.emoji} {partnerMood?.label}
                   </p>
-                </div>
-
-                <div className="mt-2 grid gap-2 sm:grid-cols-2">
-                  <div className="rounded-xl border border-border/30 bg-background/35 p-2.5">
-                    <p className="text-[11px] uppercase tracking-[0.12em] text-primary/80">Why this fits your energies</p>
-                    <p className="mt-1 text-sm text-foreground/90">{clipText(weatherMatch.combinedMeaning, 120)}</p>
-                  </div>
-                  <div className="rounded-xl border border-border/30 bg-background/35 p-2.5">
-                    <p className="text-[11px] uppercase tracking-[0.12em] text-primary/80">Wisdom behind this</p>
-                    <p className="mt-1 text-sm text-foreground/90">{clipText(weatherMatch.lineageLine, 120)}</p>
-                  </div>
-                </div>
-
-                <div className="mt-2 flex flex-wrap gap-2">
                   <Link
-                    to="/app/space?tab=weather"
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-primary/25 bg-primary/12 px-3 py-1.5 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
+                    to="/app/space?view=journey"
+                    className="mt-2.5 inline-flex items-center gap-1.5 rounded-xl border border-primary/25 bg-primary/12 px-3 py-1.5 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
                   >
-                    {weatherUi.goTemple} →
+                    {weatherUi.openTonightPath} →
                   </Link>
-                  <Link
-                    to="/app/space?tab=journey"
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-border/35 bg-background/45 px-3 py-1.5 text-sm text-foreground transition-all hover:border-border/55 hover:bg-background/60"
-                  >
-                    {weatherUi.readEnergies}
-                  </Link>
+                </div>
+                <div className="h-[72px] w-[72px] shrink-0 self-start overflow-hidden rounded-xl border border-border/20 sm:h-20 sm:w-20">
+                  <img src={shivaShaktiIcon} alt="" className="h-full w-full object-cover opacity-60" />
                 </div>
               </article>
             </div>

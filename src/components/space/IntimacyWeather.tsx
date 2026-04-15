@@ -202,7 +202,7 @@ const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
   const renderCard = (title: string, entry: any | null, mine = false) => {
     const stateMeta = states.find((state) => state.key === entry?.state) ?? null;
     return (
-      <div className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+      <div className="rounded-[22px] border border-border/22 bg-background/50 p-4 backdrop-blur-sm">
         <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{title}</div>
         {stateMeta ? (
           <>
@@ -229,11 +229,9 @@ const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
       label={copy.shellLabel}
       title={copy.shellTitle}
       description={copy.shellDescription}
-      actionLabel={copy.shellActionLabel}
-      onAction={() => onNavigate("rituals")}
     >
 
-      <section className="rounded-[28px] border border-border/30 bg-card/45 p-6">
+      <section className="rounded-[26px] border border-border/25 bg-card/55 p-5 backdrop-blur-sm md:p-6">
         <div className="mb-4">
           <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">{copy.chooseState}</p>
           <h3 className="mt-2 font-display text-2xl text-foreground">{copy.arrivingTonight}</h3>
@@ -265,21 +263,18 @@ const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
         </div>
 
         {selectedState && (
-          <div className="mt-5 rounded-[24px] border border-primary/15 bg-primary/8 p-5">
-            <div className="text-xs uppercase tracking-[0.18em] text-primary/80">{copy.suggestedNextStep}</div>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">
-              {selectedState.key === "stressed" || selectedState.key === "tired"
-                ? copy.stressedSuggestion
-                : selectedState.key === "erotic"
-                ? copy.eroticSuggestion
-                : selectedState.key === "playful"
-                ? copy.playfulSuggestion
-                : copy.defaultSuggestion}
-            </p>
-          </div>
+          <p className="mt-3 text-xs leading-5 text-muted-foreground/70">
+            {selectedState.key === "stressed" || selectedState.key === "tired"
+              ? copy.stressedSuggestion
+              : selectedState.key === "erotic"
+              ? copy.eroticSuggestion
+              : selectedState.key === "playful"
+              ? copy.playfulSuggestion
+              : copy.defaultSuggestion}
+          </p>
         )}
 
-        <div className="mt-5 flex flex-wrap gap-3">
+        <div className="mt-4 flex flex-wrap gap-3">
           <button
             type="button"
             disabled={!selected || saving || isPreview}
@@ -308,7 +303,7 @@ const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
         </div>
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-2">
+      <section className="grid gap-3 lg:grid-cols-2">
         {renderCard(copy.yourWeather, myEntry, true)}
         {isPreview && !partnerEntry ? (
           <div className="rounded-[24px] border border-border/30 bg-background/45 p-5">

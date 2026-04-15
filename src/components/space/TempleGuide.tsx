@@ -77,8 +77,6 @@ const TempleGuide = ({ onNavigate, coupleId }: Props) => {
         "Quand l'amour devient incertain, le Guide sacré propose un prochain pas concret vers la tendresse, la polarité et la présence.",
         "Když si láska není jistá, Posvátný průvodce nabídne ukotvený další krok pro něhu, polaritu a přítomnost.",
       )}
-      actionLabel={l("Enter rituals", "Entrer dans les rituels", "Vstoupit do rituálů")}
-      onAction={onNavigate ? () => onNavigate("rituals") : undefined}
     >
 
       <div className="max-w-md mx-auto space-y-6 px-4">

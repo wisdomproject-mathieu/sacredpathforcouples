@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -1065,8 +1066,20 @@ const PartnerSpace = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background px-4 py-6 text-foreground md:px-6">
-      <div className="mx-auto max-w-6xl space-y-6">
+    <div className="relative min-h-screen bg-background px-4 py-6 text-foreground md:px-6">
+      {/* Shiva/Shakti background */}
+      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
+        <img
+          src={shivaShaktiIcon}
+          alt=""
+          className="h-full w-full object-contain object-center opacity-[0.18] md:opacity-[0.26]"
+          style={{ transform: "scale(1.08)" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/65 to-background/88" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/55 via-transparent to-background/40" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.55)_100%)]" />
+      </div>
+      <div className="relative z-10 mx-auto max-w-6xl space-y-6">
         {!hasConnectedPartner && !coupleId && (
           <section className="rounded-[28px] border border-amber-300/30 bg-amber-500/10 p-5">
             <div className="flex items-start gap-3">
@@ -1087,10 +1100,10 @@ const PartnerSpace = () => {
           </section>
         )}
 
-        <section className={`rounded-[30px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] ${isJourneyView ? "p-4 md:p-5" : "p-6 md:p-7"}`}>
+        <section className={`rounded-[30px] border border-primary/18 bg-gradient-to-br from-primary/14 via-background/92 to-background/88 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] backdrop-blur-sm ${isJourneyView ? "p-4 md:p-5" : "p-6 md:p-7"}`}>
           <div className="max-w-4xl">
             <p className="text-xs uppercase tracking-[0.28em] text-primary/80">{l("Sacred Temple", "Temple sacré", "Posvátný chrám")}</p>
-            <h1 className={`mt-3 font-display text-foreground ${isJourneyView ? "text-2xl md:text-3xl" : "text-3xl md:text-5xl"}`}>
+            <h1 className={`mt-3 font-display text-foreground ${isJourneyView ? "text-2xl md:text-3xl" : "text-3xl md:text-4xl"}`}>
               {isJourneyView
                 ? l("Our Journey Dashboard", "Tableau Notre parcours", "Panel Naše cesta")
                 : l("A private sanctuary for modern lovers", "Un sanctuaire privé pour les amoureux modernes", "Soukromá svatyně pro moderní milence")}
@@ -1111,7 +1124,7 @@ const PartnerSpace = () => {
           </div>
 
           <div className={`${isJourneyView ? "mt-4" : "mt-6"} flex flex-wrap gap-3`}>
-            <div className="w-full rounded-[24px] border border-border/30 bg-card/45 p-4">
+            <div className="w-full rounded-[24px] border border-border/25 bg-card/55 p-4 backdrop-blur-sm">
               <div className="text-xs uppercase tracking-[0.22em] text-primary/80">{l("Sacred pages", "Pages sacrées", "Posvátné stránky")}</div>
               <div className="mt-3 grid gap-3 md:grid-cols-3">
                 {templeViews.map((view) => {
@@ -1167,10 +1180,10 @@ const PartnerSpace = () => {
             <section>
               <div className="mb-4">
                 <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">{l("Sacred Doorways", "Portes sacrées", "Posvátné brány")}</p>
-                <h2 className="mt-2 font-display text-3xl text-foreground">{l("Choose the doorway your love needs tonight", "Choisissez la porte dont votre amour a besoin ce soir", "Vyberte bránu, kterou vaše láska dnes večer potřebuje")}</h2>
+                <h2 className="mt-2 font-display text-2xl text-foreground md:text-3xl">{l("Choose the doorway your love needs tonight", "Choisissez la porte dont votre amour a besoin ce soir", "Vyberte bránu, kterou vaše láska dnes večer potřebuje")}</h2>
               </div>
 
-              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
                 {tools.map((tool) => {
                   const Icon = tool.icon;
                   const active = activeTool === tool.key;
@@ -1178,11 +1191,11 @@ const PartnerSpace = () => {
                   return (
                     <div
                       key={tool.key}
-                      className={`relative overflow-hidden rounded-[26px] border p-5 text-left transition-all ${
+                      className={`relative overflow-hidden rounded-[26px] border p-5 text-left backdrop-blur-sm transition-all ${
                         active
-                          ? "border-primary/30 bg-primary/10 shadow-[0_18px_50px_-36px_rgba(255,173,70,0.42)]"
-                          : "border-border/30 bg-card/45 hover:border-primary/20 hover:bg-card/55"
-                      } ${locked ? "border-amber-300/25 bg-amber-500/6" : ""}`}
+                          ? "border-primary/30 bg-primary/12 shadow-[0_18px_50px_-36px_rgba(255,173,70,0.42)]"
+                          : "border-border/25 bg-card/55 hover:border-primary/20 hover:bg-card/65"
+                      } ${locked ? "border-amber-300/25 bg-amber-500/8" : ""}`}
                     >
                       <div className="pointer-events-none absolute inset-0 opacity-65">
                         <div className="absolute -right-6 top-0 h-24 w-24 rounded-full bg-primary/10 blur-2xl" />
@@ -1209,8 +1222,8 @@ const PartnerSpace = () => {
                         <div className={`inline-flex w-fit rounded-2xl border border-border/30 bg-background/45 p-3 ${tool.iconClass}`}>
                           <Icon className="h-5 w-5" />
                         </div>
-                        <h3 className="mt-4 font-display text-2xl text-foreground">{tool.title}</h3>
-                        <p className="mt-3 text-sm leading-7 text-muted-foreground">{tool.subtitle}</p>
+                        <h3 className="mt-4 font-display text-xl text-foreground">{tool.title}</h3>
+                        <p className="mt-2 text-sm leading-6 text-muted-foreground">{tool.subtitle}</p>
                         {locked && (
                           <p className="mt-2 text-xs leading-5 text-amber-100/85">
                             {l(
@@ -1221,7 +1234,7 @@ const PartnerSpace = () => {
                           </p>
                         )}
                       </button>
-                      <div className="relative mt-4 flex flex-wrap gap-2">
+                      <div className="relative mt-4 flex flex-wrap items-center gap-3">
                         {!locked && (
                           <>
                             <button
@@ -1236,6 +1249,7 @@ const PartnerSpace = () => {
                               messageType="doorway_share"
                               content={`Doorway card ✦ ${tool.title} — ${tool.subtitle}`}
                               label={l("Offer this doorway", "Partager cette porte", "Sdílet tuto bránu")}
+                              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
                             />
                           </>
                         )}
@@ -1244,19 +1258,21 @@ const PartnerSpace = () => {
                   );
                 })}
               </div>
-              <div className="mt-5 rounded-[24px] border border-amber-300/20 bg-amber-500/6 p-4">
-                <p className="text-xs uppercase tracking-[0.2em] text-amber-300/80">Daily Practice</p>
-                <h3 className="mt-2 font-display text-2xl text-foreground">Reconnect</h3>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  Seven practices for returning to each other — from three breaths to twenty minutes.
-                </p>
-                <Link
-                  to="/app/reconnect"
-                  className="mt-3 inline-flex items-center gap-2 rounded-2xl border border-amber-400/25 bg-amber-400/10 px-3 py-2 text-sm text-foreground transition-all hover:border-amber-400/40 hover:bg-amber-400/16"
-                >
-                  Open Reconnect practices →
-                </Link>
-              </div>
+              {weatherStateMode === "none" && (
+                <div className="mt-5 rounded-[24px] border border-amber-300/20 bg-amber-500/6 p-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-amber-300/80">Daily Practice</p>
+                  <h3 className="mt-2 font-display text-2xl text-foreground">Reconnect</h3>
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                    Seven practices for returning to each other — from three breaths to twenty minutes.
+                  </p>
+                  <Link
+                    to="/app/reconnect"
+                    className="mt-3 inline-flex items-center gap-2 rounded-2xl border border-amber-400/25 bg-amber-400/10 px-3 py-2 text-sm text-foreground transition-all hover:border-amber-400/40 hover:bg-amber-400/16"
+                  >
+                    Open Reconnect practices →
+                  </Link>
+                </div>
+              )}
             </section>
             ) : null}
 
@@ -1293,11 +1309,35 @@ const PartnerSpace = () => {
         )}
 
         {viewMode === "journey" && (
-          <section className="space-y-4">
-            <div>
-              <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">{l("Our Journey", "Notre parcours", "Naše cesta")}</p>
-              <h2 className="mt-2 font-display text-3xl text-foreground">{l("The living story of your love", "L'histoire vivante de votre amour", "Živý příběh vaší lásky")}</h2>
+          <section className="space-y-5">
+            {/* Journey hero */}
+            <div className="relative overflow-hidden rounded-[26px] border border-border/20 bg-card/60 p-5 backdrop-blur-sm md:p-6">
+              <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[26px]" aria-hidden="true">
+                <img
+                  src={shivaShaktiIcon}
+                  alt=""
+                  className="absolute right-0 top-0 h-full w-2/5 object-contain object-right opacity-[0.10] md:opacity-[0.08]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-card/95 via-card/75 to-transparent" />
+              </div>
+              <div className="relative">
+                <p className="text-xs uppercase tracking-[0.24em] text-primary/60">{l("Our Journey", "Notre parcours", "Naše cesta")}</p>
+                <h2 className="mt-2 font-display text-3xl text-foreground md:text-4xl">{l("The living story of your love", "L'histoire vivante de votre amour", "Živý příběh vaší lásky")}</h2>
+                {(weatherMatch || weatherStateMode !== "none") && (
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    {weatherMatch && (
+                      <span className="rounded-full border border-primary/25 bg-primary/10 px-2.5 py-1 text-[11px] uppercase tracking-[0.12em] text-primary/90">
+                        {weatherMatch.archetype.title}
+                      </span>
+                    )}
+                    <span className="rounded-full border border-border/25 bg-background/50 px-2.5 py-1 text-[11px] text-muted-foreground">
+                      {sharedStatusLabel}
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
+
             <CompactSharedWeatherRow
               title={l("Current shared state", "État partagé actuel", "Aktuální sdílený stav")}
               yourLabel={l("Your weather", "Votre météo", "Vaše počasí")}
@@ -1351,8 +1391,8 @@ const PartnerSpace = () => {
               />
             ) : null}
 
-            <div className="grid items-start gap-4 xl:grid-cols-[1.35fr_0.95fr]">
-              <div className="space-y-4">
+            <div className="grid items-start gap-5 xl:grid-cols-[1.45fr_0.9fr]">
+              <div className="space-y-5">
                 <CompactMatchCard
                   title={l("Tonight's path", "Chemin de ce soir", "Dnešní cesta")}
                   result={weatherStateMode === "both" ? weatherMatch : null}
@@ -1433,7 +1473,7 @@ const PartnerSpace = () => {
                 />
               </div>
 
-              <aside className="space-y-4">
+              <aside className="space-y-5">
                 <LatestBelovedCard
                   title={l("New from your beloved", "Nouveau de votre partenaire", "Nové od partnera")}
                   preview={latestFromBeloved?.preview ?? ""}

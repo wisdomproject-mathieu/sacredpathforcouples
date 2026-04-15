@@ -32,8 +32,6 @@ const PositionDeck = ({ onNavigate, coupleId, isPremium = false }: Props) => {
       label={l("Positions", "Positions", "Pozice")}
       title={t("position.title")}
       description={t("position.subtitle")}
-      actionLabel={l("Enter rituals", "Entrer dans les rituels", "Vstoupit do rituálů")}
-      onAction={onNavigate ? () => onNavigate("rituals") : undefined}
     >
 
       <div className="grid gap-3 max-w-lg mx-auto px-4">
