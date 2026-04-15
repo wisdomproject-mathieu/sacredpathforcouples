@@ -70,10 +70,10 @@ type PricingCopy = {
 
 const pricingCopy: Record<Language, PricingCopy> = {
   en: {
-    membership: "Membership",
-    heroTitle: "Make Sacred Path feel premium — and still accessible",
+    membership: "ONE PATH • TWO HEARTS",
+    heroTitle: "Choose the depth your love deserves.",
     heroDescription:
-      "Position the app below the most expensive couples apps, while still honoring the depth, beauty, and originality of your temple experience.",
+      "Sacred Path Premium is for couples who want to reconnect, heal what feels strained, and keep discovering each other in new ways. It is not just more to read — it is a deeper way to love.",
     premiumActive: "Premium active",
     planMonthlyLabel: "Monthly",
     planYearlyLabel: "Yearly",
@@ -97,16 +97,16 @@ const pricingCopy: Record<Language, PricingCopy> = {
     checkoutError: "Unable to start checkout.",
     portalError: "Unable to open billing portal.",
     plans: {
-      monthly: { name: "Monthly", subline: "per month", highlight: "Flexible entry", cta: "Choose monthly" },
-      yearly: { name: "Yearly", subline: "per year", highlight: "Best value", cta: "Choose yearly" },
-      founding: { name: "Founding Offer", subline: "limited launch year", highlight: "Early believer price", cta: "Choose founding" },
+      monthly: { name: "Monthly", subline: "per month", highlight: "Flexible entry", cta: "Start your deeper journey" },
+      yearly: { name: "Yearly", subline: "per year", highlight: "Best value", cta: "Start your deeper journey" },
+      founding: { name: "Founding Offer", subline: "limited launch year", highlight: "Early believer price", cta: "Start your deeper journey" },
     },
     features: [
-      "Premium author teachings and extended pathways",
-      "Deeper rituals, positions, and intimacy journeys",
-      "A richer private temple experience for couples",
-      "Ongoing visual upgrades and new guided practices",
-      "Early access to future sacred content releases",
+      "Reconnect what feels distant between you",
+      "Deeper rituals and guided intimacy experiences",
+      "Repair what feels strained with gentle tools",
+      "Discover new ways to love and grow closer",
+      "A shared path for love that wants to grow",
     ],
   },
   fr: {
