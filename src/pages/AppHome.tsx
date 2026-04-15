@@ -5,7 +5,6 @@ import {
   BookOpen,
   ChevronDown,
   ChevronUp,
-  Cloud,
   Heart,
   HeartHandshake,
   Lock,
@@ -26,6 +25,7 @@ import {
   readEverConnected,
   storeConnectedCoupleId,
 } from "@/lib/couples";
+import { buildWeatherMatchResult, getWeatherPresentation, type WeatherKey } from "@/lib/weatherMatch";
 import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
 
 type RitualItem = Tables<"ritual_items">;
@@ -448,6 +448,7 @@ const parseRitualSteps = (steps: RitualItem["steps"]): string[] => {
 };
 
 const fallbackBelovedValues = new Set(Object.values(homeCopy).map((copySet) => copySet.beloved));
+const WEATHER_KEYS: WeatherKey[] = ["open", "tender", "playful", "stressed", "longing", "erotic", "tired", "reassurance"];
 
 const AppHome = () => {
   const { user } = useAuth();
@@ -760,11 +761,6 @@ const AppHome = () => {
   }, [copy.fallbackCardDesc, copy.fallbackInsightCardDesc, copy.fallbackInsightDesc, copy.fallbackInsightTitle, copy.fallbackRitualDesc, copy.fallbackRitualTitle, copy.fromAuthorPattern, copy.insightInsight, copy.labelInsight, copy.labelPosition, copy.labelQuote, copy.labelReconnect, copy.labelRitual, copy.labelTemple, copy.positionInsight, copy.quoteInsight, copy.reconnectInsight, copy.ritualInsight, copy.stepInsight1, copy.stepInsight2, copy.stepInsight3, copy.stepPosition1, copy.stepPosition2, copy.stepPosition3, copy.stepQuote1, copy.stepQuote2, copy.stepQuote3, copy.stepReconnect1, copy.stepReconnect2, copy.stepReconnect3, copy.stepRitual1, copy.stepRitual2, copy.stepRitual3, copy.stepTemple1, copy.stepTemple2, copy.stepTemple3, copy.templeInsight, dailySeed, pathways, positions, quotes, reconnectMoves, rituals, templePulses]);
 
   useEffect(() => {
-    if (dailyCards.length === 0) return;
-    setExpandedCardId((current) => current ?? dailyCards[0].id);
-  }, [dailyCards]);
-
-  useEffect(() => {
     setSavedCards(readSavedCards());
   }, [todayKey]);
 
@@ -792,14 +788,81 @@ const AppHome = () => {
     setMyName((current) => (fallbackBelovedValues.has(current) ? copy.beloved : current));
   }, [copy.beloved]);
 
+  const weatherUi = lang === "fr"
+    ? {
+        sectionLabel: "MÉTÉO D'INTIMITÉ",
+        sectionTitle: "Comment arrivez-vous ce soir ?",
+        yourWeather: "Votre météo",
+        belovedWeather: "Météo du partenaire",
+        bothShared: "Les deux partagées",
+        latestMatch: "Dernier match",
+        tonightPath: "Chemin de ce soir",
+        waitingForBeloved: `En attente de ${partnerName ?? "votre partenaire"}…`,
+        yourWeatherSealed: "Votre météo est partagée",
+        sealMyWeather: "Sceller ma météo",
+        sealing: "Enregistrement…",
+        goTemple: "Go deeper in Sacred Temple",
+        readEnergies: "Read the energies",
+        reconnectFirst: "Besoin de se reconnecter ? → Pratiques Reconnect",
+      }
+    : lang === "cs"
+      ? {
+          sectionLabel: "POČASÍ INTIMITY",
+          sectionTitle: "Jak dnes večer přicházíte?",
+          yourWeather: "Vaše počasí",
+          belovedWeather: "Počasí partnera",
+          bothShared: "Oba sdíleno",
+          latestMatch: "Poslední souhra",
+          tonightPath: "Dnešní cesta",
+          waitingForBeloved: `Čekám na sdílení od ${partnerName ?? "partnera"}…`,
+          yourWeatherSealed: "Vaše počasí je uloženo",
+          sealMyWeather: "Uložit moje počasí",
+          sealing: "Ukládám…",
+          goTemple: "Go deeper in Sacred Temple",
+          readEnergies: "Read the energies",
+          reconnectFirst: "Nejdřív reconnect? → Reconnect praxe",
+        }
+      : {
+          sectionLabel: "INTIMACY WEATHER",
+          sectionTitle: "How are you arriving tonight?",
+          yourWeather: "Your weather",
+          belovedWeather: "Beloved weather",
+          bothShared: "Both shared",
+          latestMatch: "Latest match",
+          tonightPath: "Tonight's path",
+          waitingForBeloved: `Waiting for ${partnerName ?? "your beloved"} to share their weather…`,
+          yourWeatherSealed: "Your weather sealed",
+          sealMyWeather: "Seal my weather",
+          sealing: "Sealing…",
+          goTemple: "Go deeper in Sacred Temple",
+          readEnergies: "Read the energies",
+          reconnectFirst: "Need to reconnect first? → Reconnect practices",
+        };
+
+  const weatherMoods = useMemo(
+    () => WEATHER_KEYS.map((key) => getWeatherPresentation(key, lang)),
+    [lang],
+  );
+
+  const myMood = myWeatherEntry ? getWeatherPresentation(myWeatherEntry.state, lang) : null;
+  const partnerMood = partnerWeatherEntry ? getWeatherPresentation(partnerWeatherEntry.state, lang) : null;
+  const bothCheckedIn = Boolean(myWeatherEntry && partnerWeatherEntry);
+  const weatherMatch = useMemo(
+    () =>
+      bothCheckedIn && myWeatherEntry && partnerWeatherEntry
+        ? buildWeatherMatchResult(myWeatherEntry.state, partnerWeatherEntry.state, lang)
+        : null,
+    [bothCheckedIn, lang, myWeatherEntry, partnerWeatherEntry],
+  );
+
   return (
-    <div className="space-y-6">
-      <section className="rounded-[28px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-6 shadow-[0_24px_80px_-40px_rgba(255,170,70,0.35)] md:p-8">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+    <div className="space-y-4">
+      <section className="rounded-[28px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-5 shadow-[0_24px_80px_-40px_rgba(255,170,70,0.35)] md:p-6">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-4xl">
             <p className="text-xs uppercase tracking-[0.28em] text-primary/80">{todayLabel}</p>
             <h1 className="mt-3 font-display text-4xl leading-tight text-foreground md:text-5xl">{copy.heroTitle}</h1>
-            <p className="mt-4 max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground md:text-base">
               {copy.heroDesc}
             </p>
           </div>
@@ -831,206 +894,206 @@ const AppHome = () => {
           </aside>
         </div>
 
-        <div className="mt-6 rounded-[22px] border border-border/30 bg-card/40 p-4">
+        <div className="mt-4 rounded-[20px] border border-border/30 bg-card/40 p-3">
           <div className="flex items-center gap-2 text-violet-300">
             <MessageCircle className="h-4 w-4" />
             <span className="text-xs uppercase tracking-[0.18em]">{signal.title}</span>
           </div>
-          <p className="mt-3 text-sm leading-6 text-foreground/90">{loading ? copy.signalPreparing : signal.detail}</p>
+          <p className="mt-2 text-sm leading-6 text-foreground/90">{loading ? copy.signalPreparing : signal.detail}</p>
         </div>
 
       </section>
 
       {relationshipConnected && (
-        <section className="rounded-[28px] border border-border/30 bg-card/45 p-5">
-          <div className="mb-4">
-            <p className="text-xs uppercase tracking-[0.22em] text-amber-400/70">INTIMACY WEATHER</p>
-            <h2 className="mt-2 font-display text-2xl text-foreground">How are you arriving tonight?</h2>
+        <section className="rounded-[24px] border border-border/30 bg-card/45 p-4">
+          <div className="mb-3">
+            <p className="text-xs uppercase tracking-[0.2em] text-amber-400/70">{weatherUi.sectionLabel}</p>
+            <h2 className="mt-1.5 font-display text-xl text-foreground">{weatherUi.sectionTitle}</h2>
           </div>
 
-          {(() => {
-            const moods = [
-              { key: "open", emoji: "🌞", label: "Open" },
-              { key: "tender", emoji: "💗", label: "Tender" },
-              { key: "playful", emoji: "✨", label: "Playful" },
-              { key: "stressed", emoji: "☁️", label: "Stressed" },
-              { key: "longing", emoji: "🌙", label: "Longing" },
-              { key: "erotic", emoji: "🔥", label: "Erotic" },
-              { key: "tired", emoji: "🫧", label: "Tired" },
-              { key: "reassurance", emoji: "⚡", label: "Reassurance" },
-            ];
+          <div className="grid gap-2 sm:grid-cols-2">
+            <div className="rounded-2xl border border-border/30 bg-background/45 p-3">
+              <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">{weatherUi.yourWeather}</p>
+              <p className="mt-1.5 text-base text-foreground">{myMood ? `${myMood.label} ${myMood.emoji}` : "—"}</p>
+            </div>
+            <div className="rounded-2xl border border-border/30 bg-background/45 p-3">
+              <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">{weatherUi.belovedWeather}</p>
+              <p className="mt-1.5 text-base text-foreground">{partnerMood ? `${partnerMood.label} ${partnerMood.emoji}` : "—"}</p>
+            </div>
+          </div>
 
-            const getRecommendation = (myState: string, partnerState: string) => {
-              const pair = [myState, partnerState].sort().join("+");
-              const recs: Record<string, string> = {
-                "erotic+erotic": "Tonight, you are both alive. Use the Directional Breath Frame before touching — 8 minutes that transforms charge into conscious contact.",
-                "erotic+tender": "One partner is electric, one is soft. Let tenderness lead — slow arrival, full presence, no destination. Let the erotic follow the tender.",
-                "erotic+playful": "Eros meets laughter. Let play be the door. Begin with something light and let the charge build naturally.",
-                "tender+tender": "Both of you are soft tonight. This is for closeness, not intensity. The 20-Second Hold, then simply be together without agenda.",
-                "open+open": "You are both spacious and ready. Your openness is the gift tonight — let the practice choose itself.",
-                "playful+playful": "Tonight is for delight. Let it be genuinely fun. Laughter is Śakti.",
-              };
-              if (recs[pair]) return recs[pair];
-              if (myState === "stressed" || partnerState === "stressed") return "One of you is carrying the day. Begin with the Three-Breath Return. Nothing else until the nervous system settles.";
-              if (myState === "tired" || partnerState === "tired") return "Low energy is honest. The 20-Second Hold requires nothing. Let that be enough and let it be sacred.";
-              if (myState === "longing" || partnerState === "longing") return "Something is missing and wants to be found. Name it before touching. The Unsaid Round opens what longing is pointing to.";
-              if (myState === "open" || partnerState === "open") return "You are spacious and ready. Meet your partner where they are. Your openness is the gift tonight.";
-              return "Your two weathers have met. Let that meeting be conscious. Go to Sacred Temple to find the practice that fits tonight.";
-            };
+          {bothCheckedIn && weatherMatch ? (
+            <div className="mt-3 space-y-2">
+              <div className="flex flex-wrap gap-1.5">
+                <span className="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-primary/90">
+                  {weatherUi.bothShared}
+                </span>
+                <span className="rounded-full border border-border/35 bg-background/55 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/90">
+                  {weatherUi.latestMatch}: {weatherMatch.archetype.title}
+                </span>
+              </div>
 
-            const bothCheckedIn = Boolean(myWeatherEntry && partnerWeatherEntry);
-            const myConfirmed = Boolean(myWeatherEntry);
+              <article className="rounded-[20px] border border-primary/20 bg-primary/8 p-3">
+                <p className="text-xs uppercase tracking-[0.16em] text-primary/80">{weatherUi.tonightPath}</p>
+                <h3 className="mt-1 font-display text-2xl text-foreground">{weatherMatch.archetype.title}</h3>
+                <p className="mt-0.5 text-sm text-foreground/90">{weatherMatch.interpretation}</p>
 
-            if (bothCheckedIn && myWeatherEntry && partnerWeatherEntry) {
-              const myMood = moods.find((m) => m.key === myWeatherEntry.state);
-              const partnerMood = moods.find((m) => m.key === partnerWeatherEntry.state);
-              return (
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="rounded-[20px] border border-border/30 bg-background/45 p-4">
-                      <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Your weather</p>
-                      <div className="mt-2 text-2xl">{myMood?.emoji ?? "•"}</div>
-                      <div className="mt-1 font-display text-lg text-foreground">{myMood?.label ?? myWeatherEntry.state}</div>
-                    </div>
-                    <div className="rounded-[20px] border border-border/30 bg-background/45 p-4">
-                      <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Beloved weather</p>
-                      <div className="mt-2 text-2xl">{partnerMood?.emoji ?? "•"}</div>
-                      <div className="mt-1 font-display text-lg text-foreground">{partnerMood?.label ?? partnerWeatherEntry.state}</div>
-                    </div>
-                  </div>
-                  <div className="rounded-[20px] border border-primary/20 bg-primary/8 p-4">
-                    <p className="text-xs uppercase tracking-[0.14em] text-primary/80">Tonight's practice</p>
-                    <p className="mt-2 text-sm leading-7 text-foreground/90">
-                      {getRecommendation(myWeatherEntry.state, partnerWeatherEntry.state)}
-                    </p>
-                  </div>
-                  <Link
-                    to="/app/space?tab=weather"
-                    className="inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-2.5 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
-                  >
-                    Go deeper in Sacred Temple →
-                  </Link>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {weatherMatch.lineage.sourceTraditions.slice(0, 3).map((tradition) => (
+                    <span
+                      key={tradition}
+                      className="rounded-full border border-primary/25 bg-primary/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-primary/90"
+                    >
+                      {tradition}
+                    </span>
+                  ))}
                 </div>
-              );
-            }
 
-            if (myConfirmed && myWeatherEntry) {
-              const myMood = moods.find((m) => m.key === myWeatherEntry.state);
-              return (
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3 rounded-[20px] border border-emerald-300/25 bg-emerald-500/8 p-4">
-                    <span className="text-2xl">{myMood?.emoji ?? "•"}</span>
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.14em] text-emerald-200">Your weather sealed</p>
-                      <p className="font-display text-lg text-foreground">{myMood?.label ?? myWeatherEntry.state}</p>
-                    </div>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    Waiting for {partnerName ?? "your beloved"} to share their weather…
+                <div className="mt-2 rounded-xl border border-border/30 bg-background/45 px-2.5 py-2">
+                  <p className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">{weatherMatch.pairLabel}</p>
+                  <p className="mt-1 text-sm text-foreground/90">
+                    {weatherMatch.recommendations[0]?.title ?? weatherMatch.combinedMeaning}
                   </p>
                 </div>
-              );
-            }
 
-            return (
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
-                  {moods.map((mood) => {
-                    const active = myWeatherSelected === mood.key;
-                    return (
-                      <button
-                        key={mood.key}
-                        type="button"
-                        onClick={() => setMyWeatherSelected(mood.key)}
-                        className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-all ${
-                          active
-                            ? "border-amber-400/60 bg-amber-400/15 text-amber-300"
-                            : "border-border/30 bg-card/40 text-muted-foreground hover:border-amber-400/40 hover:bg-amber-400/10"
-                        }`}
-                      >
-                        <span>{mood.emoji}</span>
-                        <span>{mood.label}</span>
-                      </button>
-                    );
-                  })}
+                <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                  <div className="rounded-xl border border-border/30 bg-background/35 p-2.5">
+                    <p className="text-[11px] uppercase tracking-[0.12em] text-primary/80">Why this fits your energies</p>
+                    <p className="mt-1 text-sm text-foreground/90">{clipText(weatherMatch.combinedMeaning, 120)}</p>
+                  </div>
+                  <div className="rounded-xl border border-border/30 bg-background/35 p-2.5">
+                    <p className="text-[11px] uppercase tracking-[0.12em] text-primary/80">Wisdom behind this</p>
+                    <p className="mt-1 text-sm text-foreground/90">{clipText(weatherMatch.lineageLine, 120)}</p>
+                  </div>
                 </div>
-                {myWeatherSelected && (
-                  <button
-                    type="button"
-                    onClick={saveWeather}
-                    disabled={savingWeather}
-                    className="rounded-2xl border border-primary/25 bg-primary/12 px-5 py-2.5 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16 disabled:opacity-60"
-                  >
-                    {savingWeather ? "Sealing…" : "Seal my weather"}
-                  </button>
-                )}
-                {partnerName && (
-                  <p className="text-sm text-muted-foreground">Waiting for {partnerName} to share their weather…</p>
-                )}
-              </div>
-            );
-          })()}
 
-          <div className="mt-4 pt-4 border-t border-border/20">
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <Link
+                    to="/app/space?tab=weather"
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-primary/25 bg-primary/12 px-3 py-1.5 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
+                  >
+                    {weatherUi.goTemple} →
+                  </Link>
+                  <Link
+                    to="/app/space?tab=journey"
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-border/35 bg-background/45 px-3 py-1.5 text-sm text-foreground transition-all hover:border-border/55 hover:bg-background/60"
+                  >
+                    {weatherUi.readEnergies}
+                  </Link>
+                </div>
+              </article>
+            </div>
+          ) : myMood ? (
+            <div className="mt-3 space-y-2">
+              <div className="flex items-center gap-2.5 rounded-2xl border border-emerald-300/25 bg-emerald-500/8 p-3">
+                <span className="text-xl">{myMood.emoji}</span>
+                <div>
+                  <p className="text-[11px] uppercase tracking-[0.14em] text-emerald-200">{weatherUi.yourWeatherSealed}</p>
+                  <p className="text-sm text-foreground">{myMood.label}</p>
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground">{weatherUi.waitingForBeloved}</p>
+            </div>
+          ) : (
+            <div className="mt-3 space-y-2.5">
+              <div className="grid grid-cols-2 gap-1.5 md:grid-cols-4">
+                {weatherMoods.map((mood) => {
+                  const active = myWeatherSelected === mood.key;
+                  return (
+                    <button
+                      key={mood.key}
+                      type="button"
+                      onClick={() => setMyWeatherSelected(mood.key)}
+                      className={`flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs transition-all ${
+                        active
+                          ? "border-amber-400/60 bg-amber-400/15 text-amber-300"
+                          : "border-border/30 bg-card/40 text-muted-foreground hover:border-amber-400/40 hover:bg-amber-400/10"
+                      }`}
+                    >
+                      <span>{mood.emoji}</span>
+                      <span>{mood.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {myWeatherSelected && (
+                <button
+                  type="button"
+                  onClick={saveWeather}
+                  disabled={savingWeather}
+                  className="rounded-xl border border-primary/25 bg-primary/12 px-4 py-1.5 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16 disabled:opacity-60"
+                >
+                  {savingWeather ? weatherUi.sealing : weatherUi.sealMyWeather}
+                </button>
+              )}
+
+              {partnerName && (
+                <p className="text-sm text-muted-foreground">{weatherUi.waitingForBeloved}</p>
+              )}
+            </div>
+          )}
+
+          <div className="mt-3 border-t border-border/20 pt-3">
             <Link
               to="/app/reconnect"
               className="text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"
             >
-              Need to reconnect first? → Reconnect practices
+              {weatherUi.reconnectFirst}
             </Link>
           </div>
         </section>
       )}
 
-      <section className="rounded-[28px] border-t border-[rgba(200,146,74,0.2)] bg-[rgba(200,146,74,0.06)] px-5 pb-6 pt-5">
-        <div className="mb-5">
+      <section className="rounded-[24px] border-t border-[rgba(200,146,74,0.2)] bg-[rgba(200,146,74,0.06)] px-4 pb-4 pt-4">
+        <div className="mb-4">
           <p className="text-xs uppercase tracking-[0.22em] text-amber-400/70">{copy.todayFlowLabel}</p>
-          <h2 className="mt-2 font-display text-3xl text-foreground">{copy.todayFlowTitle}</h2>
+          <h2 className="mt-1.5 font-display text-2xl text-foreground">{copy.todayFlowTitle}</h2>
         </div>
 
-        <div className="grid gap-5 md:grid-cols-3">
+        <div className="grid gap-3 md:grid-cols-3">
           {dailyCards.slice(0, 3).map((card) => {
             const Icon = card.icon;
             const expanded = expandedCardId === card.id;
             const saved = savedCards[card.id] ?? false;
 
             return (
-              <div key={card.id} className="h-full rounded-[24px] border border-border/30 bg-card/45 p-5">
+              <div key={card.id} className="h-full rounded-[20px] border border-border/30 bg-card/45 p-4">
                 <button type="button" onClick={() => setExpandedCardId(expanded ? null : card.id)} className="flex w-full flex-col text-left">
-                  <div className="flex min-h-[96px] flex-wrap items-start justify-between gap-3">
+                  <div className="flex flex-wrap items-start justify-between gap-2">
                     <div>
                       <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{card.label}</p>
-                      <h3 className="mt-3 font-display text-2xl text-foreground">{loading ? copy.selecting : card.title}</h3>
+                      <h3 className="mt-2 font-display text-xl text-foreground">{loading ? copy.selecting : card.title}</h3>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className={`inline-flex rounded-2xl border border-border/30 bg-background/45 p-3 ${card.accentClass}`}>
-                        <Icon className="h-5 w-5" />
+                      <div className={`inline-flex rounded-xl border border-border/30 bg-background/45 p-2.5 ${card.accentClass}`}>
+                        <Icon className="h-4 w-4" />
                       </div>
-                      <div className="inline-flex rounded-xl border border-border/30 bg-background/45 p-2 text-muted-foreground">
+                      <div className="inline-flex rounded-lg border border-border/30 bg-background/45 p-1.5 text-muted-foreground">
                         {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                       </div>
                     </div>
                   </div>
-                  <p className="mt-3 min-h-[48px] text-sm leading-6 text-muted-foreground">
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
                     {loading ? copy.calibrating : card.description}
                   </p>
                 </button>
 
                 {!loading && expanded && (
-                  <div className="mt-4 space-y-4 rounded-2xl border border-border/30 bg-background/45 p-4">
+                  <div className="mt-3 space-y-3 rounded-xl border border-border/30 bg-background/45 p-3">
                     <div>
                       <p className="text-xs uppercase tracking-[0.16em] text-primary/80">{copy.quickInsight}</p>
-                      <p className="mt-2 text-sm leading-6 text-foreground/90">{card.quickInsight}</p>
+                      <p className="mt-1.5 text-sm leading-6 text-foreground/90">{card.quickInsight}</p>
                     </div>
                     <div>
                       <p className="text-xs uppercase tracking-[0.16em] text-primary/80">{copy.stepByStep}</p>
-                      <ol className="mt-2 space-y-2 text-sm leading-6 text-foreground/90">
+                      <ol className="mt-1.5 space-y-1.5 text-sm leading-6 text-foreground/90">
                         {card.steps.map((step, index) => (
                           <li key={step}>{index + 1}. {step}</li>
                         ))}
                       </ol>
                     </div>
-                    <div className="rounded-xl border border-amber-300/30 bg-amber-500/8 p-3">
+                    <div className="rounded-lg border border-amber-300/30 bg-amber-500/8 p-2.5">
                       <p className="text-xs uppercase tracking-[0.14em] text-amber-200">{copy.goDeeper}</p>
                       <p className="mt-1 text-sm leading-6 text-foreground/90">{copy.goDeeperDesc}</p>
                     </div>
@@ -1106,14 +1169,14 @@ const AppHome = () => {
           </div>
         </section>
       ) : (
-        <section className="rounded-[24px] border border-emerald-300/25 bg-[radial-gradient(circle_at_top_right,rgba(74,222,128,0.22),transparent_58%),linear-gradient(135deg,rgba(16,185,129,0.18),rgba(15,23,42,0.14))] p-5 shadow-[0_24px_70px_-45px_rgba(74,222,128,0.45)]">
+        <section className="rounded-[20px] border border-emerald-300/25 bg-[radial-gradient(circle_at_top_right,rgba(74,222,128,0.22),transparent_58%),linear-gradient(135deg,rgba(16,185,129,0.18),rgba(15,23,42,0.14))] p-4 shadow-[0_24px_70px_-45px_rgba(74,222,128,0.45)]">
           <div className="flex items-center gap-2 text-emerald-200">
             <HeartHandshake className="h-4 w-4" />
             <span className="text-xs uppercase tracking-[0.16em]">{copy.premiumActive}</span>
           </div>
-          <h3 className="mt-2 font-display text-2xl text-foreground">{copy.premiumActiveTitle}</h3>
-          <p className="mt-3 max-w-3xl text-sm leading-6 text-foreground/90">{copy.premiumActiveDesc}</p>
-          <div className="mt-4 flex flex-wrap gap-2">
+          <h3 className="mt-1.5 font-display text-xl text-foreground">{copy.premiumActiveTitle}</h3>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-foreground/90">{copy.premiumActiveDesc}</p>
+          <div className="mt-3 flex flex-wrap gap-2">
             <Link
               to="/app/space"
               className="inline-flex items-center gap-2 rounded-xl border border-emerald-300/35 bg-emerald-500/14 px-3 py-2 text-sm text-foreground transition-all hover:border-emerald-300/50 hover:bg-emerald-500/20"
