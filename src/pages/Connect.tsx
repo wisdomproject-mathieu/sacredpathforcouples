@@ -138,10 +138,6 @@ const Connect = () => {
   const disconnectPartner = async () => {
     if (!user) return;
 
-    setLoading(true);
-    setStatus("idle");
-    setMessage("");
-
     const { data: couple } = await supabase
       .from("couples")
       .select("id")
@@ -161,9 +157,6 @@ const Connect = () => {
 
     setIsConnected(false);
     setInviteCode(null);
-    setCode("");
-    setStatus("idle");
-    setMessage("");
     setShowDisconnectConfirm(false);
     await loadCoupleState();
   };
@@ -387,40 +380,36 @@ const Connect = () => {
                 <div className="text-sm text-muted-foreground">{isConnected ? copy.connectedSub : copy.waitingSub}</div>
               </div>
             </div>
-            <div className="mt-4 min-h-[52px] border-t border-border/20 pt-4">
-              {isConnected ? (
-                !showDisconnectConfirm ? (
+            {isConnected && (
+              <div className="mt-4 border-t border-border/20 pt-4">
+                {!showDisconnectConfirm ? (
                   <button
                     onClick={() => setShowDisconnectConfirm(true)}
-                    className="text-xs text-muted-foreground/40 transition-colors underline underline-offset-2 hover:text-muted-foreground/70"
+                    className="text-xs text-muted-foreground/40 hover:text-muted-foreground/70 transition-colors underline underline-offset-2"
                   >
                     Disconnect from partner
                   </button>
                 ) : (
-                  <div className="flex flex-wrap items-center gap-3">
+                  <div className="flex items-center gap-3">
                     <span className="text-xs text-muted-foreground">
                       Are you sure?
                     </span>
                     <button
                       onClick={disconnectPartner}
-                      className="text-xs text-red-400/70 transition-colors hover:text-red-400"
+                      className="text-xs text-red-400/70 hover:text-red-400 transition-colors"
                     >
                       Yes, disconnect
                     </button>
                     <button
                       onClick={() => setShowDisconnectConfirm(false)}
-                      className="text-xs text-muted-foreground/50 transition-colors hover:text-muted-foreground"
+                      className="text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"
                     >
                       Cancel
                     </button>
                   </div>
-                )
-              ) : (
-                <div className="text-xs text-muted-foreground/45">
-                  Create or enter a code to begin your shared path.
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -436,46 +425,36 @@ const Connect = () => {
             {copy.createSharedCodeDesc}
           </p>
 
-          <div className="mt-6 min-h-[164px] rounded-[24px] border border-border/30 bg-background/45 p-4">
-            {!inviteCode ? (
-              <div className="flex h-full flex-col justify-between">
-                <div>
-                  <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{copy.yourInviteCode}</div>
-                  <div className="mt-2 text-sm leading-6 text-muted-foreground">Create a private code, share it with your partner, and this page will hold the connection until they join.</div>
-                </div>
-                <div className="mt-6">
-                  <button
-                    type="button"
-                    onClick={createInvite}
-                    className="rounded-2xl border border-primary/25 bg-primary/12 px-5 py-3 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
-                  >
-                    {copy.createInvite}
-                  </button>
-                </div>
+          {!inviteCode ? (
+            <button
+              type="button"
+              onClick={createInvite}
+              className="mt-6 rounded-2xl border border-primary/25 bg-primary/12 px-5 py-3 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
+            >
+              {copy.createInvite}
+            </button>
+          ) : (
+            <div className="mt-6 rounded-[24px] border border-border/30 bg-background/45 p-4">
+              <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{copy.yourInviteCode}</div>
+              <div className="mt-2 font-display text-3xl tracking-[0.2em] text-foreground">{inviteCode}</div>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={copyInvite}
+                  className="inline-flex items-center gap-2 rounded-2xl border border-border/35 bg-card/45 px-4 py-3 text-sm text-foreground transition-all hover:border-border/55 hover:bg-card/60"
+                >
+                  <Copy className="h-4 w-4" />
+                  {copy.copyInvite}
+                </button>
+                {inviteLink && (
+                  <div className="inline-flex items-center gap-2 rounded-2xl border border-border/30 bg-card/35 px-4 py-3 text-xs text-muted-foreground">
+                    <LinkIcon className="h-4 w-4" />
+                    {copy.linkReady}
+                  </div>
+                )}
               </div>
-            ) : (
-              <div>
-                <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{copy.yourInviteCode}</div>
-                <div className="mt-2 font-display text-3xl tracking-[0.2em] text-foreground">{inviteCode}</div>
-                <div className="mt-4 flex min-h-[52px] flex-wrap gap-3">
-                  <button
-                    type="button"
-                    onClick={copyInvite}
-                    className="inline-flex items-center gap-2 rounded-2xl border border-border/35 bg-card/45 px-4 py-3 text-sm text-foreground transition-all hover:border-border/55 hover:bg-card/60"
-                  >
-                    <Copy className="h-4 w-4" />
-                    {copy.copyInvite}
-                  </button>
-                  {inviteLink && (
-                    <div className="inline-flex items-center gap-2 rounded-2xl border border-border/30 bg-card/35 px-4 py-3 text-xs text-muted-foreground">
-                      <LinkIcon className="h-4 w-4" />
-                      {copy.linkReady}
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         <div className="rounded-[28px] border border-border/30 bg-card/45 p-6">
