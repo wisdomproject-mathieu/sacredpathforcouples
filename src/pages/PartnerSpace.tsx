@@ -1481,10 +1481,10 @@ const PartnerSpace = () => {
 
                 {!hasPremiumAccess ? (
                   <TempleUpgradeCard
-                    eyebrow={templeAccessName}
-                    title={journeyProgramTriggerCopy.title}
-                    body={journeyProgramTriggerCopy.body}
-                    ctaLabel={l("Unlock for both of you", "Déverrouiller pour vous deux", "Odemknout pro vás oba")}
+                    eyebrow={l("FOR DEEPER PRACTICE", "POUR UNE PRATIQUE PLUS PROFONDE", "PRO HLUBŠÍ PRAXI")}
+                    title={l("Create moments that change your relationship.", "Créez des moments qui changent votre relation.", "Vytvořte chvíle, které změní váš vztah.")}
+                    body={l("Premium offers deeper rituals and guided experiences designed to help couples slow down, reconnect, and bring more tenderness, desire, and presence into their bond.", "Premium offre des rituels plus profonds et des expériences guidées pour aider les couples à ralentir et se reconnecter.", "Premium nabízí hlubší rituály a vedené zážitky navržené tak, aby páry zpomalily a znovu se propojily.")}
+                    ctaLabel={l("Begin a deeper practice", "Commencer une pratique plus profonde", "Začít hlubší praxi")}
                     to="/pricing?entry=journey-program"
                     compact
                   />
@@ -1662,13 +1662,13 @@ const PartnerSpace = () => {
 
         {showClosingPremiumBanner && (
           <section className="rounded-[30px] border border-amber-300/30 bg-gradient-to-br from-amber-500/12 via-background to-background p-6 shadow-[0_28px_90px_-46px_rgba(251,191,36,0.45)] md:p-7">
-            <p className="text-xs uppercase tracking-[0.24em] text-amber-200">{l("Temple Premium", "Temple Premium", "Chrám Premium")}</p>
-            <h2 className="mt-3 font-display text-3xl text-foreground md:text-4xl">{l("Bring the full sanctuary online", "Activez le sanctuaire complet", "Aktivujte celou svatyni")}</h2>
+            <p className="text-xs uppercase tracking-[0.24em] text-amber-200">{l("FOR DEEPER PRACTICE", "POUR UNE PRATIQUE PLUS PROFONDE", "PRO HLUBŠÍ PRAXI")}</p>
+            <h2 className="mt-3 font-display text-3xl text-foreground md:text-4xl">{l("Create moments that change your relationship.", "Créez des moments qui changent votre relation.", "Vytvořte chvíle, které změní váš vztah.")}</h2>
             <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
               {l(
-                "Open access gives your couple Intimacy Weather plus one ritual per category. Premium unlocks every ritual, all eight doorways, Our Journey analytics, and full Wisdom Oracle innovation for your next shared chapter.",
-                "L'accès libre offre à votre couple la Météo d'intimité plus un rituel par catégorie. Premium débloque tous les rituels, les huit portes, les analyses Notre Parcours, et toute l'innovation Oracle de sagesse.",
-                "Otevřený přístup dává vašemu páru Počasí intimity plus jeden rituál v každé kategorii. Premium odemkne všechny rituály, všech osm bran, analytiku Naší cesty a plnou inovaci Oracle moudrosti.",
+                "Premium offers deeper rituals and guided experiences designed to help couples slow down, reconnect, and bring more tenderness, desire, and presence into their bond.",
+                "Premium offre des rituels plus profonds et des expériences guidées pour aider les couples à ralentir, se reconnecter, et apporter plus de tendresse, de désir et de présence dans leur lien.",
+                "Premium nabízí hlubší rituály a vedené zážitky navržené tak, aby páry zpomalily, znovu se propojily a přinesly do svého pouta více něhy, touhy a přítomnosti.",
               )}
             </p>
             <div className="mt-5 flex flex-wrap gap-3">
@@ -1676,7 +1676,7 @@ const PartnerSpace = () => {
                 to="/pricing"
                 className="rounded-2xl border border-amber-300/35 bg-amber-500/14 px-5 py-3 text-sm text-foreground transition-all hover:border-amber-300/55 hover:bg-amber-500/20"
               >
-                {l("View plans", "Voir les plans", "Zobrazit plány")}
+                {l("Begin a deeper practice", "Commencer une pratique plus profonde", "Začít hlubší praxi")}
               </Link>
               <button
                 type="button"

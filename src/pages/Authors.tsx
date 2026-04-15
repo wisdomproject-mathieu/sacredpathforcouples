@@ -1800,9 +1800,9 @@ const PremiumMiniCard = ({ author }: { author: Author }) => {
       {miniLine}
     </p>
     <div className="mt-3 flex flex-wrap gap-2">
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{ui.guidedJourneys}</span>
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{ui.practiceScripts}</span>
-      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{ui.sacredLovePaths}</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Feel closer</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Heal what's stuck</span>
+      <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Grow together</span>
     </div>
     {hasPremiumAccess ? null : (
       <Link
@@ -1821,36 +1821,18 @@ const AuthorPremiumBlock = ({ author }: { author: Author }) => {
   const { lang } = useLanguage();
   const ui = authorsUiCopy[lang];
   const hasPremiumAccess = usePremiumAccess();
-  const upgradeCopy = authorUpgradeCopy[author.slug] ?? {
-    headline: `Go deeper with ${author.name}`,
-    benefit: "Turn insight into guided couple practice with structure that lasts.",
-    bullets: [
-      "Expanded modules translated into direct relational application.",
-      "Step-by-step partner exercises for communication, sensuality, and integration.",
-      "Cross-library progression linking authors, paths, and reconnect flows.",
-    ],
-    cta: "Unlock Author Premium",
-  };
 
   return (
     <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
-      <p className="text-xs uppercase tracking-[0.2em] text-amber-300">{ui.premiumValue}</p>
-      <h4 className="mt-2 font-display text-2xl text-foreground">{upgradeCopy.headline}</h4>
-      <p className="mt-3 text-sm leading-7 text-foreground/90">{upgradeCopy.benefit}</p>
-      <div className="mt-4 space-y-2">
-        {upgradeCopy.bullets.map((bullet) => (
-          <div key={bullet} className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
-            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-amber-300" />
-            <span>{bullet}</span>
-          </div>
-        ))}
-      </div>
+      <p className="text-xs uppercase tracking-[0.2em] text-amber-300">READY TO GO DEEPER</p>
+      <h4 className="mt-2 font-display text-2xl text-foreground">Bring this wisdom into your relationship.</h4>
+      <p className="mt-3 text-sm leading-7 text-foreground/90">Reading can open the heart. Premium helps you turn insight into lived intimacy through guided exploration, deeper teachings, and shared practices that nourish love.</p>
       {hasPremiumAccess ? null : (
         <Link
           to="/pricing"
           className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
         >
-          {upgradeCopy.cta}
+          Continue the journey together
           <ArrowRight className="h-4 w-4" />
         </Link>
       )}
@@ -2367,76 +2349,48 @@ const Authors = () => {
             className="xl:col-span-3 rounded-[24px] border border-amber-400/20 bg-gradient-to-br from-amber-950/40 via-card/60 to-card/40 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)] transition-all hover:border-amber-400/35 hover:shadow-[0_24px_70px_-40px_rgba(255,173,70,0.68)]"
           >
             <div className="flex h-full flex-col justify-between p-6">
-              {/* Top section */}
               <div>
                 <span className="text-xs uppercase tracking-[0.22em] text-amber-400/80">
-                  ONE SUBSCRIPTION · TWO HEARTS
+                  DEEPER PATH FOR TWO
                 </span>
                 <h3 className="mt-2 font-display text-2xl text-foreground">
-                  Give her the gift of a deeper you.
+                  Open the door to deeper intimacy.
                 </h3>
                 <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                  One subscription unlocks the full Sacred Library for both of you — every path, every guided practice, every repair tool. She'll feel the difference in how you show up. That's the real gift.
+                  Premium is for couples who want more than inspiration. It helps you reconnect when distance appears, repair what feels fragile, explore new rituals together, and build a love life that feels more alive, loving, and fulfilling.
                 </p>
               </div>
 
-              {/* Author avatar stack */}
-              <div className="mt-4 flex items-center gap-2">
-                <div className="flex -space-x-2">
-                  {["🔥", "✨", "〰", "⭐", "💫"].map((icon, i) => (
-                    <div
-                      key={i}
-                      className="flex h-7 w-7 items-center justify-center rounded-full border border-border/40 bg-card/80 text-xs"
-                    >
-                      {icon}
-                    </div>
-                  ))}
-                </div>
-                <span className="text-xs text-muted-foreground">
-                  +7 more voices
-                </span>
-              </div>
-
-              {/* Divider */}
-              <div className="mt-4 h-px w-full bg-border/20" />
-
-              {/* Feature list */}
-              <ul className="mt-4 space-y-2">
+              <div className="mt-4 space-y-2">
                 {[
-                  "Semen retention & valley orgasm — last longer, feel closer",
-                  "Guided repair tools — fix what's broken, rebuild trust",
-                  "All 13 Wisdom Paths — full content for both partners",
+                  "Reconnect what feels distant",
+                  "Repair what has been strained",
+                  "Try new rituals that bring joy",
                 ].map((item) => (
-                  <li key={item} className="flex items-start gap-2 text-xs text-muted-foreground">
+                  <div key={item} className="flex items-start gap-2 text-xs text-muted-foreground">
                     <span className="mt-0.5 text-amber-400/70">◆</span>
                     {item}
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
 
-              {/* CTA */}
-              <button className="mt-5 flex w-full items-center justify-center gap-2 rounded-[14px] border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm font-medium text-amber-300 transition-colors hover:bg-amber-400/20">
-                Unlock for both of you
+              <div className="mt-4 h-px w-full bg-border/20" />
+
+              <button className="mt-4 flex w-full items-center justify-center gap-2 rounded-[14px] border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm font-medium text-amber-300 transition-colors hover:bg-amber-400/20">
+                Deepen intimacy together
                 <span>→</span>
               </button>
 
-              {/* Trial note */}
               <p className="mt-2 text-center text-[10px] text-muted-foreground/60">
-                7-day free trial · one subscription covers your partner too
+                One shared path for both hearts.
               </p>
             </div>
           </Link>
         </div>
 
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
-          <div className="rounded-2xl border border-emerald-400/25 bg-emerald-500/8 p-4">
-            <p className="text-xs uppercase tracking-[0.14em] text-emerald-200">{ui.openAuthors}</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">{freeAuthors.map((author) => author.name).join(authorJoinWord)} {ui.openAuthorsBodySuffix}</p>
-          </div>
-          <div className="rounded-2xl border border-amber-400/25 bg-amber-500/8 p-4">
-            <p className="text-xs uppercase tracking-[0.14em] text-amber-200">{ui.lockedAuthors}</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">{premiumAuthors.length} {ui.lockedAuthorsBody}</p>
-          </div>
+        <div className="mt-4 rounded-2xl border border-amber-400/20 bg-amber-500/6 p-4">
+          <p className="text-xs uppercase tracking-[0.14em] text-amber-200">WHY GO DEEPER</p>
+          <p className="mt-2 text-sm leading-6 text-foreground/90">Some wisdom can inspire in a moment. Deeper guidance helps you live it together, especially when love needs renewal, courage, and care.</p>
         </div>
       </section>
       ) : null}
