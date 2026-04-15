@@ -695,4 +695,37 @@ export const PATH_LONGFORM_BY_SLUG: Record<string, LongformPath> = {
       { id: "long_muir_library", label: "LONG & MUIR LIBRARY", description: "The complete Conscious Union teaching library drawn from Barry Long and Charles Muir's full bodies of work." },
     ],
   },
+
+  "semen-retention": {
+    tagline: "Last longer. Feel more. Become the man she can't stop thinking about.",
+    subtitle: "Through energy conservation, valley orgasm, and the stamina that transforms relationships",
+    shortDescription: "The ancient Taoist and Tantric practice that replaces the post-sex crash with sustained presence, extended pleasure, and magnetic confidence — for both of you.",
+    fullDescription:
+      "Most men experience intimacy as a build-up toward a peak that lasts seconds — followed by a crash of energy, presence, and desire to be close. Semen retention is the practice of redirecting that energy instead of losing it. The result is not suppression — it is amplification: longer lovemaking, deeper full-body sensation, sustained emotional presence, and the kind of vitality that transforms how she experiences you. Valley orgasm — the extended, non-ejaculatory climax described across Taoist and Tantric traditions — replaces the 10-second spike with rolling 20- to 40-minute waves of whole-body pleasure that both partners feel. Men who practice retention consistently report higher energy, sharper clarity, deeper emotional availability, and a dramatic increase in their partner's attraction. The post-sex distance that silently erodes so many relationships disappears entirely.",
+    forCouples: "For couples who want intimacy to leave both partners more energized, more connected, and more magnetically drawn to each other than before — not less.",
+    sacredInvitation: {
+      title: "Who This Path Calls",
+      body: "This path calls to men who sense that something important is being lost every time sex ends the usual way — and to couples who want to discover what becomes possible when that energy is kept, circulated, and shared instead of spent.",
+      resonances: [
+        "You want to last longer — not through numbing, but through genuine mastery of your own energy.",
+        "You want to wake up the morning after feeling more connected to her, not less.",
+        "You want the kind of magnetic presence that makes her feel safe, desired, and genuinely met.",
+        "You are curious about valley orgasm — the extended full-body climax Taoist masters describe.",
+        "You want a concrete, progressive practice — not vague spiritual advice.",
+      ],
+    },
+    pillars: [
+      { id: "conservation", label: "CONSERVATION", title: "Keep What Matters", body: "The foundational principle: what is not lost can be transmuted. Learning to conserve is not deprivation — it is the beginning of a completely different relationship with your own vital energy. The body learns quickly when shown a better alternative to the habitual peak-and-crash." },
+      { id: "circulation", label: "CIRCULATION", title: "Move the Fire Upward", body: "Retained energy must move. Breathwork, spinal awareness, and pelvic floor engagement teach the body to circulate arousal upward through the torso, heart, and crown — transforming localized pressure into full-body warmth and presence that she can feel." },
+      { id: "valley_orgasm", label: "VALLEY ORGASM", title: "The Orgasm Beyond Orgasm", body: "Valley orgasm is the extended, rolling, full-body climax that arrives when energy circulates instead of discharges. It can last 20 to 40 minutes. Both partners experience it. It is not a myth — it is a trainable skill with a clear progression path." },
+      { id: "stamina", label: "STAMINA", title: "Expand What You Can Hold", body: "Progressive training builds the capacity to sustain high arousal without crossing into the ejaculatory reflex. This is not about holding back — it is about expanding what the body can contain and enjoy, week by week." },
+      { id: "couple_integration", label: "COUPLE WORK", title: "She Feels It Too", body: "Retention practiced solo is useful. Retention practiced as a couple is transformational. Synchronized breathing, shared stillness at peaks, and mutual energy circulation create a quality of union most couples never access." },
+      { id: "morning_after", label: "MORNING AFTER", title: "The Proof Is in the Presence", body: "The clearest sign retention is working: the morning after intimacy, you feel more energized, more emotionally available, and more drawn to your partner than before. She notices before you do." },
+    ],
+    premiumFeatures: [
+      { id: "retention_drills", label: "RETENTION DRILLS", description: "Progressive solo and partnered retention exercises: PC muscle training, breath cycling, arousal-edge awareness, and the complete valley orgasm sequence." },
+      { id: "couple_practices", label: "COUPLE INTEGRATION", description: "Guided partner practices: synchronized wave-riding, shared stillness at peaks, energy circulation for two, and morning-after reconnection rituals." },
+      { id: "chia_library", label: "TAOIST ENERGY LIBRARY", description: "The complete retention teaching library drawn from Mantak Chia's Taoist sexual energy cultivation and adapted for modern couples." },
+    ],
+  },
 };

@@ -784,11 +784,163 @@ const pathDetails: PathDetail[] = [
     overviewLine: "Premium path for men who want to stop losing energy after sex and start building real magnetic presence.",
     icon: Shield,
     iconClass: "text-sky-300",
-    teaser: [
-      "Learn valley orgasm techniques that replace 10-second peaks with 30-minute full-body waves of pleasure — for both of you.",
-      "Stop the post-sex crash. Retain your vitality, clarity, and desire to be close to her the morning after.",
-      "Premium includes progressive retention drills, couple integration sequences, and the science behind why this transforms relationships.",
-    ],
+    content: {
+      hero: [
+        "Most men experience sex as a build-up toward a peak that lasts a few seconds — followed by a crash of energy, presence, and desire for closeness. Semen retention is the ancient practice of redirecting that energy instead of losing it. The result is not suppression. It is amplification: longer lovemaking, deeper full-body sensation, sustained presence, and the kind of magnetic vitality that transforms how she experiences you.",
+        "Valley orgasm — the extended, non-ejaculatory climax described in Taoist and Tantric traditions — replaces the 10-second spike with rolling 20- to 40-minute waves of whole-body pleasure. Both partners feel it. The practice is not about denial. It is about discovering that what lies beyond the habitual peak is orders of magnitude more pleasurable, more connecting, and more sustainable.",
+        "Men who practice retention consistently report higher energy, sharper mental clarity, deeper emotional availability, and a dramatic increase in their partner's attraction and trust. The post-sex distance that silently erodes so many relationships disappears. You wake up the next morning wanting to be closer — and she feels the difference immediately.",
+        "This path gives you the progressive techniques, the science, and the couple integration practices to make retention a sustainable, relationship-transforming reality — not a willpower exercise.",
+      ],
+      whyMatters: [
+        "It solves the number-one unspoken frustration in most bedrooms: it ends too quickly and he disappears afterward.",
+        "Valley orgasm gives both partners access to a quality of pleasure and intimacy most couples never knew existed.",
+        "Retained energy translates directly into emotional presence, physical vitality, and magnetic confidence outside the bedroom.",
+        "It reverses the post-sex crash cycle that quietly teaches her body that intimacy costs her your closeness.",
+        "Research in Taoist medicine and modern bioenergetics supports the link between conservation and sustained relational vitality.",
+        "It gives men a concrete, progressive practice path instead of vague advice about 'being more present.'",
+      ],
+      whoItsFor: [
+        {
+          title: "Men who want to last longer and feel more",
+          body: "Progressive retention drills build stamina week by week while increasing — not decreasing — the quality of sensation and pleasure.",
+        },
+        {
+          title: "Couples where he crashes and she feels abandoned after sex",
+          body: "Retention eliminates the energetic withdrawal that makes her body learn to guard itself. She feels you stay — and opens further.",
+        },
+        {
+          title: "Men who want to be the partner she brags about",
+          body: "The combination of sustained presence, extended lovemaking, and morning-after closeness creates the kind of relationship women describe to their closest friends.",
+        },
+        {
+          title: "Couples ready to discover valley orgasm together",
+          body: "When peak-chasing stops, something far deeper arrives — rolling waves of shared full-body sensation that can last 30 minutes or more.",
+        },
+      ],
+      practicePreview: {
+        title: "The Retention Breath Cycle",
+        body: "A foundational 10-minute practice that teaches the body to circulate arousal energy upward instead of releasing it downward. Done solo or with a partner.",
+        steps: [
+          "Breathe slowly into the belly for 2 minutes, grounding attention below the navel.",
+          "As arousal builds, inhale deeply and draw energy upward from the base of the spine to the heart center using intention and pelvic floor engagement.",
+          "Exhale slowly, relaxing the pelvic floor completely. Feel the energy distribute through the chest and limbs.",
+          "Repeat this cycle 8–12 times, noticing how arousal transforms from localized pressure into full-body warmth.",
+        ],
+      },
+      beginnerTrack: {
+        title: "Weeks 1–3: Building the foundation",
+        body: "Start with solo breathwork and PC muscle awareness. The goal is not willpower — it is teaching your body a new way to process arousal that feels better than the old way.",
+        steps: [
+          "Practice the Retention Breath Cycle daily for 10 minutes — morning or evening.",
+          "Learn to identify your point of no return and practice pausing 2 levels before it.",
+          "Introduce slow, non-goal lovemaking with your partner: 20 minutes minimum, no climax as target.",
+          "Journal energy levels, mood, and morning-after closeness each session.",
+        ],
+      },
+      advancedTrack: {
+        title: "Weeks 4–8: Valley orgasm integration",
+        body: "With the foundation stable, begin exploring full valley orgasm sequences with your partner. The body now knows how to circulate rather than release.",
+        steps: [
+          "Extend lovemaking sessions to 30–45 minutes using wave-riding breath patterns.",
+          "Practice synchronized breathing with your partner at arousal peaks — her inhale draws your energy upward.",
+          "Introduce micro-pauses at high arousal: 30-second stillness while maintaining full contact and eye connection.",
+          "Debrief together: what opened, what surprised you, what she felt differently.",
+        ],
+      },
+      quote: {
+        text: "The man who learns to keep his seed learns to keep his presence. And presence is the one thing she has always been asking for.",
+        source: "Mantak Chia, adapted",
+      },
+      whatItIsNot: [
+        "It is not celibacy or suppression — it is redirection toward deeper pleasure.",
+        "It is not a solo willpower challenge — it is a couple practice that transforms both partners' experience.",
+        "It is not anti-orgasm — valley orgasm is far more intense and lasting than conventional climax.",
+        "It is not pseudoscience — Taoist, Tantric, and modern somatic traditions all converge on these principles.",
+      ],
+      sacredInvitation: {
+        title: "Who This Path Calls",
+        body: "This path calls to men who sense that something important is being lost every time sex ends in the usual way — and to couples who want to discover what becomes possible when that energy is kept, circulated, and shared instead of spent.",
+        resonances: [
+          "You want to last longer — not through numbing or distraction, but through genuine mastery of your own energy.",
+          "You want to wake up the morning after feeling more connected to her, not less.",
+          "You want the kind of magnetic presence that makes her feel safe, desired, and genuinely met.",
+          "You are curious about valley orgasm — the extended, full-body climax that Taoist and Tantric masters describe.",
+          "You want a concrete, progressive practice — not vague spiritual advice.",
+        ],
+      },
+      pillars: [
+        { name: "Conservation", body: "The foundational principle: what is not lost can be transmuted. Learning to conserve is not deprivation — it is the beginning of a completely different relationship with your own vital energy." },
+        { name: "Circulation", body: "Retained energy must move. Breathwork, spinal awareness, and pelvic floor engagement teach the body to circulate arousal upward through the torso, heart, and crown — transforming localized pressure into full-body aliveness." },
+        { name: "Valley Orgasm", body: "The peak-and-crash pattern is not the only possibility. Valley orgasm is the extended, rolling, full-body climax that arrives when energy circulates instead of discharges. Both partners can experience it simultaneously." },
+        { name: "Stamina", body: "Progressive training builds the capacity to sustain high arousal without crossing into the ejaculatory reflex. This is not about holding back — it is about expanding what the body can contain and enjoy." },
+        { name: "Couple Integration", body: "Retention practiced solo is useful. Retention practiced as a couple is transformational. Synchronized breathing, shared stillness at peaks, and mutual energy circulation create a quality of union most couples never access." },
+        { name: "Morning-After Presence", body: "The clearest sign that retention is working: the morning after intimacy, you feel more energized, more emotionally available, and more magnetically drawn to your partner than before. She notices before you do." },
+      ],
+      modernCouples: [
+        {
+          title: "From 'it ended too quickly' to 'we lost track of time'",
+          body: "Retention naturally extends lovemaking from minutes to the better part of an hour. The shift is not effort — it is learning to ride waves instead of chasing a cliff.",
+        },
+        {
+          title: "From post-sex distance to morning-after magnetism",
+          body: "The energetic crash after ejaculation is real and measurable. Partners feel it as withdrawal, emotional absence, or reduced desire for touch. Retention eliminates this pattern entirely.",
+        },
+        {
+          title: "From performance anxiety to embodied confidence",
+          body: "When the goal shifts from 'lasting long enough' to 'circulating energy together,' performance pressure dissolves. What replaces it is a grounded, magnetic confidence she can feel.",
+        },
+      ],
+      misunderstandings: [
+        {
+          title: "\"It means never having an orgasm\"",
+          body: "Valley orgasm is an orgasm — a longer, deeper, full-body version. Retention is about choosing a superior experience, not eliminating pleasure.",
+        },
+        {
+          title: "\"It's just willpower and frustration\"",
+          body: "Proper retention technique involves breathwork, circulation, and relaxation. When done correctly, the body does not feel frustrated — it feels expanded and alive.",
+        },
+        {
+          title: "\"It's only for the man — she won't notice\"",
+          body: "Partners consistently report dramatic differences: longer sessions, more present attention, sustained desire for closeness, and a quality of touch that feels unhurried and fully arrived.",
+        },
+      ],
+      practices: [
+        {
+          title: "The Retention Breath Cycle",
+          setup: "Seated or lying down, alone or with your partner present.",
+          steps: [
+            "Breathe into the lower belly for 2 minutes, grounding awareness below the navel.",
+            "On the inhale, gently engage the pelvic floor and draw energy upward along the spine.",
+            "On the exhale, release the pelvic floor completely and let warmth spread through the chest.",
+            "Repeat 8–12 cycles. Notice the shift from localized arousal to distributed warmth.",
+          ],
+          integration: "Practice daily for one week before introducing into partnered intimacy. Notice energy and mood shifts throughout the day.",
+        },
+        {
+          title: "Wave-Riding with a Partner",
+          setup: "During intimate contact, when arousal reaches approximately 7/10.",
+          steps: [
+            "Signal your partner with a word or touch that you are approaching a wave crest.",
+            "Both partners pause all movement. Maintain full body contact and eye connection.",
+            "Breathe together: slow, synchronized inhale for 4 counts, exhale for 6 counts.",
+            "After 3–5 breath cycles, resume movement slowly. Notice how arousal has redistributed.",
+          ],
+          integration: "Aim for 3–5 wave-riding pauses per session. Over time, the pauses become shorter as the body learns to circulate automatically.",
+        },
+      ],
+      reflections: [
+        "What would change in your relationship if you woke up the morning after intimacy wanting to be closer?",
+        "What would it mean for her if your presence and desire for touch increased — instead of disappeared — after sex?",
+        "What becomes possible in a 40-minute lovemaking session that is simply unavailable in a 10-minute one?",
+        "If the goal is no longer climax, what is the goal? And what opens when you find it?",
+      ],
+      relatedAuthors: [
+        { name: "Mantak Chia", tier: "premium", note: "The foundational Taoist teacher of sexual energy cultivation and the Inner Smile meditation." },
+        { name: "Diana Richardson", tier: "premium", note: "Pioneer of slow, non-goal lovemaking — the natural complement to retention practice." },
+        { name: "David Deida", tier: "free", note: "The teacher of masculine presence and polarity — what retention enables in its fullest expression." },
+      ],
+      premiumBanner: "Your subscription unlocks the complete Semen Retention path for both of you — progressive retention drills, valley orgasm sequences, couple integration practices, and the guided journey that transforms how you show up as a man and as a lover. One subscription. Both partners. The deepest investment you can make in your intimacy.",
+    },
   },
 ];
 
