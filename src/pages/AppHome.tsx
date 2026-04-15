@@ -7,7 +7,6 @@ import {
   ChevronDown,
   ChevronUp,
   Heart,
-  HeartHandshake,
   Lock,
   MessageCircle,
   Sparkles,
@@ -550,11 +549,16 @@ const AppHome = () => {
       const stickyCoupleId = readConnectedCoupleId(user.id);
       const activeCouple = coupleState.activeCouple;
 
-      if (!activeCouple) {
-        setRelationshipConnected(Boolean(stickyConnected || stickyCoupleId));
+      if (!activeCouple || !coupleState.connected) {
+        setRelationshipConnected(false);
+        setCoupleId(null);
         setPartnerName(null);
         setMessages([]);
         setAltarItems([]);
+        setMyWeatherEntry(null);
+        setPartnerWeatherEntry(null);
+        setMyWeatherSelected(null);
+        setWeatherPickerVisible(false);
         setLoading(false);
         return;
       }
@@ -563,7 +567,7 @@ const AppHome = () => {
         markEverConnected(user.id);
         storeConnectedCoupleId(user.id, activeCouple.id);
       }
-      const connected = coupleState.connected || stickyConnected || stickyCoupleId === activeCouple.id;
+      const connected = coupleState.connected;
       setRelationshipConnected(connected);
 
       setCoupleId(activeCouple.id);
