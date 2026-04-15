@@ -304,17 +304,17 @@ const Pricing = () => {
             </p>
             <p className="mt-3 text-sm leading-7 text-foreground/90">
               {lang === "fr"
-                ? "La version gratuite reste utile et respectueuse. Accès Temple ouvre les chambres plus profondes: guidance, lignées de sagesse, mémoire et parcours."
+                ? "Un chemin partagé pour l'amour qui veut grandir."
                 : lang === "cs"
-                ? "Bezplatná verze zůstává užitečná a respektující. Chrámový přístup otevírá hlubší komnaty: vedení, zdrojové linie, paměť a cesty."
-                : "Free remains genuinely useful and respectful. Temple Access opens the deeper chambers: guidance, source lineage, memory, and journeys."}
+                ? "Sdílená cesta pro lásku, která chce růst."
+                : "A shared path for love that wants to grow."}
             </p>
             <p className="mt-2 text-xs uppercase tracking-[0.16em] text-primary/85">
               {lang === "fr"
-                ? "Conçu pour deux: un accès premium élève votre expérience de couple."
+                ? "Un chemin · Deux cœurs"
                 : lang === "cs"
-                ? "Navrženo pro dva: jeden premium přístup zvyšuje váš párový zážitek."
-                : "Built for two: one premium access elevates your couple experience."}
+                ? "Jedna cesta · Dvě srdce"
+                : "One path · Two hearts"}
             </p>
             {hasPremiumAccess ? (
               <div className="mt-5 inline-flex rounded-full border border-emerald-300/35 bg-emerald-500/12 px-4 py-1.5 text-xs uppercase tracking-[0.14em] text-emerald-200">
