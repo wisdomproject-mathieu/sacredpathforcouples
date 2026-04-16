@@ -77,11 +77,6 @@ export const fetchCoupleStateForUser = async (
   client: SupabaseClient<Database>,
   userId: string,
 ): Promise<FetchCoupleStateResult> => {
-  console.log('COUPLE STATE CHECK:', {
-    userId,
-    forceDisconnected: readForceDisconnected(userId),
-    localStorageKeys: Object.keys(localStorage).filter(k => k.includes('sacred_path')),
-  });
   if (readForceDisconnected(userId)) {
     // Run full DB query so we still have partnerId for name display
     // but override connected = false
@@ -167,6 +162,7 @@ export const storeConnectedCoupleId = (userId: string, coupleId: string) => {
 export const markForceDisconnected = (userId: string): void => {
   try {
     localStorage.setItem(`sacred_path_force_disconnected_${userId}`, "true");
+    localStorage.setItem(`sacred_path_force_disconnected_${userId}_timestamp`, Date.now().toString());
   } catch {}
 };
 

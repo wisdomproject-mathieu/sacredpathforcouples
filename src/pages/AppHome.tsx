@@ -517,6 +517,19 @@ const AppHome = () => {
 
   useEffect(() => {
     if (!user) return;
+
+    // Auto-clear stale force-disconnect flag on fresh app load
+    // This prevents stuck disconnected state from testing
+    if (user?.id) {
+      const key = `sacred_path_force_disconnected_${user.id}`;
+      const flagAge = localStorage.getItem(`${key}_timestamp`);
+      const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
+      if (flagAge && parseInt(flagAge) < oneDayAgo) {
+        localStorage.removeItem(key);
+        localStorage.removeItem(`${key}_timestamp`);
+      }
+    }
+
     if (readEverConnected(user.id)) {
       setRelationshipConnected(true);
     }
