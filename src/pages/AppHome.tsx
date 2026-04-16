@@ -935,7 +935,10 @@ const AppHome = () => {
   return (
     <div className="space-y-4 md:space-y-5">
       {/* Block 1: Hero greeting */}
-      <div className="rounded-[24px] border border-border/20 bg-card/30 p-6">
+      <div className="relative overflow-hidden rounded-[24px] border border-border/20 bg-card/30 p-6">
+        <div className="absolute top-4 right-4 opacity-20 hover:opacity-40 transition-opacity">
+          <img src={shivaShaktiIcon} alt="" className="h-12 w-12 rounded-[10px]" />
+        </div>
         <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground/60">
           {todayLabel}
         </p>

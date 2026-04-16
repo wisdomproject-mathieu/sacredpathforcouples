@@ -1108,7 +1108,10 @@ const PartnerSpace = () => {
           </section>
         )}
 
-        <section className={`rounded-[30px] border border-primary/18 bg-gradient-to-br from-primary/14 via-background/92 to-background/88 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] backdrop-blur-sm ${isJourneyView ? "p-4 md:p-5" : "p-6 md:p-7"}`}>
+        <section className={`relative overflow-hidden rounded-[30px] border border-primary/18 bg-gradient-to-br from-primary/14 via-background/92 to-background/88 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] backdrop-blur-sm ${isJourneyView ? "p-4 md:p-5" : "p-6 md:p-7"}`}>
+          <div className="absolute top-4 right-4 opacity-10 hover:opacity-20 transition-opacity">
+            <img src={shivaShaktiIcon} alt="" className="h-12 w-12 rounded-[10px]" />
+          </div>
           <div className="max-w-4xl">
             <p className="text-xs uppercase tracking-[0.28em] text-primary/80">{l("Sacred Temple", "Temple sacré", "Posvátný chrám")}</p>
             <h1 className={`mt-3 font-display text-foreground ${isJourneyView ? "text-2xl md:text-3xl" : "text-3xl md:text-4xl"}`}>

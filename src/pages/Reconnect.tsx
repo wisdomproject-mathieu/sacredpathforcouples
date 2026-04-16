@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 import {
   ArrowRight,
   Flame,
@@ -1790,7 +1791,10 @@ const Reconnect = () => {
   return (
     <div className="space-y-4 md:space-y-6">
       {showBrowse ? (
-      <section className="rounded-[30px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-5 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] md:p-8">
+      <section className="relative overflow-hidden rounded-[30px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-5 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] md:p-8">
+        <div className="absolute top-4 right-4 opacity-20 hover:opacity-40 transition-opacity">
+          <img src={shivaShaktiIcon} alt="" className="h-12 w-12 rounded-[10px]" />
+        </div>
         <div className="max-w-4xl">
           <p className="text-xs uppercase tracking-[0.28em] text-primary/80">{ui.heroEyebrow}</p>
           <h1 className="mt-3 font-display text-3xl text-foreground md:text-5xl">{ui.heroTitle}</h1>
