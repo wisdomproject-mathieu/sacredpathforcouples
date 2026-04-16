@@ -264,6 +264,9 @@ const Connect = () => {
 
     const cleanCode = code.trim().toUpperCase();
 
+    // Step 1: Look up the pending invite.
+    // Requires the "Authenticated users can view pending invites" RLS policy
+    // (partner_b IS NULL AND auth.uid() IS NOT NULL) — see migration 20260416140000.
     const { data: target, error: fetchError } = await supabase
       .from("couples")
       .select("id, partner_a, partner_b")
@@ -271,7 +274,13 @@ const Connect = () => {
       .is("partner_b", null)
       .maybeSingle();
 
-    if (fetchError || !target) {
+    if (fetchError) {
+      setStatus("error");
+      setMessage(fetchError.message || copy.errCodeNotFound);
+      return;
+    }
+
+    if (!target) {
       setStatus("error");
       setMessage(copy.errCodeNotFound);
       return;
@@ -283,6 +292,7 @@ const Connect = () => {
       return;
     }
 
+    // Step 2: Update display name if provided
     if (myDisplayName.trim()) {
       await supabase
         .from("profiles")
@@ -290,13 +300,15 @@ const Connect = () => {
         .eq("user_id", user.id);
     }
 
-    const { error: updateError } = await supabase
+    // Step 3: Claim the open partner_b slot.
+    // Requires the "Authenticated users can join open couples" RLS policy
+    // USING (partner_b IS NULL) WITH CHECK (auth.uid() = partner_b).
+    const { data: updatedRows, error: updateError } = await supabase
       .from("couples")
       .update({ partner_b: user.id })
       .eq("id", target.id)
       .is("partner_b", null)
-      .select("id")
-      .maybeSingle();
+      .select("id, partner_b");
 
     if (updateError) {
       setStatus("error");
@@ -304,13 +316,9 @@ const Connect = () => {
       return;
     }
 
-    const { data: verifyJoined } = await supabase
-      .from("couples")
-      .select("id, partner_a, partner_b, couple_code, created_at, updated_at")
-      .eq("id", target.id)
-      .maybeSingle();
-
-    if (!verifyJoined?.partner_b || verifyJoined.partner_b !== user.id) {
+    // Guard: if RLS silently blocked the update, updatedRows will be empty
+    const joined = (updatedRows ?? []).find((r) => r.partner_b === user.id);
+    if (!joined) {
       setStatus("error");
       setMessage(copy.errJoin);
       return;
