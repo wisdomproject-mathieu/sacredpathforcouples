@@ -132,6 +132,7 @@ const Connect = () => {
   const [status, setStatus] = useState<"idle" | "copied" | "error">("idle");
   const [message, setMessage] = useState("");
   const [isConnected, setIsConnected] = useState(false);
+  const [justConnected, setJustConnected] = useState(false);
   const [myDisplayName, setMyDisplayName] = useState("");
   const [showDisconnectConfirm, setShowDisconnectConfirm] = useState(false);
 
@@ -241,19 +242,25 @@ const Connect = () => {
       return;
     }
 
-    const newCode = generateCode();
-    const { error } = await supabase.from("couples").insert({
-      partner_a: user.id,
-      couple_code: newCode,
-    });
-
-    if (error) {
-      setStatus("error");
-      setMessage(error.message || copy.errCreateInvite);
-      return;
+    // Retry up to 3 times in case of duplicate code collision
+    let lastError: string | null = null;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const newCode = generateCode();
+      const { error } = await supabase.from("couples").insert({
+        partner_a: user.id,
+        couple_code: newCode,
+      });
+      if (!error) {
+        await loadCoupleState();
+        return;
+      }
+      lastError = error.message;
+      // Only retry on unique constraint violations
+      if (!error.message?.includes("unique") && !error.code?.includes("23505")) break;
     }
 
-    await loadCoupleState();
+    setStatus("error");
+    setMessage(lastError || copy.errCreateInvite);
   };
 
   const joinWithCode = async () => {
@@ -328,6 +335,7 @@ const Connect = () => {
     await loadCoupleState();
     setCode("");
     setMessage(copy.okConnected);
+    setJustConnected(true);
   };
 
   const copyInvite = async () => {
@@ -543,7 +551,23 @@ const Connect = () => {
         </Link>
       </section>
 
-      {message && (
+      {justConnected && (
+        <section className="rounded-[28px] border border-emerald-400/25 bg-emerald-950/30 p-6 text-center">
+          <p className="text-2xl mb-3">🌿</p>
+          <h3 className="font-display text-2xl text-foreground">{copy.okConnected}</h3>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            Your sacred space is now shared. Enter the Temple to begin tonight's practice together.
+          </p>
+          <Link
+            to="/app/space"
+            className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-emerald-400/35 bg-emerald-500/14 px-6 py-3 text-sm text-foreground transition-all hover:border-emerald-400/55 hover:bg-emerald-500/20"
+          >
+            Enter the Temple →
+          </Link>
+        </section>
+      )}
+
+      {message && !justConnected && (
         <div className={`rounded-[22px] border p-4 text-sm ${status === "error" ? "border-red-400/25 bg-red-500/8 text-red-200" : "border-emerald-400/20 bg-emerald-500/8 text-emerald-200"}`}>
           {message}
         </div>

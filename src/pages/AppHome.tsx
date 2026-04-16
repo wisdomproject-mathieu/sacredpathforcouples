@@ -805,9 +805,16 @@ const AppHome = () => {
         setInviteCode(existing.pendingInvite.couple_code);
         return;
       }
-      const newCode = Math.random().toString(36).slice(2, 8).toUpperCase();
-      const { error } = await supabase.from("couples").insert({ partner_a: user.id, couple_code: newCode });
-      if (!error) setInviteCode(newCode);
+      // Retry up to 3 times on duplicate code collision
+      for (let attempt = 0; attempt < 3; attempt++) {
+        const newCode = Math.random().toString(36).slice(2, 8).toUpperCase();
+        const { error } = await supabase.from("couples").insert({ partner_a: user.id, couple_code: newCode });
+        if (!error) {
+          setInviteCode(newCode);
+          return;
+        }
+        if (!error.message?.includes("unique") && !error.code?.includes("23505")) break;
+      }
     } finally {
       setGeneratingCode(false);
     }
