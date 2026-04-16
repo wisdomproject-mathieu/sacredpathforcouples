@@ -19,6 +19,7 @@ import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 import {
+  clearForceDisconnected,
   fetchCoupleStateForUser,
   markEverConnected,
   readConnectedCoupleId,
@@ -554,10 +555,9 @@ const AppHome = () => {
 
       const activeCouple = coupleState.activeCouple;
 
-      if (!activeCouple || !coupleState.connected) {
+      if (!coupleState.connected) {
         setRelationshipConnected(false);
         setCoupleId(null);
-        setPartnerName(null);
         setMessages([]);
         setAltarItems([]);
         setMyWeatherEntry(null);
@@ -565,11 +565,29 @@ const AppHome = () => {
         setMyWeatherSelected(null);
         setWeatherPickerVisible(false);
         setInviteCode(coupleState.pendingInvite?.couple_code ?? null);
+
+        // Still fetch partner name if we know the partnerId
+        // (covers force-disconnect case where DB connection still exists)
+        if (coupleState.partnerId) {
+          const { data: partnerProfile } = await supabase
+            .from("profiles")
+            .select("display_name, id")
+            .eq("id", coupleState.partnerId)
+            .maybeSingle();
+          setPartnerName(partnerProfile ? resolvePreferredName(partnerProfile, null) : null);
+        } else {
+          setPartnerName(null);
+        }
+
         setLoading(false);
         return;
       }
 
       if (coupleState.connected) {
+        // If DB shows a real active connection, clear any stale force-disconnect flag
+        if (coupleState.activeCouple?.id) {
+          clearForceDisconnected(user.id);
+        }
         markEverConnected(user.id);
         storeConnectedCoupleId(user.id, activeCouple.id);
       }

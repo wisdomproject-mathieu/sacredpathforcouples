@@ -78,23 +78,36 @@ export const fetchCoupleStateForUser = async (
   userId: string,
 ): Promise<FetchCoupleStateResult> => {
   if (readForceDisconnected(userId)) {
-    // Still fetch pending invite so invite code generation works
-    const { data: pendingRows } = await client
-      .from("couples")
-      .select("id, partner_a, partner_b, couple_code, created_at, updated_at")
-      .eq("partner_a", userId)
-      .is("partner_b", null)
-      .not("couple_code", "like", "DEAD_%")
-      .order("updated_at", { ascending: false });
+    // Run full DB query so we still have partnerId for name display
+    // but override connected = false
+    const [asA, asB] = await Promise.all([
+      client
+        .from("couples")
+        .select("id, partner_a, partner_b, couple_code, created_at, updated_at")
+        .eq("partner_a", userId)
+        .not("couple_code", "like", "DEAD_%")
+        .order("updated_at", { ascending: false }),
+      client
+        .from("couples")
+        .select("id, partner_a, partner_b, couple_code, created_at, updated_at")
+        .eq("partner_b", userId)
+        .not("couple_code", "like", "DEAD_%")
+        .order("updated_at", { ascending: false }),
+    ]);
 
-    const pendingInvite = pendingRows?.[0] ?? null;
+    const rows = uniqueById([...(asA.data ?? []), ...(asB.data ?? [])]);
+    const activeRow = rows.find((r) => r.partner_b !== null) ?? null;
+    const partnerId = activeRow
+      ? (activeRow.partner_a === userId ? activeRow.partner_b : activeRow.partner_a)
+      : null;
+    const pendingRow = rows.find((r) => r.partner_a === userId && r.partner_b === null) ?? null;
 
     return {
       connected: false,
       activeCouple: null,
-      pendingInvite,
-      rows: pendingInvite ? [pendingInvite] : [],
-      partnerId: null,
+      pendingInvite: pendingRow,
+      partnerId,
+      rows,
     };
   }
 
