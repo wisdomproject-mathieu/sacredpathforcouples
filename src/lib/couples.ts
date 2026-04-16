@@ -82,11 +82,13 @@ export const fetchCoupleStateForUser = async (
       .from("couples")
       .select("id, partner_a, partner_b, couple_code, created_at, updated_at")
       .eq("partner_a", userId)
+      .not("couple_code", "like", "DEAD_%")
       .order("updated_at", { ascending: false }),
     client
       .from("couples")
       .select("id, partner_a, partner_b, couple_code, created_at, updated_at")
       .eq("partner_b", userId)
+      .not("couple_code", "like", "DEAD_%")
       .order("updated_at", { ascending: false }),
   ]);
 

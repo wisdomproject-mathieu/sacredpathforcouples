@@ -138,37 +138,23 @@ const Connect = () => {
   const disconnectPartner = async () => {
     if (!user) return;
 
-    // Try as partner_b first - nullify our slot
-    const { data: asB } = await supabase
+    // Remove ourselves as partner_b
+    await supabase
       .from("couples")
-      .select("id")
-      .eq("partner_b", user.id)
-      .maybeSingle();
+      .update({ partner_b: null })
+      .eq("partner_b", user.id);
 
-    if (asB?.id) {
-      await supabase
-        .from("couples")
-        .update({ partner_b: null })
-        .eq("id", asB.id);
-    }
-
-    // Try as partner_a - delete the whole record
-    const { data: asA } = await supabase
+    // Corrupt our own partner_a record so it's ignored on reload
+    await supabase
       .from("couples")
-      .select("id")
-      .eq("partner_a", user.id)
-      .maybeSingle();
-
-    if (asA?.id) {
-      await supabase
-        .from("couples")
-        .delete()
-        .eq("id", asA.id);
-    }
+      .update({ couple_code: `DEAD_${user.id.slice(0, 8)}` })
+      .eq("partner_a", user.id);
 
     localStorage.removeItem(`sacred_path_ever_connected_${user.id}`);
     localStorage.removeItem(`sacred_path_connected_couple_id_${user.id}`);
-    window.location.href = "/app/connect";
+    setIsConnected(false);
+    setInviteCode(null);
+    setShowDisconnectConfirm(false);
   };
 
   const loadCoupleState = useCallback(async () => {
