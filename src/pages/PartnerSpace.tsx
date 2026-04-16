@@ -350,10 +350,7 @@ const PartnerSpace = () => {
     if (isToolKey(toolParam)) {
       activateTool(toolParam);
     }
-    if (searchParams.get("openMatch") === "1" && weatherMatch && weatherStateMode === "both") {
-      setMatchDrawerOpen(true);
-    }
-  }, [toolParam, viewParam, hasPremiumAccess, searchParams, weatherMatch, weatherStateMode]);
+  }, [toolParam, viewParam, hasPremiumAccess]);
 
   useEffect(() => {
     if (!coupleId || !user) return;
