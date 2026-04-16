@@ -960,6 +960,17 @@ const AppHome = () => {
       ? "both"
       : "mine_only";
 
+  const moods = [
+    { value: "open", emoji: "🌞", label: "Open" },
+    { value: "tender", emoji: "💗", label: "Tender" },
+    { value: "playful", emoji: "✨", label: "Playful" },
+    { value: "stressed", emoji: "☁️", label: "Stressed" },
+    { value: "longing", emoji: "🌙", label: "Longing" },
+    { value: "erotic", emoji: "🔥", label: "Erotic" },
+    { value: "tired", emoji: "🫧", label: "Tired" },
+    { value: "reassurance", emoji: "⚡", label: "Reassurance" },
+  ];
+
   return (
     <div className="space-y-4 md:space-y-5">
       {/* Block 1: Hero greeting */}
@@ -994,155 +1005,119 @@ const AppHome = () => {
           {/* PART 1 — Mood picker */}
           <div className="p-5">
             <div className="mb-4 flex items-center gap-3">
-              <img
-                src={shivaShaktiIcon}
-                alt=""
-                className="h-8 w-8 rounded-[8px] object-cover opacity-80"
-              />
+              <img src={shivaShaktiIcon} alt="" className="h-7 w-7 rounded-[6px] opacity-70" />
               <div>
                 <p className="text-xs uppercase tracking-[0.22em] text-amber-400/70">INTIMACY WEATHER</p>
                 <p className="font-display text-lg leading-tight text-foreground">How are you arriving tonight?</p>
               </div>
             </div>
             <div className="grid grid-cols-4 gap-2">
-              {[
-                { emoji: "🌞", label: "Open" },
-                { emoji: "💗", label: "Tender" },
-                { emoji: "✨", label: "Playful" },
-                { emoji: "☁️", label: "Stressed" },
-                { emoji: "🌙", label: "Longing" },
-                { emoji: "🔥", label: "Erotic" },
-                { emoji: "🫧", label: "Tired" },
-                { emoji: "⚡", label: "Reassurance" },
-              ].map((mood) => (
+              {moods.map((mood) => (
                 <button
-                  key={mood.label}
+                  key={mood.value}
                   type="button"
-                  onClick={() => handleMoodSelect(mood.label.toLowerCase(), mood.emoji, mood.label)}
-                  className={`flex cursor-pointer flex-col items-center gap-1 rounded-[12px] border p-2.5 transition-all hover:border-amber-400/40 hover:bg-amber-400/10 ${pendingMoodValue === mood.label.toLowerCase() ? "border-amber-400/50 bg-amber-400/15" : "border-border/30 bg-background/40"}`}
+                  onClick={() => handleMoodSelect(mood.value, mood.emoji, mood.label)}
+                  className={`flex flex-col items-center gap-1 rounded-[12px] border p-2.5 transition-all ${
+                    pendingMoodValue === mood.value
+                      ? "border-amber-400/60 bg-amber-400/15 text-amber-300"
+                      : "border-border/30 bg-background/40 hover:border-amber-400/40 hover:bg-amber-400/10"
+                  }`}
                 >
                   <span className="text-lg">{mood.emoji}</span>
                   <span className="text-[10px] leading-none text-muted-foreground">{mood.label}</span>
                 </button>
               ))}
             </div>
-            <p className="mt-3 text-xs italic text-muted-foreground/50">
-              Select your state — your partner will see it when they connect
-            </p>
+          </div>
 
-            {pendingMoodValue && (
-              <div className="mt-4 rounded-[16px] border border-amber-400/20 bg-amber-950/30 p-4">
-                <div className="mb-3 flex items-center gap-3">
-                  <span className="text-2xl">{pendingMoodEmoji}</span>
-                  <div>
-                    <p className="text-xs uppercase tracking-wider text-muted-foreground/60">YOUR WEATHER</p>
-                    <p className="font-display text-lg">{pendingMoodLabel}</p>
+          {/* PART 2 — Only shown after mood selected */}
+          {pendingMoodValue && (
+            <>
+              {/* Selected state confirmation */}
+              <div className="flex items-center gap-3 border-t border-amber-400/10 bg-amber-950/20 px-5 py-3">
+                <span className="text-xl">{pendingMoodEmoji}</span>
+                <div>
+                  <p className="text-xs text-muted-foreground/60">YOUR WEATHER</p>
+                  <p className="font-display text-base text-foreground">{pendingMoodLabel}</p>
+                </div>
+                <p className="ml-auto text-xs italic text-muted-foreground/50">
+                  Waiting for your partner...
+                </p>
+              </div>
+
+              {/* Tonight's path blurred teaser */}
+              <div className="border-t border-border/10 px-5 py-4">
+                <div className="relative">
+                  <div className="pointer-events-none select-none blur-[4px]">
+                    <p className="mb-1 text-xs uppercase tracking-widest text-amber-400/50">TONIGHT'S PATH</p>
+                    <p className="font-display text-xl text-foreground">Playful Fire</p>
+                    <p className="text-sm text-muted-foreground">Desire meets curiosity in a playful current.</p>
+                  </div>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <p className="rounded-full border border-amber-400/20 bg-card/90 px-3 py-1.5 text-xs text-amber-300/80">
+                      🔒 Both partners connect to unlock
+                    </p>
                   </div>
                 </div>
-                <p className="text-sm leading-6 text-muted-foreground">
-                  Your state is set. Now invite your partner to reveal tonight's sacred ritual together.
-                </p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <a
-                    href={`https://wa.me/?text=${encodeURIComponent(
-                      "I just set my intimacy weather on Sacred Path 🌿 " +
-                      "Come check yours and see what tonight holds for us. " +
-                      "My code: " + (inviteCode ?? "get it from the app")
-                    )}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 rounded-[10px] border border-green-500/30 bg-green-950/20 px-3 py-2 text-xs text-green-300"
-                  >
-                    💬 Nudge on WhatsApp
-                  </a>
-                  <a
-                    href={`sms:?body=${encodeURIComponent(
-                      "I set my intimacy weather 🔥 Come set yours on Sacred Path " +
-                      "and see what tonight suggests for us. Code: " +
-                      (inviteCode ?? "check the app")
-                    )}`}
-                    className="flex items-center gap-1.5 rounded-[10px] border border-blue-500/30 bg-blue-950/20 px-3 py-2 text-xs text-blue-300"
-                  >
-                    ✉️ Send a nudge
-                  </a>
-                </div>
               </div>
-            )}
-          </div>
 
-          {/* PART 2 — Tonight's path preview (blurred) */}
-          <div className="border-t border-amber-400/10 bg-gradient-to-r from-amber-950/40 to-card/20 p-4">
-            <div className="mb-3 flex items-center justify-between">
-              <p className="text-xs uppercase tracking-[0.18em] text-amber-400/60">TONIGHT'S PATH</p>
-              <span className="text-xs text-muted-foreground/40">🔒 Connect to unlock</span>
-            </div>
-            <div className="relative">
-              <div className="pointer-events-none select-none blur-[3px]">
-                <p className="font-display text-xl text-foreground">Playful Fire</p>
-                <p className="mt-1 text-sm text-muted-foreground">Desire meets curiosity in a playful current.</p>
-                <div className="mt-2 flex gap-2">
-                  <span className="rounded-full border border-amber-400/20 px-2 py-0.5 text-xs text-amber-400/60">TANTRA</span>
-                  <span className="rounded-full border border-amber-400/20 px-2 py-0.5 text-xs text-amber-400/60">POLARITY</span>
-                </div>
-              </div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <p className="rounded-full border border-amber-400/20 bg-card/80 px-3 py-1.5 text-xs font-medium text-amber-300/80">
-                  Invite your partner to reveal tonight's path
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* PART 3 — Invite action */}
-          <div className="border-t border-border/20 p-4">
-            <p className="mb-3 text-xs text-muted-foreground">Share your code and explore together:</p>
-            {inviteCode ? (
-              <div className="space-y-3">
-                <div className="flex items-center gap-3 rounded-[12px] border border-border/30 bg-background/40 px-4 py-3">
-                  <span className="flex-1 font-display text-2xl tracking-[0.3em] text-foreground">{inviteCode}</span>
+              {/* Invite code + share */}
+              <div className="border-t border-border/20 px-5 py-4">
+                {inviteCode ? (
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3 rounded-[12px] border border-border/30 bg-background/40 px-4 py-2.5">
+                      <span className="flex-1 font-display text-xl tracking-[0.25em] text-foreground">
+                        {inviteCode}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={handleCopyCode}
+                        className="shrink-0 text-xs text-amber-400/70 transition-colors hover:text-amber-400"
+                      >
+                        {copiedInvite ? "Copied!" : "Copy"}
+                      </button>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <a
+                        href={`https://wa.me/?text=${encodeURIComponent(
+                          "I set my intimacy weather on Sacred Path 🌿 Come set yours and see what tonight holds for us.\nMy code: " + inviteCode + "\nsacredpathforcouples.com"
+                        )}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 rounded-[10px] border border-green-500/30 bg-green-950/20 px-3 py-2 text-xs text-green-300 transition-colors hover:border-green-500/50"
+                      >
+                        💬 WhatsApp
+                      </a>
+                      <a
+                        href={`sms:?body=${encodeURIComponent(
+                          "I set my intimacy weather 🔥 Come set yours on Sacred Path and see tonight's ritual.\nMy code: " + inviteCode
+                        )}`}
+                        className="flex items-center gap-1.5 rounded-[10px] border border-blue-500/30 bg-blue-950/20 px-3 py-2 text-xs text-blue-300 transition-colors hover:border-blue-500/50"
+                      >
+                        ✉️ Message
+                      </a>
+                      <button
+                        type="button"
+                        onClick={handleCopyInviteLink}
+                        className="flex items-center gap-1.5 rounded-[10px] border border-border/30 bg-background/40 px-3 py-2 text-xs text-muted-foreground transition-colors hover:border-amber-400/30"
+                      >
+                        🔗 Copy link
+                      </button>
+                    </div>
+                  </div>
+                ) : (
                   <button
                     type="button"
-                    onClick={handleCopyCode}
-                    className="text-xs text-amber-400/70 transition-colors hover:text-amber-400"
+                    onClick={createInviteOnHome}
+                    disabled={generatingCode}
+                    className="flex w-full items-center justify-center gap-2 rounded-[12px] border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-amber-300 transition-all hover:bg-amber-400/20 disabled:opacity-50"
                   >
-                    {copiedInvite ? "Copied!" : "Copy"}
+                    {generatingCode ? "Generating..." : "✦ Generate your invite code"}
                   </button>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <a
-                    href={`https://wa.me/?text=${encodeURIComponent("I want us to explore Sacred Path together 🌿\nUse my code to connect: " + inviteCode + "\nsacredpathforcouples.com")}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 rounded-[10px] border border-green-500/30 bg-green-950/20 px-3 py-2 text-xs text-green-300 transition-colors hover:border-green-500/50"
-                  >
-                    💬 WhatsApp
-                  </a>
-                  <a
-                    href={`sms:?body=${encodeURIComponent("I want us to explore Sacred Path together 🌿 My code: " + inviteCode + " — sacredpathforcouples.com")}`}
-                    className="flex items-center gap-1.5 rounded-[10px] border border-blue-500/30 bg-blue-950/20 px-3 py-2 text-xs text-blue-300 transition-colors hover:border-blue-500/50"
-                  >
-                    ✉️ Message
-                  </a>
-                  <button
-                    type="button"
-                    onClick={handleCopyInviteLink}
-                    className="flex items-center gap-1.5 rounded-[10px] border border-border/30 bg-background/40 px-3 py-2 text-xs text-muted-foreground transition-colors hover:border-amber-400/30"
-                  >
-                    🔗 Copy link
-                  </button>
-                </div>
+                )}
               </div>
-            ) : (
-              <button
-                type="button"
-                onClick={createInviteOnHome}
-                disabled={generatingCode}
-                className="flex w-full items-center justify-center gap-2 rounded-[12px] border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-amber-300 transition-all hover:bg-amber-400/20 disabled:opacity-50"
-              >
-                {generatingCode ? "Generating…" : "✦ Generate your invite code"}
-              </button>
-            )}
-          </div>
+            </>
+          )}
         </div>
       ) : (
         <div className="overflow-hidden rounded-[24px] border border-amber-400/20 bg-card/50">
