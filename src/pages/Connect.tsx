@@ -136,61 +136,39 @@ const Connect = () => {
   const [showDisconnectConfirm, setShowDisconnectConfirm] = useState(false);
 
   const disconnectPartner = async () => {
-    if (!user) {
-      console.log("DISCONNECT: no user");
-      return;
-    }
-    console.log("DISCONNECT: starting for user", user.id);
+    if (!user) return;
 
-    const { data: couple, error: fetchError } = await supabase
+    // Try as partner_b first - nullify our slot
+    const { data: asB } = await supabase
       .from("couples")
       .select("id")
-      .or(`partner_a.eq.${user.id},partner_b.eq.${user.id}`)
+      .eq("partner_b", user.id)
       .maybeSingle();
 
-    console.log("DISCONNECT: couple found:", couple, "fetchError:", fetchError);
-
-    if (fetchError) {
-      setStatus("error");
-      setMessage("Fetch error: " + fetchError.message);
-      setShowDisconnectConfirm(false);
-      return;
+    if (asB?.id) {
+      await supabase
+        .from("couples")
+        .update({ partner_b: null })
+        .eq("id", asB.id);
     }
 
-    if (!couple?.id) {
-      console.log("DISCONNECT: no couple found, clearing local state");
-      localStorage.removeItem(`sacred_path_ever_connected_${user.id}`);
-      localStorage.removeItem(`sacred_path_connected_couple_id_${user.id}`);
-      setIsConnected(false);
-      setInviteCode(null);
-      setShowDisconnectConfirm(false);
-      await loadCoupleState();
-      return;
-    }
-
-    console.log("DISCONNECT: deleting couple id:", couple.id);
-    const { error: deleteError } = await supabase
+    // Try as partner_a - delete the whole record
+    const { data: asA } = await supabase
       .from("couples")
-      .delete()
-      .eq("id", couple.id);
+      .select("id")
+      .eq("partner_a", user.id)
+      .maybeSingle();
 
-    console.log("DISCONNECT: deleteError:", deleteError);
-
-    if (deleteError) {
-      setStatus("error");
-      setMessage("Delete failed: " + deleteError.message);
-      setShowDisconnectConfirm(false);
-      return;
+    if (asA?.id) {
+      await supabase
+        .from("couples")
+        .delete()
+        .eq("id", asA.id);
     }
 
-    console.log("DISCONNECT: success, clearing state");
     localStorage.removeItem(`sacred_path_ever_connected_${user.id}`);
     localStorage.removeItem(`sacred_path_connected_couple_id_${user.id}`);
-    setIsConnected(false);
-    setInviteCode(null);
-    setShowDisconnectConfirm(false);
-    setMessage("Disconnected successfully.");
-    await loadCoupleState();
+    window.location.href = "/app/connect";
   };
 
   const loadCoupleState = useCallback(async () => {
