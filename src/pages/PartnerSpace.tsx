@@ -347,9 +347,13 @@ const PartnerSpace = () => {
     if (isViewKey(viewParam)) {
       setViewMode(viewParam);
     }
-    if (!isToolKey(toolParam)) return;
-    activateTool(toolParam);
-  }, [toolParam, viewParam, hasPremiumAccess]);
+    if (isToolKey(toolParam)) {
+      activateTool(toolParam);
+    }
+    if (searchParams.get("openMatch") === "1" && weatherMatch && weatherStateMode === "both") {
+      setMatchDrawerOpen(true);
+    }
+  }, [toolParam, viewParam, hasPremiumAccess, searchParams, weatherMatch, weatherStateMode]);
 
   useEffect(() => {
     if (!coupleId || !user) return;
