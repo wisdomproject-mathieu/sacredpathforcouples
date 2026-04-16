@@ -136,7 +136,11 @@ const Connect = () => {
   const [showDisconnectConfirm, setShowDisconnectConfirm] = useState(false);
 
   const disconnectPartner = async () => {
-    if (!user) return;
+    if (!user) {
+      console.log("DISCONNECT: no user");
+      return;
+    }
+    console.log("DISCONNECT: starting for user", user.id);
 
     const { data: couple, error: fetchError } = await supabase
       .from("couples")
@@ -144,33 +148,44 @@ const Connect = () => {
       .or(`partner_a.eq.${user.id},partner_b.eq.${user.id}`)
       .maybeSingle();
 
+    console.log("DISCONNECT: couple found:", couple, "fetchError:", fetchError);
+
     if (fetchError) {
       setStatus("error");
-      setMessage("Could not find couple record: " + fetchError.message);
+      setMessage("Fetch error: " + fetchError.message);
+      setShowDisconnectConfirm(false);
       return;
     }
 
-    if (couple?.id) {
-      const { error: deleteError } = await supabase
-        .from("couples")
-        .delete()
-        .eq("id", couple.id);
-
-      if (deleteError) {
-        setStatus("error");
-        setMessage("Disconnect failed: " + deleteError.message);
-        setShowDisconnectConfirm(false);
-        return;
-      }
-    }
-
-    try {
+    if (!couple?.id) {
+      console.log("DISCONNECT: no couple found, clearing local state");
       localStorage.removeItem(`sacred_path_ever_connected_${user.id}`);
       localStorage.removeItem(`sacred_path_connected_couple_id_${user.id}`);
-    } catch {
-      // ignore
+      setIsConnected(false);
+      setInviteCode(null);
+      setShowDisconnectConfirm(false);
+      await loadCoupleState();
+      return;
     }
 
+    console.log("DISCONNECT: deleting couple id:", couple.id);
+    const { error: deleteError } = await supabase
+      .from("couples")
+      .delete()
+      .eq("id", couple.id);
+
+    console.log("DISCONNECT: deleteError:", deleteError);
+
+    if (deleteError) {
+      setStatus("error");
+      setMessage("Delete failed: " + deleteError.message);
+      setShowDisconnectConfirm(false);
+      return;
+    }
+
+    console.log("DISCONNECT: success, clearing state");
+    localStorage.removeItem(`sacred_path_ever_connected_${user.id}`);
+    localStorage.removeItem(`sacred_path_connected_couple_id_${user.id}`);
     setIsConnected(false);
     setInviteCode(null);
     setShowDisconnectConfirm(false);
