@@ -78,11 +78,22 @@ export const fetchCoupleStateForUser = async (
   userId: string,
 ): Promise<FetchCoupleStateResult> => {
   if (readForceDisconnected(userId)) {
+    // Still fetch pending invite so invite code generation works
+    const { data: pendingRows } = await client
+      .from("couples")
+      .select("id, partner_a, partner_b, couple_code, created_at, updated_at")
+      .eq("partner_a", userId)
+      .is("partner_b", null)
+      .not("couple_code", "like", "DEAD_%")
+      .order("updated_at", { ascending: false });
+
+    const pendingInvite = pendingRows?.[0] ?? null;
+
     return {
       connected: false,
       activeCouple: null,
-      pendingInvite: null,
-      rows: [],
+      pendingInvite,
+      rows: pendingInvite ? [pendingInvite] : [],
       partnerId: null,
     };
   }

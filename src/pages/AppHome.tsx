@@ -779,18 +779,16 @@ const AppHome = () => {
     writeSavedCards(next);
   };
 
-  const generateInviteCode = () => Math.random().toString(36).slice(2, 8).toUpperCase();
-
   const createInviteOnHome = async () => {
     if (!user || generatingCode) return;
     setGeneratingCode(true);
     try {
-      const existing = await import("@/lib/couples").then(m => m.fetchCoupleStateForUser(supabase, user.id));
+      const existing = await fetchCoupleStateForUser(supabase, user.id);
       if (existing.pendingInvite?.couple_code) {
         setInviteCode(existing.pendingInvite.couple_code);
         return;
       }
-      const newCode = generateInviteCode();
+      const newCode = Math.random().toString(36).slice(2, 8).toUpperCase();
       const { error } = await supabase.from("couples").insert({ partner_a: user.id, couple_code: newCode });
       if (!error) setInviteCode(newCode);
     } finally {
