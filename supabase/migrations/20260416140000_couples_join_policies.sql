@@ -10,6 +10,7 @@
 
 -- 1. Let any authenticated user read a pending invite
 --    (they need to know the exact code, so the security surface is minimal)
+DROP POLICY IF EXISTS "Authenticated users can view pending invites" ON public.couples;
 CREATE POLICY "Authenticated users can view pending invites"
 ON public.couples
 FOR SELECT
@@ -21,6 +22,7 @@ USING (
 -- 2. Let any authenticated user claim the open partner_b slot on a pending invite.
 --    USING checks the OLD row (partner_b must still be NULL).
 --    WITH CHECK ensures the NEW row sets partner_b to the caller's own uid.
+DROP POLICY IF EXISTS "Authenticated users can join open couples" ON public.couples;
 CREATE POLICY "Authenticated users can join open couples"
 ON public.couples
 FOR UPDATE
