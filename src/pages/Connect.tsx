@@ -138,26 +138,43 @@ const Connect = () => {
   const disconnectPartner = async () => {
     if (!user) return;
 
-    const { data: couple } = await supabase
+    const { data: couple, error: fetchError } = await supabase
       .from("couples")
       .select("id")
       .or(`partner_a.eq.${user.id},partner_b.eq.${user.id}`)
       .maybeSingle();
 
-    if (couple) {
-      await supabase.from("couples").delete().eq("id", couple.id);
+    if (fetchError) {
+      setStatus("error");
+      setMessage("Could not find couple record: " + fetchError.message);
+      return;
+    }
+
+    if (couple?.id) {
+      const { error: deleteError } = await supabase
+        .from("couples")
+        .delete()
+        .eq("id", couple.id);
+
+      if (deleteError) {
+        setStatus("error");
+        setMessage("Disconnect failed: " + deleteError.message);
+        setShowDisconnectConfirm(false);
+        return;
+      }
     }
 
     try {
       localStorage.removeItem(`sacred_path_ever_connected_${user.id}`);
       localStorage.removeItem(`sacred_path_connected_couple_id_${user.id}`);
     } catch {
-      // Ignore storage cleanup issues.
+      // ignore
     }
 
     setIsConnected(false);
     setInviteCode(null);
     setShowDisconnectConfirm(false);
+    setMessage("Disconnected successfully.");
     await loadCoupleState();
   };
 
