@@ -77,6 +77,16 @@ export const fetchCoupleStateForUser = async (
   client: SupabaseClient<Database>,
   userId: string,
 ): Promise<FetchCoupleStateResult> => {
+  if (readForceDisconnected(userId)) {
+    return {
+      connected: false,
+      activeCouple: null,
+      pendingInvite: null,
+      rows: [],
+      partnerId: null,
+    };
+  }
+
   const [asPartnerAResult, asPartnerBResult] = await Promise.all([
     client
       .from("couples")
@@ -123,4 +133,24 @@ export const readConnectedCoupleId = (userId: string) => {
 export const storeConnectedCoupleId = (userId: string, coupleId: string) => {
   if (typeof window === "undefined") return;
   window.localStorage.setItem(connectedCoupleIdStorageKey(userId), coupleId);
+};
+
+export const markForceDisconnected = (userId: string): void => {
+  try {
+    localStorage.setItem(`sacred_path_force_disconnected_${userId}`, "true");
+  } catch {}
+};
+
+export const clearForceDisconnected = (userId: string): void => {
+  try {
+    localStorage.removeItem(`sacred_path_force_disconnected_${userId}`);
+  } catch {}
+};
+
+export const readForceDisconnected = (userId: string): boolean => {
+  try {
+    return localStorage.getItem(`sacred_path_force_disconnected_${userId}`) === "true";
+  } catch {
+    return false;
+  }
 };

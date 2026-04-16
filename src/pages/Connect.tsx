@@ -5,7 +5,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
-import { fetchCoupleStateForUser, markEverConnected, storeConnectedCoupleId } from "@/lib/couples";
+import { fetchCoupleStateForUser, markEverConnected, storeConnectedCoupleId, markForceDisconnected, clearForceDisconnected } from "@/lib/couples";
 
 const connectCopy: Record<Language, Record<string, string>> = {
   en: {
@@ -138,18 +138,14 @@ const Connect = () => {
   const disconnectPartner = async () => {
     if (!user) return;
 
-    // Remove ourselves as partner_b
-    await supabase
-      .from("couples")
-      .update({ partner_b: null })
-      .eq("partner_b", user.id);
+    // Set force-disconnect flag FIRST so any subsequent fetchCoupleState calls return disconnected
+    markForceDisconnected(user.id);
 
-    // Corrupt our own partner_a record so it's ignored on reload
-    await supabase
-      .from("couples")
-      .update({ couple_code: `DEAD_${user.id.slice(0, 8)}` })
-      .eq("partner_a", user.id);
+    // Attempt DB cleanup in background (may fail silently due to RLS)
+    supabase.from("couples").update({ partner_b: null }).eq("partner_b", user.id);
+    supabase.from("couples").update({ couple_code: `DEAD_${user.id.slice(0, 8)}` }).eq("partner_a", user.id);
 
+    // Clear all local state
     localStorage.removeItem(`sacred_path_ever_connected_${user.id}`);
     localStorage.removeItem(`sacred_path_connected_couple_id_${user.id}`);
     setIsConnected(false);
@@ -320,6 +316,7 @@ const Connect = () => {
       return;
     }
 
+    clearForceDisconnected(user.id);
     await loadCoupleState();
     setCode("");
     setMessage(copy.okConnected);
