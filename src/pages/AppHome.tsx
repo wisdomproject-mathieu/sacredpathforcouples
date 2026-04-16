@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowRight,
   BookOpen,
   ChevronDown,
   ChevronUp,
-  Cloud,
   Heart,
   HeartHandshake,
   Lock,
@@ -452,6 +451,7 @@ const fallbackBelovedValues = new Set(Object.values(homeCopy).map((copySet) => c
 const AppHome = () => {
   const { user } = useAuth();
   const { lang } = useLanguage();
+  const navigate = useNavigate();
   const copy = homeCopy[lang];
   const hasPremiumAccess = isPremiumTier(getEffectiveMembershipTier(user));
   const quotes = quoteSets[lang];
@@ -774,16 +774,17 @@ const AppHome = () => {
     writeSavedCards(next);
   };
 
-  const saveWeather = async () => {
-    if (!user || !myWeatherSelected || !coupleId) return;
+  const handleWeatherSelect = async (state: string) => {
+    if (!user || !coupleId || savingWeather) return;
     setSavingWeather(true);
+    setMyWeatherSelected(state);
     const { error } = await supabase.from("weather_entries").insert({
       couple_id: coupleId,
       user_id: user.id,
-      state: myWeatherSelected,
+      state,
     });
     if (!error) {
-      setMyWeatherEntry({ state: myWeatherSelected, user_id: user.id });
+      setMyWeatherEntry({ state, user_id: user.id });
     }
     setSavingWeather(false);
   };
@@ -850,14 +851,14 @@ const AppHome = () => {
 
           {(() => {
             const moods = [
-              { key: "open", emoji: "🌞", label: "Open" },
-              { key: "tender", emoji: "💗", label: "Tender" },
-              { key: "playful", emoji: "✨", label: "Playful" },
-              { key: "stressed", emoji: "☁️", label: "Stressed" },
-              { key: "longing", emoji: "🌙", label: "Longing" },
-              { key: "erotic", emoji: "🔥", label: "Erotic" },
-              { key: "tired", emoji: "🫧", label: "Tired" },
-              { key: "reassurance", emoji: "⚡", label: "Reassurance" },
+              { value: "open", emoji: "🌞", label: "Open" },
+              { value: "tender", emoji: "💗", label: "Tender" },
+              { value: "playful", emoji: "✨", label: "Playful" },
+              { value: "stressed", emoji: "☁️", label: "Stressed" },
+              { value: "longing", emoji: "🌙", label: "Longing" },
+              { value: "erotic", emoji: "🔥", label: "Erotic" },
+              { value: "tired", emoji: "🫧", label: "Tired" },
+              { value: "reassurance", emoji: "⚡", label: "Reassurance" },
             ];
 
             const getRecommendation = (myState: string, partnerState: string) => {
@@ -878,95 +879,73 @@ const AppHome = () => {
               return "Your two weathers have met. Let that meeting be conscious. Go to Sacred Temple to find the practice that fits tonight.";
             };
 
-            const bothCheckedIn = Boolean(myWeatherEntry && partnerWeatherEntry);
-            const myConfirmed = Boolean(myWeatherEntry);
+            const myMood = moods.find((m) => m.value === myWeatherEntry?.state);
+            const partnerMood = moods.find((m) => m.value === partnerWeatherEntry?.state);
+            const combinedWeatherDescription = myWeatherEntry && partnerWeatherEntry
+              ? getRecommendation(myWeatherEntry.state, partnerWeatherEntry.state)
+              : "";
 
-            if (bothCheckedIn && myWeatherEntry && partnerWeatherEntry) {
-              const myMood = moods.find((m) => m.key === myWeatherEntry.state);
-              const partnerMood = moods.find((m) => m.key === partnerWeatherEntry.state);
+            // State C: Both checked in
+            if (myWeatherEntry && partnerWeatherEntry) {
               return (
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="rounded-[20px] border border-border/30 bg-background/45 p-4">
-                      <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Your weather</p>
-                      <div className="mt-2 text-2xl">{myMood?.emoji ?? "•"}</div>
-                      <div className="mt-1 font-display text-lg text-foreground">{myMood?.label ?? myWeatherEntry.state}</div>
+                <div className="overflow-hidden rounded-[20px] border border-amber-400/20 bg-card/60">
+                  <div className="flex items-center gap-4 p-4">
+                    <div className="flex flex-col items-center gap-1">
+                      <span className="text-2xl">{myMood?.emoji ?? "•"}</span>
+                      <span className="text-sm text-foreground/80">{myMood?.label ?? myWeatherEntry.state}</span>
                     </div>
-                    <div className="rounded-[20px] border border-border/30 bg-background/45 p-4">
-                      <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Beloved weather</p>
-                      <div className="mt-2 text-2xl">{partnerMood?.emoji ?? "•"}</div>
-                      <div className="mt-1 font-display text-lg text-foreground">{partnerMood?.label ?? partnerWeatherEntry.state}</div>
+                    <span className="text-muted-foreground/60">+</span>
+                    <div className="flex flex-col items-center gap-1">
+                      <span className="text-2xl">{partnerMood?.emoji ?? "•"}</span>
+                      <span className="text-sm text-foreground/80">{partnerMood?.label ?? partnerWeatherEntry.state}</span>
                     </div>
                   </div>
-                  <div className="rounded-[20px] border border-primary/20 bg-primary/8 p-4">
-                    <p className="text-xs uppercase tracking-[0.14em] text-primary/80">Tonight's practice</p>
-                    <p className="mt-2 text-sm leading-7 text-foreground/90">
-                      {getRecommendation(myWeatherEntry.state, partnerWeatherEntry.state)}
-                    </p>
+                  <div className="border-t border-border/20 bg-amber-950/20 p-4">
+                    <p className="text-sm leading-7 text-foreground/90">{combinedWeatherDescription}</p>
+                    <button
+                      type="button"
+                      onClick={() => navigate("/app/space")}
+                      className="mt-3 text-sm text-amber-300 transition-colors hover:text-amber-200"
+                    >
+                      Go deeper in Sacred Temple →
+                    </button>
                   </div>
-                  <Link
-                    to="/app/space?tab=weather"
-                    className="inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-2.5 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16"
-                  >
-                    Go deeper in Sacred Temple →
-                  </Link>
                 </div>
               );
             }
 
-            if (myConfirmed && myWeatherEntry) {
-              const myMood = moods.find((m) => m.key === myWeatherEntry.state);
+            // State B: My weather set, waiting for partner
+            if (myWeatherEntry) {
               return (
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3 rounded-[20px] border border-emerald-300/25 bg-emerald-500/8 p-4">
-                    <span className="text-2xl">{myMood?.emoji ?? "•"}</span>
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.14em] text-emerald-200">Your weather sealed</p>
-                      <p className="font-display text-lg text-foreground">{myMood?.label ?? myWeatherEntry.state}</p>
+                <div className="rounded-[20px] border border-border/30 bg-card/40 p-5">
+                  <div className="flex items-center justify-between">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-2xl">{myMood?.emoji ?? "•"}</span>
+                      <span className="font-display text-lg text-foreground">{myMood?.label ?? myWeatherEntry.state}</span>
                     </div>
+                    <p className="text-sm text-muted-foreground">Waiting for {partnerName ?? "your love"}…</p>
                   </div>
-                  <p className="text-sm text-muted-foreground">
-                    Waiting for {partnerName ?? "your beloved"} to share their weather…
-                  </p>
                 </div>
               );
             }
 
+            // State A: Pick weather
             return (
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
-                  {moods.map((mood) => {
-                    const active = myWeatherSelected === mood.key;
-                    return (
-                      <button
-                        key={mood.key}
-                        type="button"
-                        onClick={() => setMyWeatherSelected(mood.key)}
-                        className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-all ${
-                          active
-                            ? "border-amber-400/60 bg-amber-400/15 text-amber-300"
-                            : "border-border/30 bg-card/40 text-muted-foreground hover:border-amber-400/40 hover:bg-amber-400/10"
-                        }`}
-                      >
-                        <span>{mood.emoji}</span>
-                        <span>{mood.label}</span>
-                      </button>
-                    );
-                  })}
+              <div className="rounded-[20px] border border-border/30 bg-card/40 p-5">
+                <div className="grid grid-cols-2 gap-2">
+                  {moods.map((mood) => (
+                    <button
+                      key={mood.value}
+                      type="button"
+                      onClick={() => handleWeatherSelect(mood.value)}
+                      disabled={savingWeather}
+                      className="flex items-center gap-2 rounded-full border border-border/30 bg-card/40 px-3 py-2 text-sm text-muted-foreground transition-all hover:border-amber-400/40 hover:bg-amber-400/10 hover:text-amber-300 disabled:opacity-60"
+                    >
+                      <span>{mood.emoji}</span>
+                      <span>{mood.label}</span>
+                    </button>
+                  ))}
                 </div>
-                {myWeatherSelected && (
-                  <button
-                    type="button"
-                    onClick={saveWeather}
-                    disabled={savingWeather}
-                    className="rounded-2xl border border-primary/25 bg-primary/12 px-5 py-2.5 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16 disabled:opacity-60"
-                  >
-                    {savingWeather ? "Sealing…" : "Seal my weather"}
-                  </button>
-                )}
-                {partnerName && (
-                  <p className="text-sm text-muted-foreground">Waiting for {partnerName} to share their weather…</p>
-                )}
               </div>
             );
           })()}
