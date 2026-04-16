@@ -170,6 +170,7 @@ const Connect = () => {
 
     setIsConnected(resolved.connected);
     if (resolved.connected) {
+      clearForceDisconnected(user.id);
       setInviteCode(resolved.activeCouple?.couple_code ?? null);
     } else {
       setInviteCode(resolved.pendingInvite?.couple_code ?? null);
