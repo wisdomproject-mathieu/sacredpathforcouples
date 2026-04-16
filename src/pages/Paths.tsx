@@ -2629,10 +2629,9 @@ const Paths = () => {
         <h2 className="mt-2 font-display text-3xl text-foreground">{ui.overviewTitle}</h2>
 
         <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-          {localizedPathDetails.map((path, idx) => {
+          {localizedPathDetails.map((path) => {
             const Icon = path.icon;
             const isSelected = selectedSlug === path.slug;
-            const isLastAlone = idx === localizedPathDetails.length - 1 && localizedPathDetails.length % 4 !== 0;
             return (
               <button
                 key={path.slug}
@@ -2642,7 +2641,7 @@ const Paths = () => {
                   isSelected
                     ? "border-primary/30 bg-primary/10 shadow-[0_16px_50px_-40px_rgba(255,173,70,0.45)]"
                     : "border-border/30 bg-background/45 hover:border-primary/20 hover:bg-card/55"
-                } ${isLastAlone ? "xl:col-span-4 xl:max-w-none" : ""}`}
+                }`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-3 ${path.iconClass}`}>
@@ -2662,6 +2661,38 @@ const Paths = () => {
               </button>
             );
           })}
+
+          {/* Premium banner — fills empty grid slot */}
+          <div className="flex flex-col justify-between rounded-[24px] border border-amber-400/25 bg-gradient-to-br from-amber-950/60 via-card/50 to-card/30 p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xs uppercase tracking-[0.22em] text-amber-400/70">SACRED PATH PREMIUM</span>
+            </div>
+            <h3 className="font-display text-xl text-foreground">
+              One subscription.<br />Two lives transformed.
+            </h3>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">
+              Subscribe, send your code to your partner, and begin a completely new intimate life together — tonight.
+            </p>
+            <ul className="mt-3 space-y-1.5">
+              {[
+                "All 6 wisdom paths unlocked",
+                "12 sacred teachers, full depth",
+                "Sacred Temple — all doorways open",
+                "Daily rituals matched to your weather",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-2 text-xs text-muted-foreground">
+                  <span className="mt-0.5 text-amber-400/60">✦</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <button className="mt-4 w-full rounded-[12px] border border-amber-400/40 bg-amber-400/15 px-4 py-3 text-sm font-medium text-amber-300 transition-all hover:bg-amber-400/25">
+              Unlock for both of us →
+            </button>
+            <p className="mt-2 text-center text-[10px] text-muted-foreground/50">
+              $4.99/month · 7-day free trial · One couple, one subscription
+            </p>
+          </div>
         </div>
 
         <div className="mt-4 rounded-2xl border border-amber-400/20 bg-amber-500/6 p-4">

@@ -479,6 +479,9 @@ const AppHome = () => {
   const [inviteCode, setInviteCode] = useState<string | null>(null);
   const [copiedInvite, setCopiedInvite] = useState(false);
   const [generatingCode, setGeneratingCode] = useState(false);
+  const [pendingMoodValue, setPendingMoodValue] = useState<string | null>(null);
+  const [pendingMoodEmoji, setPendingMoodEmoji] = useState<string>("");
+  const [pendingMoodLabel, setPendingMoodLabel] = useState<string>("");
   const navigate = useNavigate();
 
   const resolvePreferredName = (profile: Pick<Profile, "display_name"> | null, fallbackUser = user) => {
@@ -773,6 +776,20 @@ const AppHome = () => {
     setSavedCards(readSavedCards());
   }, [todayKey]);
 
+  useEffect(() => {
+    if (!user || relationshipConnected) return;
+    try {
+      const raw = localStorage.getItem(`weather_pending_${user.id}`);
+      if (!raw) return;
+      const { value, emoji, label, date } = JSON.parse(raw);
+      if (date === new Date().toDateString()) {
+        setPendingMoodValue(value);
+        setPendingMoodEmoji(emoji);
+        setPendingMoodLabel(label);
+      }
+    } catch {}
+  }, [user, relationshipConnected]);
+
   const handleSaveCard = (cardId: string) => {
     const next = { ...savedCards, [cardId]: !savedCards[cardId] };
     setSavedCards(next);
@@ -819,6 +836,17 @@ const AppHome = () => {
     } catch {
       // ignore
     }
+  };
+
+  const handleMoodSelect = (value: string, emoji: string, label: string) => {
+    setPendingMoodValue(value);
+    setPendingMoodEmoji(emoji);
+    setPendingMoodLabel(label);
+    try {
+      localStorage.setItem(`weather_pending_${user?.id}`, JSON.stringify({
+        value, emoji, label, date: new Date().toDateString(),
+      }));
+    } catch {}
   };
 
   const saveWeather = async () => {
@@ -990,7 +1018,8 @@ const AppHome = () => {
                 <button
                   key={mood.label}
                   type="button"
-                  className="flex cursor-pointer flex-col items-center gap-1 rounded-[12px] border border-border/30 bg-background/40 p-2.5 transition-all hover:border-amber-400/40 hover:bg-amber-400/10"
+                  onClick={() => handleMoodSelect(mood.label.toLowerCase(), mood.emoji, mood.label)}
+                  className={`flex cursor-pointer flex-col items-center gap-1 rounded-[12px] border p-2.5 transition-all hover:border-amber-400/40 hover:bg-amber-400/10 ${pendingMoodValue === mood.label.toLowerCase() ? "border-amber-400/50 bg-amber-400/15" : "border-border/30 bg-background/40"}`}
                 >
                   <span className="text-lg">{mood.emoji}</span>
                   <span className="text-[10px] leading-none text-muted-foreground">{mood.label}</span>
@@ -1000,6 +1029,45 @@ const AppHome = () => {
             <p className="mt-3 text-xs italic text-muted-foreground/50">
               Select your state — your partner will see it when they connect
             </p>
+
+            {pendingMoodValue && (
+              <div className="mt-4 rounded-[16px] border border-amber-400/20 bg-amber-950/30 p-4">
+                <div className="mb-3 flex items-center gap-3">
+                  <span className="text-2xl">{pendingMoodEmoji}</span>
+                  <div>
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground/60">YOUR WEATHER</p>
+                    <p className="font-display text-lg">{pendingMoodLabel}</p>
+                  </div>
+                </div>
+                <p className="text-sm leading-6 text-muted-foreground">
+                  Your state is set. Now invite your partner to reveal tonight's sacred ritual together.
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <a
+                    href={`https://wa.me/?text=${encodeURIComponent(
+                      "I just set my intimacy weather on Sacred Path 🌿 " +
+                      "Come check yours and see what tonight holds for us. " +
+                      "My code: " + (inviteCode ?? "get it from the app")
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 rounded-[10px] border border-green-500/30 bg-green-950/20 px-3 py-2 text-xs text-green-300"
+                  >
+                    💬 Nudge on WhatsApp
+                  </a>
+                  <a
+                    href={`sms:?body=${encodeURIComponent(
+                      "I set my intimacy weather 🔥 Come set yours on Sacred Path " +
+                      "and see what tonight suggests for us. Code: " +
+                      (inviteCode ?? "check the app")
+                    )}`}
+                    className="flex items-center gap-1.5 rounded-[10px] border border-blue-500/30 bg-blue-950/20 px-3 py-2 text-xs text-blue-300"
+                  >
+                    ✉️ Send a nudge
+                  </a>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* PART 2 — Tonight's path preview (blurred) */}
@@ -1336,6 +1404,14 @@ const AppHome = () => {
           </div>
         </section>
       )}
+
+      <div className="rounded-[20px] border border-border/15 bg-card/20 p-5 text-center">
+        <p className="mb-3 text-xs uppercase tracking-[0.22em] text-muted-foreground/40">ANCIENT WISDOM</p>
+        <p className="mx-auto max-w-lg font-display text-base italic leading-7 text-foreground/70">
+          "The couple that practices together doesn't just stay together — they arrive at each other, again and again, as if for the first time."
+        </p>
+        <p className="mt-3 text-xs text-muted-foreground/40">— Diana Richardson</p>
+      </div>
     </div>
   );
 };

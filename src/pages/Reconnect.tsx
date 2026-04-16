@@ -1868,6 +1868,23 @@ const Reconnect = () => {
               </button>
             );
           })}
+
+          {/* Premium banner — fills empty grid slot */}
+          <div className="relative overflow-hidden flex flex-col items-center justify-center rounded-[24px] border border-amber-400/25 bg-gradient-to-br from-amber-950/60 via-card/50 to-card/30 p-5 text-center">
+            <div className="absolute inset-0 flex items-center justify-center opacity-5">
+              <img src={shivaShaktiIcon} alt="" className="h-48 w-48 object-contain" />
+            </div>
+            <p className="relative z-10 text-xs uppercase tracking-[0.22em] text-amber-400/70">FOR HIM</p>
+            <h3 className="relative z-10 mt-2 font-display text-xl text-foreground">
+              Presence is the most erotic thing a man can offer.
+            </h3>
+            <p className="relative z-10 mt-3 text-sm leading-6 text-muted-foreground">
+              David Deida, Barry Long, and Mantak Chia show you exactly how. Full access with Sacred Path Premium.
+            </p>
+            <button className="relative z-10 mt-4 rounded-[12px] border border-amber-400/40 bg-amber-400/15 px-5 py-2.5 text-sm text-amber-300 transition-all hover:bg-amber-400/25">
+              Explore the masculine path →
+            </button>
+          </div>
         </div>
 
         <div className="mt-4 rounded-2xl border border-amber-400/20 bg-amber-500/6 p-4">
