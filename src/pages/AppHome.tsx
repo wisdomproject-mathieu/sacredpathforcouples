@@ -504,13 +504,13 @@ const AppHome = () => {
     const { data: existing } = await supabase
       .from("profiles")
       .select("display_name")
-      .eq("user_id", user.id)
+      .eq("id", user.id)
       .maybeSingle();
     if (!existing?.display_name && name.trim()) {
       await supabase
         .from("profiles")
         .update({ display_name: name.trim() })
-        .eq("user_id", user.id);
+        .eq("id", user.id);
     }
   };
 
@@ -543,8 +543,8 @@ const AppHome = () => {
         fetchCoupleStateForUser(supabase, user.id),
         supabase
           .from("profiles")
-          .select("display_name, user_id")
-          .eq("user_id", user.id)
+          .select("display_name, id")
+          .eq("id", user.id)
           .maybeSingle(),
       ]);
 
@@ -613,8 +613,8 @@ const AppHome = () => {
         partnerId
           ? supabase
             .from("profiles")
-            .select("display_name, user_id")
-            .eq("user_id", partnerId)
+            .select("display_name, id")
+            .eq("id", partnerId)
             .maybeSingle()
           : Promise.resolve({ data: null }),
       ]);

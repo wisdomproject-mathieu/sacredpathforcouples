@@ -14,7 +14,7 @@ CREATE POLICY "Partners can view each other's profiles"
 ON public.profiles
 FOR SELECT
 USING (
-  user_id IN (
+  id IN (
     SELECT partner_b FROM public.couples
       WHERE partner_a = auth.uid() AND partner_b IS NOT NULL
     UNION ALL

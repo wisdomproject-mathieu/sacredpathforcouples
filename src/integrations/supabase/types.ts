@@ -238,16 +238,14 @@ export type Database = {
           display_name: string | null
           id: string
           updated_at: string
-          user_id: string
         }
         Insert: {
           avatar_url?: string | null
           couple_code?: string | null
           created_at?: string
           display_name?: string | null
-          id?: string
+          id: string
           updated_at?: string
-          user_id: string
         }
         Update: {
           avatar_url?: string | null
@@ -256,7 +254,6 @@ export type Database = {
           display_name?: string | null
           id?: string
           updated_at?: string
-          user_id?: string
         }
         Relationships: []
       }
