@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 import {
   ArrowRight,
@@ -477,6 +477,9 @@ const AppHome = () => {
   const [myWeatherSelected, setMyWeatherSelected] = useState<string | null>(null);
   const [savingWeather, setSavingWeather] = useState(false);
   const [weatherPickerVisible, setWeatherPickerVisible] = useState(false);
+  const [inviteCode, setInviteCode] = useState<string | null>(null);
+  const [copiedInvite, setCopiedInvite] = useState(false);
+  const navigate = useNavigate();
 
   const resolvePreferredName = (profile: Pick<Profile, "display_name"> | null, fallbackUser = user) => {
     const profileName = profile?.display_name?.trim();
@@ -558,6 +561,7 @@ const AppHome = () => {
         setPartnerWeatherEntry(null);
         setMyWeatherSelected(null);
         setWeatherPickerVisible(false);
+        setInviteCode(coupleState.pendingInvite?.couple_code ?? null);
         setLoading(false);
         return;
       }
@@ -775,6 +779,20 @@ const AppHome = () => {
     writeSavedCards(next);
   };
 
+  const handleCopyInvite = async () => {
+    if (!inviteCode) {
+      navigate("/app/connect");
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(inviteCode);
+      setCopiedInvite(true);
+      setTimeout(() => setCopiedInvite(false), 2000);
+    } catch {
+      // ignore
+    }
+  };
+
   const saveWeather = async () => {
     if (!user || !myWeatherSelected || !coupleId) return;
     setSavingWeather(true);
@@ -901,10 +919,93 @@ const AppHome = () => {
         <p className="mt-1 text-sm italic text-muted-foreground/70">
           {relationshipConnected ? copy.journeyLine : copy.notConnectedLine}
         </p>
+        {relationshipConnected && (
+          <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-amber-400/20 bg-amber-950/30 px-3 py-1.5">
+            <span className="text-sm">🔥</span>
+            <span className="text-xs text-amber-300/80">Tonight: presence before touch</span>
+            <span className="text-xs text-muted-foreground/40">→</span>
+          </div>
+        )}
       </div>
 
-      {/* Block 2: Intimacy Weather — single unified card */}
-      {relationshipConnected && (
+      {/* Block 2: Intimacy Weather */}
+      {!relationshipConnected ? (
+        <div className="overflow-hidden rounded-[24px] border border-amber-400/20 bg-card/50 p-5">
+          <div className="flex gap-4">
+            {/* Left column */}
+            <div className="flex-1">
+              <p className="text-xs uppercase tracking-[0.22em] text-amber-400/70">INTIMACY WEATHER</p>
+              <h3 className="mt-2 font-display text-xl text-foreground">Name the climate before you touch the night</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Both partners check in. The app reads your combined state and suggests the exact ritual for tonight.
+              </p>
+              <div className="mt-3 grid grid-cols-2 gap-1.5 opacity-60">
+                {[
+                  { emoji: "🔥", label: "Erotic" },
+                  { emoji: "✨", label: "Playful" },
+                  { emoji: "💗", label: "Tender" },
+                  { emoji: "🌙", label: "Longing" },
+                ].map((pill) => (
+                  <span
+                    key={pill.label}
+                    className="flex items-center gap-1.5 rounded-full border border-border/30 px-2.5 py-1 text-xs text-muted-foreground"
+                  >
+                    {pill.emoji} {pill.label}
+                  </span>
+                ))}
+              </div>
+              <p className="mt-2 text-xs italic text-muted-foreground/50">Unlock when both partners connect</p>
+            </div>
+            {/* Right column */}
+            <div className="w-48 shrink-0">
+              <div className="rounded-[16px] border border-amber-400/30 bg-amber-950/40 p-4 text-center">
+                <p className="text-xs uppercase tracking-widest text-amber-400/60">TONIGHT</p>
+                <p className="mt-2 font-display text-lg text-foreground">Playful Fire</p>
+                <p className="mt-1 text-xs text-muted-foreground">Desire meets curiosity</p>
+                <div className="mt-3 h-px bg-border/20" />
+                <p className="mt-3 text-xs italic text-muted-foreground/50">Invite your partner to see yours</p>
+              </div>
+            </div>
+          </div>
+          {/* Invite action row */}
+          <div className="mt-4 border-t border-border/20 pt-4">
+            <p className="mb-3 text-xs text-muted-foreground">Your partner needs a code to connect:</p>
+            {inviteCode ? (
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={handleCopyInvite}
+                  className="flex items-center gap-2 rounded-[10px] border border-border/30 bg-background/40 px-3 py-2 text-xs text-foreground transition-all hover:border-amber-400/40"
+                >
+                  <Copy className="h-3.5 w-3.5" />
+                  {copiedInvite ? "Copied!" : "Copy invite code"}
+                </button>
+                <a
+                  href={`https://wa.me/?text=${encodeURIComponent("I want us to try Sacred Path together 🌿 Use my code to connect: " + inviteCode)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 rounded-[10px] border border-green-500/30 bg-green-950/20 px-3 py-2 text-xs text-green-300 transition-all hover:border-green-500/50"
+                >
+                  <span>💬</span> WhatsApp
+                </a>
+                <a
+                  href={`sms:?body=${encodeURIComponent("I want us to try Sacred Path together 🌿 Use my code: " + inviteCode)}`}
+                  className="flex items-center gap-2 rounded-[10px] border border-blue-500/30 bg-blue-950/20 px-3 py-2 text-xs text-blue-300 transition-all hover:border-blue-500/50"
+                >
+                  <span>✉️</span> Message
+                </a>
+              </div>
+            ) : (
+              <Link
+                to="/app/connect"
+                className="inline-flex items-center gap-2 rounded-[10px] border border-amber-400/30 bg-amber-950/20 px-3 py-2 text-xs text-amber-300 transition-all hover:border-amber-400/50"
+              >
+                Get your invite code →
+              </Link>
+            )}
+          </div>
+        </div>
+      ) : (
         <div className="overflow-hidden rounded-[24px] border border-amber-400/20 bg-card/50">
 
           {/* STATE A: picker — user hasn't sealed weather today, or wants to change */}
