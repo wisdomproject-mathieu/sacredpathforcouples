@@ -470,6 +470,13 @@ const PartnerSpace = () => {
     [belovedWeatherEntry, lang, myWeatherEntry],
   );
 
+  // Auto-open match drawer when navigated from home with openMatch=1
+  useEffect(() => {
+    if (searchParams.get("openMatch") === "1" && weatherMatch && weatherStateMode === "both") {
+      setMatchDrawerOpen(true);
+    }
+  }, [searchParams, weatherMatch, weatherStateMode]);
+
   const matchTimestamp = useMemo(() => {
     if (!myWeatherEntry || !belovedWeatherEntry) return 0;
     return Math.max(toTimestamp(myWeatherEntry.created_at), toTimestamp(belovedWeatherEntry.created_at));
