@@ -478,6 +478,7 @@ const AppHome = () => {
   const [weatherPickerVisible, setWeatherPickerVisible] = useState(false);
   const [inviteCode, setInviteCode] = useState<string | null>(null);
   const [copiedInvite, setCopiedInvite] = useState(false);
+  const [generatingCode, setGeneratingCode] = useState(false);
   const navigate = useNavigate();
 
   const resolvePreferredName = (profile: Pick<Profile, "display_name"> | null, fallbackUser = user) => {
@@ -778,11 +779,27 @@ const AppHome = () => {
     writeSavedCards(next);
   };
 
-  const handleCopyInvite = async () => {
-    if (!inviteCode) {
-      navigate("/app/connect");
-      return;
+  const generateInviteCode = () => Math.random().toString(36).slice(2, 8).toUpperCase();
+
+  const createInviteOnHome = async () => {
+    if (!user || generatingCode) return;
+    setGeneratingCode(true);
+    try {
+      const existing = await import("@/lib/couples").then(m => m.fetchCoupleStateForUser(supabase, user.id));
+      if (existing.pendingInvite?.couple_code) {
+        setInviteCode(existing.pendingInvite.couple_code);
+        return;
+      }
+      const newCode = generateInviteCode();
+      const { error } = await supabase.from("couples").insert({ partner_a: user.id, couple_code: newCode });
+      if (!error) setInviteCode(newCode);
+    } finally {
+      setGeneratingCode(false);
     }
+  };
+
+  const handleCopyInvite = async () => {
+    if (!inviteCode) return;
     try {
       await navigator.clipboard.writeText(inviteCode);
       setCopiedInvite(true);
@@ -930,8 +947,8 @@ const AppHome = () => {
       {/* Block 2: Intimacy Weather */}
       {!relationshipConnected ? (
         <div className="overflow-hidden rounded-[24px] border border-amber-400/20 bg-card/50 p-5">
+          {/* Top: description + pills */}
           <div className="flex gap-4">
-            {/* Left column */}
             <div className="flex-1">
               <p className="text-xs uppercase tracking-[0.22em] text-amber-400/70">INTIMACY WEATHER</p>
               <h3 className="mt-2 font-display text-xl text-foreground">Name the climate before you touch the night</h3>
@@ -953,54 +970,101 @@ const AppHome = () => {
                   </span>
                 ))}
               </div>
-              <p className="mt-2 text-xs italic text-muted-foreground/50">Unlock when both partners connect</p>
             </div>
-            {/* Right column */}
-            <div className="w-48 shrink-0">
-              <div className="rounded-[16px] border border-amber-400/30 bg-amber-950/40 p-4 text-center">
-                <p className="text-xs uppercase tracking-widest text-amber-400/60">TONIGHT</p>
-                <p className="mt-2 font-display text-lg text-foreground">Playful Fire</p>
-                <p className="mt-1 text-xs text-muted-foreground">Desire meets curiosity</p>
-                <div className="mt-3 h-px bg-border/20" />
-                <p className="mt-3 text-xs italic text-muted-foreground/50">Invite your partner to see yours</p>
+          </div>
+
+          {/* TONIGHT preview card — full width, expanded */}
+          <div className="mt-4 overflow-hidden rounded-[16px] border border-amber-400/25 bg-amber-950/30">
+            {/* Header band */}
+            <div className="border-b border-amber-400/10 bg-gradient-to-r from-amber-950/60 to-transparent px-4 py-3">
+              <p className="text-[10px] uppercase tracking-widest text-amber-400/60">TONIGHT'S PATH</p>
+              <p className="mt-1 font-display text-lg text-foreground">Playful Fire</p>
+              <p className="text-xs text-muted-foreground">Desire meets lightness.</p>
+            </div>
+            {/* Combination + interpretation */}
+            <div className="border-b border-amber-400/10 px-4 py-3">
+              <p className="text-xs text-amber-300/70">EROTIC 🔥 + PLAYFUL ✨</p>
+              <p className="mt-1.5 text-sm font-medium leading-5 text-foreground">Desire meets curiosity in a playful current.</p>
+              <p className="mt-1 text-xs leading-5 text-muted-foreground/70">Keep this alive through teasing, laughter, eye contact, and consented sensual play.</p>
+              <div className="mt-2 flex flex-wrap gap-1">
+                {["TANTRA", "KAMA SUTRA", "POLARITY"].map((tag) => (
+                  <span key={tag} className="rounded-full border border-amber-300/20 px-2 py-0.5 text-[9px] uppercase tracking-wide text-amber-300/60">{tag}</span>
+                ))}
+              </div>
+              <p className="mt-1.5 text-[10px] italic text-muted-foreground/50">Inspired by Tantra, Kama Sutra, Polarity and David Deida</p>
+            </div>
+            {/* Ritual previews — blurred/locked */}
+            <div className="relative">
+              <div className="pointer-events-none grid gap-2 p-4 opacity-40 sm:grid-cols-2">
+                <div className="rounded-[10px] border border-border/20 bg-background/20 p-3">
+                  <p className="text-sm font-medium text-foreground">Tease, Gaze, Touch</p>
+                  <p className="mt-0.5 text-[10px] uppercase tracking-wide text-amber-300/60">A PRESSURE-LIGHT IGNITION RITUAL</p>
+                  <p className="mt-1.5 text-[11px] leading-4 text-muted-foreground/70">Trade playful lines, hold eye contact, then add one intentional touch each round.</p>
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    {["7 MIN", "MEDIUM", "SPARK WITH SAFETY"].map((t) => (
+                      <span key={t} className="rounded border border-border/20 px-1.5 py-0.5 text-[9px] text-muted-foreground/60">{t}</span>
+                    ))}
+                  </div>
+                </div>
+                <div className="rounded-[10px] border border-border/20 bg-background/20 p-3">
+                  <p className="text-sm font-medium text-foreground">One Song Current</p>
+                  <p className="mt-0.5 text-[10px] uppercase tracking-wide text-amber-300/60">MOVE BEFORE WORDS</p>
+                  <p className="mt-1.5 text-[11px] leading-4 text-muted-foreground/70">Let one song guide movement and polarity, then share one desire sentence each.</p>
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    {["5 MIN", "MEDIUM", "EMBODIED PLAYFUL CHARGE"].map((t) => (
+                      <span key={t} className="rounded border border-border/20 px-1.5 py-0.5 text-[9px] text-muted-foreground/60">{t}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="absolute inset-0 flex items-end justify-center bg-gradient-to-b from-transparent via-amber-950/50 to-amber-950/95 pb-4">
+                <p className="text-xs italic text-amber-400/70">Connect with your partner to unlock tonight's full path</p>
               </div>
             </div>
           </div>
+
           {/* Invite action row */}
           <div className="mt-4 border-t border-border/20 pt-4">
             <p className="mb-3 text-xs text-muted-foreground">Your partner needs a code to connect:</p>
             {inviteCode ? (
-              <div className="flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={handleCopyInvite}
-                  className="flex items-center gap-2 rounded-[10px] border border-border/30 bg-background/40 px-3 py-2 text-xs text-foreground transition-all hover:border-amber-400/40"
-                >
-                  <Copy className="h-3.5 w-3.5" />
-                  {copiedInvite ? "Copied!" : "Copy invite code"}
-                </button>
-                <a
-                  href={`https://wa.me/?text=${encodeURIComponent("I want us to try Sacred Path together 🌿 Use my code to connect: " + inviteCode)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-[10px] border border-green-500/30 bg-green-950/20 px-3 py-2 text-xs text-green-300 transition-all hover:border-green-500/50"
-                >
-                  <span>💬</span> WhatsApp
-                </a>
-                <a
-                  href={`sms:?body=${encodeURIComponent("I want us to try Sacred Path together 🌿 Use my code: " + inviteCode)}`}
-                  className="flex items-center gap-2 rounded-[10px] border border-blue-500/30 bg-blue-950/20 px-3 py-2 text-xs text-blue-300 transition-all hover:border-blue-500/50"
-                >
-                  <span>✉️</span> Message
-                </a>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 rounded-[10px] border border-amber-400/20 bg-amber-950/20 px-3 py-2">
+                  <span className="font-display text-base tracking-[0.2em] text-amber-300">{inviteCode}</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={handleCopyInvite}
+                    className="flex items-center gap-2 rounded-[10px] border border-border/30 bg-background/40 px-3 py-2 text-xs text-foreground transition-all hover:border-amber-400/40"
+                  >
+                    <Copy className="h-3.5 w-3.5" />
+                    {copiedInvite ? "Copied!" : "Copy code"}
+                  </button>
+                  <a
+                    href={`https://wa.me/?text=${encodeURIComponent("I want us to try Sacred Path together 🌿 Use my code to connect: " + inviteCode)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 rounded-[10px] border border-green-500/30 bg-green-950/20 px-3 py-2 text-xs text-green-300 transition-all hover:border-green-500/50"
+                  >
+                    <span>💬</span> WhatsApp
+                  </a>
+                  <a
+                    href={`sms:?body=${encodeURIComponent("I want us to try Sacred Path together 🌿 Use my code: " + inviteCode)}`}
+                    className="flex items-center gap-2 rounded-[10px] border border-blue-500/30 bg-blue-950/20 px-3 py-2 text-xs text-blue-300 transition-all hover:border-blue-500/50"
+                  >
+                    <span>✉️</span> Message
+                  </a>
+                </div>
               </div>
             ) : (
-              <Link
-                to="/app/connect"
-                className="inline-flex items-center gap-2 rounded-[10px] border border-amber-400/30 bg-amber-950/20 px-3 py-2 text-xs text-amber-300 transition-all hover:border-amber-400/50"
+              <button
+                type="button"
+                onClick={createInviteOnHome}
+                disabled={generatingCode}
+                className="inline-flex items-center gap-2 rounded-[10px] border border-amber-400/30 bg-amber-950/20 px-3 py-2 text-xs text-amber-300 transition-all hover:border-amber-400/50 disabled:opacity-50"
               >
-                Get your invite code →
-              </Link>
+                {generatingCode ? "Generating…" : "Generate invite code →"}
+              </button>
             )}
           </div>
         </div>

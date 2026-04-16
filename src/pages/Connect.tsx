@@ -437,14 +437,22 @@ const Connect = () => {
                   className="inline-flex items-center gap-2 rounded-2xl border border-border/35 bg-card/45 px-4 py-3 text-sm text-foreground transition-all hover:border-border/55 hover:bg-card/60"
                 >
                   <Copy className="h-4 w-4" />
-                  {copy.copyInvite}
+                  {status === "copied" ? "Copied!" : copy.copyInvite}
                 </button>
-                {inviteLink && (
-                  <div className="inline-flex items-center gap-2 rounded-2xl border border-border/30 bg-card/35 px-4 py-3 text-xs text-muted-foreground">
-                    <LinkIcon className="h-4 w-4" />
-                    {copy.linkReady}
-                  </div>
-                )}
+                <a
+                  href={`https://wa.me/?text=${encodeURIComponent("I want us to try Sacred Path together 🌿 Use my code to connect: " + inviteCode)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-2xl border border-green-500/30 bg-green-950/20 px-4 py-3 text-sm text-green-300 transition-all hover:border-green-500/50"
+                >
+                  <span>💬</span> WhatsApp
+                </a>
+                <a
+                  href={`sms:?body=${encodeURIComponent("I want us to try Sacred Path together 🌿 Use my code: " + inviteCode)}`}
+                  className="inline-flex items-center gap-2 rounded-2xl border border-blue-500/30 bg-blue-950/20 px-4 py-3 text-sm text-blue-300 transition-all hover:border-blue-500/50"
+                >
+                  <span>✉️</span> Message
+                </a>
               </div>
             </div>
           )}
@@ -519,15 +527,12 @@ const Connect = () => {
           ))}
         </ul>
 
-        <a
-          href="/app/space"
+        <Link
+          to="/app/space"
           className="mt-6 inline-flex items-center gap-2 rounded-2xl border border-amber-400/30 bg-amber-400/12 px-5 py-3 text-sm text-foreground transition-all hover:border-amber-400/50 hover:bg-amber-400/18"
         >
-          Enter the Temple
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4 text-amber-400">
-            <path fillRule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clipRule="evenodd" />
-          </svg>
-        </a>
+          Enter the Temple →
+        </Link>
       </section>
 
       {message && (
