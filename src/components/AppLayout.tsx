@@ -73,6 +73,20 @@ const AppLayout = () => {
               })}
             </nav>
 
+            <Link
+              to="/app/wisdom"
+              className={`mt-2 flex items-center gap-3 rounded-2xl border px-3 py-3 transition-all ${
+                location.pathname === "/app/wisdom"
+                  ? "border-primary/25 bg-primary/10"
+                  : "border-transparent bg-transparent hover:border-border/30 hover:bg-background/45"
+              }`}
+            >
+              <div className="rounded-xl border border-border/30 bg-card/45 p-2 text-sm">
+                🌿
+              </div>
+              <div className="font-body text-sm text-foreground">Share your wisdom</div>
+            </Link>
+
             <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-border/30 bg-background/40 p-3">
               <LanguageSwitcher />
               <Button variant="ghost" size="icon" onClick={signOut} className="rounded-xl border border-border/30 bg-card/45 hover:bg-card/60">
