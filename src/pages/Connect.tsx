@@ -138,14 +138,26 @@ const Connect = () => {
   const disconnectPartner = async () => {
     if (!user) return;
 
-    const { data: couple } = await supabase
-      .from("couples")
-      .select("id")
-      .or(`partner_a.eq.${user.id},partner_b.eq.${user.id}`)
-      .maybeSingle();
+    setStatus("idle");
+    setMessage("");
 
-    if (couple) {
-      await supabase.from("couples").delete().eq("id", couple.id);
+    const resolved = await fetchCoupleStateForUser(supabase, user.id);
+    const activeCouple = resolved.connected ? resolved.activeCouple : null;
+
+    if (!activeCouple?.id) {
+      setIsConnected(false);
+      setInviteCode(null);
+      setShowDisconnectConfirm(false);
+      await loadCoupleState();
+      return;
+    }
+
+    const { error } = await supabase.from("couples").delete().eq("id", activeCouple.id);
+
+    if (error) {
+      setStatus("error");
+      setMessage(error.message || "Could not disconnect right now.");
+      return;
     }
 
     try {
