@@ -347,8 +347,9 @@ const PartnerSpace = () => {
     if (isViewKey(viewParam)) {
       setViewMode(viewParam);
     }
-    if (!isToolKey(toolParam)) return;
-    activateTool(toolParam);
+    if (isToolKey(toolParam)) {
+      activateTool(toolParam);
+    }
   }, [toolParam, viewParam, hasPremiumAccess]);
 
   useEffect(() => {
@@ -468,6 +469,13 @@ const PartnerSpace = () => {
         : null,
     [belovedWeatherEntry, lang, myWeatherEntry],
   );
+
+  // Auto-open match drawer when navigated from home with openMatch=1
+  useEffect(() => {
+    if (searchParams.get("openMatch") === "1" && weatherMatch && weatherStateMode === "both") {
+      setMatchDrawerOpen(true);
+    }
+  }, [searchParams, weatherMatch, weatherStateMode]);
 
   const matchTimestamp = useMemo(() => {
     if (!myWeatherEntry || !belovedWeatherEntry) return 0;
