@@ -18,8 +18,8 @@ USING (
     SELECT 1
     FROM public.couples
     WHERE
-      (partner_a = auth.uid() AND partner_b = user_id)
+      (partner_a = auth.uid() AND partner_b = profiles.user_id)
       OR
-      (partner_b = auth.uid() AND partner_a = user_id)
+      (partner_b = auth.uid() AND partner_a = profiles.user_id)
   )
 );
