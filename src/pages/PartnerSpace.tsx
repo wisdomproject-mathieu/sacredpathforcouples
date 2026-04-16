@@ -1199,7 +1199,7 @@ const PartnerSpace = () => {
                   return (
                     <div
                       key={tool.key}
-                      className={`relative overflow-hidden rounded-[26px] border p-5 text-left backdrop-blur-sm transition-all ${
+                      className={`relative overflow-hidden rounded-[26px] border p-4 text-left backdrop-blur-sm transition-all ${
                         active
                           ? "border-primary/30 bg-primary/12 shadow-[0_18px_50px_-36px_rgba(255,173,70,0.42)]"
                           : "border-border/25 bg-card/55 hover:border-primary/20 hover:bg-card/65"
@@ -1230,8 +1230,8 @@ const PartnerSpace = () => {
                         <div className={`inline-flex w-fit rounded-2xl border border-border/30 bg-background/45 p-3 ${tool.iconClass}`}>
                           <Icon className="h-5 w-5" />
                         </div>
-                        <h3 className="mt-4 font-display text-xl text-foreground">{tool.title}</h3>
-                        <p className="mt-2 text-sm leading-6 text-muted-foreground">{tool.subtitle}</p>
+                        <h3 className="mt-3 font-display text-base text-foreground">{tool.title}</h3>
+                        <p className="mt-1.5 text-xs leading-5 text-muted-foreground">{tool.subtitle}</p>
                         {locked && (
                           <p className="mt-2 text-xs leading-5 text-amber-100/85">
                             {l(
@@ -1266,21 +1266,6 @@ const PartnerSpace = () => {
                   );
                 })}
               </div>
-              {weatherStateMode === "none" && (
-                <div className="mt-5 rounded-[24px] border border-amber-300/20 bg-amber-500/6 p-4">
-                  <p className="text-xs uppercase tracking-[0.2em] text-amber-300/80">Daily Practice</p>
-                  <h3 className="mt-2 font-display text-2xl text-foreground">Reconnect</h3>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    Seven practices for returning to each other — from three breaths to twenty minutes.
-                  </p>
-                  <Link
-                    to="/app/reconnect"
-                    className="mt-3 inline-flex items-center gap-2 rounded-2xl border border-amber-400/25 bg-amber-400/10 px-3 py-2 text-sm text-foreground transition-all hover:border-amber-400/40 hover:bg-amber-400/16"
-                  >
-                    Open Reconnect practices →
-                  </Link>
-                </div>
-              )}
             </section>
             ) : null}
 
@@ -1721,35 +1706,6 @@ const PartnerSpace = () => {
             oraclePreview
           ))}
 
-        {showClosingPremiumBanner && (
-          <section className="rounded-[30px] border border-amber-300/30 bg-gradient-to-br from-amber-500/12 via-background to-background p-6 shadow-[0_28px_90px_-46px_rgba(251,191,36,0.45)] md:p-7">
-            <p className="text-xs uppercase tracking-[0.24em] text-amber-200">{l("FOR DEEPER PRACTICE", "POUR UNE PRATIQUE PLUS PROFONDE", "PRO HLUBŠÍ PRAXI")}</p>
-            <h2 className="mt-3 font-display text-3xl text-foreground md:text-4xl">{l("Create moments that change your relationship.", "Créez des moments qui changent votre relation.", "Vytvořte chvíle, které změní váš vztah.")}</h2>
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
-              {l(
-                "Premium offers deeper rituals and guided experiences designed to help couples slow down, reconnect, and bring more tenderness, desire, and presence into their bond.",
-                "Premium offre des rituels plus profonds et des expériences guidées pour aider les couples à ralentir, se reconnecter, et apporter plus de tendresse, de désir et de présence dans leur lien.",
-                "Premium nabízí hlubší rituály a vedené zážitky navržené tak, aby páry zpomalily, znovu se propojily a přinesly do svého pouta více něhy, touhy a přítomnosti.",
-              )}
-            </p>
-            <div className="mt-5 flex flex-wrap gap-3">
-              <Link
-                to="/pricing"
-                className="rounded-2xl border border-amber-300/35 bg-amber-500/14 px-5 py-3 text-sm text-foreground transition-all hover:border-amber-300/55 hover:bg-amber-500/20"
-              >
-                {l("Begin a deeper practice", "Commencer une pratique plus profonde", "Začít hlubší praxi")}
-              </Link>
-              <button
-                type="button"
-                onClick={() => activateTool("weather")}
-                className="inline-flex items-center gap-2 rounded-2xl border border-border/35 bg-card/45 px-5 py-3 text-sm text-foreground transition-all hover:border-border/55 hover:bg-card/60"
-              >
-                <LockOpen className="h-4 w-4 text-amber-300" />
-                {l("Continue with open access", "Continuer en accès libre", "Pokračovat v otevřeném přístupu")}
-              </button>
-            </div>
-          </section>
-        )}
       </div>
     </div>
   );

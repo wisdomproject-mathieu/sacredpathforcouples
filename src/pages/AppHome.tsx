@@ -7,7 +7,6 @@ import {
   ChevronDown,
   ChevronUp,
   Heart,
-  HeartHandshake,
   Lock,
   MessageCircle,
   Sparkles,
@@ -1212,78 +1211,56 @@ const AppHome = () => {
         </div>
       </section>
 
-      {!hasPremiumAccess ? (
+      {!hasPremiumAccess && (
         <section className="rounded-[28px] bg-[rgba(255,255,255,0.02)] px-5 pb-6 pt-5">
-          <p className="mb-4 text-xs uppercase tracking-[0.22em] text-amber-400/70">{copy.lockedDaily}</p>
           <div className="grid gap-5 md:grid-cols-2">
-          <div className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.18),rgba(15,23,42,0.12))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.5)]">
-            <div className="flex items-center gap-2 text-amber-200">
-              <Lock className="h-4 w-4" />
-              <span className="text-xs uppercase tracking-[0.16em]">{copy.lockedDaily}</span>
+            {/* For Him */}
+            <div className="rounded-[24px] border border-indigo-300/25 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.18),transparent_58%),linear-gradient(135deg,rgba(79,70,229,0.14),rgba(15,23,42,0.12))] p-4 shadow-[0_24px_70px_-45px_rgba(99,102,241,0.4)]">
+              <div className="flex items-center gap-2 text-indigo-300">
+                <Lock className="h-4 w-4" />
+                <span className="text-xs uppercase tracking-[0.16em]">For Him</span>
+              </div>
+              <h3 className="mt-2 font-display text-xl text-foreground">Lead with presence</h3>
+              <p className="mt-3 text-sm leading-6 text-foreground/90">
+                The most powerful thing you can bring to your relationship is your full, unhurried attention. Premium opens the path to masculine depth — from polarity to sacred touch.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <span className="rounded-full border border-indigo-300/30 bg-indigo-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-indigo-100">Polarity</span>
+                <span className="rounded-full border border-indigo-300/30 bg-indigo-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-indigo-100">Presence</span>
+                <span className="rounded-full border border-indigo-300/30 bg-indigo-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-indigo-100">Sacred Touch</span>
+              </div>
+              <Link
+                to="/pricing"
+                className="mt-4 inline-flex items-center gap-2 rounded-xl border border-indigo-300/30 bg-indigo-500/14 px-3 py-2 text-sm text-foreground transition-all hover:border-indigo-300/45 hover:bg-indigo-500/20"
+              >
+                Explore the path
+                <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
-            <h3 className="mt-2 font-display text-xl text-foreground">{copy.lockedDailyTitle}</h3>
-            <p className="mt-3 text-sm leading-6 text-foreground/90">
-              {copy.lockedDailyDesc}
-            </p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{copy.chipExtraCards}</span>
-              <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{copy.chipDailyRefresh}</span>
-              <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{copy.chipSensualGuidance}</span>
-            </div>
-            <Link
-              to="/pricing"
-              className="mt-4 inline-flex items-center gap-2 rounded-xl border border-amber-300/30 bg-amber-500/14 px-3 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
-            >
-              {copy.buttonDailyPlans}
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
 
-          <div className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(250,204,21,0.2),transparent_60%),linear-gradient(135deg,rgba(251,191,36,0.16),rgba(17,24,39,0.14))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.46)]">
-            <div className="flex items-center gap-2 text-amber-200">
-              <Lock className="h-4 w-4" />
-              <span className="text-xs uppercase tracking-[0.16em]">{copy.lockedFull}</span>
+            {/* For Her */}
+            <div className="rounded-[24px] border border-rose-300/25 bg-[radial-gradient(circle_at_top_right,rgba(244,63,94,0.16),transparent_58%),linear-gradient(135deg,rgba(225,29,72,0.12),rgba(15,23,42,0.12))] p-4 shadow-[0_24px_70px_-45px_rgba(244,63,94,0.35)]">
+              <div className="flex items-center gap-2 text-rose-300">
+                <Lock className="h-4 w-4" />
+                <span className="text-xs uppercase tracking-[0.16em]">For Her</span>
+              </div>
+              <h3 className="mt-2 font-display text-xl text-foreground">Receive what you deserve</h3>
+              <p className="mt-3 text-sm leading-6 text-foreground/90">
+                Your nervous system is the altar of the relationship. Premium gives you the tools to open fully — from emotional safety to erotic confidence on your own terms.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <span className="rounded-full border border-rose-300/30 bg-rose-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-rose-100">Safety first</span>
+                <span className="rounded-full border border-rose-300/30 bg-rose-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-rose-100">Erotic confidence</span>
+                <span className="rounded-full border border-rose-300/30 bg-rose-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-rose-100">Feminine depth</span>
+              </div>
+              <Link
+                to="/pricing"
+                className="mt-4 inline-flex items-center gap-2 rounded-xl border border-rose-300/30 bg-rose-500/14 px-3 py-2 text-sm text-foreground transition-all hover:border-rose-300/45 hover:bg-rose-500/20"
+              >
+                Explore the path
+                <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
-            <h3 className="mt-2 font-display text-xl text-foreground">{copy.lockedFullTitle}</h3>
-            <p className="mt-3 text-sm leading-6 text-foreground/90">
-              {copy.lockedFullDesc}
-            </p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{copy.chipTemple}</span>
-              <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{copy.chipLibrary}</span>
-              <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">{copy.chipOracle}</span>
-            </div>
-            <Link
-              to="/pricing"
-              className="mt-4 inline-flex items-center gap-2 rounded-xl border border-amber-300/30 bg-amber-500/14 px-3 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
-            >
-              {copy.buttonFullPlans}
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-          </div>
-        </section>
-      ) : (
-        <section className="rounded-[20px] border border-emerald-300/25 bg-[radial-gradient(circle_at_top_right,rgba(74,222,128,0.22),transparent_58%),linear-gradient(135deg,rgba(16,185,129,0.18),rgba(15,23,42,0.14))] p-4 shadow-[0_24px_70px_-45px_rgba(74,222,128,0.45)]">
-          <div className="flex items-center gap-2 text-emerald-200">
-            <HeartHandshake className="h-4 w-4" />
-            <span className="text-xs uppercase tracking-[0.16em]">{copy.premiumActive}</span>
-          </div>
-          <h3 className="mt-1.5 font-display text-xl text-foreground">{copy.premiumActiveTitle}</h3>
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-foreground/90">{copy.premiumActiveDesc}</p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <Link
-              to="/app/space"
-              className="inline-flex items-center gap-2 rounded-xl border border-emerald-300/35 bg-emerald-500/14 px-3 py-2 text-sm text-foreground transition-all hover:border-emerald-300/50 hover:bg-emerald-500/20"
-            >
-              {copy.buttonOpenTemple}
-            </Link>
-            <Link
-              to="/app/paths"
-              className="inline-flex items-center gap-2 rounded-xl border border-border/35 bg-card/55 px-3 py-2 text-sm text-foreground transition-all hover:border-border/55 hover:bg-card/70"
-            >
-              {copy.buttonOpenLibrary}
-            </Link>
           </div>
         </section>
       )}
