@@ -807,6 +807,20 @@ const AppHome = () => {
     }
   };
 
+  const handleCopyCode = handleCopyInvite;
+
+  const handleCopyInviteLink = async () => {
+    if (!inviteCode) return;
+    try {
+      const link = `${window.location.origin}/app/connect?invite=${inviteCode}`;
+      await navigator.clipboard.writeText(link);
+      setCopiedInvite(true);
+      setTimeout(() => setCopiedInvite(false), 2000);
+    } catch {
+      // ignore
+    }
+  };
+
   const saveWeather = async () => {
     if (!user || !myWeatherSelected || !coupleId) return;
     setSavingWeather(true);
@@ -944,114 +958,107 @@ const AppHome = () => {
 
       {/* Block 2: Intimacy Weather */}
       {!relationshipConnected ? (
-        <div className="overflow-hidden rounded-[24px] border border-amber-400/20 bg-card/50 p-5">
-          {/* Top: description + pills */}
-          <div className="flex gap-4">
-            <div className="flex-1">
-              <p className="text-xs uppercase tracking-[0.22em] text-amber-400/70">INTIMACY WEATHER</p>
-              <h3 className="mt-2 font-display text-xl text-foreground">Name the climate before you touch the night</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Both partners check in. The app reads your combined state and suggests the exact ritual for tonight.
-              </p>
-              <div className="mt-3 grid grid-cols-2 gap-1.5 opacity-60">
-                {[
-                  { emoji: "🔥", label: "Erotic" },
-                  { emoji: "✨", label: "Playful" },
-                  { emoji: "💗", label: "Tender" },
-                  { emoji: "🌙", label: "Longing" },
-                ].map((pill) => (
-                  <span
-                    key={pill.label}
-                    className="flex items-center gap-1.5 rounded-full border border-border/30 px-2.5 py-1 text-xs text-muted-foreground"
-                  >
-                    {pill.emoji} {pill.label}
-                  </span>
-                ))}
+        <div className="overflow-hidden rounded-[24px] border border-amber-400/20 bg-card/50">
+
+          {/* PART 1 — Mood picker */}
+          <div className="p-5">
+            <div className="mb-4 flex items-center gap-3">
+              <img
+                src={shivaShaktiIcon}
+                alt=""
+                className="h-8 w-8 rounded-[8px] object-cover opacity-80"
+              />
+              <div>
+                <p className="text-xs uppercase tracking-[0.22em] text-amber-400/70">INTIMACY WEATHER</p>
+                <p className="font-display text-lg leading-tight text-foreground">How are you arriving tonight?</p>
               </div>
             </div>
+            <div className="grid grid-cols-4 gap-2">
+              {[
+                { emoji: "🌞", label: "Open" },
+                { emoji: "💗", label: "Tender" },
+                { emoji: "✨", label: "Playful" },
+                { emoji: "☁️", label: "Stressed" },
+                { emoji: "🌙", label: "Longing" },
+                { emoji: "🔥", label: "Erotic" },
+                { emoji: "🫧", label: "Tired" },
+                { emoji: "⚡", label: "Reassurance" },
+              ].map((mood) => (
+                <button
+                  key={mood.label}
+                  type="button"
+                  className="flex cursor-pointer flex-col items-center gap-1 rounded-[12px] border border-border/30 bg-background/40 p-2.5 transition-all hover:border-amber-400/40 hover:bg-amber-400/10"
+                >
+                  <span className="text-lg">{mood.emoji}</span>
+                  <span className="text-[10px] leading-none text-muted-foreground">{mood.label}</span>
+                </button>
+              ))}
+            </div>
+            <p className="mt-3 text-xs italic text-muted-foreground/50">
+              Select your state — your partner will see it when they connect
+            </p>
           </div>
 
-          {/* TONIGHT preview card — full width, expanded */}
-          <div className="mt-4 overflow-hidden rounded-[16px] border border-amber-400/25 bg-amber-950/30">
-            {/* Header band */}
-            <div className="border-b border-amber-400/10 bg-gradient-to-r from-amber-950/60 to-transparent px-4 py-3">
-              <p className="text-[10px] uppercase tracking-widest text-amber-400/60">TONIGHT'S PATH</p>
-              <p className="mt-1 font-display text-lg text-foreground">Playful Fire</p>
-              <p className="text-xs text-muted-foreground">Desire meets lightness.</p>
+          {/* PART 2 — Tonight's path preview (blurred) */}
+          <div className="border-t border-amber-400/10 bg-gradient-to-r from-amber-950/40 to-card/20 p-4">
+            <div className="mb-3 flex items-center justify-between">
+              <p className="text-xs uppercase tracking-[0.18em] text-amber-400/60">TONIGHT'S PATH</p>
+              <span className="text-xs text-muted-foreground/40">🔒 Connect to unlock</span>
             </div>
-            {/* Combination + interpretation */}
-            <div className="border-b border-amber-400/10 px-4 py-3">
-              <p className="text-xs text-amber-300/70">EROTIC 🔥 + PLAYFUL ✨</p>
-              <p className="mt-1.5 text-sm font-medium leading-5 text-foreground">Desire meets curiosity in a playful current.</p>
-              <p className="mt-1 text-xs leading-5 text-muted-foreground/70">Keep this alive through teasing, laughter, eye contact, and consented sensual play.</p>
-              <div className="mt-2 flex flex-wrap gap-1">
-                {["TANTRA", "KAMA SUTRA", "POLARITY"].map((tag) => (
-                  <span key={tag} className="rounded-full border border-amber-300/20 px-2 py-0.5 text-[9px] uppercase tracking-wide text-amber-300/60">{tag}</span>
-                ))}
-              </div>
-              <p className="mt-1.5 text-[10px] italic text-muted-foreground/50">Inspired by Tantra, Kama Sutra, Polarity and David Deida</p>
-            </div>
-            {/* Ritual previews — blurred/locked */}
             <div className="relative">
-              <div className="pointer-events-none grid gap-2 p-4 opacity-40 sm:grid-cols-2">
-                <div className="rounded-[10px] border border-border/20 bg-background/20 p-3">
-                  <p className="text-sm font-medium text-foreground">Tease, Gaze, Touch</p>
-                  <p className="mt-0.5 text-[10px] uppercase tracking-wide text-amber-300/60">A PRESSURE-LIGHT IGNITION RITUAL</p>
-                  <p className="mt-1.5 text-[11px] leading-4 text-muted-foreground/70">Trade playful lines, hold eye contact, then add one intentional touch each round.</p>
-                  <div className="mt-2 flex flex-wrap gap-1">
-                    {["7 MIN", "MEDIUM", "SPARK WITH SAFETY"].map((t) => (
-                      <span key={t} className="rounded border border-border/20 px-1.5 py-0.5 text-[9px] text-muted-foreground/60">{t}</span>
-                    ))}
-                  </div>
-                </div>
-                <div className="rounded-[10px] border border-border/20 bg-background/20 p-3">
-                  <p className="text-sm font-medium text-foreground">One Song Current</p>
-                  <p className="mt-0.5 text-[10px] uppercase tracking-wide text-amber-300/60">MOVE BEFORE WORDS</p>
-                  <p className="mt-1.5 text-[11px] leading-4 text-muted-foreground/70">Let one song guide movement and polarity, then share one desire sentence each.</p>
-                  <div className="mt-2 flex flex-wrap gap-1">
-                    {["5 MIN", "MEDIUM", "EMBODIED PLAYFUL CHARGE"].map((t) => (
-                      <span key={t} className="rounded border border-border/20 px-1.5 py-0.5 text-[9px] text-muted-foreground/60">{t}</span>
-                    ))}
-                  </div>
+              <div className="pointer-events-none select-none blur-[3px]">
+                <p className="font-display text-xl text-foreground">Playful Fire</p>
+                <p className="mt-1 text-sm text-muted-foreground">Desire meets curiosity in a playful current.</p>
+                <div className="mt-2 flex gap-2">
+                  <span className="rounded-full border border-amber-400/20 px-2 py-0.5 text-xs text-amber-400/60">TANTRA</span>
+                  <span className="rounded-full border border-amber-400/20 px-2 py-0.5 text-xs text-amber-400/60">POLARITY</span>
                 </div>
               </div>
-              <div className="absolute inset-0 flex items-end justify-center bg-gradient-to-b from-transparent via-amber-950/50 to-amber-950/95 pb-4">
-                <p className="text-xs italic text-amber-400/70">Connect with your partner to unlock tonight's full path</p>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <p className="rounded-full border border-amber-400/20 bg-card/80 px-3 py-1.5 text-xs font-medium text-amber-300/80">
+                  Invite your partner to reveal tonight's path
+                </p>
               </div>
             </div>
           </div>
 
-          {/* Invite action row */}
-          <div className="mt-4 border-t border-border/20 pt-4">
-            <p className="mb-3 text-xs text-muted-foreground">Your partner needs a code to connect:</p>
+          {/* PART 3 — Invite action */}
+          <div className="border-t border-border/20 p-4">
+            <p className="mb-3 text-xs text-muted-foreground">Share your code and explore together:</p>
             {inviteCode ? (
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 rounded-[10px] border border-amber-400/20 bg-amber-950/20 px-3 py-2">
-                  <span className="font-display text-base tracking-[0.2em] text-amber-300">{inviteCode}</span>
-                </div>
-                <div className="flex flex-wrap gap-2">
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 rounded-[12px] border border-border/30 bg-background/40 px-4 py-3">
+                  <span className="flex-1 font-display text-2xl tracking-[0.3em] text-foreground">{inviteCode}</span>
                   <button
                     type="button"
-                    onClick={handleCopyInvite}
-                    className="flex items-center gap-2 rounded-[10px] border border-border/30 bg-background/40 px-3 py-2 text-xs text-foreground transition-all hover:border-amber-400/40"
+                    onClick={handleCopyCode}
+                    className="text-xs text-amber-400/70 transition-colors hover:text-amber-400"
                   >
-                    <Copy className="h-3.5 w-3.5" />
-                    {copiedInvite ? "Copied!" : "Copy code"}
+                    {copiedInvite ? "Copied!" : "Copy"}
                   </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
                   <a
-                    href={`https://wa.me/?text=${encodeURIComponent("I want us to try Sacred Path together 🌿 Use my code to connect: " + inviteCode)}`}
+                    href={`https://wa.me/?text=${encodeURIComponent("I want us to explore Sacred Path together 🌿\nUse my code to connect: " + inviteCode + "\nsacredpathforcouples.com")}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 rounded-[10px] border border-green-500/30 bg-green-950/20 px-3 py-2 text-xs text-green-300 transition-all hover:border-green-500/50"
+                    className="flex items-center gap-1.5 rounded-[10px] border border-green-500/30 bg-green-950/20 px-3 py-2 text-xs text-green-300 transition-colors hover:border-green-500/50"
                   >
-                    <span>💬</span> WhatsApp
+                    💬 WhatsApp
                   </a>
                   <a
-                    href={`sms:?body=${encodeURIComponent("I want us to try Sacred Path together 🌿 Use my code: " + inviteCode)}`}
-                    className="flex items-center gap-2 rounded-[10px] border border-blue-500/30 bg-blue-950/20 px-3 py-2 text-xs text-blue-300 transition-all hover:border-blue-500/50"
+                    href={`sms:?body=${encodeURIComponent("I want us to explore Sacred Path together 🌿 My code: " + inviteCode + " — sacredpathforcouples.com")}`}
+                    className="flex items-center gap-1.5 rounded-[10px] border border-blue-500/30 bg-blue-950/20 px-3 py-2 text-xs text-blue-300 transition-colors hover:border-blue-500/50"
                   >
-                    <span>✉️</span> Message
+                    ✉️ Message
                   </a>
+                  <button
+                    type="button"
+                    onClick={handleCopyInviteLink}
+                    className="flex items-center gap-1.5 rounded-[10px] border border-border/30 bg-background/40 px-3 py-2 text-xs text-muted-foreground transition-colors hover:border-amber-400/30"
+                  >
+                    🔗 Copy link
+                  </button>
                 </div>
               </div>
             ) : (
@@ -1059,9 +1066,9 @@ const AppHome = () => {
                 type="button"
                 onClick={createInviteOnHome}
                 disabled={generatingCode}
-                className="inline-flex items-center gap-2 rounded-[10px] border border-amber-400/30 bg-amber-950/20 px-3 py-2 text-xs text-amber-300 transition-all hover:border-amber-400/50 disabled:opacity-50"
+                className="flex w-full items-center justify-center gap-2 rounded-[12px] border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-amber-300 transition-all hover:bg-amber-400/20 disabled:opacity-50"
               >
-                {generatingCode ? "Generating…" : "Generate invite code →"}
+                {generatingCode ? "Generating…" : "✦ Generate your invite code"}
               </button>
             )}
           </div>
