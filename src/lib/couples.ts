@@ -77,6 +77,26 @@ export const fetchCoupleStateForUser = async (
   client: SupabaseClient<Database>,
   userId: string,
 ): Promise<FetchCoupleStateResult> => {
+  if (readForceDisconnected(userId)) {
+    // Keep invite generation working even when we force local disconnected mode.
+    const { data: pendingRows } = await client
+      .from("couples")
+      .select("id, partner_a, partner_b, couple_code, created_at, updated_at")
+      .eq("partner_a", userId)
+      .is("partner_b", null)
+      .not("couple_code", "like", "DEAD_%")
+      .order("updated_at", { ascending: false });
+
+    const pendingInvite = pendingRows?.[0] ?? null;
+    return {
+      activeCouple: null,
+      pendingInvite,
+      connected: false,
+      partnerId: null,
+      rows: pendingRows ?? [],
+    };
+  }
+
   const [asPartnerAResult, asPartnerBResult] = await Promise.all([
     client
       .from("couples")
@@ -129,13 +149,17 @@ export const markForceDisconnected = (userId: string): void => {
   try {
     localStorage.setItem(`sacred_path_force_disconnected_${userId}`, "true");
     localStorage.setItem(`sacred_path_force_disconnected_${userId}_timestamp`, Date.now().toString());
-  } catch {}
+  } catch {
+    // no-op: localStorage may be unavailable in private contexts
+  }
 };
 
 export const clearForceDisconnected = (userId: string): void => {
   try {
     localStorage.removeItem(`sacred_path_force_disconnected_${userId}`);
-  } catch {}
+  } catch {
+    // no-op: localStorage may be unavailable in private contexts
+  }
 };
 
 export const readForceDisconnected = (userId: string): boolean => {

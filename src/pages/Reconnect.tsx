@@ -99,13 +99,6 @@ const libraryPages = [
     icon: Heart,
     iconClass: "text-rose-300",
   },
-  {
-    to: "/app/reconnect",
-    labelKey: "pageReconnect",
-    subtitleKey: "pageReconnectSubtitle",
-    icon: MessageCircleHeart,
-    iconClass: "text-amber-300",
-  },
 ];
 
 const reconnectTools: ReconnectTool[] = [
@@ -1805,7 +1798,7 @@ const Reconnect = () => {
 
         <div className="mt-6 w-full rounded-[24px] border border-border/30 bg-card/45 p-4">
           <div className="text-xs uppercase tracking-[0.22em] text-primary/80">{ui.sacredPages}</div>
-          <div className="mt-3 grid gap-3 md:grid-cols-3">
+          <div className="mt-3 grid gap-3 md:grid-cols-2">
             {libraryPages.map((page) => {
               const Icon = page.icon;
               const active = page.to === "/app/reconnect";
@@ -1827,6 +1820,18 @@ const Reconnect = () => {
                 </Link>
               );
             })}
+          </div>
+          <div className="mt-3 rounded-2xl border border-border/25 bg-background/40 px-3 py-2">
+            <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+              {lang === "fr" ? "Reconnect intégré" : lang === "cs" ? "Reconnect integrován" : "Reconnect integrated"}
+            </p>
+            <p className="mt-1 text-xs leading-5 text-foreground/85">
+              {lang === "fr"
+                ? "Les pratiques Reconnect nourrissent aussi Tonight Path, les recommandations météo et More Rituals for Two."
+                : lang === "cs"
+                  ? "Reconnect praxe napájí také Dnešní cestu, doporučení podle počasí a Více rituálů pro dva."
+                  : "Reconnect practices also feed Tonight Path, weather-based recommendations, and More Rituals for Two."}
+            </p>
           </div>
         </div>
       </section>

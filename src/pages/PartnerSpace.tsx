@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
@@ -216,6 +216,96 @@ const normalizeLegacyJourneyCopy = (value: string) =>
     .replace(/\s+/g, " ")
     .trim();
 
+const hashString = (value: string) =>
+  Array.from(value).reduce((acc, char) => (acc * 31 + char.charCodeAt(0)) >>> 0, 7);
+
+const templeSendSuggestions: Record<Language, { whispers: string[]; gratitudes: string[]; quotes: string[] }> = {
+  en: {
+    whispers: [
+      "I want to meet you softly tonight, with all my attention.",
+      "Tonight I want to lead with calm hands and an open heart.",
+      "You have been in my heart all day.",
+      "Come closer later — I want presence before words.",
+      "Thank you for the warmth you bring into my life.",
+      "Tonight I want tenderness, not noise.",
+    ],
+    gratitudes: [
+      "Thank you for the way you stay with me, even in ordinary moments.",
+      "I notice your effort, your heart, and your presence.",
+      "You make love feel safer and deeper.",
+      "Thank you for being someone I can return to.",
+      "I cherish the way you carry both strength and softness.",
+    ],
+    quotes: [
+      "Desire deepens where presence is protected.",
+      "Love grows where gratitude is spoken aloud.",
+      "A conscious couple returns before distance hardens.",
+      "Tenderness is one of the highest forms of strength.",
+      "The sacred often begins in one honest gesture.",
+      "Devotion is built in small repeated acts.",
+      "When two partners soften, repair becomes possible.",
+      "Safety and attraction can grow in the same breath.",
+      "A gentle message can reopen a closed evening.",
+    ],
+  },
+  fr: {
+    whispers: [
+      "Ce soir, j'ai envie de te rencontrer en douceur, avec toute mon attention.",
+      "Ce soir, j'ai envie de te guider avec des mains calmes et un cœur ouvert.",
+      "Tu as été dans mon cœur toute la journée.",
+      "Viens plus près plus tard — je veux de la présence avant les mots.",
+      "Merci pour la chaleur que tu apportes dans ma vie.",
+      "Ce soir je choisis la tendresse, pas le bruit.",
+    ],
+    gratitudes: [
+      "Merci pour la façon dont tu restes avec moi, même dans les moments ordinaires.",
+      "Je vois ton effort, ton cœur, et ta présence.",
+      "Avec toi, l'amour devient plus sûr et plus profond.",
+      "Merci d'être une personne vers qui je peux revenir.",
+      "Je chéris ta force et ta douceur.",
+    ],
+    quotes: [
+      "Le désir s'approfondit là où la présence est protégée.",
+      "L'amour grandit quand la gratitude est dite à voix haute.",
+      "Un couple conscient revient avant que la distance ne durcisse.",
+      "La tendresse est l'une des plus hautes formes de force.",
+      "Le sacré commence souvent par un geste honnête.",
+      "La dévotion se construit par de petits actes répétés.",
+      "Quand deux partenaires s'adoucissent, la réparation devient possible.",
+      "Sécurité et attirance peuvent grandir dans le même souffle.",
+      "Un message doux peut rouvrir une soirée fermée.",
+    ],
+  },
+  cs: {
+    whispers: [
+      "Dnes večer tě chci potkat jemně, s plnou pozorností.",
+      "Dnes večer chci vést klidnýma rukama a otevřeným srdcem.",
+      "Byl(a) jsi mi celý den v srdci.",
+      "Přijď později blíž — chci nejdřív přítomnost, až potom slova.",
+      "Děkuji za teplo, které přinášíš do mého života.",
+      "Dnes večer volím něhu, ne hluk.",
+    ],
+    gratitudes: [
+      "Děkuji za to, jak se mnou zůstáváš i v obyčejných chvílích.",
+      "Všímám si tvé snahy, tvého srdce i tvé přítomnosti.",
+      "S tebou je láska bezpečnější a hlubší.",
+      "Děkuji, že jsi člověk, ke kterému se mohu vracet.",
+      "Vážím si toho, jak v sobě držíš sílu i jemnost.",
+    ],
+    quotes: [
+      "Touha se prohlubuje tam, kde je chráněná přítomnost.",
+      "Láska roste tam, kde se vděčnost říká nahlas.",
+      "Vědomý pár se vrací dřív, než odstup ztvrdne.",
+      "Něžnost je jedna z nejvyšších forem síly.",
+      "Posvátno často začíná jedním upřímným gestem.",
+      "Oddanost se buduje malými opakovanými činy.",
+      "Když oba změknou, oprava je možná.",
+      "Bezpečí i přitažlivost mohou růst v jednom dechu.",
+      "Jemná zpráva může znovu otevřít uzavřený večer.",
+    ],
+  },
+};
+
 const DoorwayDetailBar = ({
   title,
   unlocked,
@@ -262,7 +352,6 @@ const PartnerSpace = () => {
   const { user } = useAuth();
   const { lang } = useLanguage();
   const l = (en: string, fr: string, cs: string) => (lang === "fr" ? fr : lang === "cs" ? cs : en);
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const tools = useMemo(
     () => toolDefs.map((tool) => ({ ...tool, ...toolTextByLanguage[lang][tool.key] })),
@@ -287,6 +376,11 @@ const PartnerSpace = () => {
   const [journeysDrawerOpen, setJourneysDrawerOpen] = useState(false);
   const [composeDrawerOpen, setComposeDrawerOpen] = useState(false);
   const [activityTick, setActivityTick] = useState(0);
+  const [templeWhisperIndex, setTempleWhisperIndex] = useState(0);
+  const [templeGratitudeIndex, setTempleGratitudeIndex] = useState(0);
+  const [templeQuoteIndex, setTempleQuoteIndex] = useState(0);
+  const [templeComposerKind, setTempleComposerKind] = useState<"whisper" | "gratitude" | "quote">("whisper");
+  const [templeSendingKind, setTempleSendingKind] = useState<"whisper" | "gratitude" | "quote" | null>(null);
   const [partnerUserId, setPartnerUserId] = useState<string | null>(null);
   const [myDisplayName, setMyDisplayName] = useState<string | null>(null);
   const [partnerDisplayName, setPartnerDisplayName] = useState<string | null>(null);
@@ -301,6 +395,72 @@ const PartnerSpace = () => {
   const journeyProgramTriggerCopy = getPremiumTriggerCopy(lang, "journey_program");
   const memoryTriggerCopy = getPremiumTriggerCopy(lang, "journey_memory");
   const templeJourneys = useMemo(() => getTempleJourneys(lang), [lang]);
+  const todayTempleSeed = useMemo(() => {
+    const now = new Date();
+    return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
+  }, []);
+  const templeSuggestionSet = templeSendSuggestions[lang];
+  const templeQuoteStart = useMemo(
+    () => hashString(`${todayTempleSeed}:${lang}:quote`) % templeSuggestionSet.quotes.length,
+    [lang, templeSuggestionSet.quotes.length, todayTempleSeed],
+  );
+  const dailyTempleQuotes = useMemo(
+    () => [0, 1, 2].map((offset) => templeSuggestionSet.quotes[(templeQuoteStart + offset) % templeSuggestionSet.quotes.length]),
+    [templeQuoteStart, templeSuggestionSet.quotes],
+  );
+  const activeTempleWhisper = useMemo(
+    () => templeSuggestionSet.whispers[(hashString(`${todayTempleSeed}:${lang}:whisper`) + templeWhisperIndex) % templeSuggestionSet.whispers.length],
+    [lang, templeSuggestionSet.whispers, templeWhisperIndex, todayTempleSeed],
+  );
+  const activeTempleGratitude = useMemo(
+    () => templeSuggestionSet.gratitudes[(hashString(`${todayTempleSeed}:${lang}:gratitude`) + templeGratitudeIndex) % templeSuggestionSet.gratitudes.length],
+    [lang, templeGratitudeIndex, templeSuggestionSet.gratitudes, todayTempleSeed],
+  );
+  const activeTempleQuote = dailyTempleQuotes[templeQuoteIndex % dailyTempleQuotes.length];
+  const activeTempleSuggestion =
+    templeComposerKind === "whisper"
+      ? activeTempleWhisper
+      : templeComposerKind === "gratitude"
+        ? activeTempleGratitude
+        : activeTempleQuote;
+  const templeSendUi = lang === "fr"
+    ? {
+        title: "Whisper, gratitude, quote",
+        subtitle: "Gardez le lien vivant avec un geste doux en un clic.",
+        whisperLabel: "Whisper",
+        gratitudeLabel: "Gratitude",
+        quoteLabel: "Citation sacrée",
+        nextLine: "Nouvelle ligne",
+        send: "Envoyer",
+        flipQuote: "Tourner",
+        quotesToday: "3 citations du jour",
+        offlineHint: "Connectez votre partenaire pour envoyer.",
+      }
+    : lang === "cs"
+      ? {
+          title: "Šepot, vděčnost, citát",
+          subtitle: "Udržte blízkost živou jedním jemným gestem.",
+          whisperLabel: "Šepot",
+          gratitudeLabel: "Vděčnost",
+          quoteLabel: "Posvátný citát",
+          nextLine: "Další věta",
+          send: "Poslat",
+          flipQuote: "Otočit",
+          quotesToday: "3 denní citáty",
+          offlineHint: "Nejdřív propojte partnera, pak odesílejte.",
+        }
+      : {
+          title: "Whisper, gratitude, quote",
+          subtitle: "Keep the bond alive with one loving gesture in seconds.",
+          whisperLabel: "Whisper",
+          gratitudeLabel: "Gratitude",
+          quoteLabel: "Sacred Quote",
+          nextLine: "New line",
+          send: "Send",
+          flipQuote: "Flip",
+          quotesToday: "3 quotes today",
+          offlineHint: "Connect your partner before sending.",
+        };
 
   const isToolUnlocked = (tool: ToolKey) => hasPremiumAccess || freeDoorways.includes(tool);
   const isViewUnlocked = (view: ViewMode) => (view === "oracle" ? hasPremiumAccess : true);
@@ -885,6 +1045,37 @@ const PartnerSpace = () => {
     await sendSacredMessage(type, quickComposeTemplates[type]);
   };
 
+  const sendTempleSuggestion = async (kind: "whisper" | "gratitude" | "quote") => {
+    if (!hasConnectedPartner || !coupleId || !user) return;
+    const text = kind === "whisper"
+      ? activeTempleWhisper
+      : kind === "gratitude"
+        ? activeTempleGratitude
+        : activeTempleQuote;
+    const messageType = kind === "quote" ? "quote_share" : kind;
+
+    setTempleSendingKind(kind);
+    try {
+      await sendSacredMessage(messageType, text);
+    } finally {
+      setTempleSendingKind(null);
+    }
+  };
+  const rotateTempleSuggestion = () => {
+    if (templeComposerKind === "whisper") {
+      setTempleWhisperIndex((value) => value + 1);
+      return;
+    }
+    if (templeComposerKind === "gratitude") {
+      setTempleGratitudeIndex((value) => value + 1);
+      return;
+    }
+    setTempleQuoteIndex((value) => (value + 1) % dailyTempleQuotes.length);
+  };
+  const sendActiveTempleSuggestion = async () => {
+    await sendTempleSuggestion(templeComposerKind);
+  };
+
   const openWeatherSection = () => {
     markSectionRead("shared_weather", latestPartnerWeatherTimestamp || Date.now());
   };
@@ -908,6 +1099,10 @@ const PartnerSpace = () => {
   const navigateTool = (tab: string) => {
     if (!isToolKey(tab)) return;
     activateTool(tab);
+  };
+  const openJourneyScreen = (screen: JourneyScreen) => {
+    setViewMode("journey");
+    setJourneyScreen(screen);
   };
 
   const activeMeta = useMemo(() => tools.find((tool) => tool.key === activeTool) ?? tools[0], [activeTool, tools]);
@@ -982,6 +1177,10 @@ const PartnerSpace = () => {
       setMobileDoorwayDetailMode(false);
     }
   }, [mobileDoorwayDetailMode, viewMode]);
+
+  useEffect(() => {
+    setTempleQuoteIndex(0);
+  }, [dailyTempleQuotes]);
 
   const premiumGateCard = (title: string, description: string) => (
     <section className="rounded-[28px] border border-amber-300/30 bg-gradient-to-br from-amber-500/14 via-background to-background p-6 shadow-[0_26px_80px_-40px_rgba(251,191,36,0.45)]">
@@ -1224,22 +1423,72 @@ const PartnerSpace = () => {
                 <>
                   <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                     <div className="rounded-[22px] border border-rose-300/30 bg-gradient-to-br from-rose-500/12 via-card/65 to-card/35 p-4">
-                      <p className="text-xs uppercase tracking-[0.18em] text-rose-200/85">{l("Whisper", "Murmure", "Šepot")}</p>
-                      <p className="mt-2 text-sm leading-6 text-foreground/90">
-                        {latestBoardItem?.body ??
-                          l(
-                            "Send one warm line to open the evening.",
-                            "Envoyez une ligne chaleureuse pour ouvrir la soirée.",
-                            "Pošli jednu hřejivou větu pro otevření večera.",
-                          )}
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => void handleQuickCompose("note")}
-                        className="mt-3 rounded-xl border border-border/35 bg-background/45 px-3 py-2 text-xs text-foreground transition-all hover:border-border/55 hover:bg-card/60"
-                      >
-                        {l("Send whisper", "Envoyer un murmure", "Poslat šepot")}
-                      </button>
+                      <p className="text-xs uppercase tracking-[0.18em] text-rose-200/85">{templeSendUi.title}</p>
+                      <p className="mt-1 text-xs leading-5 text-muted-foreground">{templeSendUi.subtitle}</p>
+
+                      <div className="mt-3 flex flex-wrap gap-1.5">
+                        {[
+                          { key: "whisper", label: templeSendUi.whisperLabel },
+                          { key: "gratitude", label: templeSendUi.gratitudeLabel },
+                          { key: "quote", label: templeSendUi.quoteLabel },
+                        ].map((item) => {
+                          const active = templeComposerKind === item.key;
+                          return (
+                            <button
+                              key={item.key}
+                              type="button"
+                              onClick={() => setTempleComposerKind(item.key as "whisper" | "gratitude" | "quote")}
+                              className={`rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] transition-all ${
+                                active
+                                  ? "border-primary/35 bg-primary/14 text-foreground"
+                                  : "border-border/35 bg-background/45 text-muted-foreground hover:text-foreground"
+                              }`}
+                            >
+                              {item.label}
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      <div className="mt-3 rounded-[12px] border border-border/35 bg-background/45 p-3">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-[10px] uppercase tracking-[0.14em] text-primary/80">
+                            {templeComposerKind === "quote"
+                              ? templeSendUi.quoteLabel
+                              : templeComposerKind === "gratitude"
+                                ? templeSendUi.gratitudeLabel
+                                : templeSendUi.whisperLabel}
+                          </p>
+                          {templeComposerKind === "quote" ? (
+                            <span className="rounded-full border border-amber-300/25 bg-amber-500/10 px-2 py-0.5 text-[9px] uppercase tracking-[0.1em] text-amber-100/85">
+                              {templeSendUi.quotesToday} · {(templeQuoteIndex % dailyTempleQuotes.length) + 1}/{dailyTempleQuotes.length}
+                            </span>
+                          ) : null}
+                        </div>
+                        <p className="mt-2 text-sm leading-6 text-foreground/90">
+                          {templeComposerKind === "quote" ? `“${activeTempleSuggestion}”` : activeTempleSuggestion}
+                        </p>
+                        <div className="mt-3 flex flex-wrap items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={rotateTempleSuggestion}
+                            className="rounded-lg border border-border/35 bg-background/45 px-2.5 py-1.5 text-[10px] text-muted-foreground transition-all hover:text-foreground"
+                          >
+                            {templeComposerKind === "quote" ? templeSendUi.flipQuote : templeSendUi.nextLine}
+                          </button>
+                          <button
+                            type="button"
+                            disabled={templeSendingKind === templeComposerKind || !hasConnectedPartner}
+                            onClick={() => void sendActiveTempleSuggestion()}
+                            className="rounded-lg border border-primary/35 bg-primary/12 px-2.5 py-1.5 text-[10px] text-foreground transition-all hover:border-primary/50 hover:bg-primary/18 disabled:opacity-60"
+                          >
+                            {templeSendingKind === templeComposerKind ? "..." : templeSendUi.send}
+                          </button>
+                        </div>
+                        {!hasConnectedPartner ? (
+                          <p className="mt-2 text-[11px] leading-5 text-muted-foreground">{templeSendUi.offlineHint}</p>
+                        ) : null}
+                      </div>
                     </div>
 
                     <div className="rounded-[22px] border border-cyan-300/30 bg-gradient-to-br from-cyan-500/12 via-card/65 to-card/35 p-4">
@@ -1298,7 +1547,7 @@ const PartnerSpace = () => {
                   <div className="grid gap-3 md:grid-cols-2">
                     <button
                       type="button"
-                      onClick={() => setJourneyScreen("tonight_path")}
+                      onClick={() => openJourneyScreen("tonight_path")}
                       className="rounded-[22px] border border-primary/35 bg-primary/14 p-4 text-left transition-all hover:border-primary/55 hover:bg-primary/20"
                     >
                       <p className="text-xs uppercase tracking-[0.2em] text-primary/85">{l("Button", "Bouton", "Tlačítko")}</p>
@@ -1313,7 +1562,7 @@ const PartnerSpace = () => {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setJourneyScreen("more_rituals")}
+                      onClick={() => openJourneyScreen("more_rituals")}
                       className="rounded-[22px] border border-border/35 bg-card/55 p-4 text-left transition-all hover:border-border/55 hover:bg-card/70"
                     >
                       <p className="text-xs uppercase tracking-[0.2em] text-primary/85">{l("Button", "Bouton", "Tlačítko")}</p>
@@ -1333,7 +1582,7 @@ const PartnerSpace = () => {
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <button
                       type="button"
-                      onClick={() => setJourneyScreen("dashboard")}
+                      onClick={() => openJourneyScreen("dashboard")}
                       className="rounded-xl border border-border/35 bg-background/45 px-3 py-2 text-xs text-foreground transition-all hover:border-border/55 hover:bg-card/60"
                     >
                       {l("Back to Our Journey", "Retour à Notre parcours", "Zpět na Naši cestu")}
@@ -1341,7 +1590,7 @@ const PartnerSpace = () => {
                     <div className="flex flex-wrap gap-2">
                       <button
                         type="button"
-                        onClick={() => setJourneyScreen("tonight_path")}
+                        onClick={() => openJourneyScreen("tonight_path")}
                         className={`rounded-xl border px-3 py-2 text-xs transition-all ${
                           journeyScreen === "tonight_path"
                             ? "border-primary/40 bg-primary/14 text-foreground"
@@ -1352,7 +1601,7 @@ const PartnerSpace = () => {
                       </button>
                       <button
                         type="button"
-                        onClick={() => setJourneyScreen("more_rituals")}
+                        onClick={() => openJourneyScreen("more_rituals")}
                         className={`rounded-xl border px-3 py-2 text-xs transition-all ${
                           journeyScreen === "more_rituals"
                             ? "border-primary/40 bg-primary/14 text-foreground"

@@ -20,6 +20,7 @@ import {
   clearForceDisconnected,
   fetchCoupleStateForUser,
   markEverConnected,
+  markForceDisconnected,
   readConnectedCoupleId,
   readEverConnected,
   storeConnectedCoupleId,
@@ -125,6 +126,33 @@ const reconnectMoveSets: Record<Language, Array<{ id: string; title: string; des
     { id: "reconnect-90-second-reset", title: "90s reset", description: "Držte se za ruce, dýchejte spolu a každý sdílejte jedno ocenění ještě před čímkoli dalším." },
     { id: "reconnect-devotion-line", title: "Věta oddanosti", description: "Zašeptete jednu větu lásky a jedno přání po hlubší blízkosti dnes večer." },
     { id: "reconnect-sensual-pause", title: "Smyslná pauza", description: "Na pět minut zastavte logistiku a nechte dotek vést dřív než slova." },
+  ],
+};
+
+const connectedReminderSets: Record<Language, string[]> = {
+  en: [
+    "Connection is built in small acts of presence.",
+    "Gratitude keeps love warm between the great moments.",
+    "Today, choose softness before speed.",
+    "The bond deepens when both hearts stay available.",
+    "Two people do not stay close by accident. They return on purpose.",
+    "A loving ritual can begin with one gentle message.",
+  ],
+  fr: [
+    "La connexion se construit dans de petits gestes de présence.",
+    "La gratitude garde l'amour vivant entre les grands moments.",
+    "Aujourd'hui, choisissez la douceur avant la vitesse.",
+    "Le lien se renforce quand les deux cœurs restent disponibles.",
+    "Deux personnes restent proches quand elles se choisissent à nouveau, chaque jour.",
+    "Un rituel d'amour peut commencer par un message tendre.",
+  ],
+  cs: [
+    "Spojení se tvoří malými akty přítomnosti.",
+    "Vděčnost drží lásku v teple mezi velkými momenty.",
+    "Dnes zvolte jemnost před spěchem.",
+    "Pouto sílí, když zůstávají otevřená obě srdce.",
+    "Blízkost nevzniká náhodou. Dva lidé se k sobě vracejí záměrně.",
+    "Láskyplný rituál může začít jednou jemnou zprávou.",
   ],
 };
 
@@ -472,6 +500,7 @@ const AppHome = () => {
   const [savingName, setSavingName] = useState(false);
   const [nudgeSending, setNudgeSending] = useState(false);
   const [nudgeSent, setNudgeSent] = useState(false);
+  const [disconnecting, setDisconnecting] = useState(false);
   const [showConnectedPopup, setShowConnectedPopup] = useState(false);
   const wasConnectedRef = useRef(false);
   const [searchParams] = useSearchParams();
@@ -695,6 +724,24 @@ const AppHome = () => {
       ).format(new Date()),
     [lang]
   );
+  const connectedJourneyLine = useMemo(
+    () =>
+      lang === "fr"
+        ? "Vous êtes reliés. Nourrissez ce lien avec présence, tendresse, et gestes qui vous ramènent l'un à l'autre."
+        : lang === "cs"
+          ? "Jste propojeni. Pečujte o pouto přítomností, něhou a drobnými kroky, které vás vrací k sobě."
+          : "You are connected. Keep this bond warm through presence, tenderness, and small acts that bring you back to each other.",
+    [lang],
+  );
+  const connectedReminderLabel = lang === "fr"
+    ? "RAPPEL DU JOUR"
+    : lang === "cs"
+      ? "DNESNÍ PŘIPOMÍNKA"
+      : "TODAY'S REMINDER";
+  const connectedDailyReminder = useMemo(
+    () => pickBySeed(connectedReminderSets[lang], `${todayKey}:connected-reminder`),
+    [lang, todayKey],
+  );
 
   const signal = useMemo(() => {
     if (latestPartnerMessage) {
@@ -829,7 +876,9 @@ const AppHome = () => {
         setPendingMoodEmoji(emoji);
         setPendingMoodLabel(label);
       }
-    } catch {}
+    } catch {
+      // Ignore malformed local cache payloads.
+    }
   }, [user, relationshipConnected]);
 
   useEffect(() => {
@@ -968,7 +1017,9 @@ const AppHome = () => {
       localStorage.setItem(`weather_pending_${user?.id}`, JSON.stringify({
         value, emoji, label, date: new Date().toDateString(),
       }));
-    } catch {}
+    } catch {
+      // Ignore local storage write failures.
+    }
   };
 
   const saveWeather = async () => {
@@ -1051,6 +1102,36 @@ const AppHome = () => {
     } finally {
       setNudgeSending(false);
     }
+  };
+
+  const disconnectPartnerOnHome = async () => {
+    if (!user || disconnecting) return;
+    setDisconnecting(true);
+
+    // Use the same proven disconnect path used in Connect.tsx.
+    markForceDisconnected(user.id);
+    void supabase.from("couples").update({ partner_b: null }).eq("partner_b", user.id);
+    void supabase.from("couples").update({ couple_code: `DEAD_${user.id.slice(0, 8)}` }).eq("partner_a", user.id);
+
+    localStorage.removeItem(`sacred_path_ever_connected_${user.id}`);
+    localStorage.removeItem(`sacred_path_connected_couple_id_${user.id}`);
+
+    setRelationshipConnected(false);
+    setCoupleId(null);
+    setInviteCode(null);
+    setPartnerName(null);
+    setMessages([]);
+    setAltarItems([]);
+    setMyWeatherEntry(null);
+    setPartnerWeatherEntry(null);
+    setMyWeatherSelected(null);
+    setWeatherPickerVisible(false);
+    setShowConnectedPopup(false);
+    setJoinCode("");
+    setJoinError("");
+    setJoinSuccess("");
+    wasConnectedRef.current = false;
+    setDisconnecting(false);
   };
 
   const handlePrimaryConnectionAction = async () => {
@@ -1231,6 +1312,7 @@ const AppHome = () => {
         partnerConnected: `${partnerName ?? "Votre partenaire"} est connecté(e).`,
         waitingBoth: "En attente de vos deux météos.",
         codeLabel: "Code de connexion",
+        disconnect: "Se déconnecter",
       }
     : lang === "cs"
       ? {
@@ -1239,6 +1321,7 @@ const AppHome = () => {
           partnerConnected: `${partnerName ?? "Partner"} je propojený.`,
           waitingBoth: "Čekáme na obě počasí.",
           codeLabel: "Párovací kód",
+          disconnect: "Odpojit partnera",
         }
       : {
           label: "Connected together",
@@ -1246,6 +1329,7 @@ const AppHome = () => {
           partnerConnected: `${partnerName ?? "Your partner"} is connected.`,
           waitingBoth: "Waiting for both weather check-ins.",
           codeLabel: "Connection code",
+          disconnect: "Disconnect",
         };
 
   return (
@@ -1285,8 +1369,14 @@ const AppHome = () => {
               ) : null}
             </h1>
             <p className="mt-2 text-sm text-muted-foreground/75">
-              {relationshipConnected ? copy.journeyLine : copy.notConnectedLine}
+              {relationshipConnected ? connectedJourneyLine : copy.notConnectedLine}
             </p>
+            {relationshipConnected ? (
+              <div className="mt-3 rounded-[12px] border border-emerald-300/25 bg-emerald-500/8 px-3 py-2.5">
+                <p className="text-[10px] uppercase tracking-[0.14em] text-emerald-200/80">{connectedReminderLabel}</p>
+                <p className="mt-1 text-sm leading-6 text-foreground/90">{connectedDailyReminder}</p>
+              </div>
+            ) : null}
             <div className="mt-3 flex flex-wrap items-center gap-2">
               <span className={`rounded-full border px-3 py-1 text-xs ${
                 relationshipConnected
@@ -1295,6 +1385,16 @@ const AppHome = () => {
               }`}>
                 {relationshipConnected ? copy.connected : copy.solo}
               </span>
+              {relationshipConnected ? (
+                <button
+                  type="button"
+                  onClick={() => void disconnectPartnerOnHome()}
+                  disabled={disconnecting}
+                  className="rounded-full border border-rose-300/35 bg-rose-500/10 px-3 py-1 text-xs text-rose-200 transition-colors hover:bg-rose-500/18 disabled:opacity-60"
+                >
+                  {disconnecting ? "..." : connectedPanelUi.disconnect}
+                </button>
+              ) : null}
               {!editingName ? (
                 <button
                   type="button"
