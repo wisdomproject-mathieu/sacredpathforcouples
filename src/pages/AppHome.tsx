@@ -1197,7 +1197,17 @@ const AppHome = () => {
   const tonightRitual = weatherMatch?.recommendations?.[0] ?? null;
   const tonightRitualTitle = tonightRitual?.title ?? dailyCards[0]?.title ?? copy.selecting;
   const tonightRitualDescription = tonightRitual?.description ?? featuredPathDescription;
-  const tonightRitualStep = tonightRitual?.ritualSteps?.[0] ?? dailyCards[0]?.steps?.[0] ?? "";
+  const tonightRitualSteps = tonightRitual?.ritualSteps?.slice(0, 3) ?? dailyCards[0]?.steps?.slice(0, 3) ?? [];
+  const waitingPathCopy = lang === "fr"
+    ? "Partagez vos deux météos pour afficher votre séquence complète de ce soir."
+    : lang === "cs"
+      ? "Sdílejte obě počasí, aby se zobrazila kompletní dnešní sekvence."
+      : "Both partners share weather to reveal the complete tonight sequence.";
+  const enterTonightPathLabel = lang === "fr"
+    ? "Entrer dans le chemin de ce soir"
+    : lang === "cs"
+      ? "Vstoupit do dnešní cesty"
+      : "Enter tonight path";
   const rotatingQuote = useMemo(
     () => pickBySeed(quotes, `${todayKey}:home-end-quote`),
     [quotes, todayKey],
@@ -1514,10 +1524,14 @@ const AppHome = () => {
                 </span>
               </div>
             ) : null}
-            {tonightRitualStep ? (
+            {tonightRitualSteps.length ? (
               <div className="mt-3 rounded-[12px] border border-border/30 bg-background/40 px-3 py-2.5">
-                <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground/75">Tonight ritual</p>
-                <p className="mt-1 text-sm text-foreground/90">{tonightRitualStep}</p>
+                <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground/75">Tonight ritual flow</p>
+                <ol className="mt-1.5 space-y-1 text-sm leading-6 text-foreground/90">
+                  {tonightRitualSteps.map((step, index) => (
+                    <li key={`${step}-${index}`}>{index + 1}. {step}</li>
+                  ))}
+                </ol>
               </div>
             ) : null}
             <div className="mt-5">
@@ -1526,11 +1540,11 @@ const AppHome = () => {
                   to="/app/space?view=journey&openMatch=1"
                   className="inline-flex items-center gap-1.5 rounded-[12px] border border-amber-400/30 bg-amber-400/10 px-4 py-2.5 text-sm text-amber-300 transition-all hover:bg-amber-400/20"
                 >
-                  {weatherUi.openTonightPath} →
+                  {enterTonightPathLabel} →
                 </Link>
               ) : (
                 <p className="rounded-[12px] border border-amber-400/20 bg-amber-950/20 px-3 py-2 text-xs text-amber-200/85">
-                  {featuredPathTitle}
+                  {waitingPathCopy}
                 </p>
               )}
             </div>

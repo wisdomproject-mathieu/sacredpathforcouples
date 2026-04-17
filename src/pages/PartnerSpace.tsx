@@ -45,6 +45,7 @@ import TimelinePreviewCard from "@/components/space/journey/TimelinePreviewCard"
 import { type WeatherCardData } from "@/components/space/journey/SharedWeatherCard";
 import WaitingForPartnerCard from "@/components/space/journey/WaitingForPartnerCard";
 import WeatherMatchCard from "@/components/space/journey/WeatherMatchCard";
+import TonightPathExperience from "@/components/space/journey/TonightPathExperience";
 import { Tables } from "@/integrations/supabase/types";
 import {
   markJourneySectionRead,
@@ -490,12 +491,12 @@ const PartnerSpace = () => {
     [belovedWeatherEntry, lang, myWeatherEntry],
   );
 
-  // Auto-open match drawer when navigated from home with openMatch=1
+  // Home entry should land users directly on a complete Tonight Path surface.
   useEffect(() => {
-    if (searchParams.get("openMatch") === "1" && weatherMatch && weatherStateMode === "both") {
-      setMatchDrawerOpen(true);
+    if (searchParams.get("openMatch") === "1") {
+      setViewMode("journey");
     }
-  }, [searchParams, weatherMatch, weatherStateMode]);
+  }, [searchParams]);
 
   const matchTimestamp = useMemo(() => {
     if (!myWeatherEntry || !belovedWeatherEntry) return 0;
@@ -1178,32 +1179,33 @@ const PartnerSpace = () => {
                           : "border-border/30 bg-background/45 hover:border-primary/20 hover:bg-card/55"
                       }`}
                     >
-                      {locked && (
-                        <button
-                          type="button"
-                          onClick={() => navigate("/pricing")}
-                          className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-full border border-amber-300/35 bg-amber-500/14 text-amber-200 transition-all hover:border-amber-300/55 hover:bg-amber-500/20"
-                          aria-label={l("Open plans", "Ouvrir les plans", "Otevřít plány")}
-                        >
-                          <Lock className="h-3.5 w-3.5" />
-                        </button>
-                      )}
-                      <button type="button" onClick={() => setViewMode(view.key)} className="w-full text-left">
                       <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-2.5 ${view.iconClass}`}>
                         <Icon className="h-4 w-4" />
                       </div>
                       <div className="mt-3 font-display text-xl text-foreground">{view.title}</div>
                       <p className="mt-1 text-sm leading-6 text-muted-foreground">{view.subtitle}</p>
-                      {locked && (
+                      {locked ? (
                         <p className="mt-2 text-xs leading-5 text-amber-100/85">
                           {l(
-                            "Unlock this page in plans to turn your shared data into next-step relationship guidance.",
-                            "Débloquez cette page dans les plans pour transformer vos données partagées en guidance relationnelle.",
-                            "Odemkněte tuto stránku v plánech a proměňte sdílená data na vedení pro další krok.",
+                            "Premium page",
+                            "Page premium",
+                            "Premium stránka",
                           )}
                         </p>
+                      ) : null}
+                      {!isJourneyView ? (
+                        <button
+                          type="button"
+                          onClick={() => setViewMode(view.key)}
+                          className="mt-3 rounded-xl border border-border/35 bg-card/45 px-3 py-2 text-xs text-foreground transition-all hover:border-border/55 hover:bg-card/60"
+                        >
+                          {l("Open page", "Ouvrir la page", "Otevřít stránku")}
+                        </button>
+                      ) : (
+                        <p className="mt-3 text-xs uppercase tracking-[0.14em] text-primary/75">
+                          {active ? l("Current page", "Page actuelle", "Aktuální stránka") : l("Available in temple", "Disponible dans le temple", "Dostupné v chrámu")}
+                        </p>
                       )}
-                      </button>
                     </div>
                   );
                 })}
@@ -1333,397 +1335,14 @@ const PartnerSpace = () => {
 
         {viewMode === "journey" && (
           <section className="space-y-5">
-            {/* Journey hero */}
-            <div className="relative overflow-hidden rounded-[26px] border border-border/20 bg-card/60 p-5 backdrop-blur-sm md:p-6">
-              <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[26px]" aria-hidden="true">
-                <img
-                  src={shivaShaktiIcon}
-                  alt=""
-                  className="absolute right-0 top-0 h-full w-2/5 object-contain object-right opacity-[0.10] md:opacity-[0.08]"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-card/95 via-card/75 to-transparent" />
-              </div>
-              <div className="relative">
-                <p className="text-xs uppercase tracking-[0.24em] text-primary/60">{l("Our Journey", "Notre parcours", "Naše cesta")}</p>
-                <h2 className="mt-2 font-display text-3xl text-foreground md:text-4xl">{l("The living story of your love", "L'histoire vivante de votre amour", "Živý příběh vaší lásky")}</h2>
-                {(weatherMatch || weatherStateMode !== "none") && (
-                  <div className="mt-3 flex flex-wrap items-center gap-2">
-                    {weatherMatch && (
-                      <span className="rounded-full border border-primary/25 bg-primary/10 px-2.5 py-1 text-[11px] uppercase tracking-[0.12em] text-primary/90">
-                        {weatherMatch.archetype.title}
-                      </span>
-                    )}
-                    <span className="rounded-full border border-border/25 bg-background/50 px-2.5 py-1 text-[11px] text-muted-foreground">
-                      {sharedStatusLabel}
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <CompactSharedWeatherRow
-              title={l("Current shared state", "État partagé actuel", "Aktuální sdílený stav")}
-              yourLabel={l("Your weather", "Votre météo", "Vaše počasí")}
-              belovedLabel={l("Beloved's weather", "Météo du partenaire", "Počasí partnera")}
-              waitingLabel={l("Waiting", "En attente", "Čekání")}
-              statusLabel={sharedStatusLabel}
-              latestMatchLabel={l("Latest match", "Dernier match", "Poslední shoda")}
-              latestMatchTitle={weatherMatch?.archetype.title}
-              yourWeather={myWeatherCard}
+            <TonightPathExperience
+              lang={lang}
+              weatherMatch={weatherMatch}
+              weatherStateMode={weatherStateMode}
+              myWeather={myWeatherCard}
               belovedWeather={belovedWeatherCard}
-              onOpen={() => {
-                openWeatherSection();
-                activateTool("weather");
-              }}
+              sharedStatusLabel={sharedStatusLabel}
             />
-
-            {weatherStateMode === "none" ? (
-              <EmptyStateCard
-                title={l("Share your weather", "Partagez votre météo", "Sdílejte své počasí")}
-                body={coupleId
-                  ? l("When both of you share, your shared weather and ritual recommendations appear here.", "Quand vous partagez tous les deux, votre météo commune et vos rituels apparaissent ici.", "Jakmile oba nasdílíte, objeví se zde společné počasí i rituál.")
-                  : l("Connect with your partner first, then share your weather to unlock your shared ritual.", "Connectez-vous d'abord à votre partenaire, puis partagez votre météo pour débloquer votre rituel commun.", "Nejprve se propojte s partnerem, pak sdílejte počasí pro odemknutí společného rituálu.")}
-                ctaLabel={coupleId ? l("Share your weather", "Partager votre météo", "Sdílet počasí") : l("Connect with partner", "Se connecter au partenaire", "Propojit s partnerem")}
-                onCta={() => (coupleId ? activateTool("weather") : navigate("/app"))}
-              />
-            ) : null}
-
-            {weatherStateMode === "mine_only" ? (
-              <WaitingForPartnerCard
-                title={l("Waiting for your beloved", "En attente de votre partenaire", "Čekání na partnera")}
-                body={l(
-                  "You've shared your weather. When your beloved shares theirs, your shared ritual will appear here.",
-                  "Vous avez partagé votre météo. Quand votre partenaire partage la sienne, votre rituel commun apparaît ici.",
-                  "Sdílel(a) jste své počasí. Jakmile partner sdílí své, objeví se zde společný rituál.",
-                )}
-                ctaLabel={l("Send a gentle nudge", "Envoyer un nudge doux", "Poslat jemné postrčení")}
-                onCta={() => void handleQuickCompose("nudge")}
-              />
-            ) : null}
-
-            {weatherStateMode === "beloved_only" ? (
-              <WaitingForPartnerCard
-                title={l("Complete your weather", "Complétez votre météo", "Doplňte své počasí")}
-                body={l(
-                  "Your beloved shared first. Complete your weather now to unlock your shared ritual.",
-                  "Votre partenaire a partagé en premier. Complétez votre météo pour débloquer votre rituel commun.",
-                  "Partner sdílel jako první. Doplňte své počasí a odemkněte společný rituál.",
-                )}
-                ctaLabel={l("Complete now", "Compléter maintenant", "Doplnit teď")}
-                onCta={() => activateTool("weather")}
-              />
-            ) : null}
-
-            <div className="grid items-start gap-5 xl:grid-cols-[1.45fr_0.9fr]">
-              <div className="space-y-5">
-                <CompactMatchCard
-                  title={l("Tonight's path", "Chemin de ce soir", "Dnešní cesta")}
-                  result={weatherStateMode === "both" ? weatherMatch : null}
-                  unreadCount={combinedMatchUnreadCount}
-                  emptyTitle={l("Shared ritual is waiting", "Le rituel partagé attend", "Společný rituál čeká")}
-                  emptyBody={l(
-                    "When both of you share weather, your next embodied step appears here.",
-                    "Quand vous partagez tous les deux votre météo, votre prochain pas incarné apparaît ici.",
-                    "Jakmile oba sdílíte počasí, objeví se zde váš další vtělený krok.",
-                  )}
-                  primaryCta={l("Open tonight's path", "Ouvrir la voie de ce soir", "Otevřít dnešní cestu")}
-                  secondaryCta={l("Read the energies", "Lire les énergies", "Přečíst energie")}
-                  openFullRitualLabel={l("Open full ritual", "Ouvrir le rituel complet", "Otevřít plný rituál")}
-                  viewAlternatesLabel={l("See alternate paths", "Voir les voies alternatives", "Zobrazit alternativní cesty")}
-                  whyFitsLabel={l("Why this fits your energies", "Pourquoi cela correspond à vos énergies", "Proč to sedí k vašim energiím")}
-                  wisdomBehindLabel={l("Wisdom behind this", "Sagesse derrière cela", "Moudrost za tím")}
-                  expandLabel={l("Read more", "Lire plus", "Číst více")}
-                  collapseLabel={l("Close", "Fermer", "Zavřít")}
-                  newChipLabel={l("new", "nouveau", "nové")}
-                  onPrimary={() => {
-                    if (weatherMatch && weatherStateMode === "both") {
-                      openMatchSection();
-                      setMatchDrawerOpen(true);
-                      return;
-                    }
-                    activateTool("weather");
-                  }}
-                  onSecondary={() => {
-                    if (weatherMatch && weatherStateMode === "both") {
-                      openMatchSection();
-                      setMatchDrawerOpen(true);
-                      return;
-                    }
-                    activateTool("weather");
-                  }}
-                  onOpenFull={() => {
-                    if (weatherMatch && weatherStateMode === "both") {
-                      openMatchSection();
-                      setMatchDrawerOpen(true);
-                    }
-                  }}
-                />
-
-                {shouldShowDepthUpgrade ? (
-                  <TempleUpgradeCard
-                    eyebrow={templeAccessName}
-                    title={matchTriggerCopy.title}
-                    body={
-                      `${matchTriggerCopy.body} ` +
-                      l(
-                        "One subscription unlocks the deeper couple experience for both of you — the best investment you'll make in your relationship.",
-                        "Un abonnement déverrouille l'expérience profonde du couple pour vous deux — le meilleur investissement dans votre relation.",
-                        "Jedno předplatné odemkne hlubší párový zážitek pro vás oba — nejlepší investice do vašeho vztahu.",
-                      )
-                    }
-                    ctaLabel={l("Unlock for both of you", "Déverrouiller pour vous deux", "Odemknout pro vás oba")}
-                    to="/pricing?entry=match-unlock"
-                    compact
-                  />
-                ) : null}
-
-                <TimelinePreviewCard
-                  title={l("Shared story preview", "Aperçu de l'histoire partagée", "Náhled sdíleného příběhu")}
-                  subtitle={l("Latest meaningful steps only", "Dernières étapes importantes seulement", "Pouze poslední důležité kroky")}
-                  items={timelinePreviewItems}
-                  unreadCount={timelineUnreadCount}
-                  emptyText={l(
-                    "Your shared story will appear as soon as new weather, messages, and rituals are exchanged.",
-                    "Votre histoire partagée apparaîtra dès les prochaines météos, messages et rituels.",
-                    "Sdílený příběh se objeví, jakmile si vyměníte počasí, zprávy a rituály.",
-                  )}
-                  viewFullLabel={l("View full story", "Voir toute l'histoire", "Zobrazit celý příběh")}
-                  newChipLabel={l("new", "nouveau", "nové")}
-                  onViewFull={() => {
-                    openTimelineSection();
-                    setTimelineDrawerOpen(true);
-                  }}
-                />
-              </div>
-
-              <aside className="space-y-5">
-                <LatestBelovedCard
-                  title={l("New from your beloved", "Nouveau de votre partenaire", "Nové od partnera")}
-                  preview={latestFromBeloved?.preview ?? ""}
-                  timestamp={latestFromBeloved?.createdAt}
-                  emptyText={l(
-                    "No unread signal yet.",
-                    "Aucun signal non lu pour le moment.",
-                    "Zatím žádný nepřečtený signál.",
-                  )}
-                  unreadCount={newBelovedUnreadCount}
-                  newChipLabel={l("new", "nouveau", "nové")}
-                  primaryCta={l("Open temple board", "Ouvrir le tableau", "Otevřít chrámovou nástěnku")}
-                  secondaryCta={l("Reply gently", "Répondre en douceur", "Odpovědět jemně")}
-                  onPrimary={() => {
-                    openBelovedSection();
-                    setTempleDrawerOpen(true);
-                  }}
-                  onSecondary={() => {
-                    openBelovedSection();
-                    setComposeDrawerOpen(true);
-                  }}
-                />
-
-                <TempleBoardPreviewCard
-                  title={l("Temple actions", "Actions du temple", "Chrámové akce")}
-                  latestSignalLabel={templeBoardSummary.title}
-                  latestSignalBody={templeBoardSummary.body}
-                  lastMessageLabel={l("Latest message", "Dernier message", "Poslední zpráva")}
-                  lastMessageBody={latestBoardItem?.body ?? l("No temple message yet.", "Pas encore de message du temple.", "Zatím žádná chrámová zpráva.")}
-                  unreadCount={templeBoardUnreadCount}
-                  newChipLabel={l("new", "nouveau", "nové")}
-                  openBoardLabel={l("Open temple board", "Ouvrir le tableau", "Otevřít chrámovou nástěnku")}
-                  composeLabel={l("Send offering", "Envoyer une offrande", "Poslat nabídku")}
-                  onOpenBoard={() => {
-                    openTempleBoardSection();
-                    setTempleDrawerOpen(true);
-                  }}
-                  onCompose={() => {
-                    openTempleBoardSection();
-                    setComposeDrawerOpen(true);
-                  }}
-                />
-
-                <TempleJourneysCard
-                  lang={lang}
-                  title={l("Guided Temple Journeys", "Parcours guidés du Temple", "Vedené chrámové cesty")}
-                  subtitle={l(
-                    "Two highlighted journeys for now.",
-                    "Deux parcours mis en avant pour maintenant.",
-                    "Pro tuto chvíli dvě zvýrazněné cesty.",
-                  )}
-                  journeys={templeJourneys}
-                  isPremium={hasPremiumAccess}
-                  previewLimit={2}
-                  viewAllLabel={l("View all journeys", "Voir tous les parcours", "Zobrazit všechny cesty")}
-                  onViewAll={() => setJourneysDrawerOpen(true)}
-                />
-
-                {!hasPremiumAccess ? (
-                  <TempleUpgradeCard
-                    eyebrow={l("FOR DEEPER PRACTICE", "POUR UNE PRATIQUE PLUS PROFONDE", "PRO HLUBŠÍ PRAXI")}
-                    title={l("Create moments that change your relationship.", "Créez des moments qui changent votre relation.", "Vytvořte chvíle, které změní váš vztah.")}
-                    body={l("Premium offers deeper rituals and guided experiences designed to help couples slow down, reconnect, and bring more tenderness, desire, and presence into their bond.", "Premium offre des rituels plus profonds et des expériences guidées pour aider les couples à ralentir et se reconnecter.", "Premium nabízí hlubší rituály a vedené zážitky navržené tak, aby páry zpomalily a znovu se propojily.")}
-                    ctaLabel={l("Begin a deeper practice", "Commencer une pratique plus profonde", "Začít hlubší praxi")}
-                    to="/pricing?entry=journey-program"
-                    compact
-                  />
-                ) : null}
-              </aside>
-            </div>
-
-            <Drawer open={matchDrawerOpen} onOpenChange={setMatchDrawerOpen}>
-              <DrawerContent className="max-h-[90vh]">
-                <DrawerHeader>
-                  <DrawerTitle>{l("Tonight's path", "Chemin de ce soir", "Dnešní cesta")}</DrawerTitle>
-                  <DrawerDescription>
-                    {l("Full ritual depth and source lineage", "Profondeur rituelle complète et lignée de sagesse", "Plná rituální hloubka a zdrojová linie")}
-                  </DrawerDescription>
-                </DrawerHeader>
-                <div className="space-y-4 overflow-y-auto px-4 pb-5">
-                  {weatherMatch ? (
-                    <WeatherMatchCard
-                      title={l("Your shared weather", "Votre météo partagée", "Vaše sdílené počasí")}
-                      result={weatherMatch}
-                      unreadCount={combinedMatchUnreadCount}
-                      enterRitualLabel={l("Open tonight's path", "Ouvrir la voie de ce soir", "Otevřít dnešní cestu")}
-                      readEnergiesLabel={l("Read the energies", "Lire les énergies", "Přečíst energie")}
-                      firstEnergyLabel={l("Your energy", "Votre énergie", "Vaše energie")}
-                      secondEnergyLabel={l("Beloved's energy", "Énergie du partenaire", "Partnerova energie")}
-                      combinedEnergyLabel={l("Combined meaning", "Sens combiné", "Společný význam")}
-                      sourceHeadingLabel={l("Wisdom behind this", "Sagesse derrière cela", "Moudrost za tím")}
-                      sourceCtaLabel={l("Source lineage", "Lignée source", "Zdrojová linie")}
-                      whyFitsLabel={l("Why this fits your match", "Pourquoi cela correspond à votre match", "Proč to sedí k vaší shodě")}
-                      hasPremiumAccess={hasPremiumAccess}
-                      templeAccessLabel={templeAccessName}
-                      unlockDepthLabel={l("Open the deeper ritual path", "Ouvrir le rituel plus profond", "Otevřít hlubší rituální cestu")}
-                      unlockSourceLabel={l("Open the wisdom behind this", "Ouvrir la sagesse derrière cela", "Otevřít moudrost za tím")}
-                      sourcePreviewLabel={l(
-                        "You can already see the core lineage here. Temple Access reveals deeper source notes and cross-tradition pathways.",
-                        "Vous voyez déjà la lignée essentielle ici. Accès Temple révèle des notes de source plus profondes et les ponts entre traditions.",
-                        "Zde už vidíte základní linii. Chrámový přístup odemkne hlubší zdrojové poznámky a mosty mezi tradicemi.",
-                      )}
-                      newChipLabel={l("new", "nouveau", "nové")}
-                      onEnterRitual={() => {
-                        openMatchSection();
-                        setMatchDrawerOpen(false);
-                        activateTool("rituals");
-                      }}
-                      onReadEnergies={openMatchSection}
-                    />
-                  ) : null}
-                </div>
-              </DrawerContent>
-            </Drawer>
-
-            <Drawer open={templeDrawerOpen} onOpenChange={setTempleDrawerOpen}>
-              <DrawerContent className="max-h-[90vh]">
-                <DrawerHeader>
-                  <DrawerTitle>{l("Sacred Temple Board", "Tableau du Temple sacré", "Posvátná chrámová nástěnka")}</DrawerTitle>
-                  <DrawerDescription>
-                    {l("Full shared notes, invitations, and offerings", "Notes, invitations et offrandes partagées", "Plné sdílené vzkazy, pozvání a nabídky")}
-                  </DrawerDescription>
-                </DrawerHeader>
-                <div className="space-y-4 overflow-y-auto px-4 pb-5">
-                  <SacredTempleBoard
-                    lang={lang}
-                    title={l("Sacred Temple Board", "Tableau du Temple sacré", "Posvátná chrámová nástěnka")}
-                    subtitle={l(
-                      "A sacred space for notes, invitations, intentions, and offerings between you.",
-                      "Un espace sacré pour vos notes, invitations, intentions et offrandes.",
-                      "Posvátný prostor pro vzkazy, pozvání, záměry a sdílení mezi vámi.",
-                    )}
-                    summaryTitle={templeBoardSummary.title}
-                    summaryBody={templeBoardSummary.body}
-                    isPremium={hasPremiumAccess}
-                    items={boardItems}
-                    unreadCount={templeBoardUnreadCount}
-                    onOpen={openTempleBoardSection}
-                    onAcknowledge={(item) => {
-                      openTempleBoardSection();
-                      void sendSacredMessage(
-                        "acknowledgement",
-                        l("I received your message with love: ", "J'ai bien reçu ton message avec amour : ", "Přijal(a) jsem tvou zprávu s láskou: ") + item.body,
-                      );
-                    }}
-                    onQuickCompose={(type) => {
-                      openTempleBoardSection();
-                      void handleQuickCompose(type);
-                    }}
-                  />
-                </div>
-              </DrawerContent>
-            </Drawer>
-
-            <Drawer open={composeDrawerOpen} onOpenChange={setComposeDrawerOpen}>
-              <DrawerContent className="max-h-[90vh]">
-                <DrawerHeader>
-                  <DrawerTitle>{l("Send offering", "Envoyer une offrande", "Poslat nabídku")}</DrawerTitle>
-                  <DrawerDescription>
-                    {l("Compose a note, ritual invitation, or intention", "Écrivez une note, invitation rituelle ou intention", "Napište vzkaz, rituální pozvání nebo záměr")}
-                  </DrawerDescription>
-                </DrawerHeader>
-                <div className="space-y-4 overflow-y-auto px-4 pb-5">
-                  <SacredMessageComposer
-                    lang={lang}
-                    disabled={!coupleId}
-                    onSend={(type, body) => {
-                      openTempleBoardSection();
-                      return sendSacredMessage(type, body);
-                    }}
-                  />
-                </div>
-              </DrawerContent>
-            </Drawer>
-
-            <Drawer open={timelineDrawerOpen} onOpenChange={setTimelineDrawerOpen}>
-              <DrawerContent className="max-h-[90vh]">
-                <DrawerHeader>
-                  <DrawerTitle>{l("Shared story", "Histoire partagée", "Sdílený příběh")}</DrawerTitle>
-                  <DrawerDescription>
-                    {l("Full timeline and journey memory", "Timeline complète et mémoire du parcours", "Plná časová osa a paměť cesty")}
-                  </DrawerDescription>
-                </DrawerHeader>
-                <div className="space-y-4 overflow-y-auto px-4 pb-5">
-                  <SharedTimeline
-                    lang={lang}
-                    title={l("Shared Offerings Timeline", "Timeline des offrandes partagées", "Časová osa sdílených nabídek")}
-                    subtitle={l(
-                      "Your shared weather, invitations, rituals, and offerings in one living story.",
-                      "Vos météos partagées, invitations, rituels et offrandes dans une histoire vivante.",
-                      "Vaše sdílené počasí, pozvání, rituály a nabídky v jednom živém příběhu.",
-                    )}
-                    items={timelineDrawerItems}
-                    unreadCount={timelineUnreadCount}
-                    hiddenCount={!hasPremiumAccess ? hiddenTimelineCount : 0}
-                    upgradeLabel={templeAccessName}
-                    upgradeBody={memoryTriggerCopy.body}
-                    upgradeCtaLabel={l("Open the full sanctuary", "Ouvrir le sanctuaire complet", "Otevřít plnou svatyni")}
-                    onOpen={openTimelineSection}
-                  />
-                </div>
-              </DrawerContent>
-            </Drawer>
-
-            <Drawer open={journeysDrawerOpen} onOpenChange={setJourneysDrawerOpen}>
-              <DrawerContent className="max-h-[90vh]">
-                <DrawerHeader>
-                  <DrawerTitle>{l("Guided Temple Journeys", "Parcours guidés du Temple", "Vedené chrámové cesty")}</DrawerTitle>
-                  <DrawerDescription>
-                    {l("Full journey browser", "Navigateur complet des parcours", "Plný prohlížeč cest")}
-                  </DrawerDescription>
-                </DrawerHeader>
-                <div className="space-y-4 overflow-y-auto px-4 pb-5">
-                  <TempleJourneysCard
-                    lang={lang}
-                    title={l("Guided Temple Journeys", "Parcours guidés du Temple", "Vedené chrámové cesty")}
-                    subtitle={l(
-                      "Move from one-off rituals into coherent multi-day couple practice.",
-                      "Passez des rituels ponctuels à une pratique de couple cohérente sur plusieurs jours.",
-                      "Přejděte od jednorázových rituálů k ucelené vícedenní párové praxi.",
-                    )}
-                    journeys={templeJourneys}
-                    isPremium={hasPremiumAccess}
-                  />
-                </div>
-              </DrawerContent>
-            </Drawer>
           </section>
         )}
 
