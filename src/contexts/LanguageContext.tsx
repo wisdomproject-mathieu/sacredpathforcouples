@@ -36,6 +36,9 @@ const translations: Record<string, Record<Language, string>> = {
   "nav.connect_partner": { en: "Connect with Partner", fr: "Se connecter au partenaire", cs: "Propojit s partnerem" },
   "nav.library": { en: "Sacred Library", fr: "Bibliothèque sacrée", cs: "Posvátná knihovna" },
   "nav.temple": { en: "Sacred Temple", fr: "Chrám intimity", cs: "Posvátný chrám" },
+  "nav.tonight_path": { en: "Tonight Path", fr: "Chemin de ce soir", cs: "Dnešní cesta" },
+  "nav.our_journey": { en: "Our Journey", fr: "Notre parcours", cs: "Naše cesta" },
+  "nav.plans_premium": { en: "Plans / Premium", fr: "Plans / Premium", cs: "Plány / Premium" },
 
   // Shared actions
   "cta.connect_partner": { en: "Connect with Partner", fr: "Se connecter au partenaire", cs: "Propojit s partnerem" },

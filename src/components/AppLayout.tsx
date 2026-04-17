@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { BookOpen, Home, LogOut, Sparkles } from "lucide-react";
+import { BookOpen, Crown, Home, LogOut, MoonStar, Route, Sparkles } from "lucide-react";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -8,24 +8,84 @@ import { Button } from "@/components/ui/button";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 
+type AppNavItem = {
+  to: string;
+  icon: typeof Home;
+  label: string;
+  iconClass: string;
+  isActive: (pathname: string, search: string) => boolean;
+};
+
 const AppLayout = () => {
   const { signOut } = useAuth();
   const { t } = useLanguage();
   const location = useLocation();
 
-  const navItems = useMemo(
+  const navItems = useMemo<AppNavItem[]>(
     () => [
-      { to: "/app", icon: Home, label: t("nav.home"), iconClass: "text-amber-300" },
-      { to: "/app/paths", icon: BookOpen, label: t("nav.library"), iconClass: "text-violet-300" },
-      { to: "/app/space", icon: Sparkles, label: t("nav.temple"), iconClass: "text-fuchsia-300" },
+      {
+        to: "/app",
+        icon: Home,
+        label: t("nav.home"),
+        iconClass: "text-amber-300",
+        isActive: (pathname) => pathname === "/app",
+      },
+      {
+        to: "/app/space?view=journey&screen=dashboard",
+        icon: Sparkles,
+        label: t("nav.temple"),
+        iconClass: "text-fuchsia-300",
+        isActive: (pathname, search) => {
+          if (!pathname.startsWith("/app/space")) return false;
+          const params = new URLSearchParams(search);
+          const screen = params.get("screen");
+          const openMatch = params.get("openMatch");
+          return screen !== "tonight_path" && screen !== "more_rituals" && openMatch !== "1";
+        },
+      },
+      {
+        to: "/app/paths",
+        icon: BookOpen,
+        label: t("nav.library"),
+        iconClass: "text-violet-300",
+        isActive: (pathname) =>
+          pathname.startsWith("/app/paths") ||
+          pathname.startsWith("/app/authors") ||
+          pathname.startsWith("/app/reconnect") ||
+          pathname.startsWith("/app/rituals"),
+      },
+      {
+        to: "/app/space?view=journey&screen=tonight_path",
+        icon: MoonStar,
+        label: t("nav.tonight_path"),
+        iconClass: "text-cyan-300",
+        isActive: (pathname, search) => {
+          if (!pathname.startsWith("/app/space")) return false;
+          const params = new URLSearchParams(search);
+          return params.get("screen") === "tonight_path" || params.get("openMatch") === "1";
+        },
+      },
+      {
+        to: "/app/space?view=journey&screen=more_rituals",
+        icon: Route,
+        label: t("nav.our_journey"),
+        iconClass: "text-emerald-300",
+        isActive: (pathname, search) => {
+          if (!pathname.startsWith("/app/space")) return false;
+          const params = new URLSearchParams(search);
+          return params.get("screen") === "more_rituals";
+        },
+      },
+      {
+        to: "/pricing",
+        icon: Crown,
+        label: t("nav.plans_premium"),
+        iconClass: "text-amber-300",
+        isActive: (pathname) => pathname === "/pricing",
+      },
     ],
-    [t]
+    [t],
   );
-
-  const isActive = (to: string) => {
-    if (to === "/app") return location.pathname === "/app";
-    return location.pathname.startsWith(to);
-  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -43,15 +103,13 @@ const AppLayout = () => {
                 </div>
               </div>
 
-              <p className="mt-4 text-sm leading-6 text-muted-foreground">
-                {t("app.sidebar_desc")}
-              </p>
+              <p className="mt-4 text-sm leading-6 text-muted-foreground">{t("app.sidebar_desc")}</p>
             </div>
 
             <nav className="mt-4 space-y-2">
               {navItems.map((item) => {
                 const Icon = item.icon;
-                const active = isActive(item.to);
+                const active = item.isActive(location.pathname, location.search);
 
                 return (
                   <Link
@@ -71,20 +129,6 @@ const AppLayout = () => {
                 );
               })}
             </nav>
-
-            <Link
-              to="/app/wisdom"
-              className={`mt-2 flex items-center gap-3 rounded-2xl border px-3 py-3 transition-all ${
-                location.pathname === "/app/wisdom"
-                  ? "border-primary/25 bg-primary/10"
-                  : "border-transparent bg-transparent hover:border-border/30 hover:bg-background/45"
-              }`}
-            >
-              <div className="rounded-xl border border-border/30 bg-card/45 p-2 text-sm">
-                🌿
-              </div>
-              <div className="font-body text-sm text-foreground">Share your wisdom</div>
-            </Link>
 
             <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-border/30 bg-background/40 p-3">
               <LanguageSwitcher />
