@@ -9,15 +9,15 @@ const slides = [
     id: "welcome",
     eyebrow: "SACRED PATH FOR COUPLES",
     headline: "Where two paths\nbecome one.",
-    body: "Ancient Tantric and Taoist wisdom, translated into a daily practice between two people.",
+    body: "Ancient wisdom, translated into a daily practice between two people.",
     sub: "Presence · Desire · Sacred Connection",
   },
   {
-    id: "wisdom",
-    eyebrow: "THOUSANDS OF YEARS OF WISDOM",
-    headline: "The great teachers\nawaited your arrival.",
-    body: "David Deida, Diana Richardson, Osho — their teachings, woven into rituals you can practice tonight.",
-    sub: "Tantra · Taoism · Karezza · Polarity",
+    id: "modern",
+    eyebrow: "ANCIENT WISDOM, MODERN LOVE",
+    headline: "Built for couples\nliving today.",
+    body: "Real life is busy. Sacred Path turns timeless practices into three-minute rituals you can do tonight — between work, kids, and everything in between.",
+    sub: "Simple · Honest · Yours",
   },
   {
     id: "together",
@@ -158,7 +158,7 @@ const Index = () => {
             className="mt-10 flex flex-col items-center gap-3 animate-fade-in"
           >
             <Link
-              to="/connect"
+              to="/auth"
               className="inline-flex h-12 items-center justify-center rounded-[14px] bg-amber-500 px-10 text-sm font-semibold text-amber-950 shadow-[0_0_40px_rgba(200,146,74,0.35)] transition-all hover:bg-amber-400 active:scale-95"
             >
               Begin Together

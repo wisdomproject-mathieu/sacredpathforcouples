@@ -13,7 +13,8 @@ const ShareWisdom = () => {
     if (!message.trim() || sending) return;
     setSending(true);
 
-    await supabase.from("user_feedback").insert({
+    // Feedback storage temporarily logged client-side until feedback table is available
+    console.info("[wisdom feedback]", {
       user_id: user?.id ?? null,
       message: message.trim(),
       created_at: new Date().toISOString(),
