@@ -46,6 +46,7 @@ import { type WeatherCardData } from "@/components/space/journey/SharedWeatherCa
 import WaitingForPartnerCard from "@/components/space/journey/WaitingForPartnerCard";
 import WeatherMatchCard from "@/components/space/journey/WeatherMatchCard";
 import TonightPathExperience from "@/components/space/journey/TonightPathExperience";
+import MoreRitualsForTwoExperience from "@/components/space/journey/MoreRitualsForTwoExperience";
 import { Tables } from "@/integrations/supabase/types";
 import {
   markJourneySectionRead,
@@ -68,6 +69,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 type ToolKey = "weather" | "rituals" | "positions" | "messages" | "guide" | "repair" | "pathways" | "altar";
 type ViewMode = "doorways" | "journey" | "oracle";
+type JourneyScreen = "dashboard" | "tonight_path" | "more_rituals";
 
 type JourneyItem = Pick<Tables<"partner_messages">, "id" | "content" | "created_at" | "sender_id" | "message_type">;
 type JourneyWeatherItem = Pick<Tables<"weather_entries">, "id" | "created_at" | "state" | "user_id" | "note">;
@@ -275,7 +277,8 @@ const PartnerSpace = () => {
   const [coupleId, setCoupleId] = useState<string | null>(null);
   const [hasConnectedPartner, setHasConnectedPartner] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [viewMode, setViewMode] = useState<ViewMode>("doorways");
+  const [viewMode, setViewMode] = useState<ViewMode>("journey");
+  const [journeyScreen, setJourneyScreen] = useState<JourneyScreen>("dashboard");
   const [activeTool, setActiveTool] = useState<ToolKey>("weather");
   const [mobileDoorwayDetailMode, setMobileDoorwayDetailMode] = useState(false);
   const [matchDrawerOpen, setMatchDrawerOpen] = useState(false);
@@ -367,11 +370,14 @@ const PartnerSpace = () => {
   useEffect(() => {
     if (isViewKey(viewParam)) {
       setViewMode(viewParam);
+      if (viewParam === "journey" && searchParams.get("openMatch") !== "1") {
+        setJourneyScreen("dashboard");
+      }
     }
     if (isToolKey(toolParam)) {
       activateTool(toolParam);
     }
-  }, [toolParam, viewParam, hasPremiumAccess]);
+  }, [toolParam, viewParam, hasPremiumAccess, searchParams]);
 
   useEffect(() => {
     if (!coupleId || !user) return;
@@ -495,8 +501,15 @@ const PartnerSpace = () => {
   useEffect(() => {
     if (searchParams.get("openMatch") === "1") {
       setViewMode("journey");
+      setJourneyScreen("tonight_path");
     }
   }, [searchParams]);
+
+  useEffect(() => {
+    if (viewMode !== "journey" && journeyScreen !== "dashboard") {
+      setJourneyScreen("dashboard");
+    }
+  }, [journeyScreen, viewMode]);
 
   const matchTimestamp = useMemo(() => {
     if (!myWeatherEntry || !belovedWeatherEntry) return 0;
@@ -902,6 +915,61 @@ const PartnerSpace = () => {
   const showDoorwayCards = !isMobile || !mobileDoorwayDetailMode;
   const showDoorwayContent = !isMobile || mobileDoorwayDetailMode;
   const isJourneyView = viewMode === "journey";
+  const journeyHeaderTitle = isJourneyView
+    ? journeyScreen === "dashboard"
+      ? l("Our Journey Dashboard", "Tableau Notre parcours", "Panel Naše cesta")
+      : journeyScreen === "tonight_path"
+        ? l("Tonight Path", "Chemin de ce soir", "Dnešní cesta")
+        : l("More Rituals for Two", "Plus de rituels à deux", "Více rituálů pro dva")
+    : l("A private sanctuary for modern lovers", "Un sanctuaire privé pour les amoureux modernes", "Soukromá svatyně pro moderní milence");
+
+  const journeyHeaderDescription = isJourneyView
+    ? journeyScreen === "dashboard"
+      ? l(
+          "See your shared state, then choose one clear next move without clutter.",
+          "Voyez votre état partagé, puis choisissez un prochain pas clair sans encombrement.",
+          "Uvidíte sdílený stav a vyberete jasný další krok bez zahlcení.",
+        )
+      : journeyScreen === "tonight_path"
+        ? l(
+            "A complete ritual flow based on your weather combination, all on one page.",
+            "Un flow rituel complet basé sur votre combinaison météo, sur une seule page.",
+            "Kompletní rituální flow podle kombinace vašeho počasí, vše na jedné stránce.",
+          )
+        : l(
+            "Browse all actionable couple tools by theme and run the one that fits tonight.",
+            "Parcourez tous les outils actionnables par thème et lancez celui qui convient ce soir.",
+            "Procházejte všechny akční nástroje páru podle témat a spusťte ten pravý pro dnešek.",
+          )
+    : l(
+        "Ancient wisdom meets living intimacy: read your inner weather, open sensual ritual, repair gently, and weave a shared rhythm that deepens over time.",
+        "La sagesse ancienne rencontre l'intimité vivante: lisez votre météo intérieure, ouvrez un rituel sensuel, réparez en douceur, et tissez un rythme partagé qui se renforce avec le temps.",
+        "Starodávná moudrost se setkává s živou intimitou: čtěte vnitřní počasí, otevřete smyslný rituál, jemně opravujte a tkejte společný rytmus, který se časem prohlubuje.",
+      );
+  const dashboardQuote = useMemo(() => {
+    const quotesByLang: Record<Language, string[]> = {
+      en: [
+        "Slowness turns attraction into trust.",
+        "Soft truth protects desire.",
+        "Daily tenderness builds long love.",
+        "Safety first, then spark.",
+      ],
+      fr: [
+        "La lenteur transforme l'attirance en confiance.",
+        "La vérité douce protège le désir.",
+        "La tendresse quotidienne construit l'amour durable.",
+        "La sécurité d'abord, puis l'élan.",
+      ],
+      cs: [
+        "Pomalost mění přitažlivost v důvěru.",
+        "Jemná pravda chrání touhu.",
+        "Každodenní něha buduje dlouhou lásku.",
+        "Nejdřív bezpečí, potom jiskra.",
+      ],
+    };
+    const selected = quotesByLang[lang];
+    return selected[new Date().getDate() % selected.length];
+  }, [lang]);
 
   useEffect(() => {
     if (!isMobile && mobileDoorwayDetailMode) {
@@ -1143,58 +1211,160 @@ const PartnerSpace = () => {
               </p>
             )}
             <h1 className={`mt-3 font-display text-foreground ${isJourneyView ? "text-2xl md:text-3xl" : "text-3xl md:text-4xl"}`}>
-              {isJourneyView
-                ? l("Our Journey Dashboard", "Tableau Notre parcours", "Panel Naše cesta")
-                : l("A private sanctuary for modern lovers", "Un sanctuaire privé pour les amoureux modernes", "Soukromá svatyně pro moderní milence")}
+              {journeyHeaderTitle}
             </h1>
             <p className={`mt-3 max-w-2xl text-sm text-muted-foreground ${isJourneyView ? "leading-6" : "leading-7 md:text-base"}`}>
-              {isJourneyView
-                ? l(
-                    "See your shared state, act on the next ritual step, and keep your couple rhythm alive.",
-                    "Voyez votre état partagé, agissez sur le prochain rituel, et gardez votre rythme de couple vivant.",
-                    "Uvidíte sdílený stav, uděláte další rituální krok a udržíte párový rytmus živý.",
-                  )
-                : l(
-                    "Ancient wisdom meets living intimacy: read your inner weather, open sensual ritual, repair gently, and weave a shared rhythm that deepens over time.",
-                    "La sagesse ancienne rencontre l'intimité vivante: lisez votre météo intérieure, ouvrez un rituel sensuel, réparez en douceur, et tissez un rythme partagé qui se renforce avec le temps.",
-                    "Starodávná moudrost se setkává s živou intimitou: čtěte vnitřní počasí, otevřete smyslný rituál, jemně opravujte a tkejte společný rytmus, který se časem prohlubuje.",
-                  )}
+              {journeyHeaderDescription}
             </p>
           </div>
 
           {isJourneyView ? (
-            <div className="mt-5 grid gap-3 md:grid-cols-[1.2fr_0.8fr]">
-              <div className="rounded-[22px] border border-rose-300/30 bg-gradient-to-br from-rose-500/10 via-card/60 to-card/35 p-4">
-                <p className="text-xs uppercase tracking-[0.2em] text-rose-200/85">{l("Tonight intention", "Intention de ce soir", "Dnešní záměr")}</p>
-                <h3 className="mt-2 font-display text-2xl text-foreground">
-                  {l("Move slowly and stay emotionally attuned", "Avancez lentement et restez émotionnellement accordés", "Jděte pomalu a zůstaňte emočně naladění")}
-                </h3>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  {l(
-                    "This page gives you a complete shared path for tonight: practical steps, theme-based practices, and guidance to respect each other's feelings while getting closer.",
-                    "Cette page vous donne un chemin partagé complet pour ce soir : étapes pratiques, pratiques par thème, et guidance pour respecter les ressentis de chacun tout en vous rapprochant.",
-                    "Tato stránka vám dává kompletní sdílenou cestu na dnešní večer: praktické kroky, tematické praxe a vedení, jak respektovat pocity toho druhého a přitom se přiblížit.",
-                  )}
-                </p>
-              </div>
-              <div className="rounded-[22px] border border-amber-300/30 bg-gradient-to-br from-amber-500/12 via-card/60 to-card/35 p-4">
-                <p className="text-xs uppercase tracking-[0.2em] text-amber-200/90">{l("Sacred vow", "Vœu sacré", "Posvátný slib")}</p>
-                <p className="mt-2 font-display text-xl leading-8 text-foreground">
-                  {l(
-                    "Tonight we choose safety first, truth second, and desire that grows from both.",
-                    "Ce soir, nous choisissons d'abord la sécurité, ensuite la vérité, et un désir qui grandit pour les deux.",
-                    "Dnes večer volíme nejdřív bezpečí, potom pravdu a touhu, která roste pro oba.",
-                  )}
-                </p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <span className="rounded-full border border-border/30 bg-background/45 px-2.5 py-1 text-[11px] text-foreground/90">
-                    {l("Shared pulse active", "Pulse partagé actif", "Sdílený puls aktivní")}
-                  </span>
-                  <span className="rounded-full border border-border/30 bg-background/45 px-2.5 py-1 text-[11px] text-foreground/90">
-                    {l("Romantic focus", "Focus romantique", "Romantické zaměření")}
-                  </span>
+            <div className="mt-5 space-y-4">
+              {journeyScreen === "dashboard" ? (
+                <>
+                  <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                    <div className="rounded-[22px] border border-rose-300/30 bg-gradient-to-br from-rose-500/12 via-card/65 to-card/35 p-4">
+                      <p className="text-xs uppercase tracking-[0.18em] text-rose-200/85">{l("Whisper", "Murmure", "Šepot")}</p>
+                      <p className="mt-2 text-sm leading-6 text-foreground/90">
+                        {latestBoardItem?.body ??
+                          l(
+                            "Send one warm line to open the evening.",
+                            "Envoyez une ligne chaleureuse pour ouvrir la soirée.",
+                            "Pošli jednu hřejivou větu pro otevření večera.",
+                          )}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => void handleQuickCompose("note")}
+                        className="mt-3 rounded-xl border border-border/35 bg-background/45 px-3 py-2 text-xs text-foreground transition-all hover:border-border/55 hover:bg-card/60"
+                      >
+                        {l("Send whisper", "Envoyer un murmure", "Poslat šepot")}
+                      </button>
+                    </div>
+
+                    <div className="rounded-[22px] border border-cyan-300/30 bg-gradient-to-br from-cyan-500/12 via-card/65 to-card/35 p-4">
+                      <p className="text-xs uppercase tracking-[0.18em] text-cyan-200/85">{l("Notifications", "Notifications", "Notifikace")}</p>
+                      <p className="mt-2 text-sm leading-6 text-foreground/90">
+                        {l("Unread sacred signals", "Signaux sacrés non lus", "Nepřečtené posvátné signály")}: {timelineUnreadCount}
+                      </p>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {l("Shared weather", "Météo partagée", "Sdílené počasí")}: {sharedWeatherUnreadCount} · {l("Beloved updates", "Nouvelles du partenaire", "Novinky od partnera")}: {newBelovedUnreadCount}
+                      </p>
+                    </div>
+
+                    <div className="rounded-[22px] border border-amber-300/30 bg-gradient-to-br from-amber-500/12 via-card/65 to-card/35 p-4">
+                      <p className="text-xs uppercase tracking-[0.18em] text-amber-200/90">{l("Couple news", "Nouvelles du couple", "Párové novinky")}</p>
+                      <p className="mt-2 text-sm leading-6 text-foreground/90">
+                        {latestFromBeloved?.preview ??
+                          l(
+                            "No new update yet. Share one weather or one note to start the loop.",
+                            "Pas encore de mise à jour. Partagez une météo ou une note pour lancer la boucle.",
+                            "Zatím žádná novinka. Sdílejte počasí nebo vzkaz a spusťte smyčku.",
+                          )}
+                      </p>
+                    </div>
+
+                    <div className="rounded-[22px] border border-violet-300/30 bg-gradient-to-br from-violet-500/12 via-card/65 to-card/35 p-4">
+                      <p className="text-xs uppercase tracking-[0.18em] text-violet-200/85">{l("Pictures & memories", "Photos et souvenirs", "Fotky a vzpomínky")}</p>
+                      <p className="mt-2 text-sm leading-6 text-foreground/90">
+                        {altarEvents.length > 0
+                          ? altarEvents.slice(0, 2).map((item) => item.title).join(" · ")
+                          : l(
+                              "No shared memory yet. Save one ritual moment tonight.",
+                              "Aucun souvenir partagé pour le moment. Sauvegardez un moment ce soir.",
+                              "Zatím žádná sdílená vzpomínka. Uložte dnes jeden rituální moment.",
+                            )}
+                      </p>
+                    </div>
+
+                    <div className="rounded-[22px] border border-emerald-300/30 bg-gradient-to-br from-emerald-500/12 via-card/65 to-card/35 p-4">
+                      <p className="text-xs uppercase tracking-[0.18em] text-emerald-200/85">{l("Gratitude", "Gratitude", "Vděčnost")}</p>
+                      <p className="mt-2 text-sm leading-6 text-foreground/90">
+                        {latestBelovedMessageSignal?.preview ??
+                          l(
+                            "Add one gratitude sentence to strengthen trust.",
+                            "Ajoutez une phrase de gratitude pour renforcer la confiance.",
+                            "Přidejte jednu větu vděčnosti pro posílení důvěry.",
+                          )}
+                      </p>
+                    </div>
+
+                    <div className="rounded-[22px] border border-fuchsia-300/30 bg-gradient-to-br from-fuchsia-500/12 via-card/65 to-card/35 p-4">
+                      <p className="text-xs uppercase tracking-[0.18em] text-fuchsia-200/85">{l("Quote of the day", "Citation du jour", "Citát dne")}</p>
+                      <p className="mt-2 text-sm leading-6 text-foreground/90">{dashboardQuote}</p>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-3 md:grid-cols-2">
+                    <button
+                      type="button"
+                      onClick={() => setJourneyScreen("tonight_path")}
+                      className="rounded-[22px] border border-primary/35 bg-primary/14 p-4 text-left transition-all hover:border-primary/55 hover:bg-primary/20"
+                    >
+                      <p className="text-xs uppercase tracking-[0.2em] text-primary/85">{l("Button", "Bouton", "Tlačítko")}</p>
+                      <h3 className="mt-2 font-display text-2xl text-foreground">{l("Tonight Path", "Chemin de ce soir", "Dnešní cesta")}</h3>
+                      <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                        {l(
+                          "Open today's guided ritual from your weather combination.",
+                          "Ouvrez le rituel guidé de ce soir depuis votre combinaison météo.",
+                          "Otevřete dnešní vedený rituál podle kombinace počasí.",
+                        )}
+                      </p>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setJourneyScreen("more_rituals")}
+                      className="rounded-[22px] border border-border/35 bg-card/55 p-4 text-left transition-all hover:border-border/55 hover:bg-card/70"
+                    >
+                      <p className="text-xs uppercase tracking-[0.2em] text-primary/85">{l("Button", "Bouton", "Tlačítko")}</p>
+                      <h3 className="mt-2 font-display text-2xl text-foreground">{l("More Rituals For Two", "Plus de rituels à deux", "Více rituálů pro dva")}</h3>
+                      <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                        {l(
+                          "Explore all practices by theme, with no page jumps.",
+                          "Explorez toutes les pratiques par thème, sans changer de page.",
+                          "Prozkoumejte všechny praxe podle témat bez přeskakování stránek.",
+                        )}
+                      </p>
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div className="rounded-[22px] border border-primary/28 bg-gradient-to-br from-primary/12 via-card/60 to-card/35 p-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setJourneyScreen("dashboard")}
+                      className="rounded-xl border border-border/35 bg-background/45 px-3 py-2 text-xs text-foreground transition-all hover:border-border/55 hover:bg-card/60"
+                    >
+                      {l("Back to Our Journey", "Retour à Notre parcours", "Zpět na Naši cestu")}
+                    </button>
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setJourneyScreen("tonight_path")}
+                        className={`rounded-xl border px-3 py-2 text-xs transition-all ${
+                          journeyScreen === "tonight_path"
+                            ? "border-primary/40 bg-primary/14 text-foreground"
+                            : "border-border/35 bg-card/45 text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        {l("Tonight Path", "Chemin de ce soir", "Dnešní cesta")}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setJourneyScreen("more_rituals")}
+                        className={`rounded-xl border px-3 py-2 text-xs transition-all ${
+                          journeyScreen === "more_rituals"
+                            ? "border-primary/40 bg-primary/14 text-foreground"
+                            : "border-border/35 bg-card/45 text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        {l("More Rituals", "Plus de rituels", "Více rituálů")}
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           ) : (
             <div className="mt-6 flex flex-wrap gap-3">
@@ -1361,14 +1531,27 @@ const PartnerSpace = () => {
 
         {viewMode === "journey" && (
           <section className="space-y-5">
-            <TonightPathExperience
-              lang={lang}
-              weatherMatch={weatherMatch}
-              weatherStateMode={weatherStateMode}
-              myWeather={myWeatherCard}
-              belovedWeather={belovedWeatherCard}
-              sharedStatusLabel={sharedStatusLabel}
-            />
+            {journeyScreen === "tonight_path" ? (
+              <TonightPathExperience
+                lang={lang}
+                weatherMatch={weatherMatch}
+                weatherStateMode={weatherStateMode}
+                myWeather={myWeatherCard}
+                belovedWeather={belovedWeatherCard}
+                sharedStatusLabel={sharedStatusLabel}
+              />
+            ) : null}
+            {journeyScreen === "more_rituals" ? (
+              <MoreRitualsForTwoExperience
+                lang={lang}
+                weatherMatch={weatherMatch}
+                isPremium={hasPremiumAccess}
+                canSend={Boolean(coupleId && user)}
+                onSend={async (message) => {
+                  await sendSacredMessage("ritual_share", message);
+                }}
+              />
+            ) : null}
           </section>
         )}
 
