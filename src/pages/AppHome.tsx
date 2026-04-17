@@ -33,6 +33,7 @@ type Pathway = Tables<"pathways">;
 type PartnerMessage = Tables<"partner_messages">;
 type AltarItem = Tables<"altar_items">;
 type Profile = Tables<"profiles">;
+type HomeWeatherEntry = Pick<Tables<"weather_entries">, "state" | "user_id" | "created_at">;
 
 type DailyCard = {
   id: string;
@@ -460,6 +461,17 @@ const parseRitualSteps = (steps: RitualItem["steps"]): string[] => {
 const fallbackBelovedValues = new Set(Object.values(homeCopy).map((copySet) => copySet.beloved));
 const WEATHER_KEYS: WeatherKey[] = ["open", "tender", "playful", "stressed", "longing", "erotic", "tired", "reassurance"];
 
+const getLocalDayRange = () => {
+  const dayStart = new Date();
+  dayStart.setHours(0, 0, 0, 0);
+  const dayEnd = new Date(dayStart);
+  dayEnd.setDate(dayEnd.getDate() + 1);
+  return {
+    startIso: dayStart.toISOString(),
+    endIso: dayEnd.toISOString(),
+  };
+};
+
 const AppHome = () => {
   const { user } = useAuth();
   const { lang } = useLanguage();
@@ -479,8 +491,8 @@ const AppHome = () => {
   const [rituals, setRituals] = useState<RitualItem[]>([]);
   const [pathways, setPathways] = useState<Pathway[]>([]);
   const [coupleId, setCoupleId] = useState<string | null>(null);
-  const [myWeatherEntry, setMyWeatherEntry] = useState<{ state: string; user_id: string } | null>(null);
-  const [partnerWeatherEntry, setPartnerWeatherEntry] = useState<{ state: string; user_id: string } | null>(null);
+  const [myWeatherEntry, setMyWeatherEntry] = useState<Pick<HomeWeatherEntry, "state" | "user_id"> | null>(null);
+  const [partnerWeatherEntry, setPartnerWeatherEntry] = useState<Pick<HomeWeatherEntry, "state" | "user_id"> | null>(null);
   const [myWeatherSelected, setMyWeatherSelected] = useState<string | null>(null);
   const [savingWeather, setSavingWeather] = useState(false);
   const [weatherPickerVisible, setWeatherPickerVisible] = useState(false);
@@ -629,22 +641,28 @@ const AppHome = () => {
       setCoupleId(activeCouple.id);
       setInviteCode(activeCouple.couple_code ?? null);
 
-      // Load today's weather entries
-      const todayStr = new Date().toISOString().slice(0, 10);
+      // Load weather entries for the local current day and keep only latest per partner.
+      const { startIso, endIso } = getLocalDayRange();
       const { data: weatherData } = await supabase
         .from("weather_entries")
-        .select("state, user_id")
+        .select("state, user_id, created_at")
         .eq("couple_id", activeCouple.id)
-        .gte("created_at", todayStr)
+        .gte("created_at", startIso)
+        .lt("created_at", endIso)
         .order("created_at", { ascending: false });
 
-      if (weatherData) {
-        const myW = weatherData.find((w: { state: string; user_id: string }) => w.user_id === user.id) ?? null;
-        const partnerW = weatherData.find((w: { state: string; user_id: string }) => w.user_id !== user.id) ?? null;
-        setMyWeatherEntry(myW);
-        setPartnerWeatherEntry(partnerW);
-        if (myW?.state) setMyWeatherSelected(myW.state);
+      const latestByUser = new Map<string, HomeWeatherEntry>();
+      for (const row of weatherData ?? []) {
+        if (!latestByUser.has(row.user_id)) latestByUser.set(row.user_id, row);
       }
+      const myW = latestByUser.get(user.id) ?? null;
+      const partnerW = coupleState.partnerId
+        ? (latestByUser.get(coupleState.partnerId) ?? null)
+        : (Array.from(latestByUser.values()).find((w) => w.user_id !== user.id) ?? null);
+
+      setMyWeatherEntry(myW ? { state: myW.state, user_id: myW.user_id } : null);
+      setPartnerWeatherEntry(partnerW ? { state: partnerW.state, user_id: partnerW.user_id } : null);
+      setMyWeatherSelected(myW?.state ?? null);
 
       const partnerId = coupleState.partnerId;
 
@@ -702,6 +720,46 @@ const AppHome = () => {
       supabase.removeChannel(channelB);
     };
   }, [hasPremiumAccess, user]);
+
+  useEffect(() => {
+    if (!user || !coupleId) return;
+
+    const syncDailyWeather = async () => {
+      const { startIso, endIso } = getLocalDayRange();
+      const { data: weatherData } = await supabase
+        .from("weather_entries")
+        .select("state, user_id, created_at")
+        .eq("couple_id", coupleId)
+        .gte("created_at", startIso)
+        .lt("created_at", endIso)
+        .order("created_at", { ascending: false });
+
+      const latestByUser = new Map<string, HomeWeatherEntry>();
+      for (const row of weatherData ?? []) {
+        if (!latestByUser.has(row.user_id)) latestByUser.set(row.user_id, row);
+      }
+
+      const myW = latestByUser.get(user.id) ?? null;
+      const partnerW = Array.from(latestByUser.values()).find((entry) => entry.user_id !== user.id) ?? null;
+      setMyWeatherEntry(myW ? { state: myW.state, user_id: myW.user_id } : null);
+      setPartnerWeatherEntry(partnerW ? { state: partnerW.state, user_id: partnerW.user_id } : null);
+      setMyWeatherSelected(myW?.state ?? null);
+    };
+
+    void syncDailyWeather();
+    const channel = supabase
+      .channel(`home_weather_${coupleId}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "weather_entries", filter: `couple_id=eq.${coupleId}` },
+        () => void syncDailyWeather(),
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [coupleId, user]);
 
   const latestPartnerMessage = useMemo(
     () => messages.find((message) => message.sender_id !== user?.id) ?? null,

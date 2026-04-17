@@ -543,13 +543,20 @@ const PartnerSpace = () => {
     if (!coupleId || !user) return;
 
     const loadActivity = async () => {
+      const dayStart = new Date();
+      dayStart.setHours(0, 0, 0, 0);
+      const dayEnd = new Date(dayStart);
+      dayEnd.setDate(dayEnd.getDate() + 1);
+
       const [weatherRes, messageRes, altarRes] = await Promise.all([
         supabase
           .from("weather_entries")
           .select("id, state, note, created_at, user_id")
           .eq("couple_id", coupleId)
+          .gte("created_at", dayStart.toISOString())
+          .lt("created_at", dayEnd.toISOString())
           .order("created_at", { ascending: false })
-          .limit(20),
+          .limit(60),
         supabase
           .from("partner_messages")
           .select("id, content, created_at, sender_id, message_type")
@@ -606,16 +613,24 @@ const PartnerSpace = () => {
     setSeenMap((current) => ({ ...current, [section]: timestamp }));
   };
 
+  const latestWeatherByUser = useMemo(() => {
+    const map = new Map<string, JourneyWeatherItem>();
+    for (const item of weatherEntries) {
+      if (!map.has(item.user_id)) map.set(item.user_id, item);
+    }
+    return map;
+  }, [weatherEntries]);
+
   const myWeatherEntry = useMemo(
-    () => weatherEntries.find((item) => item.user_id === user?.id) ?? null,
-    [weatherEntries, user?.id],
+    () => (user?.id ? latestWeatherByUser.get(user.id) ?? null : null),
+    [latestWeatherByUser, user?.id],
   );
   const belovedWeatherEntry = useMemo(
-    () =>
-      weatherEntries.find((item) =>
-        partnerUserId ? item.user_id === partnerUserId : item.user_id !== user?.id,
-      ) ?? null,
-    [partnerUserId, weatherEntries, user?.id],
+    () => {
+      if (partnerUserId) return latestWeatherByUser.get(partnerUserId) ?? null;
+      return Array.from(latestWeatherByUser.values()).find((item) => item.user_id !== user?.id) ?? null;
+    },
+    [latestWeatherByUser, partnerUserId, user?.id],
   );
 
   const myWeatherCard: WeatherCardData | null = useMemo(() => {
@@ -1421,7 +1436,7 @@ const PartnerSpace = () => {
             <div className="mt-5 space-y-4">
               {journeyScreen === "dashboard" ? (
                 <>
-                  <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                  <div className="grid gap-3 md:grid-cols-2">
                     <div className="rounded-[22px] border border-rose-300/30 bg-gradient-to-br from-rose-500/12 via-card/65 to-card/35 p-4">
                       <p className="text-xs uppercase tracking-[0.18em] text-rose-200/85">{templeSendUi.title}</p>
                       <p className="mt-1 text-xs leading-5 text-muted-foreground">{templeSendUi.subtitle}</p>
@@ -1492,55 +1507,28 @@ const PartnerSpace = () => {
                     </div>
 
                     <div className="rounded-[22px] border border-cyan-300/30 bg-gradient-to-br from-cyan-500/12 via-card/65 to-card/35 p-4">
-                      <p className="text-xs uppercase tracking-[0.18em] text-cyan-200/85">{l("Notifications", "Notifications", "Notifikace")}</p>
+                      <p className="text-xs uppercase tracking-[0.18em] text-cyan-200/85">
+                        {l("Notifications & couple news", "Notifications et nouvelles du couple", "Notifikace a párové novinky")}
+                      </p>
                       <p className="mt-2 text-sm leading-6 text-foreground/90">
                         {l("Unread sacred signals", "Signaux sacrés non lus", "Nepřečtené posvátné signály")}: {timelineUnreadCount}
                       </p>
                       <p className="mt-1 text-xs text-muted-foreground">
                         {l("Shared weather", "Météo partagée", "Sdílené počasí")}: {sharedWeatherUnreadCount} · {l("Beloved updates", "Nouvelles du partenaire", "Novinky od partnera")}: {newBelovedUnreadCount}
                       </p>
-                    </div>
-
-                    <div className="rounded-[22px] border border-amber-300/30 bg-gradient-to-br from-amber-500/12 via-card/65 to-card/35 p-4">
-                      <p className="text-xs uppercase tracking-[0.18em] text-amber-200/90">{l("Couple news", "Nouvelles du couple", "Párové novinky")}</p>
-                      <p className="mt-2 text-sm leading-6 text-foreground/90">
-                        {latestFromBeloved?.preview ??
-                          l(
-                            "No new update yet. Share one weather or one note to start the loop.",
-                            "Pas encore de mise à jour. Partagez une météo ou une note pour lancer la boucle.",
-                            "Zatím žádná novinka. Sdílejte počasí nebo vzkaz a spusťte smyčku.",
-                          )}
-                      </p>
-                    </div>
-
-                    <div className="rounded-[22px] border border-violet-300/30 bg-gradient-to-br from-violet-500/12 via-card/65 to-card/35 p-4">
-                      <p className="text-xs uppercase tracking-[0.18em] text-violet-200/85">{l("Pictures & memories", "Photos et souvenirs", "Fotky a vzpomínky")}</p>
-                      <p className="mt-2 text-sm leading-6 text-foreground/90">
-                        {altarEvents.length > 0
-                          ? altarEvents.slice(0, 2).map((item) => item.title).join(" · ")
-                          : l(
-                              "No shared memory yet. Save one ritual moment tonight.",
-                              "Aucun souvenir partagé pour le moment. Sauvegardez un moment ce soir.",
-                              "Zatím žádná sdílená vzpomínka. Uložte dnes jeden rituální moment.",
+                      <div className="mt-3 rounded-[12px] border border-amber-300/25 bg-background/45 p-3">
+                        <p className="text-[10px] uppercase tracking-[0.14em] text-amber-200/85">
+                          {l("Latest couple update", "Dernière nouvelle du couple", "Poslední párová novinka")}
+                        </p>
+                        <p className="mt-2 text-sm leading-6 text-foreground/90">
+                          {latestFromBeloved?.preview ??
+                            l(
+                              "No new update yet. Share one weather or one note to start the loop.",
+                              "Pas encore de mise à jour. Partagez une météo ou une note pour lancer la boucle.",
+                              "Zatím žádná novinka. Sdílejte počasí nebo vzkaz a spusťte smyčku.",
                             )}
-                      </p>
-                    </div>
-
-                    <div className="rounded-[22px] border border-emerald-300/30 bg-gradient-to-br from-emerald-500/12 via-card/65 to-card/35 p-4">
-                      <p className="text-xs uppercase tracking-[0.18em] text-emerald-200/85">{l("Gratitude", "Gratitude", "Vděčnost")}</p>
-                      <p className="mt-2 text-sm leading-6 text-foreground/90">
-                        {latestBelovedMessageSignal?.preview ??
-                          l(
-                            "Add one gratitude sentence to strengthen trust.",
-                            "Ajoutez une phrase de gratitude pour renforcer la confiance.",
-                            "Přidejte jednu větu vděčnosti pro posílení důvěry.",
-                          )}
-                      </p>
-                    </div>
-
-                    <div className="rounded-[22px] border border-fuchsia-300/30 bg-gradient-to-br from-fuchsia-500/12 via-card/65 to-card/35 p-4">
-                      <p className="text-xs uppercase tracking-[0.18em] text-fuchsia-200/85">{l("Quote of the day", "Citation du jour", "Citát dne")}</p>
-                      <p className="mt-2 text-sm leading-6 text-foreground/90">{dashboardQuote}</p>
+                        </p>
+                      </div>
                     </div>
                   </div>
 
