@@ -46,7 +46,6 @@ import { type WeatherCardData } from "@/components/space/journey/SharedWeatherCa
 import WaitingForPartnerCard from "@/components/space/journey/WaitingForPartnerCard";
 import WeatherMatchCard from "@/components/space/journey/WeatherMatchCard";
 import TonightPathExperience from "@/components/space/journey/TonightPathExperience";
-import SacredTempleDashboard from "@/components/space/journey/SacredTempleDashboard";
 import MoreRitualsForTwoExperience from "@/components/space/journey/MoreRitualsForTwoExperience";
 import { Tables } from "@/integrations/supabase/types";
 import {
@@ -208,8 +207,6 @@ const isToolKey = (value?: string | null): value is ToolKey =>
 
 const isViewKey = (value?: string | null): value is ViewMode =>
   Boolean(value && templeViewDefs.some((view) => view.key === value));
-const isJourneyScreenKey = (value?: string | null): value is JourneyScreen =>
-  Boolean(value && ["dashboard", "tonight_path", "more_rituals"].includes(value));
 
 const normalizeLegacyJourneyCopy = (value: string) =>
   value
@@ -277,7 +274,6 @@ const PartnerSpace = () => {
   );
   const toolParam = searchParams.get("tool");
   const viewParam = searchParams.get("view");
-  const journeyScreenParam = searchParams.get("screen");
   const [coupleId, setCoupleId] = useState<string | null>(null);
   const [hasConnectedPartner, setHasConnectedPartner] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -374,16 +370,14 @@ const PartnerSpace = () => {
   useEffect(() => {
     if (isViewKey(viewParam)) {
       setViewMode(viewParam);
-    }
-    if (isJourneyScreenKey(journeyScreenParam)) {
-      setJourneyScreen(journeyScreenParam);
-    } else if (viewParam === "journey" && searchParams.get("openMatch") !== "1") {
-      setJourneyScreen("dashboard");
+      if (viewParam === "journey" && searchParams.get("openMatch") !== "1") {
+        setJourneyScreen("dashboard");
+      }
     }
     if (isToolKey(toolParam)) {
       activateTool(toolParam);
     }
-  }, [journeyScreenParam, searchParams, toolParam, viewParam]);
+  }, [toolParam, viewParam, hasPremiumAccess, searchParams]);
 
   useEffect(() => {
     if (!coupleId || !user) return;
@@ -867,7 +861,7 @@ const PartnerSpace = () => {
   }, [partnerUserId, user?.id, weatherEntries]);
   const shouldShowDepthUpgrade = Boolean(!hasPremiumAccess && weatherMatch && sharedMatchesThisWeek >= 3);
 
-  const sendSacredMessage = async (type: string, body: string) => {
+  const sendSacredMessage = async (type: SacredComposerType | "acknowledgement", body: string) => {
     if (!coupleId || !user || !body.trim()) return;
     await supabase.from("partner_messages").insert({
       couple_id: coupleId,
@@ -889,29 +883,6 @@ const PartnerSpace = () => {
 
   const handleQuickCompose = async (type: SacredComposerType) => {
     await sendSacredMessage(type, quickComposeTemplates[type]);
-  };
-
-  const openJourneyScreen = (screen: JourneyScreen) => {
-    setViewMode("journey");
-    setJourneyScreen(screen);
-    const params = new URLSearchParams(searchParams);
-    params.set("view", "journey");
-    params.set("screen", screen);
-    params.delete("openMatch");
-    params.delete("tool");
-    navigate(`/app/space?${params.toString()}`);
-  };
-
-  const addTempleMemory = async (title: string, note: string) => {
-    if (!coupleId || !user || !title.trim()) return;
-    await supabase.from("altar_items").insert({
-      couple_id: coupleId,
-      user_id: user.id,
-      title: title.trim(),
-      note: note.trim() || null,
-      item_type: "memory",
-    });
-    setActivityTick((value) => value + 1);
   };
 
   const openWeatherSection = () => {
@@ -999,24 +970,6 @@ const PartnerSpace = () => {
     const selected = quotesByLang[lang];
     return selected[new Date().getDate() % selected.length];
   }, [lang]);
-
-  const templeDateLabel = useMemo(() => {
-    const locale = lang === "fr" ? "fr-FR" : lang === "cs" ? "cs-CZ" : "en-US";
-    return new Intl.DateTimeFormat(locale, {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-    })
-      .format(new Date())
-      .toUpperCase();
-  }, [lang]);
-
-  const sacredTempleTitle = useMemo(
-    () => `${myDisplayName ?? "Mathieu"} & ${partnerDisplayName ?? "Ed"}`,
-    [myDisplayName, partnerDisplayName],
-  );
-  const sacredTemplePartnerName = partnerDisplayName ?? l("your beloved", "votre bien-aimé(e)", "tvůj milovaný protějšek");
-  const showSacredTempleDashboard = viewMode === "journey" && journeyScreen === "dashboard";
 
   useEffect(() => {
     if (!isMobile && mobileDoorwayDetailMode) {
@@ -1244,23 +1197,6 @@ const PartnerSpace = () => {
           </section>
         )}
 
-        {showSacredTempleDashboard ? (
-          <SacredTempleDashboard
-            lang={lang}
-            dateLabel={templeDateLabel}
-            title={sacredTempleTitle}
-            relationshipConnected={hasConnectedPartner}
-            partnerName={sacredTemplePartnerName}
-            userId={user?.id}
-            messages={journeyMessages}
-            memories={altarEvents}
-            onOpenTemple={() => openJourneyScreen("tonight_path")}
-            onSendMessage={async (type, content) => {
-              await sendSacredMessage(type, content);
-            }}
-            onAddMemory={addTempleMemory}
-          />
-        ) : (
         <section className={`relative overflow-hidden rounded-[30px] border border-primary/18 bg-gradient-to-br from-primary/14 via-background/92 to-background/88 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] backdrop-blur-sm ${isJourneyView ? "p-4 md:p-5" : "p-6 md:p-7"}`}>
           <div className="absolute top-4 right-4 opacity-10 hover:opacity-20 transition-opacity">
             <img src={shivaShaktiIcon} alt="" className="h-12 w-12 rounded-[10px]" />
@@ -1362,7 +1298,7 @@ const PartnerSpace = () => {
                   <div className="grid gap-3 md:grid-cols-2">
                     <button
                       type="button"
-                      onClick={() => openJourneyScreen("tonight_path")}
+                      onClick={() => setJourneyScreen("tonight_path")}
                       className="rounded-[22px] border border-primary/35 bg-primary/14 p-4 text-left transition-all hover:border-primary/55 hover:bg-primary/20"
                     >
                       <p className="text-xs uppercase tracking-[0.2em] text-primary/85">{l("Button", "Bouton", "Tlačítko")}</p>
@@ -1377,7 +1313,7 @@ const PartnerSpace = () => {
                     </button>
                     <button
                       type="button"
-                      onClick={() => openJourneyScreen("more_rituals")}
+                      onClick={() => setJourneyScreen("more_rituals")}
                       className="rounded-[22px] border border-border/35 bg-card/55 p-4 text-left transition-all hover:border-border/55 hover:bg-card/70"
                     >
                       <p className="text-xs uppercase tracking-[0.2em] text-primary/85">{l("Button", "Bouton", "Tlačítko")}</p>
@@ -1397,7 +1333,7 @@ const PartnerSpace = () => {
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <button
                       type="button"
-                      onClick={() => openJourneyScreen("dashboard")}
+                      onClick={() => setJourneyScreen("dashboard")}
                       className="rounded-xl border border-border/35 bg-background/45 px-3 py-2 text-xs text-foreground transition-all hover:border-border/55 hover:bg-card/60"
                     >
                       {l("Back to Our Journey", "Retour à Notre parcours", "Zpět na Naši cestu")}
@@ -1405,7 +1341,7 @@ const PartnerSpace = () => {
                     <div className="flex flex-wrap gap-2">
                       <button
                         type="button"
-                        onClick={() => openJourneyScreen("tonight_path")}
+                        onClick={() => setJourneyScreen("tonight_path")}
                         className={`rounded-xl border px-3 py-2 text-xs transition-all ${
                           journeyScreen === "tonight_path"
                             ? "border-primary/40 bg-primary/14 text-foreground"
@@ -1416,7 +1352,7 @@ const PartnerSpace = () => {
                       </button>
                       <button
                         type="button"
-                        onClick={() => openJourneyScreen("more_rituals")}
+                        onClick={() => setJourneyScreen("more_rituals")}
                         className={`rounded-xl border px-3 py-2 text-xs transition-all ${
                           journeyScreen === "more_rituals"
                             ? "border-primary/40 bg-primary/14 text-foreground"
@@ -1473,7 +1409,6 @@ const PartnerSpace = () => {
             </div>
           )}
         </section>
-        )}
 
         {viewMode === "doorways" && (
           <>

@@ -16,7 +16,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
-import HomeHeroBannerShell from "@/components/shared/HomeHeroBannerShell";
 import {
   clearForceDisconnected,
   fetchCoupleStateForUser,
@@ -1261,10 +1260,15 @@ const AppHome = () => {
         </div>
       )}
 
-      <HomeHeroBannerShell
-        eyebrow="Sacred Path for Couples"
-        quote="The couple that practices together arrives at each other again and again."
-        left={(
+      <section className="relative overflow-hidden rounded-[24px] border border-amber-400/20 bg-card/35 p-5">
+        <div className="absolute -right-10 top-0 opacity-15">
+          <img src={shivaShaktiIcon} alt="" className="h-40 w-40 rounded-[20px]" />
+        </div>
+        <p className="text-xs uppercase tracking-[0.22em] text-amber-400/75">Sacred Path for Couples</p>
+        <p className="mt-2 max-w-2xl text-sm italic text-muted-foreground/80">
+          "The couple that practices together arrives at each other again and again."
+        </p>
+        <div className="mt-4 grid gap-4 lg:grid-cols-[1.3fr_1fr]">
           <div>
             <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground/65">{todayLabel}</p>
             <h1 className="mt-2 flex flex-wrap items-center gap-2 font-display text-3xl text-foreground">
@@ -1330,74 +1334,75 @@ const AppHome = () => {
               )}
             </div>
           </div>
-        )}
-        right={relationshipConnected ? (
-          <div className="rounded-[18px] border border-emerald-300/25 bg-emerald-500/8 p-3">
-            <p className="text-xs uppercase tracking-[0.18em] text-emerald-200/85">{connectedPanelUi.label}</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">
-              {connectedPanelUi.partnerConnected} {connectedPanelUi.stayHere}
-            </p>
-            <div className="mt-3 rounded-[10px] border border-border/30 bg-background/45 px-3 py-2">
-              <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{weatherUi.latestMatch}</p>
-              <p className="mt-1 text-sm text-foreground">
-                {bothCheckedIn && weatherMatch
-                  ? weatherMatch.archetype.title
-                  : connectedPanelUi.waitingBoth}
-              </p>
-            </div>
-          </div>
-        ) : (
-          <div className="rounded-[18px] border border-amber-400/20 bg-background/35 p-3">
-            <p className="text-xs uppercase tracking-[0.18em] text-amber-300/80">{connectedPanelUi.codeLabel}</p>
-            <button
-              type="button"
-              onClick={() => void handlePrimaryConnectionAction()}
-              disabled={generatingCode || nudgeSending}
-              className="mt-2 inline-flex h-10 w-full items-center justify-center rounded-[10px] border border-amber-400/30 bg-amber-400/12 px-4 text-sm text-amber-200 transition-all hover:bg-amber-400/20 disabled:opacity-50"
-            >
-              {!inviteCode
-                ? (generatingCode ? "Generating..." : "Send a code")
-                : (nudgeSending ? "Sending..." : "Send a nudge")}
-            </button>
 
-            {inviteCode && (
-              <>
-                <div className="mt-3 flex items-center gap-2 rounded-[10px] border border-border/30 bg-background/45 px-3 py-2">
-                  <span className="flex-1 font-display text-lg tracking-[0.2em] text-foreground">{inviteCode}</span>
-                  <button type="button" onClick={handleCopyCode} className="text-xs text-amber-300/85">
-                    {copiedInvite ? "Copied!" : "Copy"}
-                  </button>
-                </div>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  <a
-                    href={inviteWhatsAppHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="rounded-[10px] border border-green-500/30 bg-green-950/25 px-3 py-1.5 text-xs text-green-300"
-                  >
-                    WhatsApp
-                  </a>
-                  <a href={inviteSmsHref} className="rounded-[10px] border border-blue-500/30 bg-blue-950/25 px-3 py-1.5 text-xs text-blue-300">
-                    Message
-                  </a>
-                  <button
-                    type="button"
-                    onClick={handleCopyInviteLink}
-                    className="rounded-[10px] border border-border/30 bg-background/45 px-3 py-1.5 text-xs text-muted-foreground"
-                  >
-                    Copy link
-                  </button>
-                </div>
-              </>
-            )}
-            {nudgeSent && (
-              <p className="mt-2 text-xs text-emerald-300/85">
-                {lang === "fr" ? "Nudge envoyé." : lang === "cs" ? "Postrčení odesláno." : "Nudge sent."}
+          {relationshipConnected ? (
+            <div className="rounded-[18px] border border-emerald-300/25 bg-emerald-500/8 p-3">
+              <p className="text-xs uppercase tracking-[0.18em] text-emerald-200/85">{connectedPanelUi.label}</p>
+              <p className="mt-2 text-sm leading-6 text-foreground/90">
+                {connectedPanelUi.partnerConnected} {connectedPanelUi.stayHere}
               </p>
-            )}
-          </div>
-        )}
-      />
+              <div className="mt-3 rounded-[10px] border border-border/30 bg-background/45 px-3 py-2">
+                <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{weatherUi.latestMatch}</p>
+                <p className="mt-1 text-sm text-foreground">
+                  {bothCheckedIn && weatherMatch
+                    ? weatherMatch.archetype.title
+                    : connectedPanelUi.waitingBoth}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="rounded-[18px] border border-amber-400/20 bg-background/35 p-3">
+              <p className="text-xs uppercase tracking-[0.18em] text-amber-300/80">{connectedPanelUi.codeLabel}</p>
+              <button
+                type="button"
+                onClick={() => void handlePrimaryConnectionAction()}
+                disabled={generatingCode || nudgeSending}
+                className="mt-2 inline-flex h-10 w-full items-center justify-center rounded-[10px] border border-amber-400/30 bg-amber-400/12 px-4 text-sm text-amber-200 transition-all hover:bg-amber-400/20 disabled:opacity-50"
+              >
+                {!inviteCode
+                  ? (generatingCode ? "Generating..." : "Send a code")
+                  : (nudgeSending ? "Sending..." : "Send a nudge")}
+              </button>
+
+              {inviteCode && (
+                <>
+                  <div className="mt-3 flex items-center gap-2 rounded-[10px] border border-border/30 bg-background/45 px-3 py-2">
+                    <span className="flex-1 font-display text-lg tracking-[0.2em] text-foreground">{inviteCode}</span>
+                    <button type="button" onClick={handleCopyCode} className="text-xs text-amber-300/85">
+                      {copiedInvite ? "Copied!" : "Copy"}
+                    </button>
+                  </div>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <a
+                      href={inviteWhatsAppHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-[10px] border border-green-500/30 bg-green-950/25 px-3 py-1.5 text-xs text-green-300"
+                    >
+                      WhatsApp
+                    </a>
+                    <a href={inviteSmsHref} className="rounded-[10px] border border-blue-500/30 bg-blue-950/25 px-3 py-1.5 text-xs text-blue-300">
+                      Message
+                    </a>
+                    <button
+                      type="button"
+                      onClick={handleCopyInviteLink}
+                      className="rounded-[10px] border border-border/30 bg-background/45 px-3 py-1.5 text-xs text-muted-foreground"
+                    >
+                      Copy link
+                    </button>
+                  </div>
+                </>
+              )}
+              {nudgeSent && (
+                <p className="mt-2 text-xs text-emerald-300/85">
+                  {lang === "fr" ? "Nudge envoyé." : lang === "cs" ? "Postrčení odesláno." : "Nudge sent."}
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+      </section>
 
       <section className="grid gap-4 lg:grid-cols-[1.25fr_0.75fr]">
         <div className="rounded-[24px] border border-amber-400/20 bg-card/50 p-5">
