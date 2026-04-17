@@ -305,7 +305,7 @@ const Connect = () => {
       await supabase
         .from("profiles")
         .update({ display_name: myDisplayName.trim() })
-        .eq("id", user.id);
+        .eq("user_id", user.id);
     }
 
     // Step 3: Claim the open partner_b slot.
