@@ -2504,6 +2504,7 @@ const Paths = () => {
   const { lang } = useLanguage();
   const ui = pathsUiCopy[lang];
   const isMobile = useIsMobile();
+  const hasPremiumAccess = usePremiumAccess();
   const [searchParams, setSearchParams] = useSearchParams();
   const localizedPathDetails = useMemo(
     () => pathDetails.map((path) => applyPathLocalization(path, lang)),
@@ -2519,6 +2520,7 @@ const Paths = () => {
   );
   const [selectedSlug, setSelectedSlug] = useState(defaultSelectedSlug);
   const [mobileDetailMode, setMobileDetailMode] = useState(false);
+  const [detailOnlyMode, setDetailOnlyMode] = useState(Boolean(focusSlug));
   const detailPaneRef = useRef<HTMLDivElement | null>(null);
   const sidePaneRef = useRef<HTMLElement | null>(null);
   const selected = useMemo(
@@ -2529,8 +2531,8 @@ const Paths = () => {
   const freeCount = localizedPathDetails.filter((path) => path.tier === "free").length;
   const premiumCount = localizedPathDetails.filter((path) => path.tier === "premium").length;
   const relatedPaths = localizedPathDetails.filter((path) => path.slug !== selectedSlug).slice(0, 6);
-  const showBrowse = !isMobile || !mobileDetailMode;
-  const showDetail = !isMobile || mobileDetailMode;
+  const showBrowse = isMobile ? !mobileDetailMode : !detailOnlyMode;
+  const showDetail = isMobile ? mobileDetailMode : true;
 
   useSeoMetadata({
     title: `Paths Library - ${selected.name}`,
@@ -2570,6 +2572,9 @@ const Paths = () => {
 
   const handleSelectPath = (slug: string) => {
     setSelectedSlug(slug);
+    if (!isMobile) {
+      setDetailOnlyMode(true);
+    }
     const next = new URLSearchParams(searchParams);
     next.set("focus", slug);
     setSearchParams(next, { replace: true });
@@ -2683,53 +2688,67 @@ const Paths = () => {
             );
           })}
 
-          {/* Premium banner — fills empty grid slot */}
-          <div className="md:col-span-2 xl:col-span-2 flex flex-col justify-between rounded-[24px] border border-amber-400/25 bg-gradient-to-br from-amber-950/60 via-card/50 to-card/30 p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-xs uppercase tracking-[0.22em] text-amber-400/70">SACRED PATH PREMIUM</span>
+          {!hasPremiumAccess ? (
+            <div className="md:col-span-2 xl:col-span-2 flex flex-col justify-between rounded-[24px] border border-amber-400/25 bg-gradient-to-br from-amber-950/60 via-card/50 to-card/30 p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-xs uppercase tracking-[0.22em] text-amber-400/70">SACRED PATH PREMIUM</span>
+              </div>
+              <h3 className="font-display text-xl text-foreground">
+                One subscription.<br />Two lives transformed.
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                Subscribe, send your code to your partner, and begin a completely new intimate life together — tonight.
+              </p>
+              <ul className="mt-3 space-y-1.5">
+                {[
+                  "All 6 wisdom paths unlocked",
+                  "12 sacred teachers, full depth",
+                  "Sacred Temple — all doorways open",
+                  "Daily rituals matched to your weather",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2 text-xs text-muted-foreground">
+                    <span className="mt-0.5 text-amber-400/60">✦</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <button className="mt-4 w-full rounded-[12px] border border-amber-400/40 bg-amber-400/15 px-4 py-3 text-sm font-medium text-amber-300 transition-all hover:bg-amber-400/25">
+                Unlock for both of us →
+              </button>
+              <p className="mt-2 text-center text-[10px] text-muted-foreground/50">
+                $4.99/month · 7-day free trial · One couple, one subscription
+              </p>
             </div>
-            <h3 className="font-display text-xl text-foreground">
-              One subscription.<br />Two lives transformed.
-            </h3>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              Subscribe, send your code to your partner, and begin a completely new intimate life together — tonight.
-            </p>
-            <ul className="mt-3 space-y-1.5">
-              {[
-                "All 6 wisdom paths unlocked",
-                "12 sacred teachers, full depth",
-                "Sacred Temple — all doorways open",
-                "Daily rituals matched to your weather",
-              ].map((item) => (
-                <li key={item} className="flex items-start gap-2 text-xs text-muted-foreground">
-                  <span className="mt-0.5 text-amber-400/60">✦</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <button className="mt-4 w-full rounded-[12px] border border-amber-400/40 bg-amber-400/15 px-4 py-3 text-sm font-medium text-amber-300 transition-all hover:bg-amber-400/25">
-              Unlock for both of us →
-            </button>
-            <p className="mt-2 text-center text-[10px] text-muted-foreground/50">
-              $4.99/month · 7-day free trial · One couple, one subscription
-            </p>
-          </div>
+          ) : null}
         </div>
 
-        <div className="mt-4 rounded-2xl border border-amber-400/20 bg-amber-500/6 p-4">
-          <p className="text-xs uppercase tracking-[0.14em] text-amber-200">WHY GO DEEPER</p>
-          <p className="mt-2 text-sm leading-6 text-foreground/90">Some wisdom can inspire in a moment. Deeper guidance helps you live it together, especially when love needs renewal, courage, and care.</p>
-        </div>
+        {!hasPremiumAccess ? (
+          <div className="mt-4 rounded-2xl border border-amber-400/20 bg-amber-500/6 p-4">
+            <p className="text-xs uppercase tracking-[0.14em] text-amber-200">WHY GO DEEPER</p>
+            <p className="mt-2 text-sm leading-6 text-foreground/90">Some wisdom can inspire in a moment. Deeper guidance helps you live it together, especially when love needs renewal, courage, and care.</p>
+          </div>
+        ) : null}
       </section>
       ) : null}
 
       {showDetail ? (
       <section className={`${isMobile ? "space-y-4" : "grid items-start gap-6 lg:h-[calc(100vh-8rem)] lg:grid-cols-[minmax(280px,360px)_minmax(0,1fr)]"}`}>
+        {!isMobile && detailOnlyMode ? (
+          <div className="lg:col-span-2">
+            <button
+              type="button"
+              onClick={() => setDetailOnlyMode(false)}
+              className="rounded-xl border border-border/35 bg-card/45 px-3 py-2 text-xs uppercase tracking-[0.14em] text-foreground transition-all hover:border-border/55 hover:bg-card/60"
+            >
+              {ui.backToLibrary}
+            </button>
+          </div>
+        ) : null}
         {isMobile ? <MobileDetailHeader title={selected.name} tier={selected.tier} onBack={() => setMobileDetailMode(false)} /> : null}
 
         <aside ref={sidePaneRef} className="space-y-4 lg:sticky lg:top-24 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-1">
           <PathHeroCard path={selected} />
-          <PremiumMiniCard path={selected} />
+          {!hasPremiumAccess ? <PremiumMiniCard path={selected} /> : null}
         </aside>
 
         <div ref={detailPaneRef} className="space-y-4 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-1">

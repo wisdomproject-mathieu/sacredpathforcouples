@@ -2192,6 +2192,7 @@ const Authors = () => {
   const ui = authorsUiCopy[lang];
   const authorJoinWord = lang === "fr" ? " et " : lang === "cs" ? " a " : " and ";
   const isMobile = useIsMobile();
+  const hasPremiumAccess = usePremiumAccess();
   const [searchParams, setSearchParams] = useSearchParams();
   const localizedAuthors = useMemo(
     () => authors.map((author) => applyAuthorLocalization(author, lang)),
@@ -2207,6 +2208,7 @@ const Authors = () => {
   );
   const [selectedSlug, setSelectedSlug] = useState(defaultSelectedSlug);
   const [mobileDetailMode, setMobileDetailMode] = useState(false);
+  const [detailOnlyMode, setDetailOnlyMode] = useState(Boolean(focusSlug));
   const detailPaneRef = useRef<HTMLDivElement | null>(null);
   const sidePaneRef = useRef<HTMLElement | null>(null);
   const selected = useMemo(
@@ -2217,8 +2219,8 @@ const Authors = () => {
   const freeAuthors = localizedAuthors.filter((author) => author.tier === "free");
   const premiumAuthors = localizedAuthors.filter((author) => author.tier === "premium");
   const relatedAuthors = localizedAuthors.filter((author) => author.slug !== selectedSlug).slice(0, 6);
-  const showBrowse = !isMobile || !mobileDetailMode;
-  const showDetail = !isMobile || mobileDetailMode;
+  const showBrowse = isMobile ? !mobileDetailMode : !detailOnlyMode;
+  const showDetail = isMobile ? mobileDetailMode : true;
 
   useSeoMetadata({
     title: `Authors Library - ${selected.name}`,
@@ -2258,6 +2260,9 @@ const Authors = () => {
 
   const handleSelectAuthor = (slug: string) => {
     setSelectedSlug(slug);
+    if (!isMobile) {
+      setDetailOnlyMode(true);
+    }
     const next = new URLSearchParams(searchParams);
     next.set("focus", slug);
     setSearchParams(next, { replace: true });
@@ -2369,64 +2374,79 @@ const Authors = () => {
               </button>
             );
           })}
-          <Link
-            to="/pricing"
-            className="md:col-span-2 xl:col-span-2 rounded-[24px] border border-amber-400/20 bg-gradient-to-br from-amber-950/40 via-card/60 to-card/40 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)] transition-all hover:border-amber-400/35 hover:shadow-[0_24px_70px_-40px_rgba(255,173,70,0.68)]"
-          >
-            <div className="flex h-full flex-col justify-between p-6">
-              <div>
-                <span className="text-xs uppercase tracking-[0.22em] text-amber-400/80">
-                  DEEPER PATH FOR TWO
-                </span>
-                <h3 className="mt-2 font-display text-2xl text-foreground">
-                  Open the door to deeper intimacy.
-                </h3>
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                  Premium is for couples who want more than inspiration. It helps you reconnect when distance appears, repair what feels fragile, explore new rituals together, and build a love life that feels more alive, loving, and fulfilling.
+          {!hasPremiumAccess ? (
+            <Link
+              to="/pricing"
+              className="md:col-span-2 xl:col-span-2 rounded-[24px] border border-amber-400/20 bg-gradient-to-br from-amber-950/40 via-card/60 to-card/40 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)] transition-all hover:border-amber-400/35 hover:shadow-[0_24px_70px_-40px_rgba(255,173,70,0.68)]"
+            >
+              <div className="flex h-full flex-col justify-between p-6">
+                <div>
+                  <span className="text-xs uppercase tracking-[0.22em] text-amber-400/80">
+                    DEEPER PATH FOR TWO
+                  </span>
+                  <h3 className="mt-2 font-display text-2xl text-foreground">
+                    Open the door to deeper intimacy.
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                    Premium is for couples who want more than inspiration. It helps you reconnect when distance appears, repair what feels fragile, explore new rituals together, and build a love life that feels more alive, loving, and fulfilling.
+                  </p>
+                </div>
+
+                <div className="mt-4 space-y-2">
+                  {[
+                    "Reconnect what feels distant",
+                    "Repair what has been strained",
+                    "Try new rituals that bring joy",
+                  ].map((item) => (
+                    <div key={item} className="flex items-start gap-2 text-xs text-muted-foreground">
+                      <span className="mt-0.5 text-amber-400/70">◆</span>
+                      {item}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-4 h-px w-full bg-border/20" />
+
+                <button className="mt-4 flex w-full items-center justify-center gap-2 rounded-[14px] border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm font-medium text-amber-300 transition-colors hover:bg-amber-400/20">
+                  Deepen intimacy together
+                  <span>→</span>
+                </button>
+
+                <p className="mt-2 text-center text-[10px] text-muted-foreground/60">
+                  One shared path for both hearts.
                 </p>
               </div>
-
-              <div className="mt-4 space-y-2">
-                {[
-                  "Reconnect what feels distant",
-                  "Repair what has been strained",
-                  "Try new rituals that bring joy",
-                ].map((item) => (
-                  <div key={item} className="flex items-start gap-2 text-xs text-muted-foreground">
-                    <span className="mt-0.5 text-amber-400/70">◆</span>
-                    {item}
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-4 h-px w-full bg-border/20" />
-
-              <button className="mt-4 flex w-full items-center justify-center gap-2 rounded-[14px] border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm font-medium text-amber-300 transition-colors hover:bg-amber-400/20">
-                Deepen intimacy together
-                <span>→</span>
-              </button>
-
-              <p className="mt-2 text-center text-[10px] text-muted-foreground/60">
-                One shared path for both hearts.
-              </p>
-            </div>
-          </Link>
+            </Link>
+          ) : null}
         </div>
 
-        <div className="mt-4 rounded-2xl border border-amber-400/20 bg-amber-500/6 p-4">
-          <p className="text-xs uppercase tracking-[0.14em] text-amber-200">WHY GO DEEPER</p>
-          <p className="mt-2 text-sm leading-6 text-foreground/90">Some wisdom can inspire in a moment. Deeper guidance helps you live it together, especially when love needs renewal, courage, and care.</p>
-        </div>
+        {!hasPremiumAccess ? (
+          <div className="mt-4 rounded-2xl border border-amber-400/20 bg-amber-500/6 p-4">
+            <p className="text-xs uppercase tracking-[0.14em] text-amber-200">WHY GO DEEPER</p>
+            <p className="mt-2 text-sm leading-6 text-foreground/90">Some wisdom can inspire in a moment. Deeper guidance helps you live it together, especially when love needs renewal, courage, and care.</p>
+          </div>
+        ) : null}
       </section>
       ) : null}
 
       {showDetail ? (
       <section className={`${isMobile ? "space-y-4" : "grid items-start gap-6 lg:h-[calc(100vh-8rem)] lg:grid-cols-[minmax(280px,360px)_minmax(0,1fr)]"}`}>
+        {!isMobile && detailOnlyMode ? (
+          <div className="lg:col-span-2">
+            <button
+              type="button"
+              onClick={() => setDetailOnlyMode(false)}
+              className="rounded-xl border border-border/35 bg-card/45 px-3 py-2 text-xs uppercase tracking-[0.14em] text-foreground transition-all hover:border-border/55 hover:bg-card/60"
+            >
+              {ui.backToLibrary}
+            </button>
+          </div>
+        ) : null}
         {isMobile ? <MobileDetailHeader title={selected.name} tier={selected.tier} onBack={() => setMobileDetailMode(false)} /> : null}
 
         <aside ref={sidePaneRef} className="space-y-4 lg:sticky lg:top-24 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-1">
           <AuthorHeroCard author={selected} />
-          <PremiumMiniCard author={selected} />
+          {!hasPremiumAccess ? <PremiumMiniCard author={selected} /> : null}
         </aside>
 
         <div ref={detailPaneRef} className="space-y-4 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-1">
