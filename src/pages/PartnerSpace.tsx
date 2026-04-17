@@ -1134,6 +1134,13 @@ const PartnerSpace = () => {
           </div>
           <div className="max-w-4xl">
             <p className="text-xs uppercase tracking-[0.28em] text-primary/80">{l("Sacred Temple", "Temple sacré", "Posvátný chrám")}</p>
+            {(myDisplayName || partnerDisplayName) && (
+              <p className="mt-2 font-display text-base text-foreground/90 md:text-lg">
+                {myDisplayName ?? l("You", "Vous", "Ty")}
+                <span className="text-amber-400/70"> &amp; </span>
+                {partnerDisplayName ?? l("your beloved", "votre bien-aimé(e)", "tvůj milovaný protějšek")}
+              </p>
+            )}
             <h1 className={`mt-3 font-display text-foreground ${isJourneyView ? "text-2xl md:text-3xl" : "text-3xl md:text-4xl"}`}>
               {isJourneyView
                 ? l("Our Journey Dashboard", "Tableau Notre parcours", "Panel Naše cesta")
