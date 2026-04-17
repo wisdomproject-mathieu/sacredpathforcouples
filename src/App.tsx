@@ -139,11 +139,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
-<<<<<<< Updated upstream
               <Route path="/connect" element={<LegacyConnectRedirect />} />
-=======
-              <Route path="/connect" element={<Navigate to="/auth" replace />} />
->>>>>>> Stashed changes
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route
@@ -155,11 +151,7 @@ const App = () => (
                 }
               >
                 <Route index element={<AppHome />} />
-<<<<<<< Updated upstream
                 <Route path="connect" element={<AppConnectRedirect />} />
-=======
-                <Route path="connect" element={<Navigate to="/app" replace />} />
->>>>>>> Stashed changes
                 <Route path="reconnect" element={<Reconnect />} />
                 <Route path="rituals" element={<Rituals />} />
                 <Route path="paths" element={<Paths />} />

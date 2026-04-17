@@ -3,35 +3,26 @@ import { Link, useNavigate } from "react-router-dom";
 
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import onboardingArt from "@/assets/onboarding/onboarding-icon.png";
 
 const slides = [
   {
-    id: "welcome",
-    eyebrow: "SACRED PATH FOR COUPLES",
-    headline: "Where two paths\nbecome one.",
-    body: "Ancient wisdom, translated into a daily practice between two people.",
-    sub: "Presence · Desire · Sacred Connection",
+    id: "wisdom",
+    eyebrow: "ANCIENT WISDOM",
+    headline: "Thousands of years of sacred teaching - for the two of you.",
+    body: "Tantra, Tao, and the world's most honest teachings, distilled into one gentle daily practice.",
+    sub: "Simple · Beautiful · Real",
+    cta: "Continue",
+    image: onboardingArt,
   },
   {
-    id: "modern",
-    eyebrow: "ANCIENT WISDOM, MODERN LOVE",
-    headline: "Built for couples\nliving today.",
-    body: "Real life is busy. Sacred Path turns timeless practices into three-minute rituals you can do tonight — between work, kids, and everything in between.",
-    sub: "Simple · Honest · Yours",
-  },
-  {
-    id: "together",
-    eyebrow: "BUILT FOR TWO",
-    headline: "Daily rituals.\nShared weather.\nOne sacred thread.",
-    body: "Each morning the path surfaces what your relationship needs today. Each evening you close with intention.",
-    sub: "Sync with your partner in real time",
-  },
-  {
-    id: "begin",
-    eyebrow: "YOU ARE READY",
-    headline: "Begin the\nSacred Path.",
-    body: "Create your couple space and invite your partner. The first ritual takes three minutes.",
-    sub: null,
+    id: "daily-practice",
+    eyebrow: "YOUR DAILY PRACTICE",
+    headline: "One ritual a day.\nA relationship that deepens over time.",
+    body: "Daily wisdom, intimacy weather, gratitude, and the unsaid - where two people reconnect.",
+    sub: "Daily loop for two",
+    cta: "Begin our path",
+    image: onboardingArt,
   },
 ];
 
@@ -84,6 +75,13 @@ const Index = () => {
 
   const isLast = current === slides.length - 1;
   const slide = slides[current];
+  const handlePrimaryAction = () => {
+    if (isLast) {
+      navigate("/auth");
+      return;
+    }
+    goNext();
+  };
 
   return (
     <div
@@ -119,58 +117,42 @@ const Index = () => {
       </div>
 
       {/* Slide content */}
-      <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 text-center">
-        <p
-          key={`eyebrow-${slide.id}`}
-          className="text-[10px] uppercase tracking-[0.28em] text-amber-400/60 animate-fade-in"
-        >
-          {slide.eyebrow}
-        </p>
-
-        <h1
-          key={`headline-${slide.id}`}
-          className="mt-5 font-display text-4xl leading-tight text-foreground sm:text-5xl animate-fade-in"
-          style={{ whiteSpace: "pre-line" }}
-        >
-          {slide.headline}
-        </h1>
-
-        <p
-          key={`body-${slide.id}`}
-          className="mt-5 max-w-xs text-sm leading-7 text-muted-foreground sm:max-w-sm animate-fade-in"
-        >
-          {slide.body}
-        </p>
-
-        {slide.sub && (
-          <p
-            key={`sub-${slide.id}`}
-            className="mt-4 text-[11px] uppercase tracking-[0.2em] text-muted-foreground/40 animate-fade-in"
-          >
-            {slide.sub}
-          </p>
-        )}
-
-        {/* Last slide CTA */}
-        {isLast && (
-          <div
-            key="cta"
-            className="mt-10 flex flex-col items-center gap-3 animate-fade-in"
-          >
-            <Link
-              to="/auth"
-              className="inline-flex h-12 items-center justify-center rounded-[14px] bg-amber-500 px-10 text-sm font-semibold text-amber-950 shadow-[0_0_40px_rgba(200,146,74,0.35)] transition-all hover:bg-amber-400 active:scale-95"
-            >
-              Begin Together
-            </Link>
-            <Link
-              to="/auth"
-              className="text-xs text-muted-foreground/50 transition-colors hover:text-muted-foreground"
-            >
-              Already have an account? Sign in
-            </Link>
+      <div className="relative z-10 flex flex-1 items-center justify-center px-4 py-14">
+        <div className="w-full max-w-[420px] rounded-[30px] border border-amber-400/20 bg-black/45 p-4 backdrop-blur-sm">
+          <div className="relative overflow-hidden rounded-[24px] border border-amber-400/20 bg-black/60">
+            <img src={slide.image} alt="" className="h-[44vh] w-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+            <div className="absolute inset-x-4 bottom-4">
+              <p
+                key={`eyebrow-${slide.id}`}
+                className="inline-flex rounded-full border border-amber-400/30 bg-black/65 px-3 py-1 text-[10px] uppercase tracking-[0.26em] text-amber-300"
+              >
+                {slide.eyebrow}
+              </p>
+              <h1
+                key={`headline-${slide.id}`}
+                className="mt-3 font-display text-[30px] leading-tight text-amber-50 animate-fade-in"
+                style={{ whiteSpace: "pre-line" }}
+              >
+                {slide.headline}
+              </h1>
+              <p
+                key={`body-${slide.id}`}
+                className="mt-2 text-sm leading-6 text-amber-50/80 animate-fade-in"
+              >
+                {slide.body}
+              </p>
+              {slide.sub && (
+                <p
+                  key={`sub-${slide.id}`}
+                  className="mt-3 text-[11px] uppercase tracking-[0.2em] text-amber-200/55"
+                >
+                  {slide.sub}
+                </p>
+              )}
+            </div>
           </div>
-        )}
+        </div>
       </div>
 
       {/* Bottom controls */}
@@ -192,25 +174,29 @@ const Index = () => {
           ))}
         </div>
 
-        {/* Next / skip */}
-        {!isLast && (
-          <div className="flex items-center gap-6">
-            <button
-              type="button"
-              onClick={goNext}
-              className="inline-flex h-11 items-center justify-center rounded-[13px] border border-border/40 bg-card/50 px-8 text-sm text-foreground/80 backdrop-blur-sm transition-all hover:bg-card/70 active:scale-95"
-            >
-              Continue
-            </button>
+        <div className="flex items-center gap-6">
+          <button
+            type="button"
+            onClick={handlePrimaryAction}
+            className="inline-flex h-11 items-center justify-center rounded-[13px] bg-amber-500 px-8 text-sm font-semibold text-amber-950 transition-all hover:bg-amber-400 active:scale-95"
+          >
+            {slide.cta}
+          </button>
+          {!isLast && (
             <button
               type="button"
               onClick={() => navigate("/auth")}
-              className="text-xs text-muted-foreground/40 transition-colors hover:text-muted-foreground/70"
+              className="text-xs text-muted-foreground/45 transition-colors hover:text-muted-foreground/80"
             >
               Skip
             </button>
-          </div>
-        )}
+          )}
+          {isLast && (
+            <Link to="/auth" className="text-xs text-muted-foreground/55 transition-colors hover:text-muted-foreground/90">
+              Already have an account? Sign in
+            </Link>
+          )}
+        </div>
       </div>
     </div>
   );

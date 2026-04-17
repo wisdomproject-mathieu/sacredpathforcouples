@@ -62,13 +62,16 @@ const Auth = () => {
         if (data.user) {
           await supabase
             .from("profiles")
-            .update({ display_name: fullName.trim() })
-            .eq("id", data.user.id);
+            .upsert(
+              { id: data.user.id, user_id: data.user.id, display_name: fullName.trim() },
+              { onConflict: "user_id" },
+            );
         }
         toast.success(t("auth.check_email"));
       }
-    } catch (error: any) {
-      toast.error(error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Authentication failed.";
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -76,6 +79,15 @@ const Auth = () => {
 
   const handleGoogleLogin = async () => {
     const result = await lovable.auth.signInWithOAuth("google", {
+      redirect_uri: `${window.location.origin}${safeReturnTo}`,
+    });
+    if (result && "error" in result && result.error) {
+      toast.error(String(result.error));
+    }
+  };
+
+  const handleAppleLogin = async () => {
+    const result = await lovable.auth.signInWithOAuth("apple", {
       redirect_uri: `${window.location.origin}${safeReturnTo}`,
     });
     if (result && "error" in result && result.error) {
@@ -145,6 +157,11 @@ const Auth = () => {
         <Button variant="outline" className="w-full font-body" onClick={handleGoogleLogin}>
           <Mail className="mr-2 h-4 w-4" />
           {t("auth.google")}
+        </Button>
+
+        <Button variant="outline" className="w-full font-body" onClick={handleAppleLogin}>
+          <span className="mr-2 text-xs uppercase tracking-[0.18em]">Apple</span>
+          Continue with Apple
         </Button>
 
         <p className="text-center text-sm text-muted-foreground">

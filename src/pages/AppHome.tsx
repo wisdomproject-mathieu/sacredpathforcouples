@@ -479,6 +479,7 @@ const AppHome = () => {
   const [weatherPickerVisible, setWeatherPickerVisible] = useState(false);
   const [inviteCode, setInviteCode] = useState<string | null>(null);
   const [copiedInvite, setCopiedInvite] = useState(false);
+  const [copiedWeather, setCopiedWeather] = useState(false);
   const [generatingCode, setGeneratingCode] = useState(false);
   const [pendingMoodValue, setPendingMoodValue] = useState<string | null>(null);
   const [pendingMoodEmoji, setPendingMoodEmoji] = useState<string>("");
@@ -516,13 +517,12 @@ const AppHome = () => {
     const { data: existing } = await supabase
       .from("profiles")
       .select("display_name")
-      .eq("id", user.id)
+      .eq("user_id", user.id)
       .maybeSingle();
     if (!existing?.display_name && name.trim()) {
       await supabase
         .from("profiles")
-        .update({ display_name: name.trim() })
-        .eq("id", user.id);
+        .upsert({ id: user.id, user_id: user.id, display_name: name.trim() }, { onConflict: "user_id" });
     }
   };
 
@@ -619,6 +619,7 @@ const AppHome = () => {
       setRelationshipConnected(connected);
 
       setCoupleId(activeCouple.id);
+      setInviteCode(activeCouple.couple_code ?? null);
 
       // Load today's weather entries
       const todayStr = new Date().toISOString().slice(0, 10);
@@ -898,10 +899,6 @@ const AppHome = () => {
     setJoiningCode(true);
     setJoinError("");
     setJoinSuccess("");
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
     const cleanCode = joinCode.trim().toUpperCase();
 
     const { data: target, error: fetchError } = await supabase
@@ -923,16 +920,12 @@ const AppHome = () => {
       return;
     }
 
-<<<<<<< Updated upstream
     const cleanDraftName = nameDraft.trim();
     if (cleanDraftName && !fallbackBelovedValues.has(cleanDraftName)) {
-      await supabase.from("profiles").upsert({ id: user.id, display_name: cleanDraftName }, { onConflict: "id" });
+      await supabase
+        .from("profiles")
+        .upsert({ id: user.id, user_id: user.id, display_name: cleanDraftName }, { onConflict: "user_id" });
       setMyName(cleanDraftName);
-=======
-    if (nameDraft.trim()) {
-      await supabase.from("profiles").upsert({ id: user.id, display_name: nameDraft.trim() }, { onConflict: "id" });
-      setMyName(nameDraft.trim());
->>>>>>> Stashed changes
     }
 
     const { data: updatedRows, error: updateError } = await supabase
@@ -954,35 +947,21 @@ const AppHome = () => {
     markEverConnected(user.id);
     storeConnectedCoupleId(user.id, target.id);
 
-<<<<<<< Updated upstream
-=======
-    setRelationshipConnected(true);
-    setCoupleId(target.id);
-    setJoinCode("");
-    setJoinSuccess(lang === "fr" ? "Connecté." : lang === "cs" ? "Propojeno." : "Connected.");
-
->>>>>>> Stashed changes
     const { data: partnerProfile } = await supabase
       .from("profiles")
-      .select("display_name, id")
-      .eq("id", target.partner_a)
+      .select("display_name, user_id")
+      .eq("user_id", target.partner_a)
       .maybeSingle();
 
     if (partnerProfile) {
-<<<<<<< Updated upstream
       setPartnerName(resolvePreferredName(partnerProfile, null));
     }
 
     setRelationshipConnected(true);
     setCoupleId(target.id);
+    setInviteCode(cleanCode);
     setJoinCode("");
     setJoinSuccess(lang === "fr" ? "Connecté." : lang === "cs" ? "Propojeno." : "Connected.");
-=======
-      const resolvedPartnerName = resolvePreferredName(partnerProfile, null);
-      setPartnerName(resolvedPartnerName);
-    }
-
->>>>>>> Stashed changes
     setShowConnectedPopup(true);
     setJoiningCode(false);
   };
@@ -1069,11 +1048,7 @@ const AppHome = () => {
       return () => window.clearTimeout(timeout);
     }
     wasConnectedRef.current = relationshipConnected;
-<<<<<<< Updated upstream
   }, [relationshipConnected, partnerName]);
-=======
-  }, [partnerName, relationshipConnected]);
->>>>>>> Stashed changes
 
   const saveNameOnHome = async () => {
     const cleanName = nameDraft.trim();
@@ -1082,11 +1057,7 @@ const AppHome = () => {
     setSavingName(true);
     const { error } = await supabase
       .from("profiles")
-      .upsert({ id: user.id, display_name: cleanName }, { onConflict: "id" });
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
+      .upsert({ id: user.id, user_id: user.id, display_name: cleanName }, { onConflict: "user_id" });
     if (!error) {
       setMyName(cleanName);
       setEditingName(false);
@@ -1116,6 +1087,37 @@ const AppHome = () => {
       window.setTimeout(() => setNudgeSent(false), 3200);
     }
     setNudgeSending(false);
+  };
+
+  const sendInviteNudge = async () => {
+    if (!inviteCode || nudgeSending) return;
+    setNudgeSending(true);
+    const reminder = lang === "fr"
+      ? `Je t'attends sur Sacred Path. Entre mon code ${inviteCode} pour activer notre espace partagé.`
+      : lang === "cs"
+        ? `Čekám na tebe v Sacred Path. Zadej můj kód ${inviteCode} a aktivuj náš sdílený prostor.`
+        : `I'm waiting for you in Sacred Path. Enter my code ${inviteCode} to activate our shared space.`;
+    try {
+      await navigator.clipboard.writeText(reminder);
+      setNudgeSent(true);
+      window.setTimeout(() => setNudgeSent(false), 3200);
+    } catch {
+      // ignore
+    } finally {
+      setNudgeSending(false);
+    }
+  };
+
+  const handlePrimaryConnectionAction = async () => {
+    if (!inviteCode) {
+      await createInviteOnHome();
+      return;
+    }
+    if (relationshipConnected) {
+      await sendNudgeFromHome();
+      return;
+    }
+    await sendInviteNudge();
   };
 
   const weatherUi = lang === "fr"
@@ -1195,6 +1197,73 @@ const AppHome = () => {
       ? "both"
       : "mine_only";
 
+  const shareMood = useMemo(() => {
+    if (myWeatherSelected) {
+      return getWeatherPresentation(myWeatherSelected, lang);
+    }
+    if (pendingMoodValue) {
+      return {
+        key: pendingMoodValue,
+        label: pendingMoodLabel,
+        emoji: pendingMoodEmoji,
+      };
+    }
+    return null;
+  }, [lang, myWeatherSelected, pendingMoodEmoji, pendingMoodLabel, pendingMoodValue]);
+
+  const inviteShareText = useMemo(() => {
+    if (!inviteCode) return "";
+    return lang === "fr"
+      ? `J'ai ouvert notre espace Sacred Path. Utilise ce code: ${inviteCode}. Je t'attends pour notre rituel de ce soir.`
+      : lang === "cs"
+        ? `Otevřel(a) jsem náš Sacred Path prostor. Použij tento kód: ${inviteCode}. Čekám na tebe na dnešní rituál.`
+        : `I opened our Sacred Path space. Use this code: ${inviteCode}. I am waiting for you for tonight's ritual.`;
+  }, [inviteCode, lang]);
+
+  const inviteShareLink = useMemo(
+    () => (inviteCode ? `${window.location.origin}/app?invite=${inviteCode}` : ""),
+    [inviteCode],
+  );
+
+  const weatherShareText = useMemo(() => {
+    if (!shareMood) return "";
+    const withCode = inviteCode ? ` Code: ${inviteCode}.` : "";
+    return lang === "fr"
+      ? `Ma météo d'intimité ce soir: ${shareMood.emoji} ${shareMood.label}.${withCode} Viens partager la tienne dans Sacred Path pour révéler notre rituel.`
+      : lang === "cs"
+        ? `Moje intimní počasí pro dnešní večer: ${shareMood.emoji} ${shareMood.label}.${withCode} Přijď sdílet svoje v Sacred Path a odemkneme náš rituál.`
+        : `My intimacy weather tonight: ${shareMood.emoji} ${shareMood.label}.${withCode} Come share yours in Sacred Path so we can unlock our ritual.`;
+  }, [inviteCode, lang, shareMood]);
+
+  const inviteWhatsAppHref = inviteShareText
+    ? `https://wa.me/?text=${encodeURIComponent(`${inviteShareText}\n${inviteShareLink}`.trim())}`
+    : "#";
+  const inviteSmsHref = inviteShareText
+    ? `sms:?body=${encodeURIComponent(`${inviteShareText}\n${inviteShareLink}`.trim())}`
+    : "#";
+
+  const weatherWhatsAppHref = weatherShareText
+    ? `https://wa.me/?text=${encodeURIComponent(weatherShareText)}`
+    : "#";
+  const weatherSmsHref = weatherShareText
+    ? `sms:?body=${encodeURIComponent(weatherShareText)}`
+    : "#";
+
+  const featuredPathTitle = weatherMatch?.archetype.title ?? dailyCards[0]?.title ?? copy.selecting;
+  const featuredPathDescription = weatherMatch?.interpretation ?? dailyCards[0]?.description ?? copy.calibrating;
+  const featuredPathLabel = weatherMatch ? weatherUi.tonightPath : copy.labelRitual;
+
+  const copyWeatherShare = async () => {
+    if (!weatherShareText) return;
+    try {
+      await navigator.clipboard.writeText(weatherShareText);
+      setCopiedWeather(true);
+      window.setTimeout(() => setCopiedWeather(false), 2000);
+    } catch {
+      // ignore
+    }
+  };
+
   const moods = [
     { value: "open", emoji: "🌞", label: "Open" },
     { value: "tender", emoji: "💗", label: "Tender" },
@@ -1218,91 +1287,148 @@ const AppHome = () => {
         </div>
       )}
 
-      {/* Block 1: Hero greeting */}
-      <div className="relative overflow-hidden rounded-[24px] border border-border/20 bg-card/30 p-6">
-        <div className="absolute top-4 right-4 opacity-20 hover:opacity-40 transition-opacity">
-          <img src={shivaShaktiIcon} alt="" className="h-12 w-12 rounded-[10px]" />
+      <section className="relative overflow-hidden rounded-[24px] border border-amber-400/20 bg-card/35 p-5">
+        <div className="absolute -right-10 top-0 opacity-15">
+          <img src={shivaShaktiIcon} alt="" className="h-40 w-40 rounded-[20px]" />
         </div>
-        <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground/60">
-          {todayLabel}
+        <p className="text-xs uppercase tracking-[0.22em] text-amber-400/75">Sacred Path for Couples</p>
+        <p className="mt-2 max-w-2xl text-sm italic text-muted-foreground/80">
+          "The couple that practices together arrives at each other again and again."
         </p>
-        <h1 className="mt-2 font-display text-3xl text-foreground">
-          {myName}
-          <span className="text-amber-400/60"> &amp; </span>
-          {partnerName ?? copy.partnerFallback}
-        </h1>
-        <div className="mt-2 flex flex-wrap items-center gap-2">
-          {!editingName ? (
+        <div className="mt-4 grid gap-4 lg:grid-cols-[1.3fr_1fr]">
+          <div>
+            <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground/65">{todayLabel}</p>
+            <h1 className="mt-2 font-display text-3xl text-foreground">
+              {myName}
+              <span className="text-amber-400/65"> &amp; </span>
+              {partnerName ?? copy.partnerFallback}
+            </h1>
+            <p className="mt-2 text-sm text-muted-foreground/75">
+              {relationshipConnected ? copy.journeyLine : copy.notConnectedLine}
+            </p>
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <span className={`rounded-full border px-3 py-1 text-xs ${
+                relationshipConnected
+                  ? "border-emerald-300/35 bg-emerald-500/10 text-emerald-200"
+                  : "border-amber-300/25 bg-amber-500/10 text-amber-200"
+              }`}>
+                {relationshipConnected ? copy.connected : copy.solo}
+              </span>
+              {!editingName ? (
+                <button
+                  type="button"
+                  onClick={() => setEditingName(true)}
+                  className="rounded-full border border-border/30 bg-background/35 px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-amber-400/35 hover:text-foreground"
+                >
+                  Edit your name
+                </button>
+              ) : (
+                <div className="flex flex-wrap items-center gap-2">
+                  <input
+                    value={nameDraft}
+                    onChange={(event) => setNameDraft(event.target.value)}
+                    maxLength={40}
+                    placeholder="Your name"
+                    className="h-8 rounded-lg border border-border/35 bg-background/45 px-2.5 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground/60 focus:border-amber-400/35"
+                  />
+                  <button
+                    type="button"
+                    onClick={saveNameOnHome}
+                    disabled={savingName || !nameDraft.trim()}
+                    className="rounded-lg border border-amber-400/30 bg-amber-400/10 px-2.5 py-1 text-xs text-amber-300 transition-all hover:bg-amber-400/20 disabled:opacity-50"
+                  >
+                    {savingName ? "Saving..." : "Save"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingName(false);
+                      setNameDraft(myName);
+                    }}
+                    className="rounded-lg border border-border/30 bg-background/40 px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="rounded-[18px] border border-amber-400/20 bg-background/35 p-3">
+            <p className="text-xs uppercase tracking-[0.18em] text-amber-300/80">
+              {relationshipConnected ? "Send a nudge" : "Connection code"}
+            </p>
             <button
               type="button"
-              onClick={() => setEditingName(true)}
-              className="rounded-full border border-border/30 bg-background/35 px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-amber-400/35 hover:text-foreground"
+              onClick={() => void handlePrimaryConnectionAction()}
+              disabled={generatingCode || nudgeSending}
+              className="mt-2 inline-flex h-10 w-full items-center justify-center rounded-[10px] border border-amber-400/30 bg-amber-400/12 px-4 text-sm text-amber-200 transition-all hover:bg-amber-400/20 disabled:opacity-50"
             >
-              Edit your name
+              {!inviteCode
+                ? (generatingCode ? "Generating..." : "Send a code")
+                : (nudgeSending ? "Sending..." : "Send a nudge")}
             </button>
-          ) : (
-            <div className="flex flex-wrap items-center gap-2">
-              <input
-                value={nameDraft}
-                onChange={(event) => setNameDraft(event.target.value)}
-                maxLength={40}
-                placeholder="Your name"
-                className="h-8 rounded-lg border border-border/35 bg-background/45 px-2.5 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground/60 focus:border-amber-400/35"
-              />
-              <button
-                type="button"
-                onClick={saveNameOnHome}
-                disabled={savingName || !nameDraft.trim()}
-                className="rounded-lg border border-amber-400/30 bg-amber-400/10 px-2.5 py-1 text-xs text-amber-300 transition-all hover:bg-amber-400/20 disabled:opacity-50"
-              >
-                {savingName ? "Saving..." : "Save"}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setEditingName(false);
-                  setNameDraft(myName);
-                }}
-                className="rounded-lg border border-border/30 bg-background/40 px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
-              >
-                Cancel
-              </button>
-            </div>
-          )}
-        </div>
-        <p className="mt-1 text-sm italic text-muted-foreground/70">
-          {relationshipConnected ? copy.journeyLine : copy.notConnectedLine}
-        </p>
-        {relationshipConnected && (
-          <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-amber-400/20 bg-amber-950/30 px-3 py-1.5">
-            <span className="text-sm">🔥</span>
-            <span className="text-xs text-amber-300/80">Tonight: presence before touch</span>
-            <span className="text-xs text-muted-foreground/40">→</span>
+
+            {inviteCode && (
+              <>
+                <div className="mt-3 flex items-center gap-2 rounded-[10px] border border-border/30 bg-background/45 px-3 py-2">
+                  <span className="flex-1 font-display text-lg tracking-[0.2em] text-foreground">{inviteCode}</span>
+                  <button type="button" onClick={handleCopyCode} className="text-xs text-amber-300/85">
+                    {copiedInvite ? "Copied!" : "Copy"}
+                  </button>
+                </div>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <a
+                    href={inviteWhatsAppHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-[10px] border border-green-500/30 bg-green-950/25 px-3 py-1.5 text-xs text-green-300"
+                  >
+                    WhatsApp
+                  </a>
+                  <a href={inviteSmsHref} className="rounded-[10px] border border-blue-500/30 bg-blue-950/25 px-3 py-1.5 text-xs text-blue-300">
+                    Message
+                  </a>
+                  <button
+                    type="button"
+                    onClick={handleCopyInviteLink}
+                    className="rounded-[10px] border border-border/30 bg-background/45 px-3 py-1.5 text-xs text-muted-foreground"
+                  >
+                    Copy link
+                  </button>
+                </div>
+              </>
+            )}
+            {nudgeSent && (
+              <p className="mt-2 text-xs text-emerald-300/85">
+                {lang === "fr" ? "Nudge envoyé." : lang === "cs" ? "Postrčení odesláno." : "Nudge sent."}
+              </p>
+            )}
           </div>
-        )}
-      </div>
+        </div>
+      </section>
 
-      {/* Block 2: Intimacy Weather */}
-      {!relationshipConnected ? (
-        <div className="overflow-hidden rounded-[24px] border border-amber-400/20 bg-card/50">
-
-          {/* PART 1 — Mood picker */}
-          <div className="p-5">
-            <div className="mb-4 flex items-center gap-3">
-              <img src={shivaShaktiIcon} alt="" className="h-7 w-7 rounded-[6px] opacity-70" />
-              <div>
-                <p className="text-xs uppercase tracking-[0.22em] text-amber-400/70">INTIMACY WEATHER</p>
-                <p className="font-display text-lg leading-tight text-foreground">How are you arriving tonight?</p>
-              </div>
-            </div>
-            <div className="grid grid-cols-4 gap-2">
-              {moods.map((mood) => (
+      <section className="grid gap-4 lg:grid-cols-[1.25fr_0.75fr]">
+        <div className="rounded-[24px] border border-amber-400/20 bg-card/50 p-5">
+          <p className="text-xs uppercase tracking-[0.22em] text-amber-400/70">{weatherUi.sectionLabel}</p>
+          <h3 className="mt-2 font-display text-xl text-foreground">{weatherUi.sectionTitle}</h3>
+          <div className="mt-4 grid grid-cols-4 gap-2">
+            {weatherMoods.map((mood) => {
+              const active = relationshipConnected ? myWeatherSelected === mood.key : pendingMoodValue === mood.key;
+              return (
                 <button
-                  key={mood.value}
+                  key={mood.key}
                   type="button"
-                  onClick={() => handleMoodSelect(mood.value, mood.emoji, mood.label)}
-                  className={`flex flex-col items-center gap-1 rounded-[12px] border p-2.5 transition-all ${
-                    pendingMoodValue === mood.value
+                  disabled={savingWeather}
+                  onClick={() => {
+                    if (relationshipConnected) {
+                      void handleWeatherSelect(mood.key);
+                    } else {
+                      handleMoodSelect(mood.key, mood.emoji, mood.label);
+                    }
+                  }}
+                  className={`flex flex-col items-center gap-1 rounded-[12px] border p-2.5 transition-all disabled:opacity-50 ${
+                    active
                       ? "border-amber-400/60 bg-amber-400/15 text-amber-300"
                       : "border-border/30 bg-background/40 hover:border-amber-400/40 hover:bg-amber-400/10"
                   }`}
@@ -1310,283 +1436,102 @@ const AppHome = () => {
                   <span className="text-lg">{mood.emoji}</span>
                   <span className="text-[10px] leading-none text-muted-foreground">{mood.label}</span>
                 </button>
-              ))}
+              );
+            })}
+          </div>
+
+          {shareMood && (
+            <div className="mt-4 rounded-[14px] border border-amber-400/20 bg-amber-950/20 p-3">
+              <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground/70">{weatherUi.yourWeather}</p>
+              <p className="mt-1 font-display text-lg text-foreground">{shareMood.emoji} {shareMood.label}</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <a
+                  href={weatherWhatsAppHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-[10px] border border-green-500/30 bg-green-950/25 px-3 py-1.5 text-xs text-green-300"
+                >
+                  Send via WhatsApp
+                </a>
+                <a href={weatherSmsHref} className="rounded-[10px] border border-blue-500/30 bg-blue-950/25 px-3 py-1.5 text-xs text-blue-300">
+                  Send via Message
+                </a>
+                <button
+                  type="button"
+                  onClick={() => void copyWeatherShare()}
+                  className="rounded-[10px] border border-border/30 bg-background/45 px-3 py-1.5 text-xs text-muted-foreground"
+                >
+                  {copiedWeather ? "Copied!" : "Copy weather text"}
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className="mt-4 grid gap-2 sm:grid-cols-2">
+            <div className="rounded-[12px] border border-border/30 bg-background/40 p-3">
+              <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{weatherUi.yourWeather}</p>
+              <p className="mt-1 font-display text-base">
+                {myMood ? `${myMood.emoji} ${myMood.label}` : (shareMood ? `${shareMood.emoji} ${shareMood.label}` : "Not set yet")}
+              </p>
+            </div>
+            <div className="rounded-[12px] border border-border/30 bg-background/40 p-3">
+              <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{weatherUi.belovedWeather}</p>
+              <p className="mt-1 font-display text-base">
+                {partnerMood ? `${partnerMood.emoji} ${partnerMood.label}` : "Waiting..."}
+              </p>
             </div>
           </div>
 
-          {/* PART 2 — Only shown after mood selected */}
-          {pendingMoodValue && (
-            <>
-              {/* Selected state confirmation */}
-              <div className="flex items-center gap-3 border-t border-amber-400/10 bg-amber-950/20 px-5 py-3">
-                <span className="text-xl">{pendingMoodEmoji}</span>
-                <div>
-                  <p className="text-xs text-muted-foreground/60">YOUR WEATHER</p>
-                  <p className="font-display text-base text-foreground">{pendingMoodLabel}</p>
-                </div>
-                <p className="ml-auto text-xs italic text-muted-foreground/50">
-                  Waiting for your partner...
-                </p>
+          {!relationshipConnected && (
+            <div className="mt-4 rounded-[14px] border border-border/30 bg-background/35 p-3">
+              <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground/70">
+                {lang === "fr" ? "Vous avez un code ?" : lang === "cs" ? "Máte partnerský kód?" : "Have your partner's code?"}
+              </p>
+              <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center">
+                <input
+                  value={joinCode}
+                  onChange={(event) => setJoinCode(event.target.value.toUpperCase())}
+                  placeholder="Enter code here"
+                  className="h-10 flex-1 rounded-[10px] border border-border/35 bg-background/45 px-3 text-sm tracking-[0.15em] text-foreground outline-none transition-all placeholder:tracking-normal placeholder:text-muted-foreground/60 focus:border-amber-400/35"
+                />
+                <button
+                  type="button"
+                  onClick={() => void joinWithCodeOnHome()}
+                  disabled={joiningCode || !joinCode.trim()}
+                  className="inline-flex h-10 items-center justify-center rounded-[10px] border border-amber-400/30 bg-amber-400/10 px-4 text-sm text-amber-300 transition-all hover:bg-amber-400/20 disabled:opacity-50"
+                >
+                  {joiningCode ? "Joining..." : "Connect partner"}
+                </button>
               </div>
-
-              {/* Tonight's path blurred teaser */}
-              <div className="border-t border-border/10 px-5 py-4">
-                <div className="relative">
-                  <div className="pointer-events-none select-none blur-[4px]">
-                    <p className="mb-1 text-xs uppercase tracking-widest text-amber-400/50">TONIGHT'S PATH</p>
-                    <p className="font-display text-xl text-foreground">Playful Fire</p>
-                    <p className="text-sm text-muted-foreground">Desire meets curiosity in a playful current.</p>
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <p className="rounded-full border border-amber-400/20 bg-card/90 px-3 py-1.5 text-xs text-amber-300/80">
-                      🔒 Both partners connect to unlock
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Invite code + share */}
-              <div className="border-t border-border/20 px-5 py-4">
-                {inviteCode ? (
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3 rounded-[12px] border border-border/30 bg-background/40 px-4 py-2.5">
-                      <span className="flex-1 font-display text-xl tracking-[0.25em] text-foreground">
-                        {inviteCode}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={handleCopyCode}
-                        className="shrink-0 text-xs text-amber-400/70 transition-colors hover:text-amber-400"
-                      >
-                        {copiedInvite ? "Copied!" : "Copy"}
-                      </button>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      <a
-                        href={`https://wa.me/?text=${encodeURIComponent(
-                          "I set my intimacy weather on Sacred Path 🌿 Come set yours and see what tonight holds for us.\nMy code: " + inviteCode + "\nsacredpathforcouples.com"
-                        )}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 rounded-[10px] border border-green-500/30 bg-green-950/20 px-3 py-2 text-xs text-green-300 transition-colors hover:border-green-500/50"
-                      >
-                        💬 WhatsApp
-                      </a>
-                      <a
-                        href={`sms:?body=${encodeURIComponent(
-                          "I set my intimacy weather 🔥 Come set yours on Sacred Path and see tonight's ritual.\nMy code: " + inviteCode
-                        )}`}
-                        className="flex items-center gap-1.5 rounded-[10px] border border-blue-500/30 bg-blue-950/20 px-3 py-2 text-xs text-blue-300 transition-colors hover:border-blue-500/50"
-                      >
-                        ✉️ Message
-                      </a>
-                      <button
-                        type="button"
-                        onClick={handleCopyInviteLink}
-                        className="flex items-center gap-1.5 rounded-[10px] border border-border/30 bg-background/40 px-3 py-2 text-xs text-muted-foreground transition-colors hover:border-amber-400/30"
-                      >
-                        🔗 Copy link
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={createInviteOnHome}
-                    disabled={generatingCode}
-                    className="flex w-full items-center justify-center gap-2 rounded-[12px] border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-amber-300 transition-all hover:bg-amber-400/20 disabled:opacity-50"
-                  >
-                    {generatingCode ? "Generating..." : "✦ Generate your invite code"}
-                  </button>
-                )}
-              </div>
-
-              <div className="border-t border-border/20 px-5 py-4">
-                <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground/70">
-                  {lang === "fr" ? "Vous avez un code ?" : lang === "cs" ? "Máte partnerský kód?" : "Have your partner's code?"}
-                </p>
-                <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center">
-                  <input
-                    value={joinCode}
-                    onChange={(event) => setJoinCode(event.target.value.toUpperCase())}
-                    placeholder="ABC123"
-                    className="h-10 flex-1 rounded-[10px] border border-border/35 bg-background/45 px-3 text-sm tracking-[0.2em] text-foreground outline-none transition-all placeholder:tracking-normal placeholder:text-muted-foreground/60 focus:border-amber-400/35"
-                  />
-                  <button
-                    type="button"
-                    onClick={joinWithCodeOnHome}
-                    disabled={joiningCode || !joinCode.trim()}
-                    className="inline-flex h-10 items-center justify-center rounded-[10px] border border-amber-400/30 bg-amber-400/10 px-4 text-sm text-amber-300 transition-all hover:bg-amber-400/20 disabled:opacity-50"
-                  >
-                    {joiningCode
-                      ? (lang === "fr" ? "Connexion..." : lang === "cs" ? "Propojuji..." : "Joining...")
-                      : (lang === "fr" ? "Join partner" : lang === "cs" ? "Připojit partnera" : "Join partner")}
-                  </button>
-                </div>
-                {joinError && <p className="mt-2 text-xs text-red-300/80">{joinError}</p>}
-                {joinSuccess && <p className="mt-2 text-xs text-emerald-300/80">{joinSuccess}</p>}
-              </div>
-            </>
+              {joinError && <p className="mt-2 text-xs text-red-300/80">{joinError}</p>}
+              {joinSuccess && <p className="mt-2 text-xs text-emerald-300/80">{joinSuccess}</p>}
+            </div>
           )}
         </div>
-      ) : (
-        <div className="overflow-hidden rounded-[24px] border border-amber-400/20 bg-card/50">
 
-          {/* STATE A: picker — user hasn't sealed weather today, or wants to change */}
-          {weatherCardState === "picker" && (
-            <div className="p-5">
-              <p className="text-xs uppercase tracking-[0.22em] text-amber-400/70">
-                {weatherUi.sectionLabel}
-              </p>
-              <h3 className="mt-2 font-display text-xl text-foreground">
-                {weatherUi.sectionTitle}
-              </h3>
-              <div className="mt-4 grid grid-cols-4 gap-2">
-                {weatherMoods.map((mood) => {
-                  const active = myWeatherSelected === mood.key;
-                  return (
-                    <button
-                      key={mood.key}
-                      type="button"
-                      disabled={savingWeather}
-                      onClick={() => handleWeatherSelect(mood.key)}
-                      className={`flex flex-col items-center gap-1.5 rounded-[12px] border px-2 py-3 text-center transition-all disabled:opacity-50 ${
-                        active
-                          ? "border-amber-400/50 bg-amber-400/15"
-                          : "border-border/30 bg-background/40 hover:border-amber-400/40 hover:bg-amber-400/10"
-                      }`}
-                    >
-                      <span className="text-xl">{mood.emoji}</span>
-                      <span className="text-[11px] leading-tight text-muted-foreground">{mood.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-              {savingWeather && (
-                <p className="mt-3 text-xs text-muted-foreground/60">{weatherUi.sealing}</p>
-              )}
-            </div>
-          )}
-
-          {/* STATE B: mine only — user sealed, waiting for partner */}
-          {weatherCardState === "mine_only" && myMood && (
-            <div className="p-5">
-              <p className="text-xs uppercase tracking-[0.22em] text-amber-400/70">
-                {weatherUi.sectionLabel}
-              </p>
-              <div className="mt-3 flex gap-3">
-                <div className="flex-1 rounded-[14px] bg-background/40 p-3">
-                  <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
-                    {weatherUi.yourWeather}
-                  </p>
-                  <p className="mt-1 font-display text-lg">
-                    {myMood.emoji} {myMood.label}
-                  </p>
-                </div>
-                <div className="flex-1 rounded-[14px] border border-dashed border-border/30 p-3">
-                  <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
-                    {weatherUi.belovedWeather}
-                  </p>
-                  <p className="mt-1 text-sm italic text-muted-foreground/50">
-                    {partnerName ? `Waiting for ${partnerName}…` : weatherUi.waitingForBeloved}
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* STATE C: both — the beautiful combined view */}
-          {weatherCardState === "both" && myMood && partnerMood && weatherMatch && (
-            <div>
-              {/* Top row: both weathers + artwork */}
-              <div className="flex items-stretch">
-                <div className="flex-1 p-5">
-                  <p className="text-xs uppercase tracking-[0.22em] text-amber-400/70">
-                    {weatherUi.sectionLabel}
-                  </p>
-                  <div className="mt-3 flex items-center gap-3">
-                    <div>
-                      <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground/60">
-                        {weatherUi.yourWeather}
-                      </p>
-                      <p className="font-display text-lg">
-                        {myMood.emoji} {myMood.label}
-                      </p>
-                    </div>
-                    <span className="text-xl text-amber-400/40">+</span>
-                    <div>
-                      <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground/60">
-                        {weatherUi.belovedWeather}
-                      </p>
-                      <p className="font-display text-lg">
-                        {partnerMood.emoji} {partnerMood.label}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="relative w-24 shrink-0 overflow-hidden sm:w-28">
-                  <img
-                    src={shivaShaktiIcon}
-                    alt=""
-                    className="h-full w-full object-cover opacity-50"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-l from-transparent to-card/70" />
-                </div>
-              </div>
-
-              {/* Bottom: combined result */}
-              <div className="border-t border-amber-400/10 bg-gradient-to-r from-amber-950/30 to-transparent p-5">
-                <p className="text-xs uppercase tracking-[0.18em] text-amber-400/60">
-                  {weatherMatch.archetype.title}
+        <div className="relative overflow-hidden rounded-[24px] border border-amber-400/20 bg-card/50 p-5">
+          <img src={shivaShaktiIcon} alt="" className="pointer-events-none absolute right-0 top-0 h-40 w-40 object-cover opacity-20" />
+          <div className="relative">
+            <p className="text-xs uppercase tracking-[0.2em] text-amber-400/75">{featuredPathLabel}</p>
+            <h3 className="mt-2 font-display text-2xl text-foreground">{featuredPathTitle}</h3>
+            <p className="mt-3 text-sm leading-6 text-muted-foreground">{featuredPathDescription}</p>
+            <div className="mt-5">
+              {bothCheckedIn && weatherMatch ? (
+                <Link
+                  to="/app/space?view=journey&openMatch=1"
+                  className="inline-flex items-center gap-1.5 rounded-[12px] border border-amber-400/30 bg-amber-400/10 px-4 py-2.5 text-sm text-amber-300 transition-all hover:bg-amber-400/20"
+                >
+                  {weatherUi.openTonightPath} →
+                </Link>
+              ) : (
+                <p className="rounded-[12px] border border-amber-400/20 bg-amber-950/20 px-3 py-2 text-xs text-amber-200/85">
+                  Both partners share weather to unlock the full tonight ritual card.
                 </p>
-                <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                  {weatherMatch.interpretation}
-                </p>
-                <div className="mt-4 flex flex-wrap items-center gap-3">
-                  <Link
-                    to="/app/space?view=journey&openMatch=1"
-                    className="inline-flex items-center gap-1.5 rounded-[12px] border border-amber-400/30 bg-amber-400/10 px-4 py-2.5 text-sm text-amber-300 transition-all hover:bg-amber-400/20"
-                  >
-                    {weatherUi.openTonightPath} →
-                  </Link>
-                  <button
-                    type="button"
-                    onClick={() => setWeatherPickerVisible(true)}
-                    className="text-xs text-muted-foreground/40 transition-colors hover:text-muted-foreground/70"
-                  >
-                    {lang === "fr" ? "Changer ma météo" : lang === "cs" ? "Změnit počasí" : "Change my weather"}
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="border-t border-border/20 px-5 py-3">
-            <div className="flex flex-wrap items-center gap-2">
-              <button
-                type="button"
-                onClick={sendNudgeFromHome}
-                disabled={nudgeSending}
-                className="inline-flex items-center gap-1.5 rounded-[10px] border border-amber-400/30 bg-amber-400/10 px-3 py-2 text-xs text-amber-300 transition-all hover:bg-amber-400/20 disabled:opacity-50"
-              >
-                {nudgeSending
-                  ? (lang === "fr" ? "Envoi..." : lang === "cs" ? "Posílám..." : "Sending...")
-                  : (lang === "fr" ? "Send a nudge" : lang === "cs" ? "Poslat postrčení" : "Send a nudge")}
-              </button>
-              {nudgeSent && (
-                <span className="text-xs text-emerald-300/80">
-                  {lang === "fr"
-                    ? "Nudge envoyé."
-                    : lang === "cs"
-                      ? "Postrčení odesláno."
-                      : "Nudge sent."}
-                </span>
               )}
             </div>
           </div>
-
         </div>
-      )}
+      </section>
 
       <section className="rounded-[24px] border-t border-[rgba(200,146,74,0.2)] bg-[rgba(200,146,74,0.06)] px-4 pb-4 pt-4">
         <div className="mb-4">
