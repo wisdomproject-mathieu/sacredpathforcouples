@@ -657,6 +657,30 @@ const AppHome = () => {
     };
 
     loadHome();
+
+    // Realtime: refresh home if a couple row referencing this user changes
+    // (e.g., partner B accepts the invite — partner A should see it instantly)
+    const channelA = supabase
+      .channel(`home_couples_a_${user.id}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "couples", filter: `partner_a=eq.${user.id}` },
+        () => loadHome(),
+      )
+      .subscribe();
+    const channelB = supabase
+      .channel(`home_couples_b_${user.id}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "couples", filter: `partner_b=eq.${user.id}` },
+        () => loadHome(),
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channelA);
+      supabase.removeChannel(channelB);
+    };
   }, [hasPremiumAccess, user]);
 
   const latestPartnerMessage = useMemo(
