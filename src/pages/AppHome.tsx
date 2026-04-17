@@ -898,6 +898,10 @@ const AppHome = () => {
     setJoiningCode(true);
     setJoinError("");
     setJoinSuccess("");
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
     const cleanCode = joinCode.trim().toUpperCase();
 
     const { data: target, error: fetchError } = await supabase
@@ -919,10 +923,16 @@ const AppHome = () => {
       return;
     }
 
+<<<<<<< Updated upstream
     const cleanDraftName = nameDraft.trim();
     if (cleanDraftName && !fallbackBelovedValues.has(cleanDraftName)) {
       await supabase.from("profiles").upsert({ id: user.id, display_name: cleanDraftName }, { onConflict: "id" });
       setMyName(cleanDraftName);
+=======
+    if (nameDraft.trim()) {
+      await supabase.from("profiles").upsert({ id: user.id, display_name: nameDraft.trim() }, { onConflict: "id" });
+      setMyName(nameDraft.trim());
+>>>>>>> Stashed changes
     }
 
     const { data: updatedRows, error: updateError } = await supabase
@@ -944,6 +954,14 @@ const AppHome = () => {
     markEverConnected(user.id);
     storeConnectedCoupleId(user.id, target.id);
 
+<<<<<<< Updated upstream
+=======
+    setRelationshipConnected(true);
+    setCoupleId(target.id);
+    setJoinCode("");
+    setJoinSuccess(lang === "fr" ? "Connecté." : lang === "cs" ? "Propojeno." : "Connected.");
+
+>>>>>>> Stashed changes
     const { data: partnerProfile } = await supabase
       .from("profiles")
       .select("display_name, id")
@@ -951,6 +969,7 @@ const AppHome = () => {
       .maybeSingle();
 
     if (partnerProfile) {
+<<<<<<< Updated upstream
       setPartnerName(resolvePreferredName(partnerProfile, null));
     }
 
@@ -958,6 +977,12 @@ const AppHome = () => {
     setCoupleId(target.id);
     setJoinCode("");
     setJoinSuccess(lang === "fr" ? "Connecté." : lang === "cs" ? "Propojeno." : "Connected.");
+=======
+      const resolvedPartnerName = resolvePreferredName(partnerProfile, null);
+      setPartnerName(resolvedPartnerName);
+    }
+
+>>>>>>> Stashed changes
     setShowConnectedPopup(true);
     setJoiningCode(false);
   };
@@ -1044,7 +1069,11 @@ const AppHome = () => {
       return () => window.clearTimeout(timeout);
     }
     wasConnectedRef.current = relationshipConnected;
+<<<<<<< Updated upstream
   }, [relationshipConnected, partnerName]);
+=======
+  }, [partnerName, relationshipConnected]);
+>>>>>>> Stashed changes
 
   const saveNameOnHome = async () => {
     const cleanName = nameDraft.trim();
@@ -1054,6 +1083,10 @@ const AppHome = () => {
     const { error } = await supabase
       .from("profiles")
       .upsert({ id: user.id, display_name: cleanName }, { onConflict: "id" });
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
     if (!error) {
       setMyName(cleanName);
       setEditingName(false);

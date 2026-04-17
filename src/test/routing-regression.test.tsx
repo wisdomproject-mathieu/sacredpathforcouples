@@ -56,6 +56,17 @@ describe("routing regressions", () => {
     expect(await screen.findByRole("button", { name: /fr/i })).toBeInTheDocument();
   });
 
+<<<<<<< Updated upstream
+=======
+  it("switches landing content language, not only nav labels", async () => {
+    renderAt("/");
+
+    fireEvent.click(screen.getByTitle(/switch to fr/i));
+    expect((await screen.findAllByText(/chemin sacré/i)).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/se connecter au partenaire/i).length).toBeGreaterThan(0);
+  });
+
+>>>>>>> Stashed changes
   it("redirects /connect to auth", async () => {
     renderAt("/connect");
 
