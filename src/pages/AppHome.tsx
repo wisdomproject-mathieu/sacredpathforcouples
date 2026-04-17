@@ -4,8 +4,6 @@ import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 import {
   ArrowRight,
   BookOpen,
-  ChevronDown,
-  ChevronUp,
   Heart,
   Lock,
   MessageCircle,
@@ -45,8 +43,6 @@ type DailyCard = {
   icon: LucideIcon;
   accentClass: string;
 };
-
-type SavedMap = Record<string, boolean>;
 
 const quoteSets: Record<Language, Array<{ id: string; author: string; quote: string }>> = {
   en: [
@@ -416,21 +412,6 @@ const localDayKey = (date: Date) => {
   return `${year}-${month}-${day}`;
 };
 
-const SAVED_CARDS_KEY = "sacredpath_home_saved_cards_v1";
-
-const readSavedCards = (): SavedMap => {
-  try {
-    const raw = window.localStorage.getItem(SAVED_CARDS_KEY);
-    return raw ? (JSON.parse(raw) as SavedMap) : {};
-  } catch {
-    return {};
-  }
-};
-
-const writeSavedCards = (value: SavedMap) => {
-  window.localStorage.setItem(SAVED_CARDS_KEY, JSON.stringify(value));
-};
-
 const parseRitualSteps = (steps: RitualItem["steps"]): string[] => {
   if (!Array.isArray(steps)) return [];
   const parsed = steps
@@ -469,8 +450,6 @@ const AppHome = () => {
   const [altarItems, setAltarItems] = useState<AltarItem[]>([]);
   const [rituals, setRituals] = useState<RitualItem[]>([]);
   const [pathways, setPathways] = useState<Pathway[]>([]);
-  const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
-  const [savedCards, setSavedCards] = useState<SavedMap>({});
   const [coupleId, setCoupleId] = useState<string | null>(null);
   const [myWeatherEntry, setMyWeatherEntry] = useState<{ state: string; user_id: string } | null>(null);
   const [partnerWeatherEntry, setPartnerWeatherEntry] = useState<{ state: string; user_id: string } | null>(null);
@@ -493,7 +472,6 @@ const AppHome = () => {
   const [savingName, setSavingName] = useState(false);
   const [nudgeSending, setNudgeSending] = useState(false);
   const [nudgeSent, setNudgeSent] = useState(false);
-  const [expandedOutcomeId, setExpandedOutcomeId] = useState<string | null>(null);
   const [showConnectedPopup, setShowConnectedPopup] = useState(false);
   const wasConnectedRef = useRef(false);
   const [searchParams] = useSearchParams();
@@ -841,10 +819,6 @@ const AppHome = () => {
   }, [copy.fallbackCardDesc, copy.fallbackInsightCardDesc, copy.fallbackInsightDesc, copy.fallbackInsightTitle, copy.fallbackRitualDesc, copy.fallbackRitualTitle, copy.fromAuthorPattern, copy.insightInsight, copy.labelInsight, copy.labelPosition, copy.labelQuote, copy.labelReconnect, copy.labelRitual, copy.labelTemple, copy.positionInsight, copy.quoteInsight, copy.reconnectInsight, copy.ritualInsight, copy.stepInsight1, copy.stepInsight2, copy.stepInsight3, copy.stepPosition1, copy.stepPosition2, copy.stepPosition3, copy.stepQuote1, copy.stepQuote2, copy.stepQuote3, copy.stepReconnect1, copy.stepReconnect2, copy.stepReconnect3, copy.stepRitual1, copy.stepRitual2, copy.stepRitual3, copy.stepTemple1, copy.stepTemple2, copy.stepTemple3, copy.templeInsight, dailySeed, pathways, positions, quotes, reconnectMoves, rituals, templePulses]);
 
   useEffect(() => {
-    setSavedCards(readSavedCards());
-  }, [todayKey]);
-
-  useEffect(() => {
     if (!user || relationshipConnected) return;
     try {
       const raw = localStorage.getItem(`weather_pending_${user.id}`);
@@ -863,12 +837,6 @@ const AppHome = () => {
     if (!inviteFromUrl) return;
     setJoinCode((current) => current || inviteFromUrl.trim().toUpperCase());
   }, [searchParams]);
-
-  const handleSaveCard = (cardId: string) => {
-    const next = { ...savedCards, [cardId]: !savedCards[cardId] };
-    setSavedCards(next);
-    writeSavedCards(next);
-  };
 
   const createInviteOnHome = async () => {
     if (!user || generatingCode) return;
@@ -1225,7 +1193,15 @@ const AppHome = () => {
 
   const featuredPathTitle = weatherMatch?.archetype.title ?? dailyCards[0]?.title ?? copy.selecting;
   const featuredPathDescription = weatherMatch?.interpretation ?? dailyCards[0]?.description ?? copy.calibrating;
-  const featuredPathLabel = weatherMatch ? weatherUi.tonightPath : copy.labelRitual;
+  const featuredPathLabel = weatherUi.tonightPath;
+  const tonightRitual = weatherMatch?.recommendations?.[0] ?? null;
+  const tonightRitualTitle = tonightRitual?.title ?? dailyCards[0]?.title ?? copy.selecting;
+  const tonightRitualDescription = tonightRitual?.description ?? featuredPathDescription;
+  const tonightRitualStep = tonightRitual?.ritualSteps?.[0] ?? dailyCards[0]?.steps?.[0] ?? "";
+  const rotatingQuote = useMemo(
+    () => pickBySeed(quotes, `${todayKey}:home-end-quote`),
+    [quotes, todayKey],
+  );
 
   const copyWeatherShare = async () => {
     if (!weatherShareText) return;
@@ -1238,52 +1214,6 @@ const AppHome = () => {
     }
   };
 
-  const connectedOutcomeCards = useMemo(() => {
-    if (!relationshipConnected || !weatherMatch) return [];
-    return weatherMatch.recommendations.slice(0, 3).map((item, index) => ({
-      id: item.id,
-      title: item.title,
-      subtitle: item.subtitle,
-      description: item.description,
-      duration: item.ritualDuration,
-      intensity: item.intimacyLevel,
-      primaryNeed: item.primaryNeed,
-      steps: item.ritualSteps.slice(0, 4),
-      sourceTraditions: item.sourceTraditions.slice(0, 2),
-      sourceAuthors: item.sourceAuthors.slice(0, 1),
-      messageSuggestion: item.messageSuggestion,
-      afterglowPrompt: item.afterglowPrompt,
-      accentClass:
-        index % 3 === 0 ? "text-amber-300" : index % 3 === 1 ? "text-cyan-300" : "text-rose-300",
-      icon: index % 3 === 0 ? Sparkles : index % 3 === 1 ? Stars : Heart,
-    }));
-  }, [relationshipConnected, weatherMatch]);
-  const connectedOutcomeUi = lang === "fr"
-    ? {
-        label: "TONIGHT OUTCOME",
-        title: "Rituels suggérés pour vous deux",
-        waiting: "Partagez vos deux météos pour débloquer les recommandations de ce soir.",
-        stepsLabel: "Flow",
-        sourcesLabel: "Source lineage",
-        suggestionLabel: "Message to send",
-      }
-    : lang === "cs"
-      ? {
-          label: "TONIGHT OUTCOME",
-          title: "Doporučení pro vás oba",
-          waiting: "Sdílejte oba počasí a odemkněte dnešní doporučení.",
-          stepsLabel: "Flow",
-          sourcesLabel: "Source lineage",
-          suggestionLabel: "Message to send",
-        }
-      : {
-          label: "TONIGHT OUTCOME",
-          title: "Suggested rituals for both of you",
-          waiting: "Both partners share weather to unlock tonight's recommendation cards.",
-          stepsLabel: "Flow",
-          sourcesLabel: "Source lineage",
-          suggestionLabel: "Message to send",
-        };
   const connectedPanelUi = lang === "fr"
     ? {
         label: "Connectés",
@@ -1308,17 +1238,6 @@ const AppHome = () => {
           codeLabel: "Connection code",
         };
 
-  const moods = [
-    { value: "open", emoji: "🌞", label: "Open" },
-    { value: "tender", emoji: "💗", label: "Tender" },
-    { value: "playful", emoji: "✨", label: "Playful" },
-    { value: "stressed", emoji: "☁️", label: "Stressed" },
-    { value: "longing", emoji: "🌙", label: "Longing" },
-    { value: "erotic", emoji: "🔥", label: "Erotic" },
-    { value: "tired", emoji: "🫧", label: "Tired" },
-    { value: "reassurance", emoji: "⚡", label: "Reassurance" },
-  ];
-
   return (
     <div className="space-y-4 md:space-y-5">
       {showConnectedPopup && relationshipConnected && partnerName && (
@@ -1342,10 +1261,18 @@ const AppHome = () => {
         <div className="mt-4 grid gap-4 lg:grid-cols-[1.3fr_1fr]">
           <div>
             <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground/65">{todayLabel}</p>
-            <h1 className="mt-2 font-display text-3xl text-foreground">
-              {myName}
-              <span className="text-amber-400/65"> &amp; </span>
-              {partnerName ?? copy.partnerFallback}
+            <h1 className="mt-2 flex flex-wrap items-center gap-2 font-display text-3xl text-foreground">
+              <span>
+                {myName}
+                <span className="text-amber-400/65"> &amp; </span>
+                {partnerName ?? copy.partnerFallback}
+              </span>
+              {relationshipConnected ? (
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300/35 bg-emerald-500/10 px-2.5 py-1 text-emerald-200">
+                  <Heart className="h-4 w-4 fill-current" />
+                  <Sparkles className="h-4 w-4" />
+                </span>
+              ) : null}
             </h1>
             <p className="mt-2 text-sm text-muted-foreground/75">
               {relationshipConnected ? copy.journeyLine : copy.notConnectedLine}
@@ -1572,8 +1499,27 @@ const AppHome = () => {
           <img src={shivaShaktiIcon} alt="" className="pointer-events-none absolute right-0 top-0 h-40 w-40 object-cover opacity-20" />
           <div className="relative">
             <p className="text-xs uppercase tracking-[0.2em] text-amber-400/75">{featuredPathLabel}</p>
-            <h3 className="mt-2 font-display text-2xl text-foreground">{featuredPathTitle}</h3>
-            <p className="mt-3 text-sm leading-6 text-muted-foreground">{featuredPathDescription}</p>
+            <h3 className="mt-2 font-display text-2xl text-foreground">{tonightRitualTitle}</h3>
+            <p className="mt-3 text-sm leading-6 text-muted-foreground">{tonightRitualDescription}</p>
+            {tonightRitual ? (
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                <span className="rounded-full border border-border/35 bg-card/45 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/90">
+                  {tonightRitual.ritualDuration}
+                </span>
+                <span className="rounded-full border border-border/35 bg-card/45 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/90">
+                  {tonightRitual.intimacyLevel}
+                </span>
+                <span className="rounded-full border border-border/35 bg-card/45 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/90">
+                  {tonightRitual.primaryNeed}
+                </span>
+              </div>
+            ) : null}
+            {tonightRitualStep ? (
+              <div className="mt-3 rounded-[12px] border border-border/30 bg-background/40 px-3 py-2.5">
+                <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground/75">Tonight ritual</p>
+                <p className="mt-1 text-sm text-foreground/90">{tonightRitualStep}</p>
+              </div>
+            ) : null}
             <div className="mt-5">
               {bothCheckedIn && weatherMatch ? (
                 <Link
@@ -1584,170 +1530,11 @@ const AppHome = () => {
                 </Link>
               ) : (
                 <p className="rounded-[12px] border border-amber-400/20 bg-amber-950/20 px-3 py-2 text-xs text-amber-200/85">
-                  Both partners share weather to unlock the full tonight ritual card.
+                  {featuredPathTitle}
                 </p>
               )}
             </div>
           </div>
-        </div>
-      </section>
-
-      {relationshipConnected ? (
-        <section className="rounded-[24px] border border-primary/25 bg-primary/10 p-4">
-          <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{connectedOutcomeUi.label}</p>
-          <h2 className="mt-1.5 font-display text-2xl text-foreground">{connectedOutcomeUi.title}</h2>
-          {!connectedOutcomeCards.length ? (
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">{connectedOutcomeUi.waiting}</p>
-          ) : (
-            <div className="mt-3 grid gap-3 md:grid-cols-3">
-              {connectedOutcomeCards.map((card) => {
-                const Icon = card.icon;
-                const expanded = expandedOutcomeId === card.id;
-
-                return (
-                  <article key={card.id} className="rounded-[20px] border border-border/30 bg-background/45 p-4">
-                    <button
-                      type="button"
-                      onClick={() => setExpandedOutcomeId(expanded ? null : card.id)}
-                      className="flex w-full flex-col text-left"
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{card.subtitle}</p>
-                          <h3 className="mt-2 font-display text-xl text-foreground">{card.title}</h3>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className={`inline-flex rounded-xl border border-border/30 bg-card/45 p-2.5 ${card.accentClass}`}>
-                            <Icon className="h-4 w-4" />
-                          </div>
-                          <div className="inline-flex rounded-lg border border-border/30 bg-background/45 p-1.5 text-muted-foreground">
-                            {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                          </div>
-                        </div>
-                      </div>
-                      <p className="mt-2 text-sm leading-6 text-muted-foreground">{card.description}</p>
-                    </button>
-
-                    <div className="mt-3 flex flex-wrap gap-1.5">
-                      <span className="rounded-full border border-border/35 bg-card/45 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/90">
-                        {card.duration}
-                      </span>
-                      <span className="rounded-full border border-border/35 bg-card/45 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/90">
-                        {card.intensity}
-                      </span>
-                      <span className="rounded-full border border-border/35 bg-card/45 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/90">
-                        {card.primaryNeed}
-                      </span>
-                    </div>
-
-                    {expanded ? (
-                      <div className="mt-3 space-y-3 rounded-xl border border-border/30 bg-background/40 p-3">
-                        <div>
-                          <p className="text-xs uppercase tracking-[0.16em] text-primary/80">{connectedOutcomeUi.stepsLabel}</p>
-                          <ol className="mt-1.5 space-y-1.5 text-sm leading-6 text-foreground/90">
-                            {card.steps.map((step, index) => (
-                              <li key={`${card.id}-${step}`}>{index + 1}. {step}</li>
-                            ))}
-                          </ol>
-                        </div>
-                        <div>
-                          <p className="text-xs uppercase tracking-[0.16em] text-primary/80">{connectedOutcomeUi.sourcesLabel}</p>
-                          <div className="mt-1.5 flex flex-wrap gap-1.5">
-                            {card.sourceTraditions.map((tag) => (
-                              <span key={`${card.id}-tradition-${tag}`} className="rounded-full border border-primary/30 bg-primary/12 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-primary/90">
-                                {tag}
-                              </span>
-                            ))}
-                            {card.sourceAuthors.map((tag) => (
-                              <span key={`${card.id}-author-${tag}`} className="rounded-full border border-border/35 bg-card/45 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/90">
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                        <div className="rounded-lg border border-amber-300/30 bg-amber-500/8 p-2.5">
-                          <p className="text-xs uppercase tracking-[0.14em] text-amber-200">{connectedOutcomeUi.suggestionLabel}</p>
-                          <p className="mt-1 text-sm leading-6 text-foreground/90">{card.messageSuggestion}</p>
-                        </div>
-                      </div>
-                    ) : null}
-                  </article>
-                );
-              })}
-            </div>
-          )}
-        </section>
-      ) : null}
-
-      <section className="rounded-[24px] border-t border-[rgba(200,146,74,0.2)] bg-[rgba(200,146,74,0.06)] px-4 pb-4 pt-4">
-        <div className="mb-4">
-          <p className="text-xs uppercase tracking-[0.22em] text-amber-400/70">{copy.todayFlowLabel}</p>
-          <h2 className="mt-1.5 font-display text-2xl text-foreground">{copy.todayFlowTitle}</h2>
-        </div>
-
-        <div className="grid gap-3 md:grid-cols-3">
-          {dailyCards.slice(0, 3).map((card) => {
-            const Icon = card.icon;
-            const expanded = expandedCardId === card.id;
-            const saved = savedCards[card.id] ?? false;
-
-            return (
-              <div key={card.id} className="h-full rounded-[20px] border border-border/30 bg-card/45 p-4">
-                <button type="button" onClick={() => setExpandedCardId(expanded ? null : card.id)} className="flex w-full flex-col text-left">
-                  <div className="flex flex-wrap items-start justify-between gap-2">
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{card.label}</p>
-                      <h3 className="mt-2 font-display text-xl text-foreground">{loading ? copy.selecting : card.title}</h3>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className={`inline-flex rounded-xl border border-border/30 bg-background/45 p-2.5 ${card.accentClass}`}>
-                        <Icon className="h-4 w-4" />
-                      </div>
-                      <div className="inline-flex rounded-lg border border-border/30 bg-background/45 p-1.5 text-muted-foreground">
-                        {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    {loading ? copy.calibrating : card.description}
-                  </p>
-                </button>
-
-                {!loading && expanded && (
-                  <div className="mt-3 space-y-3 rounded-xl border border-border/30 bg-background/45 p-3">
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.16em] text-primary/80">{copy.quickInsight}</p>
-                      <p className="mt-1.5 text-sm leading-6 text-foreground/90">{card.quickInsight}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.16em] text-primary/80">{copy.stepByStep}</p>
-                      <ol className="mt-1.5 space-y-1.5 text-sm leading-6 text-foreground/90">
-                        {card.steps.map((step, index) => (
-                          <li key={step}>{index + 1}. {step}</li>
-                        ))}
-                      </ol>
-                    </div>
-                    <div className="rounded-lg border border-amber-300/30 bg-amber-500/8 p-2.5">
-                      <p className="text-xs uppercase tracking-[0.14em] text-amber-200">{copy.goDeeper}</p>
-                      <p className="mt-1 text-sm leading-6 text-foreground/90">{copy.goDeeperDesc}</p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => handleSaveCard(card.id)}
-                      className={`inline-flex items-center gap-2 rounded-xl border px-3 py-1.5 text-xs transition-all ${
-                        saved
-                          ? "border-rose-300/45 bg-rose-500/15 text-rose-200"
-                          : "border-border/30 bg-card/45 text-muted-foreground hover:border-rose-300/35 hover:text-rose-200"
-                      }`}
-                    >
-                      <Heart className={`h-3.5 w-3.5 ${saved ? "fill-current" : ""}`} />
-                      {saved ? copy.savedToYourPath : copy.saveThisPractice}
-                    </button>
-                  </div>
-                )}
-              </div>
-            );
-          })}
         </div>
       </section>
 
@@ -1805,12 +1592,14 @@ const AppHome = () => {
         </section>
       )}
 
-      <div className="rounded-[20px] border border-border/15 bg-card/20 p-5 text-center">
-        <p className="mb-3 text-xs uppercase tracking-[0.22em] text-muted-foreground/40">ANCIENT WISDOM</p>
-        <p className="mx-auto max-w-lg font-display text-base italic leading-7 text-foreground/70">
-          "The couple that practices together doesn't just stay together — they arrive at each other, again and again, as if for the first time."
+      <div className="rounded-[20px] border border-amber-300/20 bg-amber-500/6 p-5 text-center">
+        <p className="mb-3 text-xs uppercase tracking-[0.22em] text-amber-300/70">
+          {lang === "fr" ? "Citation du jour" : lang === "cs" ? "Citát dne" : "Daily quote"}
         </p>
-        <p className="mt-3 text-xs text-muted-foreground/40">— Diana Richardson</p>
+        <p className="mx-auto max-w-2xl font-display text-lg italic leading-8 text-foreground/80">
+          “{rotatingQuote.quote}”
+        </p>
+        <p className="mt-3 text-xs uppercase tracking-[0.16em] text-muted-foreground/65">{rotatingQuote.author}</p>
       </div>
     </div>
   );
