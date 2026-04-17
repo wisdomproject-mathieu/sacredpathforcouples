@@ -1162,38 +1162,68 @@ const PartnerSpace = () => {
             </p>
           </div>
 
-          <div className={`${isJourneyView ? "mt-4" : "mt-6"} flex flex-wrap gap-3`}>
-            <div className="w-full rounded-[24px] border border-border/25 bg-card/55 p-4 backdrop-blur-sm">
-              <div className="text-xs uppercase tracking-[0.22em] text-primary/80">{l("Sacred pages", "Pages sacrées", "Posvátné stránky")}</div>
-              <div className="mt-3 grid gap-3 md:grid-cols-3">
-                {templeViews.map((view) => {
-                  const Icon = view.icon;
-                  const active = viewMode === view.key;
-                  const locked = !isViewUnlocked(view.key);
-                  return (
-                    <div
-                      key={view.key}
-                      className={`relative overflow-hidden rounded-[20px] border p-4 text-left transition-all ${
-                        active
-                          ? "border-primary/30 bg-primary/10 shadow-[0_18px_50px_-36px_rgba(255,173,70,0.42)]"
-                          : "border-border/30 bg-background/45 hover:border-primary/20 hover:bg-card/55"
-                      }`}
-                    >
-                      <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-2.5 ${view.iconClass}`}>
-                        <Icon className="h-4 w-4" />
-                      </div>
-                      <div className="mt-3 font-display text-xl text-foreground">{view.title}</div>
-                      <p className="mt-1 text-sm leading-6 text-muted-foreground">{view.subtitle}</p>
-                      {locked ? (
-                        <p className="mt-2 text-xs leading-5 text-amber-100/85">
-                          {l(
-                            "Premium page",
-                            "Page premium",
-                            "Premium stránka",
-                          )}
-                        </p>
-                      ) : null}
-                      {!isJourneyView ? (
+          {isJourneyView ? (
+            <div className="mt-5 grid gap-3 md:grid-cols-[1.2fr_0.8fr]">
+              <div className="rounded-[22px] border border-rose-300/30 bg-gradient-to-br from-rose-500/10 via-card/60 to-card/35 p-4">
+                <p className="text-xs uppercase tracking-[0.2em] text-rose-200/85">{l("Tonight intention", "Intention de ce soir", "Dnešní záměr")}</p>
+                <h3 className="mt-2 font-display text-2xl text-foreground">
+                  {l("Move slowly and stay emotionally attuned", "Avancez lentement et restez émotionnellement accordés", "Jděte pomalu a zůstaňte emočně naladění")}
+                </h3>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  {l(
+                    "This page gives you a complete shared path for tonight: practical steps, theme-based practices, and guidance to respect each other's feelings while getting closer.",
+                    "Cette page vous donne un chemin partagé complet pour ce soir : étapes pratiques, pratiques par thème, et guidance pour respecter les ressentis de chacun tout en vous rapprochant.",
+                    "Tato stránka vám dává kompletní sdílenou cestu na dnešní večer: praktické kroky, tematické praxe a vedení, jak respektovat pocity toho druhého a přitom se přiblížit.",
+                  )}
+                </p>
+              </div>
+              <div className="rounded-[22px] border border-amber-300/30 bg-gradient-to-br from-amber-500/12 via-card/60 to-card/35 p-4">
+                <p className="text-xs uppercase tracking-[0.2em] text-amber-200/90">{l("Sacred vow", "Vœu sacré", "Posvátný slib")}</p>
+                <p className="mt-2 font-display text-xl leading-8 text-foreground">
+                  {l(
+                    "Tonight we choose safety first, truth second, and desire that grows from both.",
+                    "Ce soir, nous choisissons d'abord la sécurité, ensuite la vérité, et un désir qui grandit pour les deux.",
+                    "Dnes večer volíme nejdřív bezpečí, potom pravdu a touhu, která roste pro oba.",
+                  )}
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <span className="rounded-full border border-border/30 bg-background/45 px-2.5 py-1 text-[11px] text-foreground/90">
+                    {l("Shared pulse active", "Pulse partagé actif", "Sdílený puls aktivní")}
+                  </span>
+                  <span className="rounded-full border border-border/30 bg-background/45 px-2.5 py-1 text-[11px] text-foreground/90">
+                    {l("Romantic focus", "Focus romantique", "Romantické zaměření")}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="mt-6 flex flex-wrap gap-3">
+              <div className="w-full rounded-[24px] border border-border/25 bg-card/55 p-4 backdrop-blur-sm">
+                <div className="text-xs uppercase tracking-[0.22em] text-primary/80">{l("Sacred pages", "Pages sacrées", "Posvátné stránky")}</div>
+                <div className="mt-3 grid gap-3 md:grid-cols-3">
+                  {templeViews.map((view) => {
+                    const Icon = view.icon;
+                    const active = viewMode === view.key;
+                    const locked = !isViewUnlocked(view.key);
+                    return (
+                      <div
+                        key={view.key}
+                        className={`relative overflow-hidden rounded-[20px] border p-4 text-left transition-all ${
+                          active
+                            ? "border-primary/30 bg-primary/10 shadow-[0_18px_50px_-36px_rgba(255,173,70,0.42)]"
+                            : "border-border/30 bg-background/45 hover:border-primary/20 hover:bg-card/55"
+                        }`}
+                      >
+                        <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-2.5 ${view.iconClass}`}>
+                          <Icon className="h-4 w-4" />
+                        </div>
+                        <div className="mt-3 font-display text-xl text-foreground">{view.title}</div>
+                        <p className="mt-1 text-sm leading-6 text-muted-foreground">{view.subtitle}</p>
+                        {locked ? (
+                          <p className="mt-2 text-xs leading-5 text-amber-100/85">
+                            {l("Premium page", "Page premium", "Premium stránka")}
+                          </p>
+                        ) : null}
                         <button
                           type="button"
                           onClick={() => setViewMode(view.key)}
@@ -1201,17 +1231,13 @@ const PartnerSpace = () => {
                         >
                           {l("Open page", "Ouvrir la page", "Otevřít stránku")}
                         </button>
-                      ) : (
-                        <p className="mt-3 text-xs uppercase tracking-[0.14em] text-primary/75">
-                          {active ? l("Current page", "Page actuelle", "Aktuální stránka") : l("Available in temple", "Disponible dans le temple", "Dostupné v chrámu")}
-                        </p>
-                      )}
-                    </div>
-                  );
-                })}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </section>
 
         {viewMode === "doorways" && (
