@@ -284,6 +284,8 @@ const PartnerSpace = () => {
   const [composeDrawerOpen, setComposeDrawerOpen] = useState(false);
   const [activityTick, setActivityTick] = useState(0);
   const [partnerUserId, setPartnerUserId] = useState<string | null>(null);
+  const [myDisplayName, setMyDisplayName] = useState<string | null>(null);
+  const [partnerDisplayName, setPartnerDisplayName] = useState<string | null>(null);
   const [weatherEntries, setWeatherEntries] = useState<JourneyWeatherItem[]>([]);
   const [journeyMessages, setJourneyMessages] = useState<JourneyItem[]>([]);
   const [altarEvents, setAltarEvents] = useState<JourneyAltarItem[]>([]);
@@ -337,6 +339,24 @@ const PartnerSpace = () => {
           setSeenMap({});
         }
       }
+      // Resolve display names for header "MyName & PartnerName"
+      const resolveName = (profile: { display_name: string | null } | null, fallbackEmail?: string | null) => {
+        const n = profile?.display_name?.trim();
+        if (n) return n;
+        const prefix = fallbackEmail?.split("@")[0]?.trim();
+        return prefix || null;
+      };
+
+      const [{ data: myProfile }, { data: partnerProfile }] = await Promise.all([
+        supabase.from("profiles").select("display_name").eq("user_id", user.id).maybeSingle(),
+        resolved.partnerId
+          ? supabase.from("profiles").select("display_name").eq("user_id", resolved.partnerId).maybeSingle()
+          : Promise.resolve({ data: null }),
+      ]);
+      const metaName = typeof user.user_metadata?.full_name === "string" ? user.user_metadata.full_name.trim() : "";
+      setMyDisplayName(resolveName(myProfile, user.email) || metaName || null);
+      setPartnerDisplayName(resolveName(partnerProfile));
+
       setLoading(false);
     };
 
