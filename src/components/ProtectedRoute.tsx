@@ -15,7 +15,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
   if (!user) {
     const returnTo = `${location.pathname}${location.search}${location.hash}`;
-    return <Navigate to="/connect" replace state={{ returnTo }} />;
+    return <Navigate to="/auth" replace state={{ returnTo }} />;
   }
 
   return <>{children}</>;

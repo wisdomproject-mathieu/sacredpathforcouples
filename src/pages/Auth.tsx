@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
@@ -19,11 +19,14 @@ const Auth = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const { t } = useLanguage();
+  const returnTo = (location.state as { returnTo?: string } | null)?.returnTo;
+  const safeReturnTo = typeof returnTo === "string" && returnTo.startsWith("/") ? returnTo : "/app";
 
   if (user) {
-    navigate("/app");
+    navigate(safeReturnTo);
     return null;
   }
 
@@ -39,7 +42,7 @@ const Auth = () => {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         toast.success("Welcome back!");
-        navigate("/app");
+        navigate(safeReturnTo);
       } else {
         if (!fullName.trim()) {
           toast.error("Please enter your name so your partner can recognize you.");
@@ -60,7 +63,7 @@ const Auth = () => {
           await supabase
             .from("profiles")
             .update({ display_name: fullName.trim() })
-            .eq("user_id", data.user.id);
+            .eq("id", data.user.id);
         }
         toast.success(t("auth.check_email"));
       }
@@ -73,7 +76,7 @@ const Auth = () => {
 
   const handleGoogleLogin = async () => {
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: `${window.location.origin}/app`,
+      redirect_uri: `${window.location.origin}${safeReturnTo}`,
     });
     if (result && "error" in result && result.error) {
       toast.error(String(result.error));

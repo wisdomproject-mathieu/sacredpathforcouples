@@ -1384,7 +1384,7 @@ const PartnerSpace = () => {
                   ? l("When both of you share, your shared weather and ritual recommendations appear here.", "Quand vous partagez tous les deux, votre météo commune et vos rituels apparaissent ici.", "Jakmile oba nasdílíte, objeví se zde společné počasí i rituál.")
                   : l("Connect with your partner first, then share your weather to unlock your shared ritual.", "Connectez-vous d'abord à votre partenaire, puis partagez votre météo pour débloquer votre rituel commun.", "Nejprve se propojte s partnerem, pak sdílejte počasí pro odemknutí společného rituálu.")}
                 ctaLabel={coupleId ? l("Share your weather", "Partager votre météo", "Sdílet počasí") : l("Connect with partner", "Se connecter au partenaire", "Propojit s partnerem")}
-                onCta={() => (coupleId ? activateTool("weather") : navigate("/connect"))}
+                onCta={() => (coupleId ? activateTool("weather") : navigate("/app"))}
               />
             ) : null}
 

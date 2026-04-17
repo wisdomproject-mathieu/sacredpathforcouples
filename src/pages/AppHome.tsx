@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 import {
   ArrowRight,
@@ -483,7 +483,18 @@ const AppHome = () => {
   const [pendingMoodValue, setPendingMoodValue] = useState<string | null>(null);
   const [pendingMoodEmoji, setPendingMoodEmoji] = useState<string>("");
   const [pendingMoodLabel, setPendingMoodLabel] = useState<string>("");
-  const navigate = useNavigate();
+  const [joinCode, setJoinCode] = useState("");
+  const [joiningCode, setJoiningCode] = useState(false);
+  const [joinError, setJoinError] = useState("");
+  const [joinSuccess, setJoinSuccess] = useState("");
+  const [editingName, setEditingName] = useState(false);
+  const [nameDraft, setNameDraft] = useState("");
+  const [savingName, setSavingName] = useState(false);
+  const [nudgeSending, setNudgeSending] = useState(false);
+  const [nudgeSent, setNudgeSent] = useState(false);
+  const [showConnectedPopup, setShowConnectedPopup] = useState(false);
+  const wasConnectedRef = useRef(false);
+  const [searchParams] = useSearchParams();
 
   const resolvePreferredName = (profile: Pick<Profile, "display_name"> | null, fallbackUser = user) => {
     const profileName = profile?.display_name?.trim();
@@ -505,13 +516,13 @@ const AppHome = () => {
     const { data: existing } = await supabase
       .from("profiles")
       .select("display_name")
-      .eq("user_id", user.id)
+      .eq("id", user.id)
       .maybeSingle();
     if (!existing?.display_name && name.trim()) {
       await supabase
         .from("profiles")
         .update({ display_name: name.trim() })
-        .eq("user_id", user.id);
+        .eq("id", user.id);
     }
   };
 
@@ -845,6 +856,12 @@ const AppHome = () => {
     } catch {}
   }, [user, relationshipConnected]);
 
+  useEffect(() => {
+    const inviteFromUrl = searchParams.get("invite");
+    if (!inviteFromUrl) return;
+    setJoinCode((current) => current || inviteFromUrl.trim().toUpperCase());
+  }, [searchParams]);
+
   const handleSaveCard = (cardId: string) => {
     const next = { ...savedCards, [cardId]: !savedCards[cardId] };
     setSavedCards(next);
@@ -875,6 +892,76 @@ const AppHome = () => {
     }
   };
 
+  const joinWithCodeOnHome = async () => {
+    if (!user || !joinCode.trim() || joiningCode) return;
+
+    setJoiningCode(true);
+    setJoinError("");
+    setJoinSuccess("");
+    const cleanCode = joinCode.trim().toUpperCase();
+
+    const { data: target, error: fetchError } = await supabase
+      .from("couples")
+      .select("id, partner_a, partner_b")
+      .eq("couple_code", cleanCode)
+      .is("partner_b", null)
+      .maybeSingle();
+
+    if (fetchError || !target) {
+      setJoinError(lang === "fr" ? "Code introuvable." : lang === "cs" ? "Kód nebyl nalezen." : "Invite code not found.");
+      setJoiningCode(false);
+      return;
+    }
+
+    if (target.partner_a === user.id) {
+      setJoinError(lang === "fr" ? "C'est déjà votre code." : lang === "cs" ? "Tohle je už váš kód." : "This is already your code.");
+      setJoiningCode(false);
+      return;
+    }
+
+    const cleanDraftName = nameDraft.trim();
+    if (cleanDraftName && !fallbackBelovedValues.has(cleanDraftName)) {
+      await supabase.from("profiles").upsert({ id: user.id, display_name: cleanDraftName }, { onConflict: "id" });
+      setMyName(cleanDraftName);
+    }
+
+    const { data: updatedRows, error: updateError } = await supabase
+      .from("couples")
+      .update({ partner_b: user.id })
+      .eq("id", target.id)
+      .is("partner_b", null)
+      .select("id, partner_a, partner_b");
+
+    const joined = (updatedRows ?? []).find((row) => row.partner_b === user.id);
+
+    if (updateError || !joined) {
+      setJoinError(lang === "fr" ? "Impossible de rejoindre maintenant." : lang === "cs" ? "Teď se nejde připojit." : "Could not join this code right now.");
+      setJoiningCode(false);
+      return;
+    }
+
+    clearForceDisconnected(user.id);
+    markEverConnected(user.id);
+    storeConnectedCoupleId(user.id, target.id);
+
+    const { data: partnerProfile } = await supabase
+      .from("profiles")
+      .select("display_name, id")
+      .eq("id", target.partner_a)
+      .maybeSingle();
+
+    if (partnerProfile) {
+      setPartnerName(resolvePreferredName(partnerProfile, null));
+    }
+
+    setRelationshipConnected(true);
+    setCoupleId(target.id);
+    setJoinCode("");
+    setJoinSuccess(lang === "fr" ? "Connecté." : lang === "cs" ? "Propojeno." : "Connected.");
+    setShowConnectedPopup(true);
+    setJoiningCode(false);
+  };
+
   const handleCopyInvite = async () => {
     if (!inviteCode) return;
     try {
@@ -891,7 +978,7 @@ const AppHome = () => {
   const handleCopyInviteLink = async () => {
     if (!inviteCode) return;
     try {
-      const link = `${window.location.origin}/app/connect?invite=${inviteCode}`;
+      const link = `${window.location.origin}/app?invite=${inviteCode}`;
       await navigator.clipboard.writeText(link);
       setCopiedInvite(true);
       setTimeout(() => setCopiedInvite(false), 2000);
@@ -944,6 +1031,59 @@ const AppHome = () => {
   useEffect(() => {
     setMyName((current) => (fallbackBelovedValues.has(current) ? copy.beloved : current));
   }, [copy.beloved]);
+
+  useEffect(() => {
+    setNameDraft(myName);
+  }, [myName]);
+
+  useEffect(() => {
+    if (!wasConnectedRef.current && relationshipConnected && partnerName) {
+      wasConnectedRef.current = true;
+      setShowConnectedPopup(true);
+      const timeout = window.setTimeout(() => setShowConnectedPopup(false), 5200);
+      return () => window.clearTimeout(timeout);
+    }
+    wasConnectedRef.current = relationshipConnected;
+  }, [relationshipConnected, partnerName]);
+
+  const saveNameOnHome = async () => {
+    const cleanName = nameDraft.trim();
+    if (!user || !cleanName || savingName) return;
+
+    setSavingName(true);
+    const { error } = await supabase
+      .from("profiles")
+      .upsert({ id: user.id, display_name: cleanName }, { onConflict: "id" });
+    if (!error) {
+      setMyName(cleanName);
+      setEditingName(false);
+    }
+    setSavingName(false);
+  };
+
+  const sendNudgeFromHome = async () => {
+    if (!user || !coupleId || nudgeSending) return;
+
+    setNudgeSending(true);
+    const messageContent = lang === "fr"
+      ? "Quand tu es prêt(e), partage ta météo pour ouvrir notre rituel de ce soir."
+      : lang === "cs"
+        ? "Až budeš připraven(a), sdílej počasí, ať otevřeme dnešní společný rituál."
+        : "When you're ready, share your weather so we can open tonight's ritual together.";
+
+    const { error } = await supabase.from("partner_messages").insert({
+      couple_id: coupleId,
+      sender_id: user.id,
+      message_type: "nudge",
+      content: messageContent,
+    });
+
+    if (!error) {
+      setNudgeSent(true);
+      window.setTimeout(() => setNudgeSent(false), 3200);
+    }
+    setNudgeSending(false);
+  };
 
   const weatherUi = lang === "fr"
     ? {
@@ -1035,6 +1175,16 @@ const AppHome = () => {
 
   return (
     <div className="space-y-4 md:space-y-5">
+      {showConnectedPopup && relationshipConnected && partnerName && (
+        <div className="fixed left-1/2 top-4 z-50 w-[min(92vw,560px)] -translate-x-1/2 animate-in slide-in-from-top-4 fade-in duration-500">
+          <div className="rounded-2xl border border-emerald-300/40 bg-emerald-950/85 px-4 py-3 shadow-[0_16px_45px_-28px_rgba(16,185,129,0.65)] backdrop-blur">
+            <p className="text-sm text-emerald-100">
+              <span className="font-semibold">{partnerName}</span> is connected - start exploring together rituals that bring you closer.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Block 1: Hero greeting */}
       <div className="relative overflow-hidden rounded-[24px] border border-border/20 bg-card/30 p-6">
         <div className="absolute top-4 right-4 opacity-20 hover:opacity-40 transition-opacity">
@@ -1048,6 +1198,45 @@ const AppHome = () => {
           <span className="text-amber-400/60"> &amp; </span>
           {partnerName ?? copy.partnerFallback}
         </h1>
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          {!editingName ? (
+            <button
+              type="button"
+              onClick={() => setEditingName(true)}
+              className="rounded-full border border-border/30 bg-background/35 px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-amber-400/35 hover:text-foreground"
+            >
+              Edit your name
+            </button>
+          ) : (
+            <div className="flex flex-wrap items-center gap-2">
+              <input
+                value={nameDraft}
+                onChange={(event) => setNameDraft(event.target.value)}
+                maxLength={40}
+                placeholder="Your name"
+                className="h-8 rounded-lg border border-border/35 bg-background/45 px-2.5 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground/60 focus:border-amber-400/35"
+              />
+              <button
+                type="button"
+                onClick={saveNameOnHome}
+                disabled={savingName || !nameDraft.trim()}
+                className="rounded-lg border border-amber-400/30 bg-amber-400/10 px-2.5 py-1 text-xs text-amber-300 transition-all hover:bg-amber-400/20 disabled:opacity-50"
+              >
+                {savingName ? "Saving..." : "Save"}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setEditingName(false);
+                  setNameDraft(myName);
+                }}
+                className="rounded-lg border border-border/30 bg-background/40 px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
+              >
+                Cancel
+              </button>
+            </div>
+          )}
+        </div>
         <p className="mt-1 text-sm italic text-muted-foreground/70">
           {relationshipConnected ? copy.journeyLine : copy.notConnectedLine}
         </p>
@@ -1177,6 +1366,32 @@ const AppHome = () => {
                     {generatingCode ? "Generating..." : "✦ Generate your invite code"}
                   </button>
                 )}
+              </div>
+
+              <div className="border-t border-border/20 px-5 py-4">
+                <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground/70">
+                  {lang === "fr" ? "Vous avez un code ?" : lang === "cs" ? "Máte partnerský kód?" : "Have your partner's code?"}
+                </p>
+                <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center">
+                  <input
+                    value={joinCode}
+                    onChange={(event) => setJoinCode(event.target.value.toUpperCase())}
+                    placeholder="ABC123"
+                    className="h-10 flex-1 rounded-[10px] border border-border/35 bg-background/45 px-3 text-sm tracking-[0.2em] text-foreground outline-none transition-all placeholder:tracking-normal placeholder:text-muted-foreground/60 focus:border-amber-400/35"
+                  />
+                  <button
+                    type="button"
+                    onClick={joinWithCodeOnHome}
+                    disabled={joiningCode || !joinCode.trim()}
+                    className="inline-flex h-10 items-center justify-center rounded-[10px] border border-amber-400/30 bg-amber-400/10 px-4 text-sm text-amber-300 transition-all hover:bg-amber-400/20 disabled:opacity-50"
+                  >
+                    {joiningCode
+                      ? (lang === "fr" ? "Connexion..." : lang === "cs" ? "Propojuji..." : "Joining...")
+                      : (lang === "fr" ? "Join partner" : lang === "cs" ? "Připojit partnera" : "Join partner")}
+                  </button>
+                </div>
+                {joinError && <p className="mt-2 text-xs text-red-300/80">{joinError}</p>}
+                {joinSuccess && <p className="mt-2 text-xs text-emerald-300/80">{joinSuccess}</p>}
               </div>
             </>
           )}
@@ -1312,6 +1527,30 @@ const AppHome = () => {
               </div>
             </div>
           )}
+
+          <div className="border-t border-border/20 px-5 py-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={sendNudgeFromHome}
+                disabled={nudgeSending}
+                className="inline-flex items-center gap-1.5 rounded-[10px] border border-amber-400/30 bg-amber-400/10 px-3 py-2 text-xs text-amber-300 transition-all hover:bg-amber-400/20 disabled:opacity-50"
+              >
+                {nudgeSending
+                  ? (lang === "fr" ? "Envoi..." : lang === "cs" ? "Posílám..." : "Sending...")
+                  : (lang === "fr" ? "Send a nudge" : lang === "cs" ? "Poslat postrčení" : "Send a nudge")}
+              </button>
+              {nudgeSent && (
+                <span className="text-xs text-emerald-300/80">
+                  {lang === "fr"
+                    ? "Nudge envoyé."
+                    : lang === "cs"
+                      ? "Postrčení odesláno."
+                      : "Nudge sent."}
+                </span>
+              )}
+            </div>
+          </div>
 
         </div>
       )}

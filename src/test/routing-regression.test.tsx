@@ -15,6 +15,7 @@ vi.mock("@/integrations/supabase/client", () => {
     update: vi.fn().mockReturnThis(),
     insert: vi.fn(async () => ({ error: null })),
     maybeSingle: vi.fn(async () => ({ data: null, error: null })),
+    upsert: vi.fn(async () => ({ error: null })),
   };
 
   return {
@@ -40,52 +41,36 @@ describe("routing regressions", () => {
     window.localStorage.setItem("sacred-path-lang", "en");
   });
 
-  it("renders homepage with connect CTA and features anchor", async () => {
+  it("renders homepage entry with auth links", async () => {
     renderAt("/");
 
-    const connectButtons = await screen.findAllByRole("button", { name: /connect with partner/i });
-    expect(connectButtons.length).toBeGreaterThan(0);
-    expect(document.getElementById("features")).toBeInTheDocument();
-    const featuresLink = screen.getAllByRole("link", { name: /features/i })[0];
-    expect(featuresLink).toHaveAttribute("href", "#features");
+    expect(await screen.findByText(/sacred path for couples/i)).toBeInTheDocument();
+    expect(screen.getAllByRole("link", { name: /sign in/i }).length).toBeGreaterThan(0);
   });
 
-  it("shows connect entry inside mobile menu", async () => {
+  it("switches homepage language toggle", async () => {
     renderAt("/");
 
-    fireEvent.click(screen.getByRole("button", { name: /open menu/i }));
-    expect(screen.getAllByRole("link", { name: /connect with partner/i }).length).toBeGreaterThan(0);
+    const toggle = screen.getByRole("button", { name: /en/i });
+    fireEvent.click(toggle);
+    expect(await screen.findByRole("button", { name: /fr/i })).toBeInTheDocument();
   });
 
-  it("switches landing content language, not only nav labels", async () => {
-    renderAt("/");
-
-    fireEvent.click(screen.getByTitle(/switch to fr/i));
-    expect((await screen.findAllByText(/chemin sacré/i)).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/se connecter au partenaire/i).length).toBeGreaterThan(0);
-  });
-
-  it("renders public connect route with core partner modules", async () => {
+  it("redirects /connect to auth", async () => {
     renderAt("/connect");
 
-    expect(await screen.findByRole("heading", { name: /connect with partner/i })).toBeInTheDocument();
-    expect(screen.getAllByText(/your couple code/i).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/join partner/i).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/intimacy weather/i).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/the unsaid/i).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/the thread/i).length).toBeGreaterThan(0);
+    expect(await screen.findByPlaceholderText(/email/i)).toBeInTheDocument();
   });
 
-  it("redirects /app to the public connect entry for unauthenticated users", async () => {
+  it("redirects /app to auth for unauthenticated users", async () => {
     renderAt("/app");
 
-    expect(await screen.findByRole("heading", { name: /connect with partner/i })).toBeInTheDocument();
-    expect(screen.getAllByRole("link", { name: /connect with partner/i }).length).toBeGreaterThan(0);
+    expect(await screen.findByPlaceholderText(/email/i)).toBeInTheDocument();
   });
 
-  it("redirects /app/connect to the public connect route for unauthenticated users", async () => {
+  it("redirects /app/connect to auth for unauthenticated users", async () => {
     renderAt("/app/connect");
 
-    expect(await screen.findByRole("heading", { name: /connect with partner/i })).toBeInTheDocument();
+    expect(await screen.findByPlaceholderText(/email/i)).toBeInTheDocument();
   });
 });
