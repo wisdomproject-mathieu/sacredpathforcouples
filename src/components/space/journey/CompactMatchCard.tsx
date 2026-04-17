@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-
 import ExpandableWisdomSection from "@/components/space/journey/ExpandableWisdomSection";
 import NotificationBadge from "@/components/space/journey/NotificationBadge";
 import type { WeatherMatchResult } from "@/lib/weatherMatch";
@@ -141,13 +139,12 @@ const CompactMatchCard = ({
           <p className="text-sm leading-6 text-foreground/90">{result.lineage.sourceNotes}</p>
           <div className="mt-3 flex flex-wrap gap-2">
             {result.libraryLinks.slice(0, 2).map((link) => (
-              <Link
+              <span
                 key={`${link.to}-${link.label}`}
-                to={link.to}
-                className="rounded-lg border border-border/35 bg-card/45 px-3 py-1.5 text-xs text-foreground transition-all hover:border-border/55 hover:bg-card/60"
+                className="rounded-lg border border-border/35 bg-card/45 px-3 py-1.5 text-xs text-foreground/85"
               >
                 {link.label}
-              </Link>
+              </span>
             ))}
           </div>
         </ExpandableWisdomSection>

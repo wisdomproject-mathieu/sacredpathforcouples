@@ -1588,7 +1588,7 @@ const PartnerSpace = () => {
                       secondEnergyLabel={l("Beloved's energy", "Énergie du partenaire", "Partnerova energie")}
                       combinedEnergyLabel={l("Combined meaning", "Sens combiné", "Společný význam")}
                       sourceHeadingLabel={l("Wisdom behind this", "Sagesse derrière cela", "Moudrost za tím")}
-                      sourceCtaLabel={l("Open in library", "Ouvrir dans la bibliothèque", "Otevřít v knihovně")}
+                      sourceCtaLabel={l("Source lineage", "Lignée source", "Zdrojová linie")}
                       whyFitsLabel={l("Why this fits your match", "Pourquoi cela correspond à votre match", "Proč to sedí k vaší shodě")}
                       hasPremiumAccess={hasPremiumAccess}
                       templeAccessLabel={templeAccessName}

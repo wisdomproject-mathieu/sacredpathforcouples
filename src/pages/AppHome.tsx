@@ -493,6 +493,7 @@ const AppHome = () => {
   const [savingName, setSavingName] = useState(false);
   const [nudgeSending, setNudgeSending] = useState(false);
   const [nudgeSent, setNudgeSent] = useState(false);
+  const [expandedOutcomeId, setExpandedOutcomeId] = useState<string | null>(null);
   const [showConnectedPopup, setShowConnectedPopup] = useState(false);
   const wasConnectedRef = useRef(false);
   const [searchParams] = useSearchParams();
@@ -1065,30 +1066,6 @@ const AppHome = () => {
     setSavingName(false);
   };
 
-  const sendNudgeFromHome = async () => {
-    if (!user || !coupleId || nudgeSending) return;
-
-    setNudgeSending(true);
-    const messageContent = lang === "fr"
-      ? "Quand tu es prêt(e), partage ta météo pour ouvrir notre rituel de ce soir."
-      : lang === "cs"
-        ? "Až budeš připraven(a), sdílej počasí, ať otevřeme dnešní společný rituál."
-        : "When you're ready, share your weather so we can open tonight's ritual together.";
-
-    const { error } = await supabase.from("partner_messages").insert({
-      couple_id: coupleId,
-      sender_id: user.id,
-      message_type: "nudge",
-      content: messageContent,
-    });
-
-    if (!error) {
-      setNudgeSent(true);
-      window.setTimeout(() => setNudgeSent(false), 3200);
-    }
-    setNudgeSending(false);
-  };
-
   const sendInviteNudge = async () => {
     if (!inviteCode || nudgeSending) return;
     setNudgeSending(true);
@@ -1109,12 +1086,9 @@ const AppHome = () => {
   };
 
   const handlePrimaryConnectionAction = async () => {
+    if (relationshipConnected) return;
     if (!inviteCode) {
       await createInviteOnHome();
-      return;
-    }
-    if (relationshipConnected) {
-      await sendNudgeFromHome();
       return;
     }
     await sendInviteNudge();
@@ -1264,6 +1238,76 @@ const AppHome = () => {
     }
   };
 
+  const connectedOutcomeCards = useMemo(() => {
+    if (!relationshipConnected || !weatherMatch) return [];
+    return weatherMatch.recommendations.slice(0, 3).map((item, index) => ({
+      id: item.id,
+      title: item.title,
+      subtitle: item.subtitle,
+      description: item.description,
+      duration: item.ritualDuration,
+      intensity: item.intimacyLevel,
+      primaryNeed: item.primaryNeed,
+      steps: item.ritualSteps.slice(0, 4),
+      sourceTraditions: item.sourceTraditions.slice(0, 2),
+      sourceAuthors: item.sourceAuthors.slice(0, 1),
+      messageSuggestion: item.messageSuggestion,
+      afterglowPrompt: item.afterglowPrompt,
+      accentClass:
+        index % 3 === 0 ? "text-amber-300" : index % 3 === 1 ? "text-cyan-300" : "text-rose-300",
+      icon: index % 3 === 0 ? Sparkles : index % 3 === 1 ? Stars : Heart,
+    }));
+  }, [relationshipConnected, weatherMatch]);
+  const connectedOutcomeUi = lang === "fr"
+    ? {
+        label: "TONIGHT OUTCOME",
+        title: "Rituels suggérés pour vous deux",
+        waiting: "Partagez vos deux météos pour débloquer les recommandations de ce soir.",
+        stepsLabel: "Flow",
+        sourcesLabel: "Source lineage",
+        suggestionLabel: "Message to send",
+      }
+    : lang === "cs"
+      ? {
+          label: "TONIGHT OUTCOME",
+          title: "Doporučení pro vás oba",
+          waiting: "Sdílejte oba počasí a odemkněte dnešní doporučení.",
+          stepsLabel: "Flow",
+          sourcesLabel: "Source lineage",
+          suggestionLabel: "Message to send",
+        }
+      : {
+          label: "TONIGHT OUTCOME",
+          title: "Suggested rituals for both of you",
+          waiting: "Both partners share weather to unlock tonight's recommendation cards.",
+          stepsLabel: "Flow",
+          sourcesLabel: "Source lineage",
+          suggestionLabel: "Message to send",
+        };
+  const connectedPanelUi = lang === "fr"
+    ? {
+        label: "Connectés",
+        stayHere: "Restez ici et ouvrez les cartes rituelles de ce soir ci-dessous.",
+        partnerConnected: `${partnerName ?? "Votre partenaire"} est connecté(e).`,
+        waitingBoth: "En attente de vos deux météos.",
+        codeLabel: "Code de connexion",
+      }
+    : lang === "cs"
+      ? {
+          label: "Společně propojeni",
+          stayHere: "Zůstaňte zde a otevřete níže dnešní rituální karty.",
+          partnerConnected: `${partnerName ?? "Partner"} je propojený.`,
+          waitingBoth: "Čekáme na obě počasí.",
+          codeLabel: "Párovací kód",
+        }
+      : {
+          label: "Connected together",
+          stayHere: "Stay here and open tonight's ritual cards below.",
+          partnerConnected: `${partnerName ?? "Your partner"} is connected.`,
+          waitingBoth: "Waiting for both weather check-ins.",
+          codeLabel: "Connection code",
+        };
+
   const moods = [
     { value: "open", emoji: "🌞", label: "Open" },
     { value: "tender", emoji: "💗", label: "Tender" },
@@ -1354,57 +1398,72 @@ const AppHome = () => {
             </div>
           </div>
 
-          <div className="rounded-[18px] border border-amber-400/20 bg-background/35 p-3">
-            <p className="text-xs uppercase tracking-[0.18em] text-amber-300/80">
-              {relationshipConnected ? "Send a nudge" : "Connection code"}
-            </p>
-            <button
-              type="button"
-              onClick={() => void handlePrimaryConnectionAction()}
-              disabled={generatingCode || nudgeSending}
-              className="mt-2 inline-flex h-10 w-full items-center justify-center rounded-[10px] border border-amber-400/30 bg-amber-400/12 px-4 text-sm text-amber-200 transition-all hover:bg-amber-400/20 disabled:opacity-50"
-            >
-              {!inviteCode
-                ? (generatingCode ? "Generating..." : "Send a code")
-                : (nudgeSending ? "Sending..." : "Send a nudge")}
-            </button>
-
-            {inviteCode && (
-              <>
-                <div className="mt-3 flex items-center gap-2 rounded-[10px] border border-border/30 bg-background/45 px-3 py-2">
-                  <span className="flex-1 font-display text-lg tracking-[0.2em] text-foreground">{inviteCode}</span>
-                  <button type="button" onClick={handleCopyCode} className="text-xs text-amber-300/85">
-                    {copiedInvite ? "Copied!" : "Copy"}
-                  </button>
-                </div>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  <a
-                    href={inviteWhatsAppHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="rounded-[10px] border border-green-500/30 bg-green-950/25 px-3 py-1.5 text-xs text-green-300"
-                  >
-                    WhatsApp
-                  </a>
-                  <a href={inviteSmsHref} className="rounded-[10px] border border-blue-500/30 bg-blue-950/25 px-3 py-1.5 text-xs text-blue-300">
-                    Message
-                  </a>
-                  <button
-                    type="button"
-                    onClick={handleCopyInviteLink}
-                    className="rounded-[10px] border border-border/30 bg-background/45 px-3 py-1.5 text-xs text-muted-foreground"
-                  >
-                    Copy link
-                  </button>
-                </div>
-              </>
-            )}
-            {nudgeSent && (
-              <p className="mt-2 text-xs text-emerald-300/85">
-                {lang === "fr" ? "Nudge envoyé." : lang === "cs" ? "Postrčení odesláno." : "Nudge sent."}
+          {relationshipConnected ? (
+            <div className="rounded-[18px] border border-emerald-300/25 bg-emerald-500/8 p-3">
+              <p className="text-xs uppercase tracking-[0.18em] text-emerald-200/85">{connectedPanelUi.label}</p>
+              <p className="mt-2 text-sm leading-6 text-foreground/90">
+                {connectedPanelUi.partnerConnected} {connectedPanelUi.stayHere}
               </p>
-            )}
-          </div>
+              <div className="mt-3 rounded-[10px] border border-border/30 bg-background/45 px-3 py-2">
+                <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{weatherUi.latestMatch}</p>
+                <p className="mt-1 text-sm text-foreground">
+                  {bothCheckedIn && weatherMatch
+                    ? weatherMatch.archetype.title
+                    : connectedPanelUi.waitingBoth}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="rounded-[18px] border border-amber-400/20 bg-background/35 p-3">
+              <p className="text-xs uppercase tracking-[0.18em] text-amber-300/80">{connectedPanelUi.codeLabel}</p>
+              <button
+                type="button"
+                onClick={() => void handlePrimaryConnectionAction()}
+                disabled={generatingCode || nudgeSending}
+                className="mt-2 inline-flex h-10 w-full items-center justify-center rounded-[10px] border border-amber-400/30 bg-amber-400/12 px-4 text-sm text-amber-200 transition-all hover:bg-amber-400/20 disabled:opacity-50"
+              >
+                {!inviteCode
+                  ? (generatingCode ? "Generating..." : "Send a code")
+                  : (nudgeSending ? "Sending..." : "Send a nudge")}
+              </button>
+
+              {inviteCode && (
+                <>
+                  <div className="mt-3 flex items-center gap-2 rounded-[10px] border border-border/30 bg-background/45 px-3 py-2">
+                    <span className="flex-1 font-display text-lg tracking-[0.2em] text-foreground">{inviteCode}</span>
+                    <button type="button" onClick={handleCopyCode} className="text-xs text-amber-300/85">
+                      {copiedInvite ? "Copied!" : "Copy"}
+                    </button>
+                  </div>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <a
+                      href={inviteWhatsAppHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-[10px] border border-green-500/30 bg-green-950/25 px-3 py-1.5 text-xs text-green-300"
+                    >
+                      WhatsApp
+                    </a>
+                    <a href={inviteSmsHref} className="rounded-[10px] border border-blue-500/30 bg-blue-950/25 px-3 py-1.5 text-xs text-blue-300">
+                      Message
+                    </a>
+                    <button
+                      type="button"
+                      onClick={handleCopyInviteLink}
+                      className="rounded-[10px] border border-border/30 bg-background/45 px-3 py-1.5 text-xs text-muted-foreground"
+                    >
+                      Copy link
+                    </button>
+                  </div>
+                </>
+              )}
+              {nudgeSent && (
+                <p className="mt-2 text-xs text-emerald-300/85">
+                  {lang === "fr" ? "Nudge envoyé." : lang === "cs" ? "Postrčení odesláno." : "Nudge sent."}
+                </p>
+              )}
+            </div>
+          )}
         </div>
       </section>
 
@@ -1532,6 +1591,93 @@ const AppHome = () => {
           </div>
         </div>
       </section>
+
+      {relationshipConnected ? (
+        <section className="rounded-[24px] border border-primary/25 bg-primary/10 p-4">
+          <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{connectedOutcomeUi.label}</p>
+          <h2 className="mt-1.5 font-display text-2xl text-foreground">{connectedOutcomeUi.title}</h2>
+          {!connectedOutcomeCards.length ? (
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">{connectedOutcomeUi.waiting}</p>
+          ) : (
+            <div className="mt-3 grid gap-3 md:grid-cols-3">
+              {connectedOutcomeCards.map((card) => {
+                const Icon = card.icon;
+                const expanded = expandedOutcomeId === card.id;
+
+                return (
+                  <article key={card.id} className="rounded-[20px] border border-border/30 bg-background/45 p-4">
+                    <button
+                      type="button"
+                      onClick={() => setExpandedOutcomeId(expanded ? null : card.id)}
+                      className="flex w-full flex-col text-left"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{card.subtitle}</p>
+                          <h3 className="mt-2 font-display text-xl text-foreground">{card.title}</h3>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className={`inline-flex rounded-xl border border-border/30 bg-card/45 p-2.5 ${card.accentClass}`}>
+                            <Icon className="h-4 w-4" />
+                          </div>
+                          <div className="inline-flex rounded-lg border border-border/30 bg-background/45 p-1.5 text-muted-foreground">
+                            {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                          </div>
+                        </div>
+                      </div>
+                      <p className="mt-2 text-sm leading-6 text-muted-foreground">{card.description}</p>
+                    </button>
+
+                    <div className="mt-3 flex flex-wrap gap-1.5">
+                      <span className="rounded-full border border-border/35 bg-card/45 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/90">
+                        {card.duration}
+                      </span>
+                      <span className="rounded-full border border-border/35 bg-card/45 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/90">
+                        {card.intensity}
+                      </span>
+                      <span className="rounded-full border border-border/35 bg-card/45 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/90">
+                        {card.primaryNeed}
+                      </span>
+                    </div>
+
+                    {expanded ? (
+                      <div className="mt-3 space-y-3 rounded-xl border border-border/30 bg-background/40 p-3">
+                        <div>
+                          <p className="text-xs uppercase tracking-[0.16em] text-primary/80">{connectedOutcomeUi.stepsLabel}</p>
+                          <ol className="mt-1.5 space-y-1.5 text-sm leading-6 text-foreground/90">
+                            {card.steps.map((step, index) => (
+                              <li key={`${card.id}-${step}`}>{index + 1}. {step}</li>
+                            ))}
+                          </ol>
+                        </div>
+                        <div>
+                          <p className="text-xs uppercase tracking-[0.16em] text-primary/80">{connectedOutcomeUi.sourcesLabel}</p>
+                          <div className="mt-1.5 flex flex-wrap gap-1.5">
+                            {card.sourceTraditions.map((tag) => (
+                              <span key={`${card.id}-tradition-${tag}`} className="rounded-full border border-primary/30 bg-primary/12 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-primary/90">
+                                {tag}
+                              </span>
+                            ))}
+                            {card.sourceAuthors.map((tag) => (
+                              <span key={`${card.id}-author-${tag}`} className="rounded-full border border-border/35 bg-card/45 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/90">
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="rounded-lg border border-amber-300/30 bg-amber-500/8 p-2.5">
+                          <p className="text-xs uppercase tracking-[0.14em] text-amber-200">{connectedOutcomeUi.suggestionLabel}</p>
+                          <p className="mt-1 text-sm leading-6 text-foreground/90">{card.messageSuggestion}</p>
+                        </div>
+                      </div>
+                    ) : null}
+                  </article>
+                );
+              })}
+            </div>
+          )}
+        </section>
+      ) : null}
 
       <section className="rounded-[24px] border-t border-[rgba(200,146,74,0.2)] bg-[rgba(200,146,74,0.06)] px-4 pb-4 pt-4">
         <div className="mb-4">
