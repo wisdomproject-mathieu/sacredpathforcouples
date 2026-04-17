@@ -15,6 +15,7 @@ const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -40,11 +41,27 @@ const Auth = () => {
         toast.success("Welcome back!");
         navigate("/app");
       } else {
-        const { error } = await supabase.auth.signUp({
-          email, password,
-          options: { emailRedirectTo: window.location.origin },
+        if (!fullName.trim()) {
+          toast.error("Please enter your name so your partner can recognize you.");
+          setLoading(false);
+          return;
+        }
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: window.location.origin,
+            data: { full_name: fullName.trim() },
+          },
         });
         if (error) throw error;
+        // Best-effort: ensure profile.display_name is set immediately
+        if (data.user) {
+          await supabase
+            .from("profiles")
+            .update({ display_name: fullName.trim() })
+            .eq("user_id", data.user.id);
+        }
         toast.success(t("auth.check_email"));
       }
     } catch (error: any) {
@@ -78,6 +95,16 @@ const Auth = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {!isLogin && (
+            <Input
+              type="text"
+              placeholder="Your name (so your partner sees it)"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              maxLength={60}
+              className="bg-card border-border text-foreground placeholder:text-muted-foreground"
+            />
+          )}
           <Input
             type="email"
             placeholder={t("auth.email")}
