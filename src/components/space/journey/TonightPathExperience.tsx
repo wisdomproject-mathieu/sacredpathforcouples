@@ -1,13 +1,13 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
-import { BookOpen, Check, Copy, Flame, Hand, Heart, MessageCircle, Sparkles, Wind } from "lucide-react";
+import { BookOpen, Check, Copy, Flame, Hand, Heart, MessageCircle, Wind } from "lucide-react";
 
 import type { Language } from "@/contexts/LanguageContext";
 import type { WeatherMatchResult, RitualRecommendation } from "@/lib/weatherMatch";
 import type { WeatherCardData } from "@/components/space/journey/SharedWeatherCard";
 
 type WeatherStateMode = "none" | "mine_only" | "beloved_only" | "both";
-type ThemeKey = "touch" | "massage" | "breathing" | "reconnect" | "polarity" | "integration";
+type ThemeKey = "touch" | "breathing" | "massage" | "emotional_connection" | "sacred_intimacy" | "reflection";
 
 type Props = {
   lang: Language;
@@ -21,47 +21,58 @@ type Props = {
 type PracticeItem = {
   id: string;
   title: string;
-  summary: string;
-  minutes: string;
-  source: string;
-  steps: string[];
+  purpose: string;
+  actions: string[];
+  tags: string[];
   theme: ThemeKey;
 };
 
-const hashString = (value: string) =>
-  Array.from(value).reduce((acc, char) => (acc * 31 + char.charCodeAt(0)) >>> 0, 13);
+type ThemeMeta = {
+  title: string;
+  whyTonight: string;
+};
 
-const themeOrder: ThemeKey[] = ["touch", "massage", "breathing", "reconnect", "polarity", "integration"];
+const hashString = (value: string) =>
+  Array.from(value).reduce((acc, char) => (acc * 31 + char.charCodeAt(0)) >>> 0, 17);
+
+const themeOrder: ThemeKey[] = [
+  "touch",
+  "breathing",
+  "massage",
+  "emotional_connection",
+  "sacred_intimacy",
+  "reflection",
+];
 
 const themeVisuals: Record<ThemeKey, { icon: typeof Heart; wrapClass: string; iconClass: string }> = {
   touch: {
     icon: Heart,
-    wrapClass: "border-rose-300/30 bg-gradient-to-br from-rose-500/10 via-background/55 to-background/35",
+    wrapClass: "border-rose-300/30 bg-gradient-to-br from-rose-500/12 via-background/60 to-background/40",
     iconClass: "text-rose-200",
-  },
-  massage: {
-    icon: Hand,
-    wrapClass: "border-amber-300/30 bg-gradient-to-br from-amber-500/10 via-background/55 to-background/35",
-    iconClass: "text-amber-200",
   },
   breathing: {
     icon: Wind,
-    wrapClass: "border-cyan-300/30 bg-gradient-to-br from-cyan-500/10 via-background/55 to-background/35",
+    wrapClass: "border-cyan-300/30 bg-gradient-to-br from-cyan-500/12 via-background/60 to-background/40",
     iconClass: "text-cyan-200",
   },
-  reconnect: {
+  massage: {
+    icon: Hand,
+    wrapClass: "border-amber-300/30 bg-gradient-to-br from-amber-500/12 via-background/60 to-background/40",
+    iconClass: "text-amber-200",
+  },
+  emotional_connection: {
     icon: MessageCircle,
-    wrapClass: "border-emerald-300/30 bg-gradient-to-br from-emerald-500/10 via-background/55 to-background/35",
+    wrapClass: "border-emerald-300/30 bg-gradient-to-br from-emerald-500/12 via-background/60 to-background/40",
     iconClass: "text-emerald-200",
   },
-  polarity: {
+  sacred_intimacy: {
     icon: Flame,
-    wrapClass: "border-orange-300/30 bg-gradient-to-br from-orange-500/10 via-background/55 to-background/35",
+    wrapClass: "border-orange-300/30 bg-gradient-to-br from-orange-500/12 via-background/60 to-background/40",
     iconClass: "text-orange-200",
   },
-  integration: {
+  reflection: {
     icon: BookOpen,
-    wrapClass: "border-violet-300/30 bg-gradient-to-br from-violet-500/10 via-background/55 to-background/35",
+    wrapClass: "border-violet-300/30 bg-gradient-to-br from-violet-500/12 via-background/60 to-background/40",
     iconClass: "text-violet-200",
   },
 };
@@ -74,6 +85,7 @@ Language,
   waitingTitle: string;
   waitingBody: string;
   ritualLabel: string;
+  ritualPurposeLabel: string;
   stepsLabel: string;
   sendLabel: string;
   sendButton: string;
@@ -82,60 +94,94 @@ Language,
   themesBody: string;
   guidanceLabel: string;
   respectLabel: string;
+  respectContextLine: string;
   positionsLabel: string;
+  reflectionLabel: string;
   quoteLabel: string;
   yourWeather: string;
   belovedWeather: string;
   waitingWeather: string;
-  themeTitles: Record<ThemeKey, string>;
+  tagBestForPrefix: string;
+  tagsPaceSlow: string;
+  tagsEmotionalSafety: string;
+  tagsConsentForward: string;
+  themeMeta: Record<ThemeKey, ThemeMeta>;
   respectPrompts: string[];
   fallbackSteps: string[];
   fallbackPositions: string[];
+  reflectionPrompt: string;
   quotes: Array<{ author: string; quote: string }>;
-}
-> = {
+}> = {
   en: {
     eyebrow: "Tonight Path",
-    title: "A complete ritual for your shared weather.",
+    title: "Practical connection guidance inspired by sacred intimacy traditions.",
     waitingTitle: "Your Tonight Path is preparing",
-    waitingBody: "When both partners share weather, a full ritual sequence appears here with practical guidance.",
-    ritualLabel: "Tonight ritual",
-    stepsLabel: "Step-by-step",
+    waitingBody: "When both partners share their weather, this page builds a complete, actionable ritual flow for tonight.",
+    ritualLabel: "Main ritual",
+    ritualPurposeLabel: "Why this matters tonight",
+    stepsLabel: "What to do now",
     sendLabel: "Message to your beloved",
     sendButton: "Copy message",
     sentButton: "Copied",
     themesLabel: "Practice themes",
-    themesBody: "Six relevant practices are generated for your current combination so you can act immediately.",
+    themesBody: "Choose one theme and run one clear practice now. All practices are selected for your current weather combination.",
     guidanceLabel: "Guidance for your dynamic",
     respectLabel: "Respect and reconnect",
-    positionsLabel: "Positions and touch cues",
+    respectContextLine:
+      "Tonight one of you may want momentum while the other needs reassurance. Slow down enough for both bodies to feel safe.",
+    positionsLabel: "Optional posture and touch cues",
+    reflectionLabel: "Gentle reflection prompt",
     quoteLabel: "Quote of the night",
     yourWeather: "Your weather",
     belovedWeather: "Beloved weather",
     waitingWeather: "Waiting",
-    themeTitles: {
-      touch: "Touch",
-      massage: "Massage",
-      breathing: "Breathing",
-      reconnect: "Reconnect tool",
-      polarity: "Polarity",
-      integration: "Integration",
+    tagBestForPrefix: "Best for",
+    tagsPaceSlow: "Pace: slow and grounded",
+    tagsEmotionalSafety: "Emotional safety first",
+    tagsConsentForward: "Consent and check-ins included",
+    themeMeta: {
+      touch: {
+        title: "Touch",
+        whyTonight: "When you want closeness without pressure.",
+      },
+      breathing: {
+        title: "Breathing",
+        whyTonight: "When both nervous systems need to settle first.",
+      },
+      massage: {
+        title: "Massage",
+        whyTonight: "When the body needs warmth before deeper intimacy.",
+      },
+      emotional_connection: {
+        title: "Emotional connection",
+        whyTonight: "When understanding each other matters more than speed.",
+      },
+      sacred_intimacy: {
+        title: "Sacred intimacy",
+        whyTonight: "When desire is present and you want to deepen safely.",
+      },
+      reflection: {
+        title: "Reflection",
+        whyTonight: "When you want tonight to become lasting relationship growth.",
+      },
     },
     respectPrompts: [
-      "Name one feeling before making a request.",
-      "Mirror your partner's words before offering the next step.",
-      "Choose slowness over performance when tension appears.",
+      "Name one feeling before making any request.",
+      "Mirror your partner's words before offering a next step.",
+      "If either body tenses, slow down and return to breath.",
     ],
     fallbackSteps: [
-      "Sit face-to-face and sync breath for one minute.",
-      "Share one feeling each in one sentence.",
-      "Offer one intentional touch and ask consent.",
+      "Sit facing each other and breathe slowly together for one minute.",
+      "Each partner says one honest sentence about what they need tonight.",
+      "Offer one intentional touch and ask if your partner wants softer, same, or more.",
     ],
     fallbackPositions: [
-      "Seated face-to-face, knees touching.",
-      "One hand on heart, one hand on belly.",
-      "Side-by-side breathing before moving forward.",
+      "Face-to-face seated posture with knees gently touching.",
+      "One hand on your own heart, one on your partner's forearm.",
+      "Side-by-side breath for two rounds before deepening touch.",
     ],
+    reflectionPrompt:
+      "After the practice, each partner answers: What helped me feel most safe and most desired tonight?",
     quotes: [
       { author: "Diana Richardson", quote: "Slowness lets intimacy become truthful, not performative." },
       { author: "David Deida", quote: "Presence is the doorway where love and desire can meet." },
@@ -145,46 +191,56 @@ Language,
   },
   fr: {
     eyebrow: "Chemin de ce soir",
-    title: "Un rituel complet pour votre météo partagée.",
+    title: "Un guide concret inspiré des traditions d'intimité sacrée.",
     waitingTitle: "Votre chemin de ce soir se prépare",
-    waitingBody: "Quand les deux partenaires partagent leur météo, une séquence complète apparaît ici avec des repères pratiques.",
-    ritualLabel: "Rituel de ce soir",
-    stepsLabel: "Étapes",
+    waitingBody: "Quand les deux partenaires partagent leur météo, cette page construit un flow complet et actionnable pour ce soir.",
+    ritualLabel: "Rituel principal",
+    ritualPurposeLabel: "Pourquoi c'est important ce soir",
+    stepsLabel: "Ce que vous faites maintenant",
     sendLabel: "Message à votre partenaire",
     sendButton: "Copier le message",
     sentButton: "Copié",
     themesLabel: "Thèmes de pratique",
-    themesBody: "Six pratiques pertinentes sont générées pour votre combinaison actuelle afin d'agir immédiatement.",
+    themesBody: "Choisissez un thème et lancez une pratique claire maintenant. Toutes les pratiques sont sélectionnées pour votre combinaison actuelle.",
     guidanceLabel: "Guidance pour votre dynamique",
     respectLabel: "Respect et reconnexion",
+    respectContextLine:
+      "Ce soir, l'un peut vouloir avancer tandis que l'autre a besoin d'être rassuré. Ralentissez juste assez pour que les deux corps se sentent en sécurité.",
     positionsLabel: "Positions et repères de toucher",
+    reflectionLabel: "Question de réflexion douce",
     quoteLabel: "Citation du soir",
     yourWeather: "Votre météo",
     belovedWeather: "Météo du partenaire",
     waitingWeather: "En attente",
-    themeTitles: {
-      touch: "Toucher",
-      massage: "Massage",
-      breathing: "Respiration",
-      reconnect: "Reconnect",
-      polarity: "Polarité",
-      integration: "Intégration",
+    tagBestForPrefix: "Idéal pour",
+    tagsPaceSlow: "Rythme : lent et ancré",
+    tagsEmotionalSafety: "Sécurité émotionnelle d'abord",
+    tagsConsentForward: "Consentement et check-ins inclus",
+    themeMeta: {
+      touch: { title: "Toucher", whyTonight: "Quand vous voulez de la proximité sans pression." },
+      breathing: { title: "Respiration", whyTonight: "Quand les deux systèmes nerveux doivent d'abord se poser." },
+      massage: { title: "Massage", whyTonight: "Quand le corps a besoin de chaleur avant d'aller plus loin." },
+      emotional_connection: { title: "Connexion émotionnelle", whyTonight: "Quand se comprendre compte plus que la vitesse." },
+      sacred_intimacy: { title: "Intimité sacrée", whyTonight: "Quand le désir est présent et que vous voulez approfondir en sécurité." },
+      reflection: { title: "Réflexion", whyTonight: "Quand vous voulez transformer la soirée en croissance durable." },
     },
     respectPrompts: [
-      "Nommez une émotion avant de formuler une demande.",
+      "Nommez une émotion avant toute demande.",
       "Reformulez les mots du partenaire avant de proposer la suite.",
-      "Choisissez la lenteur plutôt que la performance quand une tension apparaît.",
+      "Si l'un des corps se tend, ralentissez et revenez au souffle.",
     ],
     fallbackSteps: [
-      "Asseyez-vous face à face et synchronisez la respiration pendant une minute.",
-      "Partagez une émotion chacun en une phrase.",
-      "Offrez un toucher intentionnel en demandant le consentement.",
+      "Asseyez-vous face à face et respirez lentement ensemble pendant une minute.",
+      "Chaque partenaire dit une phrase honnête sur son besoin de ce soir.",
+      "Offrez un toucher intentionnel et demandez : plus doux, pareil, ou plus ?",
     ],
     fallbackPositions: [
-      "Assis face à face, genoux en contact.",
-      "Une main sur le cœur, une main sur le ventre.",
-      "Respiration côte à côte avant d'aller plus loin.",
+      "Posture assise face à face avec contact léger des genoux.",
+      "Une main sur votre cœur, une main sur l'avant-bras du partenaire.",
+      "Respiration côte à côte pendant deux cycles avant d'approfondir.",
     ],
+    reflectionPrompt:
+      "Après la pratique, chacun répond: Qu'est-ce qui m'a aidé à me sentir le plus en sécurité et le plus désiré ce soir ?",
     quotes: [
       { author: "Diana Richardson", quote: "La lenteur permet une intimité vraie, sans performance." },
       { author: "David Deida", quote: "La présence est la porte où l'amour et le désir se rencontrent." },
@@ -194,46 +250,56 @@ Language,
   },
   cs: {
     eyebrow: "Dnešní cesta",
-    title: "Kompletní rituál pro vaše sdílené počasí.",
+    title: "Praktické vedení inspirované tradicemi posvátné intimity.",
     waitingTitle: "Dnešní cesta se připravuje",
-    waitingBody: "Jakmile oba partneři nasdílí počasí, objeví se zde plná sekvence s praktickým vedením.",
-    ritualLabel: "Dnešní rituál",
-    stepsLabel: "Kroky",
+    waitingBody: "Jakmile oba partneři nasdílí své počasí, tato stránka vytvoří kompletní a použitelný večerní flow.",
+    ritualLabel: "Hlavní rituál",
+    ritualPurposeLabel: "Proč je to dnes důležité",
+    stepsLabel: "Co udělat teď",
     sendLabel: "Zpráva partnerovi",
     sendButton: "Kopírovat zprávu",
     sentButton: "Zkopírováno",
     themesLabel: "Témata praxe",
-    themesBody: "Pro aktuální kombinaci se generuje šest relevantních praxí, abyste mohli hned jednat.",
+    themesBody: "Vyberte jedno téma a spusťte jednu jasnou praxi hned teď. Vše je vybrané pro vaši aktuální kombinaci.",
     guidanceLabel: "Vedení pro vaši dynamiku",
     respectLabel: "Respekt a znovupropojení",
-    positionsLabel: "Pozice a dotekové podněty",
+    respectContextLine:
+      "Dnes večer může jeden z vás chtít tempo, zatímco druhý potřebuje ujištění. Zpomalte tak, aby se obě těla cítila bezpečně.",
+    positionsLabel: "Volitelné pozice a dotekové podněty",
+    reflectionLabel: "Jemná reflexní otázka",
     quoteLabel: "Citát večera",
     yourWeather: "Vaše počasí",
     belovedWeather: "Počasí partnera",
     waitingWeather: "Čekání",
-    themeTitles: {
-      touch: "Dotek",
-      massage: "Masáž",
-      breathing: "Dýchání",
-      reconnect: "Reconnect nástroj",
-      polarity: "Polarita",
-      integration: "Integrace",
+    tagBestForPrefix: "Vhodné pro",
+    tagsPaceSlow: "Tempo: pomalé a ukotvené",
+    tagsEmotionalSafety: "Nejdřív emoční bezpečí",
+    tagsConsentForward: "Souhlas a check-iny součástí",
+    themeMeta: {
+      touch: { title: "Dotek", whyTonight: "Když chcete blízkost bez tlaku." },
+      breathing: { title: "Dýchání", whyTonight: "Když se nejdřív potřebují uklidnit oba nervové systémy." },
+      massage: { title: "Masáž", whyTonight: "Když tělo potřebuje teplo před hlubší intimitou." },
+      emotional_connection: { title: "Emoční propojení", whyTonight: "Když je důležitější porozumění než rychlost." },
+      sacred_intimacy: { title: "Posvátná intimita", whyTonight: "Když je přítomná touha a chcete bezpečně prohloubit kontakt." },
+      reflection: { title: "Reflexe", whyTonight: "Když chcete dnešní večer proměnit v dlouhodobý růst." },
     },
     respectPrompts: [
       "Nejprve pojmenujte jednu emoci, až potom žádost.",
       "Než navrhnete další krok, zrcadlete partnerova slova.",
-      "Když se objeví napětí, zvolte pomalost místo výkonu.",
+      "Když se některé tělo napne, zpomalte a vraťte se k dechu.",
     ],
     fallbackSteps: [
-      "Sedněte si čelem k sobě a minutu slaďte dech.",
-      "Každý sdílejte jednu emoci v jedné větě.",
-      "Nabídněte jeden vědomý dotek a vyžádejte souhlas.",
+      "Sedněte si čelem k sobě a minutu pomalu dýchejte spolu.",
+      "Každý řekněte jednu upřímnou větu o tom, co dnes večer potřebujete.",
+      "Nabídněte vědomý dotek a zeptejte se: jemněji, stejně, nebo více?",
     ],
     fallbackPositions: [
-      "Sed čelem k sobě, kolena v kontaktu.",
-      "Jedna ruka na srdci, druhá na břiše.",
-      "Dýchání bok po boku před dalším krokem.",
+      "Sed čelem k sobě s jemným kontaktem kolen.",
+      "Jedna ruka na vlastním srdci, druhá na partnerově předloktí.",
+      "Dvě kola dýchání bok po boku před prohloubením doteku.",
     ],
+    reflectionPrompt:
+      "Po praxi oba odpovězte: Co mi dnes večer nejvíc pomohlo cítit se bezpečně a zároveň žádoucně?",
     quotes: [
       { author: "Diana Richardson", quote: "Pomalost dává intimitě pravdivost, ne výkon." },
       { author: "David Deida", quote: "Přítomnost je brána, kde se potkávají láska a touha." },
@@ -243,27 +309,161 @@ Language,
   },
 };
 
-const classifyRecommendationTheme = (practice: RitualRecommendation): ThemeKey => {
+const formatSourceLabel = (recommendation: RitualRecommendation, lang: Language) => {
+  const labelByLang = {
+    en: {
+      withTraditionAndAuthor: (tradition: string, author: string) => `Inspired by ${tradition} and ${author}`,
+      withTradition: (tradition: string) => `Inspired by ${tradition} tradition`,
+      withAuthor: (author: string) => `Inspired by ${author}`,
+      fallback: "Inspired by sacred relationship practice",
+    },
+    fr: {
+      withTraditionAndAuthor: (tradition: string, author: string) => `Inspiré par ${tradition} et ${author}`,
+      withTradition: (tradition: string) => `Inspiré par la tradition ${tradition}`,
+      withAuthor: (author: string) => `Inspiré par ${author}`,
+      fallback: "Inspiré par une pratique relationnelle sacrée",
+    },
+    cs: {
+      withTraditionAndAuthor: (tradition: string, author: string) => `Inspirováno ${tradition} a ${author}`,
+      withTradition: (tradition: string) => `Inspirováno tradicí ${tradition}`,
+      withAuthor: (author: string) => `Inspirováno ${author}`,
+      fallback: "Inspirováno posvátnou vztahovou praxí",
+    },
+  }[lang];
+  const tradition = recommendation.sourceTraditions[0];
+  const author = recommendation.sourceAuthors[0];
+  if (tradition && author) return labelByLang.withTraditionAndAuthor(tradition, author);
+  if (tradition) return labelByLang.withTradition(tradition);
+  if (author) return labelByLang.withAuthor(author);
+  return labelByLang.fallback;
+};
+
+const classifyTheme = (recommendation: RitualRecommendation): ThemeKey => {
   const text = [
-    practice.title,
-    practice.subtitle,
-    practice.description,
-    practice.primaryNeed,
-    practice.tonightEnergy,
-    practice.whatToAvoid,
-    ...practice.ritualSteps,
-    ...practice.sourceConcepts,
+    recommendation.title,
+    recommendation.subtitle,
+    recommendation.description,
+    recommendation.primaryNeed,
+    recommendation.tonightEnergy,
+    recommendation.whatToAvoid,
+    ...recommendation.ritualSteps,
+    ...recommendation.sourceConcepts,
   ]
     .join(" ")
     .toLowerCase();
 
-  if (/(massage|bodywork|huile|masáž|pressure|press)/.test(text)) return "massage";
   if (/(breath|breathing|respir|souffle|dech|dých)/.test(text)) return "breathing";
-  if (/(reconnect|repair|truth|listen|safe|sécur|uklid|znovu)/.test(text)) return "reconnect";
-  if (/(polarity|charge|desire|playful|erotic|flirt)/.test(text)) return "polarity";
-  if (/(integrat|close|afterglow|gratitude|reflection|journal)/.test(text)) return "integration";
+  if (/(massage|bodywork|pressure|masáž|huile)/.test(text)) return "massage";
+  if (/(repair|reconnect|truth|listen|safe|sécur|uklid|znovu)/.test(text)) return "emotional_connection";
+  if (/(polarity|desire|erotic|flirt|charge|tantra|tao)/.test(text)) return "sacred_intimacy";
+  if (/(afterglow|reflect|gratitude|integration|journal|debrief)/.test(text)) return "reflection";
   return "touch";
 };
+
+const buildGeneratedPractices = (
+  myLabel: string,
+  belovedLabel: string,
+  archetypeTitle: string,
+  copy: (typeof copyByLang)[Language],
+): PracticeItem[] => [
+  {
+    id: "generated-touch",
+    theme: "touch",
+    title: "Gaze and Palm Contact",
+    purpose: "A gentle way to reconnect without pressure.",
+    actions: [
+      "Sit facing each other.",
+      "Place one palm against your partner's.",
+      "Hold eye contact for three breaths.",
+      "Say one honest sentence about what you need tonight.",
+    ],
+    tags: [
+      "7 minutes · slow eye contact and palm-to-palm connection",
+      `${copy.tagBestForPrefix} couples wanting closeness before intensity`,
+      copy.tagsEmotionalSafety,
+    ],
+  },
+  {
+    id: "generated-breathing",
+    theme: "breathing",
+    title: "4-6 Co-Regulation Breath",
+    purpose: `${myLabel} + ${belovedLabel} can meet more gently when both nervous systems settle first.`,
+    actions: [
+      "Inhale for 4 counts and exhale for 6 counts.",
+      "Stay with this for five rounds.",
+      "Between rounds, ask: 'Do you feel more here now?'",
+    ],
+    tags: [
+      "5 minutes · breath-led grounding before touch",
+      `${copy.tagBestForPrefix} tired or emotionally sensitive evenings`,
+      copy.tagsPaceSlow,
+    ],
+  },
+  {
+    id: "generated-massage",
+    theme: "massage",
+    title: "Shoulder and Neck Melt",
+    purpose: "Release body tension so tenderness has space to arrive.",
+    actions: [
+      "Partner A receives 90 seconds of slow shoulder pressure.",
+      "Switch and repeat for Partner B.",
+      "After both rounds, hold each other for three breaths.",
+    ],
+    tags: [
+      "8 minutes · soft pressure and warm regulation",
+      "Tao-inspired slow touch and grounding",
+      copy.tagsConsentForward,
+    ],
+  },
+  {
+    id: "generated-emotional-connection",
+    theme: "emotional_connection",
+    title: "Respect and Reconnect Round",
+    purpose: "Closeness deepens when each partner feels understood before anything physical.",
+    actions: [
+      "Each partner shares one feeling and one need.",
+      "Mirror your partner's words back in one sentence.",
+      "Agree on one shared intention for tonight.",
+    ],
+    tags: [
+      "6 minutes · emotional attunement before intimacy",
+      `${copy.tagBestForPrefix} moments with subtle disconnection`,
+      copy.tagsEmotionalSafety,
+    ],
+  },
+  {
+    id: "generated-sacred-intimacy",
+    theme: "sacred_intimacy",
+    title: "Lead and Receive Practice",
+    purpose: `${archetypeTitle} becomes safer and more alive when leadership and receptivity alternate.`,
+    actions: [
+      "Round one: Partner A leads one slow movement or touch pattern.",
+      "Round two: Partner B leads with a different rhythm.",
+      "Round three: blend both rhythms and stay attuned.",
+    ],
+      tags: [
+        "9 minutes · polarity with consent and pacing",
+        `${copy.tagBestForPrefix} couples wanting gentle sacred intensity`,
+        copy.tagsConsentForward,
+      ],
+  },
+  {
+    id: "generated-reflection",
+    theme: "reflection",
+    title: "Afterglow Integration",
+    purpose: "Keep tonight meaningful by closing with reflection instead of rushing away.",
+    actions: [
+      "Each partner names one moment they want to remember.",
+      "Share one gratitude line out loud.",
+      "Set one tiny intention for tomorrow evening.",
+    ],
+      tags: [
+        "4 minutes · emotional integration and closure",
+        `${copy.tagBestForPrefix} modern couples building consistency`,
+        "Reflection that strengthens trust over time",
+      ],
+  },
+];
 
 const TonightPathExperience = ({
   lang,
@@ -276,150 +476,85 @@ const TonightPathExperience = ({
   const copy = copyByLang[lang];
   const [copied, setCopied] = useState(false);
 
-  const recommendations = weatherMatch?.recommendations ?? [];
-  const primaryRitual = recommendations[0] ?? null;
-
-  const practiceDeck = useMemo<PracticeItem[]>(() => {
-    const fromRecommendations: PracticeItem[] = recommendations.slice(0, 3).map((practice, index) => ({
-      id: `rec-${practice.id}`,
-      title: practice.title,
-      summary: practice.description,
-      minutes: practice.ritualDuration || `${6 + index} min`,
-      source:
-        practice.sourceTraditions.slice(0, 2).join(" + ")
-        || practice.sourceAuthors.slice(0, 1).join(" + ")
-        || "Sacred Temple",
-      steps: practice.ritualSteps.slice(0, 3),
-      theme: classifyRecommendationTheme(practice),
+  const recommendationPractices = useMemo<PracticeItem[]>(() => {
+    if (!weatherMatch) return [];
+    return weatherMatch.recommendations.slice(0, 3).map((rec, index) => ({
+      id: `rec-${rec.id}`,
+      title: rec.title,
+      purpose: rec.description || rec.subtitle,
+      actions: rec.ritualSteps.slice(0, 4),
+      tags: [
+        `${rec.ritualDuration || `${7 + index} minutes`} · ${rec.intimacyLevel || "gentle pacing"}`,
+        `${copy.tagBestForPrefix} ${rec.primaryNeed}`,
+        formatSourceLabel(rec, lang),
+      ],
+      theme: classifyTheme(rec),
     }));
+  }, [copy.tagBestForPrefix, lang, weatherMatch]);
 
-    const weatherPair = `${myWeather?.label ?? copy.waitingWeather} + ${belovedWeather?.label ?? copy.waitingWeather}`;
-    const matchName = weatherMatch?.archetype.title ?? "Shared Arc";
+  const generatedPractices = useMemo(
+    () =>
+      buildGeneratedPractices(
+        myWeather?.label ?? copy.waitingWeather,
+        belovedWeather?.label ?? copy.waitingWeather,
+        weatherMatch?.archetype.title ?? copy.waitingTitle,
+        copy,
+      ),
+    [belovedWeather?.label, copy, myWeather?.label, weatherMatch?.archetype.title],
+  );
 
-    const generated: PracticeItem[] = [
-      {
-        id: "gen-breath",
-        theme: "breathing",
-        title: "4-6 Co-Regulation Breath",
-        summary: `Use ${weatherPair} to settle both nervous systems before touch.`,
-        minutes: "5 min",
-        source: "Intimacy Weather + Temple Guide",
-        steps: [
-          "Inhale for 4, exhale for 6 for five rounds.",
-          "Keep one hand on your own heart and one on your partner's arm.",
-          "Name one word after each round.",
-        ],
-      },
-      {
-        id: "gen-touch",
-        theme: "touch",
-        title: "Gaze and Palm Contact",
-        summary: `${matchName} opens through slow, consent-led contact.`,
-        minutes: "7 min",
-        source: "Rituals + Positions",
-        steps: [
-          "Sit facing each other, palm to palm.",
-          "Hold eye contact for one minute.",
-          "Ask: 'Softer, same, or more?' before changing intensity.",
-        ],
-      },
-      {
-        id: "gen-massage",
-        theme: "massage",
-        title: "Shoulder Melt Reset",
-        summary: "Release body tension first so emotional closeness lands gently.",
-        minutes: "8 min",
-        source: "Rituals + Reconnect",
-        steps: [
-          "One partner receives shoulder and neck pressure for 90 seconds.",
-          "Switch roles and repeat.",
-          "Share one sentence: 'What I need now is...'",
-        ],
-      },
-      {
-        id: "gen-reconnect",
-        theme: "reconnect",
-        title: "Truth and Tenderness Round",
-        summary: "Repair quickly if there is friction before moving into desire.",
-        minutes: "6 min",
-        source: "Reconnect Tool + Temple Board",
-        steps: [
-          "Each partner says one appreciation and one current need.",
-          "Mirror your partner's words exactly once.",
-          "Confirm one shared intention for tonight.",
-        ],
-      },
-      {
-        id: "gen-polarity",
-        theme: "polarity",
-        title: "Lead / Receive Switch",
-        summary: "Keep polarity playful by alternating initiative and surrender.",
-        minutes: "9 min",
-        source: "Positions + Pathways",
-        steps: [
-          "Round 1: Partner A leads one slow movement sequence.",
-          "Round 2: Partner B leads with a different rhythm.",
-          "Round 3: Blend both rhythms into one shared pace.",
-        ],
-      },
-      {
-        id: "gen-integration",
-        theme: "integration",
-        title: "Afterglow Integration",
-        summary: "Close with meaning so tonight changes tomorrow's connection.",
-        minutes: "4 min",
-        source: "Memory Altar + Messages",
-        steps: [
-          "Each partner names one moment to remember.",
-          "Send or save one short gratitude line.",
-          "Set one tiny intention for tomorrow evening.",
-        ],
-      },
-    ];
-
-    const combined = [...fromRecommendations, ...generated];
+  const tonightPractices = useMemo(() => {
+    const combined = [...recommendationPractices, ...generatedPractices];
     const selected: PracticeItem[] = [];
     const usedTitles = new Set<string>();
-    const usedThemes = new Set<ThemeKey>();
+
+    for (const theme of themeOrder) {
+      const candidate = combined.find((item) => item.theme === theme && !usedTitles.has(item.title));
+      if (candidate) {
+        selected.push(candidate);
+        usedTitles.add(candidate.title);
+      }
+    }
 
     for (const item of combined) {
       if (selected.length >= 6) break;
       if (usedTitles.has(item.title)) continue;
-      if (usedThemes.has(item.theme) && selected.length < 4) continue;
-      selected.push(item);
-      usedTitles.add(item.title);
-      usedThemes.add(item.theme);
-    }
-    for (const item of combined) {
-      if (selected.length >= 6) break;
-      if (usedTitles.has(item.title)) continue;
       selected.push(item);
       usedTitles.add(item.title);
     }
+
     return selected.slice(0, 6);
-  }, [belovedWeather?.label, copy.waitingWeather, myWeather?.label, recommendations, weatherMatch?.archetype.title]);
+  }, [generatedPractices, recommendationPractices]);
 
-  const groupedThemes = useMemo(() => {
-    const grouped = new Map<ThemeKey, PracticeItem[]>();
-    practiceDeck.forEach((item) => {
-      const list = grouped.get(item.theme) ?? [];
-      list.push(item);
-      grouped.set(item.theme, list);
-    });
-    return themeOrder
-      .map((theme) => ({ theme, practices: grouped.get(theme) ?? [] }))
-      .filter((entry) => entry.practices.length > 0);
-  }, [practiceDeck]);
+  const availableThemes = useMemo(
+    () =>
+      themeOrder.filter((theme) => tonightPractices.some((item) => item.theme === theme)),
+    [tonightPractices],
+  );
 
-  const tonightSteps = primaryRitual?.ritualSteps?.slice(0, 4) ?? copy.fallbackSteps;
-  const positionCues = primaryRitual?.ritualSteps?.slice(1, 4) ?? copy.fallbackPositions;
+  const [activeTheme, setActiveTheme] = useState<ThemeKey>(availableThemes[0] ?? "touch");
+
+  useEffect(() => {
+    if (!availableThemes.length) return;
+    if (!availableThemes.includes(activeTheme)) {
+      setActiveTheme(availableThemes[0]);
+    }
+  }, [activeTheme, availableThemes]);
+
+  const activeThemePractices = useMemo(
+    () => tonightPractices.filter((item) => item.theme === activeTheme),
+    [activeTheme, tonightPractices],
+  );
+
+  const primaryRitual = tonightPractices[0] ?? null;
+  const mainSteps = primaryRitual?.actions?.slice(0, 4) ?? copy.fallbackSteps;
+  const positionCues = primaryRitual?.actions?.slice(1, 4) ?? copy.fallbackPositions;
+  const suggestionText = weatherMatch?.recommendations?.[0]?.messageSuggestion ?? copy.waitingBody;
 
   const quote = useMemo(() => {
     const seed = `${new Date().toDateString()}:${weatherMatch?.matchKey ?? weatherStateMode}`;
     return copy.quotes[hashString(seed) % copy.quotes.length];
   }, [copy.quotes, weatherMatch?.matchKey, weatherStateMode]);
-
-  const suggestionText = primaryRitual?.messageSuggestion ?? weatherMatch?.summary ?? copy.waitingBody;
 
   const copySuggestion = async () => {
     try {
@@ -427,7 +562,7 @@ const TonightPathExperience = ({
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1800);
     } catch {
-      // ignore clipboard failures
+      // ignore
     }
   };
 
@@ -444,8 +579,12 @@ const TonightPathExperience = ({
         <h2 className="mt-2 font-display text-3xl text-foreground md:text-4xl">
           {weatherMatch ? weatherMatch.archetype.title : copy.waitingTitle}
         </h2>
-        <p className="mt-2 max-w-3xl text-sm leading-7 text-muted-foreground">
-          {weatherMatch ? `${copy.title} ${weatherMatch.summary}` : copy.waitingBody}
+        <p className="mt-2 max-w-4xl text-sm leading-7 text-muted-foreground">
+          {weatherMatch
+            ? `${copy.title} ${
+                weatherMatch.summary
+              }`
+            : copy.waitingBody}
         </p>
 
         <div className="mt-3 flex flex-wrap gap-2">
@@ -460,30 +599,31 @@ const TonightPathExperience = ({
           </span>
         </div>
 
-        <div className="mt-5 grid gap-4 xl:grid-cols-3">
-          <article className="rounded-[24px] border border-amber-300/30 bg-gradient-to-br from-amber-500/12 via-card/65 to-card/35 p-4 backdrop-blur-sm">
+        <div className="mt-5 grid items-start gap-4 lg:grid-cols-[1.05fr_1fr_1fr]">
+          <article className="flex h-full flex-col rounded-[24px] border border-amber-300/30 bg-gradient-to-br from-amber-500/12 via-card/65 to-card/35 p-4 backdrop-blur-sm">
             <p className="text-xs uppercase tracking-[0.2em] text-amber-200/90">{copy.ritualLabel}</p>
-            <h3 className="mt-2 font-display text-2xl text-foreground">{primaryRitual?.title ?? copy.waitingTitle}</h3>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">{primaryRitual?.description ?? copy.waitingBody}</p>
+            <h3 className="mt-2 font-display text-2xl text-foreground">
+              {primaryRitual?.title ?? copy.waitingTitle}
+            </h3>
+            <p className="mt-2 text-xs uppercase tracking-[0.14em] text-amber-100/80">{copy.ritualPurposeLabel}</p>
+            <p className="mt-1 text-sm leading-6 text-muted-foreground">
+              {primaryRitual?.purpose ?? copy.waitingBody}
+            </p>
 
-            {primaryRitual ? (
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                <span className="rounded-full border border-border/35 bg-background/45 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/90">
-                  {primaryRitual.ritualDuration}
-                </span>
-                <span className="rounded-full border border-border/35 bg-background/45 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/90">
-                  {primaryRitual.intimacyLevel}
-                </span>
-                <span className="rounded-full border border-border/35 bg-background/45 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/90">
-                  {primaryRitual.primaryNeed}
-                </span>
+            {primaryRitual?.tags?.length ? (
+              <div className="mt-3 space-y-1.5">
+                {primaryRitual.tags.map((tag) => (
+                  <p key={tag} className="break-words rounded-lg border border-border/30 bg-background/45 px-2.5 py-1.5 text-xs text-foreground/85">
+                    {tag}
+                  </p>
+                ))}
               </div>
             ) : null}
 
             <div className="mt-4 rounded-xl border border-border/30 bg-background/45 p-3">
               <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">{copy.stepsLabel}</p>
               <ol className="mt-2 space-y-1.5 text-sm leading-6 text-foreground/90">
-                {tonightSteps.map((step, index) => (
+                {mainSteps.map((step, index) => (
                   <li key={`${step}-${index}`}>{index + 1}. {step}</li>
                 ))}
               </ol>
@@ -503,45 +643,72 @@ const TonightPathExperience = ({
             </div>
           </article>
 
-          <article className="rounded-[24px] border border-fuchsia-300/25 bg-gradient-to-br from-fuchsia-500/10 via-card/65 to-card/35 p-4 backdrop-blur-sm">
+          <article className="flex h-full flex-col rounded-[24px] border border-fuchsia-300/25 bg-gradient-to-br from-fuchsia-500/12 via-card/65 to-card/35 p-4 backdrop-blur-sm">
             <p className="text-xs uppercase tracking-[0.2em] text-fuchsia-200/90">{copy.themesLabel}</p>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">{copy.themesBody}</p>
-            <div className="mt-3 space-y-2">
-              {groupedThemes.map(({ theme, practices }) => {
+
+            <div className="mt-3 grid gap-2 sm:grid-cols-2">
+              {availableThemes.map((theme) => {
+                const meta = copy.themeMeta[theme];
+                const active = activeTheme === theme;
                 const Icon = themeVisuals[theme].icon;
                 return (
-                  <div key={theme} className={`rounded-xl border p-3 ${themeVisuals[theme].wrapClass}`}>
-                    <div className="flex items-center gap-2">
-                      <Icon className={`h-4 w-4 ${themeVisuals[theme].iconClass}`} />
-                      <span className="font-medium text-foreground">{copy.themeTitles[theme]}</span>
-                      <span className="rounded-full border border-border/30 bg-background/45 px-2 py-0.5 text-[10px] text-muted-foreground">
-                        {practices.length}
-                      </span>
+                  <button
+                    key={theme}
+                    type="button"
+                    onClick={() => setActiveTheme(theme)}
+                    className={`rounded-xl border p-2.5 text-left transition-all ${
+                      active
+                        ? `${themeVisuals[theme].wrapClass} shadow-[0_14px_35px_-24px_rgba(255,173,70,0.5)]`
+                        : "border-border/30 bg-background/45 hover:border-primary/25 hover:bg-card/55"
+                    }`}
+                  >
+                    <div className="inline-flex items-center gap-1.5">
+                      <Icon className={`h-4 w-4 ${active ? themeVisuals[theme].iconClass : "text-muted-foreground"}`} />
+                      <span className="text-sm font-medium text-foreground">{meta.title}</span>
                     </div>
-                    <div className="mt-2 space-y-2">
-                      {practices.map((practice) => (
-                        <div key={practice.id} className="rounded-lg border border-border/25 bg-background/45 p-2.5">
-                          <p className="text-sm font-medium text-foreground">{practice.title}</p>
-                          <p className="mt-1 text-xs leading-5 text-muted-foreground">{practice.summary}</p>
-                          <p className="mt-1 text-[10px] uppercase tracking-[0.12em] text-primary/80">
-                            {practice.minutes} · {practice.source}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                  </button>
                 );
               })}
             </div>
+
+            {activeThemePractices.length ? (
+              <div className="mt-3 flex-1 space-y-2">
+                <div className={`rounded-xl border p-3 ${themeVisuals[activeTheme].wrapClass}`}>
+                  <p className="text-xs leading-5 text-foreground/90">{copy.themeMeta[activeTheme].whyTonight}</p>
+                </div>
+
+                {activeThemePractices.map((practice) => (
+                  <div key={practice.id} className={`rounded-xl border p-3 ${themeVisuals[practice.theme].wrapClass}`}>
+                    <h4 className="font-display text-lg text-foreground">{practice.title}</h4>
+                    <p className="mt-1 text-sm leading-6 text-foreground/85">{practice.purpose}</p>
+                    <ul className="mt-2 space-y-1 text-sm leading-6 text-muted-foreground">
+                      {practice.actions.slice(0, 4).map((action) => (
+                        <li key={`${practice.id}-${action}`}>• {action}</li>
+                      ))}
+                    </ul>
+                    <div className="mt-2 space-y-1">
+                      {practice.tags.map((tag) => (
+                        <p key={`${practice.id}-${tag}`} className="break-words text-xs text-foreground/80">{tag}</p>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : null}
           </article>
 
-          <article className="rounded-[24px] border border-cyan-300/25 bg-gradient-to-br from-cyan-500/10 via-card/65 to-card/35 p-4 backdrop-blur-sm">
+          <article className="flex h-full flex-col rounded-[24px] border border-cyan-300/25 bg-gradient-to-br from-cyan-500/12 via-card/65 to-card/35 p-4 backdrop-blur-sm">
             <p className="text-xs uppercase tracking-[0.2em] text-cyan-200/90">{copy.guidanceLabel}</p>
             <div className="mt-3 space-y-3">
               <div className="rounded-xl border border-border/30 bg-background/45 p-3">
                 <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">{copy.respectLabel}</p>
-                <p className="mt-1 text-sm leading-6 text-foreground/90">{weatherMatch?.firstMeaning ?? copy.waitingBody}</p>
-                <p className="mt-1 text-sm leading-6 text-foreground/90">{weatherMatch?.secondMeaning ?? ""}</p>
+                <p className="mt-1 text-sm leading-6 text-foreground/90">
+                  {weatherMatch ? copy.respectContextLine : copy.waitingBody}
+                </p>
+                <p className="mt-1 text-sm leading-6 text-foreground/90">
+                  {weatherMatch ? weatherMatch.interpretation : ""}
+                </p>
                 <ul className="mt-2 space-y-1 text-sm leading-6 text-muted-foreground">
                   {copy.respectPrompts.map((prompt) => (
                     <li key={prompt}>• {prompt}</li>
@@ -556,6 +723,11 @@ const TonightPathExperience = ({
                     <li key={`${cue}-${index}`}>• {cue}</li>
                   ))}
                 </ul>
+              </div>
+
+              <div className="rounded-xl border border-violet-300/30 bg-violet-500/10 p-3">
+                <p className="text-[11px] uppercase tracking-[0.14em] text-violet-100/90">{copy.reflectionLabel}</p>
+                <p className="mt-2 text-sm leading-6 text-foreground/90">{copy.reflectionPrompt}</p>
               </div>
 
               <div className="rounded-xl border border-amber-300/30 bg-amber-500/10 p-3">
