@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 import {
@@ -2519,6 +2519,8 @@ const Paths = () => {
   );
   const [selectedSlug, setSelectedSlug] = useState(defaultSelectedSlug);
   const [mobileDetailMode, setMobileDetailMode] = useState(false);
+  const detailPaneRef = useRef<HTMLDivElement | null>(null);
+  const sidePaneRef = useRef<HTMLElement | null>(null);
   const selected = useMemo(
     () => localizedPathDetails.find((path) => path.slug === selectedSlug) ?? localizedPathDetails[0],
     [localizedPathDetails, selectedSlug],
@@ -2560,6 +2562,12 @@ const Paths = () => {
     }
   }, [focusSlug, isMobile, localizedPathDetails]);
 
+  useEffect(() => {
+    if (isMobile) return;
+    detailPaneRef.current?.scrollTo({ top: 0, behavior: "auto" });
+    sidePaneRef.current?.scrollTo({ top: 0, behavior: "auto" });
+  }, [isMobile, selectedSlug]);
+
   const handleSelectPath = (slug: string) => {
     setSelectedSlug(slug);
     const next = new URLSearchParams(searchParams);
@@ -2570,6 +2578,11 @@ const Paths = () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
+  const openCardHint = lang === "fr"
+    ? "Ouvrir ce parcours"
+    : lang === "cs"
+      ? "Otevřít tuto cestu"
+      : "Open this path";
 
   return (
     <div className="space-y-4 md:space-y-6">
@@ -2633,7 +2646,7 @@ const Paths = () => {
         <p className="text-xs uppercase tracking-[0.22em] text-primary/80">{ui.overviewEyebrow}</p>
         <h2 className="mt-2 font-display text-3xl text-foreground">{ui.overviewTitle}</h2>
 
-        <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-2">
           {localizedPathDetails.map((path) => {
             const Icon = path.icon;
             const isSelected = selectedSlug === path.slug;
@@ -2642,7 +2655,7 @@ const Paths = () => {
                 key={path.slug}
                 type="button"
                 onClick={() => handleSelectPath(path.slug)}
-                className={`rounded-[24px] border p-4 text-left transition-all ${
+                className={`group flex min-h-[236px] flex-col rounded-[24px] border p-4 text-left transition-all ${
                   isSelected
                     ? "border-primary/30 bg-primary/10 shadow-[0_16px_50px_-40px_rgba(255,173,70,0.45)]"
                     : "border-border/30 bg-background/45 hover:border-primary/20 hover:bg-card/55"
@@ -2654,21 +2667,24 @@ const Paths = () => {
                   </div>
                   <TierBadge tier={path.tier} />
                 </div>
-                <h3 className="mt-3 font-display text-2xl text-foreground">{path.name}</h3>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                <h3 className="mt-3 font-display text-[1.75rem] leading-[1.15] text-foreground">{path.name}</h3>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground/95">
                   {PATH_LONGFORM_BY_SLUG[path.slug]?.shortDescription ?? path.oneLine}
                 </p>
-                <p className="mt-2 text-xs leading-5 text-foreground/80">
+                <p className="mt-2 text-xs leading-5 text-foreground/82">
                   {path.tier === "free"
                     ? `${ui.practicePreview}: ${path.content?.practices[0]?.title ?? ui.practicePreviewFallback}`
                     : `${ui.premiumPreview}: ${PATH_LONGFORM_BY_SLUG[path.slug]?.shortDescription ?? path.teaser?.[0] ?? ui.premiumPreviewFallback}`}
+                </p>
+                <p className="mt-auto pt-3 text-xs uppercase tracking-[0.12em] text-primary/85 group-hover:text-primary">
+                  {openCardHint}
                 </p>
               </button>
             );
           })}
 
           {/* Premium banner — fills empty grid slot */}
-          <div className="flex flex-col justify-between rounded-[24px] border border-amber-400/25 bg-gradient-to-br from-amber-950/60 via-card/50 to-card/30 p-5">
+          <div className="md:col-span-2 xl:col-span-2 flex flex-col justify-between rounded-[24px] border border-amber-400/25 bg-gradient-to-br from-amber-950/60 via-card/50 to-card/30 p-5">
             <div className="flex items-center gap-2 mb-3">
               <span className="text-xs uppercase tracking-[0.22em] text-amber-400/70">SACRED PATH PREMIUM</span>
             </div>
@@ -2708,15 +2724,15 @@ const Paths = () => {
       ) : null}
 
       {showDetail ? (
-      <section className={`${isMobile ? "space-y-4" : "grid items-start gap-6 lg:grid-cols-[minmax(280px,360px)_minmax(0,1fr)]"}`}>
+      <section className={`${isMobile ? "space-y-4" : "grid items-start gap-6 lg:h-[calc(100vh-8rem)] lg:grid-cols-[minmax(280px,360px)_minmax(0,1fr)]"}`}>
         {isMobile ? <MobileDetailHeader title={selected.name} tier={selected.tier} onBack={() => setMobileDetailMode(false)} /> : null}
 
-        <aside className="space-y-4 lg:sticky lg:top-24">
+        <aside ref={sidePaneRef} className="space-y-4 lg:sticky lg:top-24 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-1">
           <PathHeroCard path={selected} />
           <PremiumMiniCard path={selected} />
         </aside>
 
-        <div className="space-y-4">
+        <div ref={detailPaneRef} className="space-y-4 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-1">
           {selected.tier === "free" ? <FreePathContent path={selected} /> : <PremiumPathContent path={selected} />}
           {isMobile ? <RelatedPathCarousel items={relatedPaths} onSelect={handleSelectPath} /> : null}
         </div>

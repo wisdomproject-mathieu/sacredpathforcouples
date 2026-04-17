@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 import {
@@ -2207,6 +2207,8 @@ const Authors = () => {
   );
   const [selectedSlug, setSelectedSlug] = useState(defaultSelectedSlug);
   const [mobileDetailMode, setMobileDetailMode] = useState(false);
+  const detailPaneRef = useRef<HTMLDivElement | null>(null);
+  const sidePaneRef = useRef<HTMLElement | null>(null);
   const selected = useMemo(
     () => localizedAuthors.find((author) => author.slug === selectedSlug) ?? localizedAuthors[0],
     [localizedAuthors, selectedSlug],
@@ -2248,6 +2250,12 @@ const Authors = () => {
     }
   }, [focusSlug, isMobile, localizedAuthors]);
 
+  useEffect(() => {
+    if (isMobile) return;
+    detailPaneRef.current?.scrollTo({ top: 0, behavior: "auto" });
+    sidePaneRef.current?.scrollTo({ top: 0, behavior: "auto" });
+  }, [isMobile, selectedSlug]);
+
   const handleSelectAuthor = (slug: string) => {
     setSelectedSlug(slug);
     const next = new URLSearchParams(searchParams);
@@ -2258,6 +2266,11 @@ const Authors = () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
+  const openCardHint = lang === "fr"
+    ? "Ouvrir cet auteur"
+    : lang === "cs"
+      ? "Otevřít tohoto autora"
+      : "Open this author";
 
   return (
     <div className="space-y-4 md:space-y-6">
@@ -2320,7 +2333,7 @@ const Authors = () => {
         <p className="text-xs uppercase tracking-[0.22em] text-primary/80">{ui.overviewEyebrow}</p>
         <h2 className="mt-2 font-display text-3xl text-foreground">{ui.overviewTitle}</h2>
 
-        <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-2">
           {localizedAuthors.map((author) => {
             const Icon = author.icon;
             const isSelected = selectedSlug === author.slug;
@@ -2329,7 +2342,7 @@ const Authors = () => {
                 key={author.slug}
                 type="button"
                 onClick={() => handleSelectAuthor(author.slug)}
-                className={`rounded-[24px] border p-4 text-left transition-all ${
+                className={`group flex min-h-[236px] flex-col rounded-[24px] border p-4 text-left transition-all ${
                   isSelected
                     ? "border-primary/30 bg-primary/10 shadow-[0_16px_50px_-40px_rgba(255,173,70,0.45)]"
                     : "border-border/30 bg-background/45 hover:border-primary/20 hover:bg-card/55"
@@ -2341,21 +2354,24 @@ const Authors = () => {
                   </div>
                   <TierBadge tier={author.tier} />
                 </div>
-                <h3 className="mt-3 font-display text-2xl text-foreground">{author.name}</h3>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                <h3 className="mt-3 font-display text-[1.75rem] leading-[1.15] text-foreground">{author.name}</h3>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground/95">
                   {AUTHOR_LONGFORM_BY_SLUG[author.slug]?.shortDescription ?? author.descriptor}
                 </p>
-                <p className="mt-2 text-xs leading-5 text-foreground/80">
+                <p className="mt-2 text-xs leading-5 text-foreground/82">
                   {author.tier === "free"
                     ? `${ui.practicePreview}: ${author.content?.exercises[0]?.title ?? ui.practicePreviewFallback}`
                     : `${ui.premiumPreview}: ${AUTHOR_LONGFORM_BY_SLUG[author.slug]?.tagline ?? author.oneLiner ?? ui.premiumPreviewFallback}`}
+                </p>
+                <p className="mt-auto pt-3 text-xs uppercase tracking-[0.12em] text-primary/85 group-hover:text-primary">
+                  {openCardHint}
                 </p>
               </button>
             );
           })}
           <Link
             to="/pricing"
-            className="xl:col-span-3 rounded-[24px] border border-amber-400/20 bg-gradient-to-br from-amber-950/40 via-card/60 to-card/40 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)] transition-all hover:border-amber-400/35 hover:shadow-[0_24px_70px_-40px_rgba(255,173,70,0.68)]"
+            className="md:col-span-2 xl:col-span-2 rounded-[24px] border border-amber-400/20 bg-gradient-to-br from-amber-950/40 via-card/60 to-card/40 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)] transition-all hover:border-amber-400/35 hover:shadow-[0_24px_70px_-40px_rgba(255,173,70,0.68)]"
           >
             <div className="flex h-full flex-col justify-between p-6">
               <div>
@@ -2405,15 +2421,15 @@ const Authors = () => {
       ) : null}
 
       {showDetail ? (
-      <section className={`${isMobile ? "space-y-4" : "grid items-start gap-6 lg:grid-cols-[minmax(280px,360px)_minmax(0,1fr)]"}`}>
+      <section className={`${isMobile ? "space-y-4" : "grid items-start gap-6 lg:h-[calc(100vh-8rem)] lg:grid-cols-[minmax(280px,360px)_minmax(0,1fr)]"}`}>
         {isMobile ? <MobileDetailHeader title={selected.name} tier={selected.tier} onBack={() => setMobileDetailMode(false)} /> : null}
 
-        <aside className="space-y-4 lg:sticky lg:top-24">
+        <aside ref={sidePaneRef} className="space-y-4 lg:sticky lg:top-24 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-1">
           <AuthorHeroCard author={selected} />
           <PremiumMiniCard author={selected} />
         </aside>
 
-        <div className="space-y-4">
+        <div ref={detailPaneRef} className="space-y-4 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-1">
           {selected.tier === "free" ? <FreeAuthorContent author={selected} /> : <PremiumAuthorContent author={selected} />}
           {isMobile ? <RelatedAuthorCarousel items={relatedAuthors} onSelect={handleSelectAuthor} /> : null}
         </div>
