@@ -1840,6 +1840,8 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
   if (!author.content) return null;
 
   const data = author.content;
+  const longform = AUTHOR_LONGFORM_BY_SLUG[author.slug];
+  const longformParagraphs = longform?.fullDescription.split("\n\n") ?? [];
 
   return (
     <main className="space-y-5">
@@ -1856,6 +1858,37 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
           <footer className="mt-2 text-xs uppercase tracking-[0.14em] text-primary/80">{data.quote.source}</footer>
         </blockquote>
       </section>
+
+      {longformParagraphs.length ? (
+        <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+            {lang === "fr" ? "Contexte de tradition" : lang === "cs" ? "Kontext tradice" : "Lineage Context"}
+          </p>
+          {longform.tradition ? (
+            <p className="mt-2 text-xs uppercase tracking-[0.12em] text-primary/80">{longform.tradition}</p>
+          ) : null}
+          <div className="mt-3 space-y-3 text-sm leading-7 text-foreground/90">
+            {longformParagraphs.map((line) => (
+              <p key={line}>{line}</p>
+            ))}
+          </div>
+          {longform.keyWorks.length ? (
+            <div className="mt-4">
+              <p className="text-[11px] uppercase tracking-[0.14em] text-primary/80">{ui.keyWorksLabel}</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {longform.keyWorks.map((work) => (
+                  <span
+                    key={work}
+                    className="rounded-full border border-primary/25 bg-primary/10 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-primary/85"
+                  >
+                    {work}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ) : null}
+        </section>
+      ) : null}
 
       {data.whoItsFor?.length ? (
         <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
@@ -2221,6 +2254,7 @@ const Authors = () => {
   const relatedAuthors = localizedAuthors.filter((author) => author.slug !== selectedSlug).slice(0, 6);
   const showBrowse = isMobile ? !mobileDetailMode : !detailOnlyMode;
   const showDetail = isMobile ? mobileDetailMode : true;
+  const desktopFocusedDetail = !isMobile && detailOnlyMode;
 
   useSeoMetadata({
     title: `Authors Library - ${selected.name}`,
@@ -2430,7 +2464,7 @@ const Authors = () => {
       ) : null}
 
       {showDetail ? (
-      <section className={`${isMobile ? "space-y-4" : "grid items-start gap-6 lg:h-[calc(100vh-8rem)] lg:grid-cols-[minmax(280px,360px)_minmax(0,1fr)]"}`}>
+      <section className={`${isMobile ? "space-y-4" : `grid items-start gap-6 lg:grid-cols-[minmax(280px,360px)_minmax(0,1fr)] ${desktopFocusedDetail ? "" : "lg:h-[calc(100vh-8rem)]"}`}`}>
         {!isMobile && detailOnlyMode ? (
           <div className="lg:col-span-2">
             <button
@@ -2444,12 +2478,18 @@ const Authors = () => {
         ) : null}
         {isMobile ? <MobileDetailHeader title={selected.name} tier={selected.tier} onBack={() => setMobileDetailMode(false)} /> : null}
 
-        <aside ref={sidePaneRef} className="space-y-4 lg:sticky lg:top-24 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-1">
+        <aside
+          ref={sidePaneRef}
+          className={`space-y-4 lg:sticky lg:top-24 ${desktopFocusedDetail ? "lg:pr-1" : "lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-1"}`}
+        >
           <AuthorHeroCard author={selected} />
           {!hasPremiumAccess ? <PremiumMiniCard author={selected} /> : null}
         </aside>
 
-        <div ref={detailPaneRef} className="space-y-4 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-1">
+        <div
+          ref={detailPaneRef}
+          className={`space-y-4 ${desktopFocusedDetail ? "lg:pr-1" : "lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-1"}`}
+        >
           {selected.tier === "free" ? <FreeAuthorContent author={selected} /> : <PremiumAuthorContent author={selected} />}
           {isMobile ? <RelatedAuthorCarousel items={relatedAuthors} onSelect={handleSelectAuthor} /> : null}
         </div>

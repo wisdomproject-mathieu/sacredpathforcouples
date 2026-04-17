@@ -2076,6 +2076,8 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
   if (!path.content) return null;
 
   const data = path.content;
+  const longform = PATH_LONGFORM_BY_SLUG[path.slug];
+  const longformParagraphs = longform?.fullDescription.split("\n\n") ?? [];
 
   return (
     <main className="space-y-5">
@@ -2092,6 +2094,27 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
           <footer className="mt-2 text-xs uppercase tracking-[0.14em] text-primary/80">{data.quote.source}</footer>
         </blockquote>
       </section>
+
+      {longformParagraphs.length ? (
+        <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+            {lang === "fr" ? "Contexte de tradition" : lang === "cs" ? "Kontext tradice" : "Lineage Context"}
+          </p>
+          {longform.subtitle ? (
+            <p className="mt-2 text-xs uppercase tracking-[0.12em] text-primary/80">{longform.subtitle}</p>
+          ) : null}
+          <div className="mt-3 space-y-3 text-sm leading-7 text-foreground/90">
+            {longformParagraphs.map((line) => (
+              <p key={line}>{line}</p>
+            ))}
+          </div>
+          {longform.forCouples ? (
+            <p className="mt-3 rounded-2xl border border-primary/20 bg-primary/8 p-3 text-sm leading-6 text-primary/90">
+              {longform.forCouples}
+            </p>
+          ) : null}
+        </section>
+      ) : null}
 
       {data.whyMatters?.length ? (
         <section className="rounded-[24px] border border-primary/20 bg-primary/8 p-5">
@@ -2533,6 +2556,7 @@ const Paths = () => {
   const relatedPaths = localizedPathDetails.filter((path) => path.slug !== selectedSlug).slice(0, 6);
   const showBrowse = isMobile ? !mobileDetailMode : !detailOnlyMode;
   const showDetail = isMobile ? mobileDetailMode : true;
+  const desktopFocusedDetail = !isMobile && detailOnlyMode;
 
   useSeoMetadata({
     title: `Paths Library - ${selected.name}`,
@@ -2732,7 +2756,7 @@ const Paths = () => {
       ) : null}
 
       {showDetail ? (
-      <section className={`${isMobile ? "space-y-4" : "grid items-start gap-6 lg:h-[calc(100vh-8rem)] lg:grid-cols-[minmax(280px,360px)_minmax(0,1fr)]"}`}>
+      <section className={`${isMobile ? "space-y-4" : `grid items-start gap-6 lg:grid-cols-[minmax(280px,360px)_minmax(0,1fr)] ${desktopFocusedDetail ? "" : "lg:h-[calc(100vh-8rem)]"}`}`}>
         {!isMobile && detailOnlyMode ? (
           <div className="lg:col-span-2">
             <button
@@ -2746,12 +2770,18 @@ const Paths = () => {
         ) : null}
         {isMobile ? <MobileDetailHeader title={selected.name} tier={selected.tier} onBack={() => setMobileDetailMode(false)} /> : null}
 
-        <aside ref={sidePaneRef} className="space-y-4 lg:sticky lg:top-24 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-1">
+        <aside
+          ref={sidePaneRef}
+          className={`space-y-4 lg:sticky lg:top-24 ${desktopFocusedDetail ? "lg:pr-1" : "lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-1"}`}
+        >
           <PathHeroCard path={selected} />
           {!hasPremiumAccess ? <PremiumMiniCard path={selected} /> : null}
         </aside>
 
-        <div ref={detailPaneRef} className="space-y-4 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-1">
+        <div
+          ref={detailPaneRef}
+          className={`space-y-4 ${desktopFocusedDetail ? "lg:pr-1" : "lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-1"}`}
+        >
           {selected.tier === "free" ? <FreePathContent path={selected} /> : <PremiumPathContent path={selected} />}
           {isMobile ? <RelatedPathCarousel items={relatedPaths} onSelect={handleSelectPath} /> : null}
         </div>
