@@ -26,7 +26,7 @@ import {
   storeConnectedCoupleId,
 } from "@/lib/couples";
 import { buildWeatherMatchResult, getWeatherPresentation, type WeatherKey } from "@/lib/weatherMatch";
-import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
+import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 
 type RitualItem = Tables<"ritual_items">;
 type Pathway = Tables<"pathways">;
@@ -476,7 +476,7 @@ const AppHome = () => {
   const { user } = useAuth();
   const { lang } = useLanguage();
   const copy = homeCopy[lang];
-  const hasPremiumAccess = isPremiumTier(getEffectiveMembershipTier(user));
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
   const quotes = quoteSets[lang];
   const positions = positionSets[lang];
   const templePulses = templePulseSets[lang];
@@ -547,7 +547,7 @@ const AppHome = () => {
   };
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || !entitlementResolved) return;
 
     // Auto-clear stale force-disconnect flag on fresh app load
     // This prevents stuck disconnected state from testing
@@ -719,7 +719,7 @@ const AppHome = () => {
       supabase.removeChannel(channelA);
       supabase.removeChannel(channelB);
     };
-  }, [hasPremiumAccess, user]);
+  }, [entitlementResolved, hasPremiumAccess, user]);
 
   useEffect(() => {
     if (!user || !coupleId) return;
@@ -1710,7 +1710,7 @@ const AppHome = () => {
         </div>
       </section>
 
-      {!hasPremiumAccess && (
+      {entitlementResolved && !hasPremiumAccess && (
         <section className="rounded-[28px] bg-[rgba(255,255,255,0.02)] px-5 pb-6 pt-5">
           <div className="grid gap-5 md:grid-cols-2">
             {/* For Him */}

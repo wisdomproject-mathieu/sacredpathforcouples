@@ -8,7 +8,6 @@ import {
   Flame,
   Heart,
   Lock,
-  LockOpen,
   Sparkles,
   Star,
   SunMoon,
@@ -16,10 +15,9 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import { useSeoMetadata } from "@/lib/seo";
-import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
-import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
 import { AUTHOR_LONGFORM_BY_SLUG } from "@/lib/libraryLongform";
 import {
   dianaRichardsonContent,
@@ -1723,19 +1721,16 @@ const badgeByTier: Record<Tier, string> = {
   premium: "border-amber-400/30 bg-amber-500/12 text-amber-200",
 };
 
-const usePremiumAccess = () => {
-  const { user } = useAuth();
-  return isPremiumTier(getEffectiveMembershipTier(user));
-};
-
 const TierBadge = ({ tier }: { tier: Tier }) => {
-  const hasPremiumAccess = usePremiumAccess();
-  const locked = tier === "premium" && !hasPremiumAccess;
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
+  const locked = entitlementResolved && tier === "premium" && !hasPremiumAccess;
+
+  if (hasPremiumAccess || !entitlementResolved) return null;
 
   return (
-  <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] ${badgeByTier[tier]}`}>
-    {locked ? <Lock className="h-3.5 w-3.5" aria-label="Locked" /> : <LockOpen className="h-3.5 w-3.5" aria-label="Open access" />}
-  </span>
+    <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] ${badgeByTier[tier]}`}>
+      {locked ? <Lock className="h-3.5 w-3.5" aria-label="Locked" /> : "Free"}
+    </span>
   );
 };
 
@@ -1743,8 +1738,8 @@ const AuthorHeroCard = ({ author }: { author: Author }) => {
   const { lang } = useLanguage();
   const ui = authorsUiCopy[lang];
   const Icon = author.icon;
-  const hasPremiumAccess = usePremiumAccess();
-  const isLocked = author.tier === "premium" && !hasPremiumAccess;
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
+  const isLocked = entitlementResolved && author.tier === "premium" && !hasPremiumAccess;
 
   return (
     <section className={shellCardClass}>
@@ -1778,7 +1773,8 @@ const AuthorHeroCard = ({ author }: { author: Author }) => {
 const PremiumMiniCard = ({ author }: { author: Author }) => {
   const { lang } = useLanguage();
   const ui = authorsUiCopy[lang];
-  const hasPremiumAccess = usePremiumAccess();
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
+  if (hasPremiumAccess || !entitlementResolved) return null;
   const upgradeCopy = authorUpgradeCopy[author.slug] ?? {
     benefit: "Turn insight into guided couple practice with structure that lasts.",
   };
@@ -1789,8 +1785,8 @@ const PremiumMiniCard = ({ author }: { author: Author }) => {
   return (
   <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.24),transparent_55%),linear-gradient(135deg,rgba(245,158,11,0.18),rgba(15,23,42,0.15))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.62)]">
     <div className="flex items-center gap-2 text-amber-200">
-      {hasPremiumAccess ? <LockOpen className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
-      <span className="text-xs uppercase tracking-[0.16em]">{hasPremiumAccess ? ui.premiumActive : ui.locked}</span>
+      <Lock className="h-4 w-4" />
+      <span className="text-xs uppercase tracking-[0.16em]">{ui.locked}</span>
     </div>
     <p className="mt-3 text-sm leading-6 text-foreground/90">
       {miniLine}
@@ -1815,23 +1811,22 @@ const PremiumMiniCard = ({ author }: { author: Author }) => {
 
 const AuthorPremiumBlock = ({ author }: { author: Author }) => {
   const { lang } = useLanguage();
-  const ui = authorsUiCopy[lang];
-  const hasPremiumAccess = usePremiumAccess();
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
+
+  if (hasPremiumAccess || !entitlementResolved) return null;
 
   return (
     <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
       <p className="text-xs uppercase tracking-[0.2em] text-amber-300">READY TO GO DEEPER</p>
       <h4 className="mt-2 font-display text-2xl text-foreground">Bring this wisdom into your relationship.</h4>
       <p className="mt-3 text-sm leading-7 text-foreground/90">Reading can open the heart. Premium helps you turn insight into lived intimacy through guided exploration, deeper teachings, and shared practices that nourish love.</p>
-      {hasPremiumAccess ? null : (
-        <Link
-          to="/pricing"
-          className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
-        >
-          Continue the journey together
-          <ArrowRight className="h-4 w-4" />
-        </Link>
-      )}
+      <Link
+        to="/pricing"
+        className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
+      >
+        Continue the journey together
+        <ArrowRight className="h-4 w-4" />
+      </Link>
     </section>
   );
 };
@@ -2075,7 +2070,7 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
 const PremiumAuthorContent = ({ author }: { author: Author }) => {
   const { lang } = useLanguage();
   const ui = authorsUiCopy[lang];
-  const hasPremiumAccess = usePremiumAccess();
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
   const longform = AUTHOR_LONGFORM_BY_SLUG[author.slug];
   const longformParagraphs = longform?.fullDescription.split("\n\n") ?? [];
   const upgradeFallback = authorUpgradeCopy[author.slug];
@@ -2108,7 +2103,7 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => {
           <p key={line}>{line}</p>
         ))}
       </div>
-      {hasPremiumAccess ? null : (
+      {entitlementResolved && !hasPremiumAccess ? (
         <Link
           to="/pricing"
           className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-2 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/18"
@@ -2184,8 +2179,8 @@ const MobileDetailHeader = ({
 }) => {
   const { lang } = useLanguage();
   const ui = authorsUiCopy[lang];
-  const hasPremiumAccess = usePremiumAccess();
-  const isLocked = tier === "premium" && !hasPremiumAccess;
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
+  const isLocked = entitlementResolved && tier === "premium" && !hasPremiumAccess;
 
   return (
   <div className="sticky top-2 z-30 rounded-2xl border border-border/40 bg-background/95 p-3 shadow-[0_16px_40px_-32px_rgba(0,0,0,0.7)] backdrop-blur">
@@ -2251,7 +2246,7 @@ const Authors = () => {
   const ui = authorsUiCopy[lang];
   const authorJoinWord = lang === "fr" ? " et " : lang === "cs" ? " a " : " and ";
   const isMobile = useIsMobile();
-  const hasPremiumAccess = usePremiumAccess();
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
   const [searchParams, setSearchParams] = useSearchParams();
   const localizedAuthors = useMemo(
     () => authors.map((author) => applyAuthorLocalization(author, lang)),
@@ -2422,7 +2417,7 @@ const Authors = () => {
               </button>
             );
           })}
-          {!hasPremiumAccess ? (
+          {entitlementResolved && !hasPremiumAccess ? (
             <Link
               to="/pricing"
               className="md:col-span-2 xl:col-span-2 rounded-[24px] border border-amber-400/20 bg-gradient-to-br from-amber-950/40 via-card/60 to-card/40 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)] transition-all hover:border-amber-400/35 hover:shadow-[0_24px_70px_-40px_rgba(255,173,70,0.68)]"
@@ -2468,7 +2463,7 @@ const Authors = () => {
           ) : null}
         </div>
 
-        {!hasPremiumAccess ? (
+        {entitlementResolved && !hasPremiumAccess ? (
           <div className="mt-4 rounded-2xl border border-amber-400/20 bg-amber-500/6 p-4">
             <p className="text-xs uppercase tracking-[0.14em] text-amber-200">WHY GO DEEPER</p>
             <p className="mt-2 text-sm leading-6 text-foreground/90">Some wisdom can inspire in a moment. Deeper guidance helps you live it together, especially when love needs renewal, courage, and care.</p>
@@ -2496,7 +2491,7 @@ const Authors = () => {
         sidePane={(
           <>
             <AuthorHeroCard author={selected} />
-            {!hasPremiumAccess ? <PremiumMiniCard author={selected} /> : null}
+            {entitlementResolved && !hasPremiumAccess ? <PremiumMiniCard author={selected} /> : null}
           </>
         )}
         detailPane={(

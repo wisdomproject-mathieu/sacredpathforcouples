@@ -7,17 +7,15 @@ import {
   Flame,
   Heart,
   Lock,
-  LockOpen,
   Shield,
   Sparkles,
   Waves,
   type LucideIcon,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import { useSeoMetadata } from "@/lib/seo";
-import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
-import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
 import { PATH_LONGFORM_BY_SLUG } from "@/lib/libraryLongform";
 import LibraryDetailBody from "@/components/library/LibraryDetailBody";
 import LibraryDetailSplitLayout from "@/components/library/LibraryDetailSplitLayout";
@@ -1964,19 +1962,16 @@ const tierBadgeClass: Record<Tier, string> = {
   premium: "border-amber-400/30 bg-amber-500/12 text-amber-200",
 };
 
-const usePremiumAccess = () => {
-  const { user } = useAuth();
-  return isPremiumTier(getEffectiveMembershipTier(user));
-};
-
 const TierBadge = ({ tier }: { tier: Tier }) => {
-  const hasPremiumAccess = usePremiumAccess();
-  const locked = tier === "premium" && !hasPremiumAccess;
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
+  const locked = entitlementResolved && tier === "premium" && !hasPremiumAccess;
+
+  if (hasPremiumAccess || !entitlementResolved) return null;
 
   return (
-  <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] ${tierBadgeClass[tier]}`}>
-    {locked ? <Lock className="h-3.5 w-3.5" aria-label="Locked" /> : <LockOpen className="h-3.5 w-3.5" aria-label="Open access" />}
-  </span>
+    <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] ${tierBadgeClass[tier]}`}>
+      {locked ? <Lock className="h-3.5 w-3.5" aria-label="Locked" /> : "Free"}
+    </span>
   );
 };
 
@@ -1984,8 +1979,8 @@ const PathHeroCard = ({ path }: { path: PathDetail }) => {
   const { lang } = useLanguage();
   const ui = pathsUiCopy[lang];
   const Icon = path.icon;
-  const hasPremiumAccess = usePremiumAccess();
-  const isLocked = path.tier === "premium" && !hasPremiumAccess;
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
+  const isLocked = entitlementResolved && path.tier === "premium" && !hasPremiumAccess;
   return (
     <section className={shellCardClass}>
       <div className="flex items-start justify-between gap-3">
@@ -2013,7 +2008,8 @@ const PathHeroCard = ({ path }: { path: PathDetail }) => {
 const PremiumMiniCard = ({ path }: { path: PathDetail }) => {
   const { lang } = useLanguage();
   const ui = pathsUiCopy[lang];
-  const hasPremiumAccess = usePremiumAccess();
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
+  if (hasPremiumAccess || !entitlementResolved) return null;
   const upgradeCopy = pathUpgradeCopy[path.slug] ?? {
     benefit: "Add guided depth, clearer progression, and stronger partner integration.",
   };
@@ -2025,8 +2021,8 @@ const PremiumMiniCard = ({ path }: { path: PathDetail }) => {
   return (
   <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.24),transparent_55%),linear-gradient(135deg,rgba(245,158,11,0.18),rgba(15,23,42,0.15))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.62)]">
     <div className="flex items-center gap-2 text-amber-200">
-      {hasPremiumAccess ? <LockOpen className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
-      <span className="text-xs uppercase tracking-[0.16em]">{hasPremiumAccess ? ui.premiumActive : ui.locked}</span>
+      <Lock className="h-4 w-4" />
+      <span className="text-xs uppercase tracking-[0.16em]">{ui.locked}</span>
     </div>
     <p className="mt-3 text-sm leading-6 text-foreground/90">
       {miniLine}
@@ -2050,24 +2046,22 @@ const PremiumMiniCard = ({ path }: { path: PathDetail }) => {
 };
 
 const PathPremiumBlock = ({ path }: { path: PathDetail }) => {
-  const { lang } = useLanguage();
-  const ui = pathsUiCopy[lang];
-  const hasPremiumAccess = usePremiumAccess();
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
+
+  if (hasPremiumAccess || !entitlementResolved) return null;
 
   return (
     <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
       <p className="text-xs uppercase tracking-[0.2em] text-amber-300">TAKE THIS PATH FURTHER</p>
       <h4 className="mt-2 font-display text-2xl text-foreground">Let this become a lived experience.</h4>
       <p className="mt-3 text-sm leading-7 text-foreground/90">Go beyond understanding. Premium helps you practice, reconnect, and embody these teachings together so your relationship becomes more conscious, intimate, and alive.</p>
-      {hasPremiumAccess ? null : (
-        <Link
-          to="/pricing"
-          className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
-        >
-          Walk the deeper path
-          <ArrowRight className="h-4 w-4" />
-        </Link>
-      )}
+      <Link
+        to="/pricing"
+        className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
+      >
+        Walk the deeper path
+        <ArrowRight className="h-4 w-4" />
+      </Link>
     </section>
   );
 };
@@ -2328,7 +2322,7 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
 const PremiumPathContent = ({ path }: { path: PathDetail }) => {
   const { lang } = useLanguage();
   const ui = pathsUiCopy[lang];
-  const hasPremiumAccess = usePremiumAccess();
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
   const longform = PATH_LONGFORM_BY_SLUG[path.slug];
   const longformParagraphs = longform?.fullDescription.split("\n\n") ?? [];
   const upgradeFallback = pathUpgradeCopy[path.slug];
@@ -2359,7 +2353,7 @@ const PremiumPathContent = ({ path }: { path: PathDetail }) => {
           <p key={line}>{line}</p>
         ))}
       </div>
-      {hasPremiumAccess ? null : (
+      {entitlementResolved && !hasPremiumAccess ? (
         <Link
           to="/pricing"
           className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-2 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/18"
@@ -2487,8 +2481,8 @@ const MobileDetailHeader = ({
 }) => {
   const { lang } = useLanguage();
   const ui = pathsUiCopy[lang];
-  const hasPremiumAccess = usePremiumAccess();
-  const isLocked = tier === "premium" && !hasPremiumAccess;
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
+  const isLocked = entitlementResolved && tier === "premium" && !hasPremiumAccess;
 
   return (
   <div className="sticky top-2 z-30 rounded-2xl border border-border/40 bg-background/95 p-3 shadow-[0_16px_40px_-32px_rgba(0,0,0,0.7)] backdrop-blur">
@@ -2553,7 +2547,7 @@ const Paths = () => {
   const { lang } = useLanguage();
   const ui = pathsUiCopy[lang];
   const isMobile = useIsMobile();
-  const hasPremiumAccess = usePremiumAccess();
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
   const [searchParams, setSearchParams] = useSearchParams();
   const localizedPathDetails = useMemo(
     () => pathDetails.map((path) => applyPathLocalization(path, lang)),
@@ -2726,7 +2720,7 @@ const Paths = () => {
             );
           })}
 
-          {!hasPremiumAccess ? (
+          {entitlementResolved && !hasPremiumAccess ? (
             <div className="md:col-span-2 xl:col-span-2 flex flex-col justify-between rounded-[24px] border border-amber-400/25 bg-gradient-to-br from-amber-950/60 via-card/50 to-card/30 p-5">
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-xs uppercase tracking-[0.22em] text-amber-400/70">SACRED PATH PREMIUM</span>
@@ -2760,7 +2754,7 @@ const Paths = () => {
           ) : null}
         </div>
 
-        {!hasPremiumAccess ? (
+        {entitlementResolved && !hasPremiumAccess ? (
           <div className="mt-4 rounded-2xl border border-amber-400/20 bg-amber-500/6 p-4">
             <p className="text-xs uppercase tracking-[0.14em] text-amber-200">WHY GO DEEPER</p>
             <p className="mt-2 text-sm leading-6 text-foreground/90">Some wisdom can inspire in a moment. Deeper guidance helps you live it together, especially when love needs renewal, courage, and care.</p>
@@ -2788,7 +2782,7 @@ const Paths = () => {
         sidePane={(
           <>
             <PathHeroCard path={selected} />
-            {!hasPremiumAccess ? <PremiumMiniCard path={selected} /> : null}
+            {entitlementResolved && !hasPremiumAccess ? <PremiumMiniCard path={selected} /> : null}
           </>
         )}
         detailPane={(
