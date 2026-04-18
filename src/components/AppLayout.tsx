@@ -113,16 +113,8 @@ const AppLayout = () => {
           </div>
         </aside>
 
-        <main
-          className={`min-w-0 flex-1 py-2 ${isLibraryRoute ? "relative z-10 lg:py-4" : "lg:py-0"}`}
-        >
-          {isLibraryRoute ? (
-            <div className="rounded-[30px] border border-border/25 bg-background/72 p-3 shadow-[0_26px_80px_-46px_rgba(0,0,0,0.72)] backdrop-blur-md md:p-4">
-              <Outlet />
-            </div>
-          ) : (
-            <Outlet />
-          )}
+        <main className={`min-w-0 flex-1 py-2 ${isLibraryRoute ? "relative z-10 lg:py-4" : "lg:py-0"}`}>
+          <Outlet />
         </main>
       </div>
     </div>
