@@ -6,23 +6,23 @@
 
 @layer base {
   :root {
-    --background: 280 30% 4%;
-    --foreground: 40 20% 90%;
+    --background: 278 27% 6%;
+    --foreground: 38 26% 92%;
 
-    --card: 280 20% 8%;
-    --card-foreground: 40 20% 90%;
+    --card: 278 21% 10%;
+    --card-foreground: 38 26% 92%;
 
-    --popover: 280 20% 8%;
-    --popover-foreground: 40 20% 90%;
+    --popover: 278 21% 10%;
+    --popover-foreground: 38 26% 92%;
 
-    --primary: 32 52% 54%;
-    --primary-foreground: 280 30% 4%;
+    --primary: 34 58% 60%;
+    --primary-foreground: 278 27% 6%;
 
-    --secondary: 280 15% 14%;
-    --secondary-foreground: 40 20% 90%;
+    --secondary: 278 16% 16%;
+    --secondary-foreground: 38 26% 92%;
 
-    --muted: 280 15% 12%;
-    --muted-foreground: 40 10% 55%;
+    --muted: 278 16% 14%;
+    --muted-foreground: 34 15% 70%;
 
     --accent: 32 52% 54%;
     --accent-foreground: 280 30% 4%;
@@ -30,24 +30,24 @@
     --destructive: 0 84% 60%;
     --destructive-foreground: 40 20% 90%;
 
-    --border: 280 15% 16%;
-    --input: 280 15% 16%;
-    --ring: 32 52% 54%;
+    --border: 278 18% 24%;
+    --input: 278 18% 24%;
+    --ring: 34 58% 60%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 280 20% 6%;
-    --sidebar-foreground: 40 20% 90%;
-    --sidebar-primary: 32 52% 54%;
-    --sidebar-primary-foreground: 280 30% 4%;
-    --sidebar-accent: 280 15% 14%;
-    --sidebar-accent-foreground: 40 20% 90%;
-    --sidebar-border: 280 15% 16%;
-    --sidebar-ring: 32 52% 54%;
+    --sidebar-background: 278 21% 8%;
+    --sidebar-foreground: 38 26% 92%;
+    --sidebar-primary: 34 58% 60%;
+    --sidebar-primary-foreground: 278 27% 6%;
+    --sidebar-accent: 278 16% 16%;
+    --sidebar-accent-foreground: 38 26% 92%;
+    --sidebar-border: 278 18% 24%;
+    --sidebar-ring: 34 58% 60%;
 
-    --gold: 32 52% 54%;
-    --gold-light: 36 60% 65%;
-    --gold-dark: 28 45% 40%;
+    --gold: 34 58% 60%;
+    --gold-light: 38 64% 70%;
+    --gold-dark: 30 48% 45%;
     --sacred-purple: 280 30% 20%;
     --sacred-rose: 340 40% 45%;
   }
@@ -87,4 +87,67 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+@layer utilities {
+  .sacred-app .font-display {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+
+  .sacred-app .font-body {
+    font-family: "Jost", sans-serif;
+    letter-spacing: 0.002em;
+  }
+
+  .sacred-app .text-xs {
+    font-size: 0.8rem;
+    line-height: 1.28rem;
+  }
+
+  .sacred-app .text-sm {
+    font-size: 0.97rem;
+    line-height: 1.62rem;
+  }
+
+  .sacred-app .text-base {
+    font-size: 1.07rem;
+    line-height: 1.75rem;
+  }
+
+  .sacred-app .text-lg {
+    font-size: 1.18rem;
+    line-height: 1.9rem;
+  }
+
+  .sacred-app .text-xl {
+    font-size: 1.36rem;
+    line-height: 2rem;
+  }
+
+  .sacred-app .text-2xl {
+    font-size: 1.82rem;
+    line-height: 2.18rem;
+  }
+
+  .sacred-app .text-3xl {
+    font-size: 2.24rem;
+    line-height: 2.62rem;
+  }
+
+  .sacred-app .text-4xl {
+    font-size: 2.72rem;
+    line-height: 1.08;
+  }
+
+  .sacred-app .text-5xl {
+    font-size: clamp(2.8rem, 5vw, 3.7rem);
+    line-height: 1.05;
+  }
+
+  .sacred-app .text-6xl {
+    font-size: clamp(3rem, 5.6vw, 4.2rem);
+    line-height: 1.04;
+  }
 }

@@ -2361,7 +2361,7 @@ const PremiumPathContent = ({ path }: { path: PathDetail }) => {
           <Lock className="h-4 w-4" />
           {ui.unlockThisPathJourney}
         </Link>
-      )}
+      ) : null}
     </section>
 
     <section className="rounded-[24px] border border-primary/20 bg-primary/8 p-5">

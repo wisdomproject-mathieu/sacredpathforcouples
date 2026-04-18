@@ -2111,7 +2111,7 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => {
           <Lock className="h-4 w-4" />
           {ui.unlockThisAuthorJourney}
         </Link>
-      )}
+      ) : null}
     </section>
 
     <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">

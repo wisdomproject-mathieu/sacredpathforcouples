@@ -49,6 +49,7 @@ import WeatherMatchCard from "@/components/space/journey/WeatherMatchCard";
 import TonightPathExperience from "@/components/space/journey/TonightPathExperience";
 import MoreRitualsForTwoExperience from "@/components/space/journey/MoreRitualsForTwoExperience";
 import { Tables } from "@/integrations/supabase/types";
+import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import {
   markJourneySectionRead,
   readJourneySeenMap,
@@ -64,7 +65,6 @@ import {
   readEverConnected,
   storeConnectedCoupleId,
 } from "@/lib/couples";
-import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
 import { getPremiumTriggerCopy, getTempleJourneys, getTempleMembershipName } from "@/lib/premiumArchitecture";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -351,6 +351,7 @@ const DoorwayDetailBar = ({
 const PartnerSpace = () => {
   const isMobile = useIsMobile();
   const { user } = useAuth();
+  const { hasPremiumAccess, membershipTier, entitlementResolved } = usePremiumAccess();
   const { lang } = useLanguage();
   const l = (en: string, fr: string, cs: string) => (lang === "fr" ? fr : lang === "cs" ? cs : en);
   const [searchParams] = useSearchParams();
@@ -389,8 +390,6 @@ const PartnerSpace = () => {
   const [journeyMessages, setJourneyMessages] = useState<JourneyItem[]>([]);
   const [altarEvents, setAltarEvents] = useState<JourneyAltarItem[]>([]);
   const [seenMap, setSeenMap] = useState<Partial<Record<JourneyNotificationSection, number>>>({});
-  const membershipTier = getEffectiveMembershipTier(user);
-  const hasPremiumAccess = isPremiumTier(membershipTier);
   const templeAccessName = getTempleMembershipName(lang);
   const matchTriggerCopy = getPremiumTriggerCopy(lang, "match_unlock");
   const journeyProgramTriggerCopy = getPremiumTriggerCopy(lang, "journey_program");
@@ -1458,7 +1457,7 @@ const PartnerSpace = () => {
     </section>
   );
 
-  if (loading) {
+  if (loading || !entitlementResolved) {
     return <div className="min-h-[40vh] bg-transparent" />;
   }
 

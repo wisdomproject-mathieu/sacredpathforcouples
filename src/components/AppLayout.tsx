@@ -38,7 +38,7 @@ const AppLayout = () => {
     location.pathname.startsWith("/app/sacred-repair");
 
   return (
-    <div className="relative min-h-screen bg-background text-foreground">
+    <div className="sacred-app relative min-h-screen bg-background text-foreground">
       <div className="mx-auto flex min-h-screen max-w-7xl flex-col px-4 py-4 md:px-6 lg:flex-row lg:gap-6 lg:py-6">
         <aside className="lg:w-[290px] lg:shrink-0">
           <div className="rounded-[28px] border border-border/30 bg-card/45 p-4 shadow-[0_20px_60px_-35px_rgba(0,0,0,0.65)] backdrop-blur-md lg:sticky lg:top-6">

@@ -1627,7 +1627,7 @@ const PremiumReconnectContent = ({ tool }: { tool: ReconnectTool }) => {
           <Lock className="h-4 w-4" />
           {ui.unlockReconnectTrack}
         </Link>
-      )}
+      ) : null}
     </section>
 
     <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
