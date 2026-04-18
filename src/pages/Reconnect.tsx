@@ -1916,4 +1916,3 @@ const Reconnect = () => {
 };
 
 export default Reconnect;
-  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
