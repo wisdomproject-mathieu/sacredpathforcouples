@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { BookOpen, Home, LogOut, Settings, Sparkles } from "lucide-react";
+import { BookOpen, Home, LogOut, Settings, Shield, Sparkles } from "lucide-react";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -19,6 +19,7 @@ const AppLayout = () => {
       { to: "/app", icon: Home, label: t("nav.home"), iconClass: "text-amber-300" },
       { to: "/app/space", icon: Sparkles, label: t("nav.temple"), iconClass: "text-fuchsia-300" },
       { to: "/app/paths", icon: BookOpen, label: t("nav.library"), iconClass: "text-violet-300" },
+      { to: "/app/repair", icon: Shield, label: t("nav.repair"), iconClass: "text-cyan-300" },
     ],
     [t]
   );
@@ -32,7 +33,9 @@ const AppLayout = () => {
     location.pathname.startsWith("/app/authors") ||
     location.pathname.startsWith("/app/reconnect") ||
     location.pathname.startsWith("/app/space") ||
-    location.pathname.startsWith("/app/temple");
+    location.pathname.startsWith("/app/temple") ||
+    location.pathname.startsWith("/app/repair") ||
+    location.pathname.startsWith("/app/sacred-repair");
 
   return (
     <div className="relative min-h-screen bg-background text-foreground">
