@@ -160,7 +160,6 @@ const Auth = () => {
         </Button>
 
         <Button variant="outline" className="w-full font-body" onClick={handleAppleLogin}>
-          <span className="mr-2 text-xs uppercase tracking-[0.18em]">Apple</span>
           Continue with Apple
         </Button>
 
