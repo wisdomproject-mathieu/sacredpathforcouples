@@ -7,6 +7,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
+import SacredSectionShell from "@/components/SacredSectionShell";
 
 const AppLayout = () => {
   const { signOut } = useAuth();
@@ -26,27 +27,15 @@ const AppLayout = () => {
     if (to === "/app") return location.pathname === "/app";
     return location.pathname.startsWith(to);
   };
-  const isLibraryRoute =
+  const usesSacredSectionShell =
     location.pathname.startsWith("/app/paths") ||
     location.pathname.startsWith("/app/authors") ||
-    location.pathname.startsWith("/app/reconnect");
+    location.pathname.startsWith("/app/reconnect") ||
+    location.pathname.startsWith("/app/space") ||
+    location.pathname.startsWith("/app/temple");
 
   return (
     <div className="relative min-h-screen bg-background text-foreground">
-      {isLibraryRoute ? (
-        <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
-          <img
-            src={shivaShaktiIcon}
-            alt=""
-            className="h-full w-full object-contain object-center opacity-[0.16] md:opacity-[0.22]"
-            style={{ transform: "scale(1.06)" }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/56 via-background/68 to-background/88" />
-          <div className="absolute inset-0 bg-gradient-to-r from-background/55 via-transparent to-background/45" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.58)_100%)]" />
-        </div>
-      ) : null}
-
       <div className="mx-auto flex min-h-screen max-w-7xl flex-col px-4 py-4 md:px-6 lg:flex-row lg:gap-6 lg:py-6">
         <aside className="lg:w-[290px] lg:shrink-0">
           <div className="rounded-[28px] border border-border/30 bg-card/45 p-4 shadow-[0_20px_60px_-35px_rgba(0,0,0,0.65)] backdrop-blur-md lg:sticky lg:top-6">
@@ -113,8 +102,21 @@ const AppLayout = () => {
           </div>
         </aside>
 
+<<<<<<< Updated upstream
         <main className={`min-w-0 flex-1 py-2 ${isLibraryRoute ? "relative z-10 lg:py-4" : "lg:py-0"}`}>
           <Outlet />
+=======
+        <main
+          className={`relative min-w-0 flex-1 py-2 ${usesSacredSectionShell ? "lg:py-4" : "lg:py-0"}`}
+        >
+          {usesSacredSectionShell ? (
+            <SacredSectionShell>
+              <Outlet />
+            </SacredSectionShell>
+          ) : (
+            <Outlet />
+          )}
+>>>>>>> Stashed changes
         </main>
       </div>
     </div>

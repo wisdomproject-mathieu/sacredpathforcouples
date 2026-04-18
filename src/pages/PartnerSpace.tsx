@@ -1429,24 +1429,12 @@ const PartnerSpace = () => {
   );
 
   if (loading) {
-    return <div className="min-h-screen bg-background" />;
+    return <div className="min-h-[40vh] bg-transparent" />;
   }
 
   return (
-    <div className="relative min-h-screen bg-background px-4 py-6 text-foreground md:px-6">
-      {/* Shiva/Shakti background */}
-      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
-        <img
-          src={shivaShaktiIcon}
-          alt=""
-          className="h-full w-full object-contain object-center opacity-[0.18] md:opacity-[0.26]"
-          style={{ transform: "scale(1.08)" }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/65 to-background/88" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/55 via-transparent to-background/40" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.55)_100%)]" />
-      </div>
-      <div className="relative z-10 mx-auto max-w-6xl space-y-6">
+    <div className="relative text-foreground">
+      <div className="space-y-6">
         {!hasConnectedPartner && !coupleId && (
           <section className="rounded-[28px] border border-amber-300/30 bg-amber-500/10 p-5">
             <div className="flex items-start gap-3">
