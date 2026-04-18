@@ -1,14 +1,15 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
-import { BookOpen, Check, Copy, Flame, Hand, Heart, MessageCircle, Wind } from "lucide-react";
+import { BookOpen, Check, Copy, Eye, Flame, Hand, Heart, MessageCircle, MoveHorizontal, Orbit, PauseCircle, Volume2, Wind } from "lucide-react";
 
 import type { Language } from "@/contexts/LanguageContext";
 import type { WeatherMatchResult } from "@/lib/weatherMatch";
 import type { SelectedDailyMainCard, WeatherEngineDebugState } from "@/lib/weatherEngine";
 import type { WeatherCardData } from "@/components/space/journey/SharedWeatherCard";
+import { resolveTonightPath, type TonightTheme } from "@/lib/tonightPathResolver";
 
 type WeatherStateMode = "none" | "mine_only" | "beloved_only" | "both";
-type ThemeKey = "touch" | "breathing" | "massage" | "emotional_connection" | "sacred_intimacy" | "reflection";
+type ThemeKey = TonightTheme;
 
 type Props = {
   lang: Language;
@@ -17,6 +18,7 @@ type Props = {
   myWeather: WeatherCardData | null;
   belovedWeather: WeatherCardData | null;
   sharedStatusLabel: string;
+  coupleId?: string | null;
   selectedDailyMainCard: SelectedDailyMainCard | null;
   alternateCards: SelectedDailyMainCard[];
   weatherEngineDebug: WeatherEngineDebugState;
@@ -40,43 +42,54 @@ type ThemeMeta = {
 const hashString = (value: string) =>
   Array.from(value).reduce((acc, char) => (acc * 31 + char.charCodeAt(0)) >>> 0, 17);
 
-const themeOrder: ThemeKey[] = [
-  "touch",
-  "breathing",
-  "massage",
-  "emotional_connection",
-  "sacred_intimacy",
-  "reflection",
-];
-
 const themeVisuals: Record<ThemeKey, { icon: typeof Heart; wrapClass: string; iconClass: string }> = {
+  breath: {
+    icon: Wind,
+    wrapClass: "border-cyan-300/30 bg-gradient-to-br from-cyan-500/12 via-background/60 to-background/40",
+    iconClass: "text-cyan-200",
+  },
+  gaze: {
+    icon: Eye,
+    wrapClass: "border-indigo-300/30 bg-gradient-to-br from-indigo-500/12 via-background/60 to-background/40",
+    iconClass: "text-indigo-200",
+  },
   touch: {
     icon: Heart,
     wrapClass: "border-rose-300/30 bg-gradient-to-br from-rose-500/12 via-background/60 to-background/40",
     iconClass: "text-rose-200",
   },
-  breathing: {
-    icon: Wind,
-    wrapClass: "border-cyan-300/30 bg-gradient-to-br from-cyan-500/12 via-background/60 to-background/40",
-    iconClass: "text-cyan-200",
-  },
-  massage: {
+  embrace: {
     icon: Hand,
     wrapClass: "border-amber-300/30 bg-gradient-to-br from-amber-500/12 via-background/60 to-background/40",
     iconClass: "text-amber-200",
   },
-  emotional_connection: {
+  movement: {
+    icon: MoveHorizontal,
+    wrapClass: "border-orange-300/30 bg-gradient-to-br from-orange-500/12 via-background/60 to-background/40",
+    iconClass: "text-orange-200",
+  },
+  stillness: {
+    icon: PauseCircle,
+    wrapClass: "border-slate-300/30 bg-gradient-to-br from-slate-500/12 via-background/60 to-background/40",
+    iconClass: "text-slate-200",
+  },
+  sound: {
+    icon: Volume2,
+    wrapClass: "border-pink-300/30 bg-gradient-to-br from-pink-500/12 via-background/60 to-background/40",
+    iconClass: "text-pink-200",
+  },
+  union: {
+    icon: Flame,
+    wrapClass: "border-red-300/30 bg-gradient-to-br from-red-500/12 via-background/60 to-background/40",
+    iconClass: "text-red-200",
+  },
+  emotional_clearing: {
     icon: MessageCircle,
     wrapClass: "border-emerald-300/30 bg-gradient-to-br from-emerald-500/12 via-background/60 to-background/40",
     iconClass: "text-emerald-200",
   },
-  sacred_intimacy: {
-    icon: Flame,
-    wrapClass: "border-orange-300/30 bg-gradient-to-br from-orange-500/12 via-background/60 to-background/40",
-    iconClass: "text-orange-200",
-  },
-  reflection: {
-    icon: BookOpen,
+  energy: {
+    icon: Orbit,
     wrapClass: "border-violet-300/30 bg-gradient-to-br from-violet-500/12 via-background/60 to-background/40",
     iconClass: "text-violet-200",
   },
@@ -145,30 +158,16 @@ Language,
     tagsEmotionalSafety: "Emotional safety first",
     tagsConsentForward: "Consent and check-ins included",
     themeMeta: {
-      touch: {
-        title: "Touch",
-        whyTonight: "When you want closeness without pressure.",
-      },
-      breathing: {
-        title: "Breathing",
-        whyTonight: "When both nervous systems need to settle first.",
-      },
-      massage: {
-        title: "Massage",
-        whyTonight: "When the body needs warmth before deeper intimacy.",
-      },
-      emotional_connection: {
-        title: "Emotional connection",
-        whyTonight: "When understanding each other matters more than speed.",
-      },
-      sacred_intimacy: {
-        title: "Sacred intimacy",
-        whyTonight: "When desire is present and you want to deepen safely.",
-      },
-      reflection: {
-        title: "Reflection",
-        whyTonight: "When you want tonight to become lasting relationship growth.",
-      },
+      breath: { title: "Breath", whyTonight: "Regulate together before anything intense." },
+      gaze: { title: "Gaze", whyTonight: "Rebuild attunement through eye connection." },
+      touch: { title: "Touch", whyTonight: "Restore closeness with consent-led contact." },
+      embrace: { title: "Embrace", whyTonight: "Let holding re-establish safety and warmth." },
+      movement: { title: "Movement", whyTonight: "Discharge tension and find shared rhythm." },
+      stillness: { title: "Stillness", whyTonight: "Slow down enough to feel each other again." },
+      sound: { title: "Sound", whyTonight: "Speak and release what has been held inside." },
+      union: { title: "Union", whyTonight: "Deepen intimacy without rushing the body." },
+      emotional_clearing: { title: "Emotional Clearing", whyTonight: "Repair emotional distance with truth and care." },
+      energy: { title: "Energy", whyTonight: "Channel shared charge into grounded vitality." },
     },
     respectPrompts: [
       "Name one feeling before making any request.",
@@ -222,12 +221,16 @@ Language,
     tagsEmotionalSafety: "Sécurité émotionnelle d'abord",
     tagsConsentForward: "Consentement et check-ins inclus",
     themeMeta: {
-      touch: { title: "Toucher", whyTonight: "Quand vous voulez de la proximité sans pression." },
-      breathing: { title: "Respiration", whyTonight: "Quand les deux systèmes nerveux doivent d'abord se poser." },
-      massage: { title: "Massage", whyTonight: "Quand le corps a besoin de chaleur avant d'aller plus loin." },
-      emotional_connection: { title: "Connexion émotionnelle", whyTonight: "Quand se comprendre compte plus que la vitesse." },
-      sacred_intimacy: { title: "Intimité sacrée", whyTonight: "Quand le désir est présent et que vous voulez approfondir en sécurité." },
-      reflection: { title: "Réflexion", whyTonight: "Quand vous voulez transformer la soirée en croissance durable." },
+      breath: { title: "Souffle", whyTonight: "Se réguler ensemble avant toute intensité." },
+      gaze: { title: "Regard", whyTonight: "Retrouver l'accord par les yeux." },
+      touch: { title: "Toucher", whyTonight: "Rétablir la proximité avec consentement." },
+      embrace: { title: "Étreinte", whyTonight: "Laisser le corps revenir à la sécurité." },
+      movement: { title: "Mouvement", whyTonight: "Libérer la tension et retrouver un rythme commun." },
+      stillness: { title: "Immobilité", whyTonight: "Ralentir pour sentir l'autre pleinement." },
+      sound: { title: "Voix", whyTonight: "Exprimer ce qui est resté silencieux." },
+      union: { title: "Union", whyTonight: "Approfondir l'intimité sans précipitation." },
+      emotional_clearing: { title: "Clarté émotionnelle", whyTonight: "Réparer la distance avec vérité et douceur." },
+      energy: { title: "Énergie", whyTonight: "Canaliser la charge en présence partagée." },
     },
     respectPrompts: [
       "Nommez une émotion avant toute demande.",
@@ -281,12 +284,16 @@ Language,
     tagsEmotionalSafety: "Nejdřív emoční bezpečí",
     tagsConsentForward: "Souhlas a check-iny součástí",
     themeMeta: {
-      touch: { title: "Dotek", whyTonight: "Když chcete blízkost bez tlaku." },
-      breathing: { title: "Dýchání", whyTonight: "Když se nejdřív potřebují uklidnit oba nervové systémy." },
-      massage: { title: "Masáž", whyTonight: "Když tělo potřebuje teplo před hlubší intimitou." },
-      emotional_connection: { title: "Emoční propojení", whyTonight: "Když je důležitější porozumění než rychlost." },
-      sacred_intimacy: { title: "Posvátná intimita", whyTonight: "Když je přítomná touha a chcete bezpečně prohloubit kontakt." },
-      reflection: { title: "Reflexe", whyTonight: "Když chcete dnešní večer proměnit v dlouhodobý růst." },
+      breath: { title: "Dech", whyTonight: "Nejdřív společně zregulujte nervový systém." },
+      gaze: { title: "Pohled", whyTonight: "Obnovte naladění přes oční kontakt." },
+      touch: { title: "Dotek", whyTonight: "Vraťte blízkost vědomým dotekem." },
+      embrace: { title: "Objetí", whyTonight: "Nechte těla vrátit se do bezpečí." },
+      movement: { title: "Pohyb", whyTonight: "Uvolněte napětí a najděte společný rytmus." },
+      stillness: { title: "Klid", whyTonight: "Zpomalte a opravdu se vnímejte." },
+      sound: { title: "Hlas", whyTonight: "Vyslovte to, co zůstalo nevyřčené." },
+      union: { title: "Spojení", whyTonight: "Prohlubte intimitu bez spěchu." },
+      emotional_clearing: { title: "Emoční vyčištění", whyTonight: "Opravte vzdálenost pravdou a péčí." },
+      energy: { title: "Energie", whyTonight: "Veďte společnou energii do přítomnosti." },
     },
     respectPrompts: [
       "Nejprve pojmenujte jednu emoci, až potom žádost.",
@@ -314,23 +321,11 @@ Language,
   },
 };
 
-const normalizePracticeKey = (value: string): string =>
-  value.toLowerCase().replace(/[^a-z0-9]+/gi, " ").trim();
-
-const classifyThemeFromCard = (card: SelectedDailyMainCard): ThemeKey => {
-  const normalizedTheme = (card.theme || "").toLowerCase();
-  const text = `${normalizedTheme} ${card.title} ${card.subtitle} ${card.description} ${card.primaryNeed}`
-    .toLowerCase();
-
-  if (/(breath|breathing|respir|dech|dých)/.test(text)) return "breathing";
-  if (/(massage|bodywork|press|masáž)/.test(text)) return "massage";
-  if (/(repair|reconnect|truth|safety|safe|witness|attune|emotion)/.test(text)) return "emotional_connection";
-  if (/(union|intimacy|desire|erotic|tantra|tao|spark|bliss|wave|karezza)/.test(text)) return "sacred_intimacy";
-  if (/(reflect|integration|quote|gratitude|journal)/.test(text)) return "reflection";
-  return "touch";
-};
-
-const toPracticeItem = (card: SelectedDailyMainCard, copy: (typeof copyByLang)[Language]): PracticeItem => ({
+const toPracticeItem = (
+  card: SelectedDailyMainCard,
+  theme: ThemeKey,
+  copy: (typeof copyByLang)[Language],
+): PracticeItem => ({
   id: card.id,
   title: card.title,
   subtitle: card.subtitle,
@@ -340,92 +335,8 @@ const toPracticeItem = (card: SelectedDailyMainCard, copy: (typeof copyByLang)[L
     `${card.duration} · ${card.intimacyLevel}`,
     `${copy.tagBestForPrefix} ${card.primaryNeed}`,
   ],
-  theme: classifyThemeFromCard(card),
+  theme,
 });
-
-const buildThemeBridgePractice = (
-  theme: ThemeKey,
-  copy: (typeof copyByLang)[Language],
-): PracticeItem => {
-  const themeMeta = copy.themeMeta[theme];
-  const base = {
-    id: `theme-bridge-${theme}`,
-    subtitle: themeMeta.title,
-    purpose: themeMeta.whyTonight,
-    tags: [copy.tagsPaceSlow, copy.tagsEmotionalSafety, copy.tagsConsentForward],
-    theme,
-  } satisfies Omit<PracticeItem, "title" | "actions">;
-
-  if (theme === "breathing") {
-    return {
-      ...base,
-      title: "Shared Exhale Reset",
-      actions: [
-        "Inhale together for 4 counts.",
-        "Exhale together for 6 counts.",
-        "Repeat for five rounds before deciding the next step.",
-      ],
-    };
-  }
-
-  if (theme === "massage") {
-    return {
-      ...base,
-      title: "Shoulder Warmth Ritual",
-      actions: [
-        "One partner receives slow shoulder pressure for 90 seconds.",
-        "Switch roles and mirror the same rhythm.",
-        "Close with one grounding embrace.",
-      ],
-    };
-  }
-
-  if (theme === "emotional_connection") {
-    return {
-      ...base,
-      title: "One Feeling, One Need",
-      actions: [
-        "Each partner names one feeling without blame.",
-        "Each partner names one need for tonight.",
-        "Mirror what you heard before offering touch.",
-      ],
-    };
-  }
-
-  if (theme === "sacred_intimacy") {
-    return {
-      ...base,
-      title: "Slow Polarity Invitation",
-      actions: [
-        "Share one desire sentence each.",
-        "Hold eye contact for 20 seconds.",
-        "Offer one intentional touch and pause for consent.",
-      ],
-    };
-  }
-
-  if (theme === "reflection") {
-    return {
-      ...base,
-      title: "Afterglow Integration",
-      actions: [
-        "Name one moment you want to remember.",
-        "Share one gratitude sentence each.",
-        "Set one tiny intention for tomorrow.",
-      ],
-    };
-  }
-
-  return {
-    ...base,
-    title: "Gaze and Palm Contact",
-    actions: [
-      "Sit facing each other.",
-      "Place one palm against your partner's.",
-      "Hold eye contact for three breaths.",
-    ],
-  };
-};
 
 const TonightPathExperience = ({
   lang,
@@ -434,62 +345,60 @@ const TonightPathExperience = ({
   myWeather,
   belovedWeather,
   sharedStatusLabel,
+  coupleId,
   selectedDailyMainCard,
   alternateCards,
   weatherEngineDebug,
 }: Props) => {
   const copy = copyByLang[lang];
   const [copied, setCopied] = useState(false);
-  const tonightPractices = useMemo<PracticeItem[]>(() => {
-    const combinedCards = [selectedDailyMainCard, ...alternateCards].filter(
-      (card): card is SelectedDailyMainCard => Boolean(card),
-    );
-    if (!combinedCards.length) return [];
-
-    const selected: PracticeItem[] = [];
-    const usedKeys = new Set<string>();
-
-    for (const card of combinedCards) {
-      const dedupeKey = normalizePracticeKey(card.id || card.title);
-      if (usedKeys.has(dedupeKey)) continue;
-      selected.push(toPracticeItem(card, copy));
-      usedKeys.add(dedupeKey);
-    }
-
-    const seenThemes = new Set<ThemeKey>(selected.map((item) => item.theme));
-    for (const theme of themeOrder) {
-      if (seenThemes.has(theme)) continue;
-      const bridge = buildThemeBridgePractice(theme, copy);
-      const bridgeKey = normalizePracticeKey(bridge.id);
-      if (usedKeys.has(bridgeKey)) continue;
-      selected.push(bridge);
-      usedKeys.add(bridgeKey);
-    }
-
-    return selected.slice(0, 6);
-  }, [alternateCards, copy, selectedDailyMainCard]);
-
-  const availableThemes = useMemo(
+  const themeResultsRef = useRef<HTMLDivElement | null>(null);
+  const resolvedTonightPath = useMemo(
     () =>
-      themeOrder.filter((theme) => tonightPractices.some((item) => item.theme === theme)),
-    [tonightPractices],
+      resolveTonightPath({
+        weatherA: myWeather?.key ?? null,
+        weatherB: belovedWeather?.key ?? null,
+        normalizedKey: weatherEngineDebug.normalizedKey,
+        archetype: weatherEngineDebug.archetype,
+        coupleId: coupleId ?? null,
+        selectedMainCard: selectedDailyMainCard,
+        alternates: alternateCards,
+      }),
+    [
+      alternateCards,
+      belovedWeather?.key,
+      coupleId,
+      myWeather?.key,
+      selectedDailyMainCard,
+      weatherEngineDebug.archetype,
+      weatherEngineDebug.normalizedKey,
+    ],
   );
 
-  const [activeTheme, setActiveTheme] = useState<ThemeKey>(availableThemes[0] ?? "touch");
+  const availableThemes = resolvedTonightPath.themes;
+  const [activeTheme, setActiveTheme] = useState<ThemeKey>(resolvedTonightPath.defaultTheme);
 
   useEffect(() => {
     if (!availableThemes.length) return;
     if (!availableThemes.includes(activeTheme)) {
       setActiveTheme(availableThemes[0]);
     }
-  }, [activeTheme, availableThemes]);
+  }, [activeTheme, availableThemes, resolvedTonightPath.defaultTheme]);
 
-  const activeThemePractices = useMemo(
-    () => tonightPractices.filter((item) => item.theme === activeTheme),
-    [activeTheme, tonightPractices],
-  );
+  const activeThemePractices = useMemo(() => {
+    const cards = resolvedTonightPath.themedRituals[activeTheme] ?? [];
+    return cards.map((card) => toPracticeItem(card, activeTheme, copy));
+  }, [activeTheme, copy, resolvedTonightPath.themedRituals]);
 
-  const primaryRitual = tonightPractices[0] ?? (selectedDailyMainCard ? toPracticeItem(selectedDailyMainCard, copy) : null);
+  const primaryRitual = useMemo(() => {
+    const card = resolvedTonightPath.mainCard;
+    if (!card) return null;
+    const mainTheme =
+      availableThemes.find((theme) =>
+        (resolvedTonightPath.themedRituals[theme] ?? []).some((item) => item.id === card.id),
+      ) ?? resolvedTonightPath.defaultTheme;
+    return toPracticeItem(card, mainTheme, copy);
+  }, [availableThemes, copy, resolvedTonightPath]);
   const mainSteps = primaryRitual?.actions?.slice(0, 4) ?? copy.fallbackSteps;
   const positionCues = primaryRitual?.actions?.slice(1, 4) ?? copy.fallbackPositions;
   const suggestionText = primaryRitual
@@ -603,7 +512,12 @@ const TonightPathExperience = ({
                   <button
                     key={theme}
                     type="button"
-                    onClick={() => setActiveTheme(theme)}
+                    onClick={() => {
+                      setActiveTheme(theme);
+                      window.requestAnimationFrame(() => {
+                        themeResultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+                      });
+                    }}
                     className={`rounded-xl border p-2.5 text-left transition-all ${
                       active
                         ? `${themeVisuals[theme].wrapClass} shadow-[0_14px_35px_-24px_rgba(255,173,70,0.5)]`
@@ -620,7 +534,7 @@ const TonightPathExperience = ({
             </div>
 
             {activeThemePractices.length ? (
-              <div className="mt-3 flex-1 space-y-2">
+              <div ref={themeResultsRef} className="mt-3 flex-1 space-y-2">
                 <div className={`rounded-xl border p-3 ${themeVisuals[activeTheme].wrapClass}`}>
                   <p className="text-xs leading-5 text-foreground/90">{copy.themeMeta[activeTheme].whyTonight}</p>
                 </div>
@@ -700,6 +614,11 @@ const TonightPathExperience = ({
     selectedMainCard: weatherEngineDebug.selectedMainCardId,
     alternates: weatherEngineDebug.alternateIds,
     recentHistory: weatherEngineDebug.recentHistory,
+    resolvedThemes: resolvedTonightPath.themes,
+    activeTheme,
+    themedCounts: Object.fromEntries(
+      resolvedTonightPath.themes.map((theme) => [theme, resolvedTonightPath.themedRituals[theme]?.length ?? 0]),
+    ),
   },
   null,
   2,

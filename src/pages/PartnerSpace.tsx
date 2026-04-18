@@ -1913,6 +1913,7 @@ const PartnerSpace = () => {
                   myWeather={myWeatherCard}
                   belovedWeather={belovedWeatherCard}
                   sharedStatusLabel={sharedStatusLabel}
+                  coupleId={coupleId}
                   selectedDailyMainCard={sharedMainCardState.selectedDailyMainCard}
                   alternateCards={sharedMainCardState.alternates}
                   weatherEngineDebug={sharedMainCardState.debug}
