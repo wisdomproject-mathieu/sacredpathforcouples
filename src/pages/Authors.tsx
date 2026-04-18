@@ -32,6 +32,7 @@ import {
   maxBushContent,
   victorGoldContent,
 } from "@/lib/authorsRichContent";
+import LibraryDetailBody from "@/components/library/LibraryDetailBody";
 import LibraryDetailSplitLayout from "@/components/library/LibraryDetailSplitLayout";
 
 type Tier = "free" | "premium";
@@ -1838,14 +1839,32 @@ const AuthorPremiumBlock = ({ author }: { author: Author }) => {
 const FreeAuthorContent = ({ author }: { author: Author }) => {
   const { lang } = useLanguage();
   const ui = authorsUiCopy[lang];
-  if (!author.content) return null;
+  if (!author.content) {
+    return (
+      <LibraryDetailBody>
+        <section className={shellCardClass}>
+          <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{ui.whatThisAuthorIsAbout}</p>
+          <h3 className="mt-2 font-display text-3xl text-foreground">{author.name}</h3>
+          <p className="mt-4 text-sm leading-7 text-foreground/90">{author.descriptor}</p>
+          <p className="mt-2 text-sm leading-7 text-muted-foreground">{author.oneLiner}</p>
+        </section>
+        <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.whyThisAuthorMatters}</p>
+          <div className="mt-3 space-y-2 text-sm leading-7 text-foreground/90">
+            <p>{author.descriptor}</p>
+            <p>{author.overviewLine}</p>
+          </div>
+        </section>
+      </LibraryDetailBody>
+    );
+  }
 
   const data = author.content;
   const longform = AUTHOR_LONGFORM_BY_SLUG[author.slug];
   const longformParagraphs = longform?.fullDescription.split("\n\n") ?? [];
 
   return (
-    <main className="space-y-5">
+    <LibraryDetailBody>
       <section className={shellCardClass}>
         <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{ui.whatThisAuthorIsAbout}</p>
         <h3 className="mt-2 font-display text-3xl text-foreground">{author.name}</h3>
@@ -2049,7 +2068,7 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
       </section>
 
       <AuthorPremiumBlock author={author} />
-    </main>
+    </LibraryDetailBody>
   );
 };
 
@@ -2059,11 +2078,17 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => {
   const hasPremiumAccess = usePremiumAccess();
   const longform = AUTHOR_LONGFORM_BY_SLUG[author.slug];
   const longformParagraphs = longform?.fullDescription.split("\n\n") ?? [];
+  const upgradeFallback = authorUpgradeCopy[author.slug];
+  const narrativeParagraphs = longformParagraphs.length
+    ? longformParagraphs
+    : author.teaser?.length
+      ? author.teaser
+      : [author.overviewLine, upgradeFallback?.benefit ?? ui.premiumPracticeBody];
   const topThemes = longform?.coreThemes.slice(0, 6) ?? [];
   const works = longform?.keyWorks.slice(0, 6) ?? [];
 
   return (
-  <main className="space-y-5">
+  <LibraryDetailBody>
     <section className="rounded-[28px] border border-amber-400/20 bg-gradient-to-br from-amber-500/12 via-background to-background p-5 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.5)]">
       <div className="flex flex-wrap items-center gap-2">
         <TierBadge tier="premium" />
@@ -2079,7 +2104,7 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => {
         <p className="mt-2 text-xs uppercase tracking-[0.12em] text-primary/80">{longform.tradition}</p>
       ) : null}
       <div className="mt-4 space-y-3 text-sm leading-7 text-muted-foreground">
-        {(longformParagraphs.length ? longformParagraphs : author.teaser ?? []).map((line) => (
+        {narrativeParagraphs.map((line) => (
           <p key={line}>{line}</p>
         ))}
       </div>
@@ -2097,7 +2122,7 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => {
     <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
       <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.whyThisAuthorMatters}</p>
       <div className="mt-4 space-y-3 text-sm leading-7 text-foreground/90">
-        {(longformParagraphs.length ? longformParagraphs : author.teaser ?? []).map((line) => (
+        {narrativeParagraphs.map((line) => (
           <p key={line}>{line}</p>
         ))}
       </div>
@@ -2144,7 +2169,7 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => {
     </section>
 
     <AuthorPremiumBlock author={author} />
-  </main>
+  </LibraryDetailBody>
   );
 };
 
@@ -2456,7 +2481,7 @@ const Authors = () => {
       <LibraryDetailSplitLayout
         isMobile={isMobile}
         focusedDetail={desktopFocusedDetail}
-        showDesktopBack={detailOnlyMode}
+        showDesktopBack={true}
         backLabel={ui.backToLibrary}
         onBack={() => setDetailOnlyMode(false)}
         mobileHeader={

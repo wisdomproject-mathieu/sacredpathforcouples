@@ -19,6 +19,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
 import { PATH_LONGFORM_BY_SLUG } from "@/lib/libraryLongform";
+import LibraryDetailBody from "@/components/library/LibraryDetailBody";
 import LibraryDetailSplitLayout from "@/components/library/LibraryDetailSplitLayout";
 
 type Tier = "free" | "premium";
@@ -2074,14 +2075,32 @@ const PathPremiumBlock = ({ path }: { path: PathDetail }) => {
 const FreePathContent = ({ path }: { path: PathDetail }) => {
   const { lang } = useLanguage();
   const ui = pathsUiCopy[lang];
-  if (!path.content) return null;
+  if (!path.content) {
+    return (
+      <LibraryDetailBody>
+        <section className={shellCardClass}>
+          <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{ui.whatThisPathIs}</p>
+          <h3 className="mt-2 font-display text-3xl text-foreground">{path.name}</h3>
+          <p className="mt-4 text-sm leading-7 text-foreground/90">{path.oneLine}</p>
+          <p className="mt-2 text-sm leading-7 text-muted-foreground">{path.overviewLine}</p>
+        </section>
+        <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.whyItMattersForCouples}</p>
+          <div className="mt-3 space-y-2 text-sm leading-7 text-foreground/90">
+            <p>{path.overviewLine}</p>
+            <p>{path.oneLine}</p>
+          </div>
+        </section>
+      </LibraryDetailBody>
+    );
+  }
 
   const data = path.content;
   const longform = PATH_LONGFORM_BY_SLUG[path.slug];
   const longformParagraphs = longform?.fullDescription.split("\n\n") ?? [];
 
   return (
-    <main className="space-y-5">
+    <LibraryDetailBody>
       <section className={shellCardClass}>
         <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{ui.whatThisPathIs}</p>
         <h3 className="mt-2 font-display text-3xl text-foreground">{path.name}</h3>
@@ -2302,7 +2321,7 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
       </section>
 
       <PathPremiumBlock path={path} />
-    </main>
+    </LibraryDetailBody>
   );
 };
 
@@ -2312,9 +2331,15 @@ const PremiumPathContent = ({ path }: { path: PathDetail }) => {
   const hasPremiumAccess = usePremiumAccess();
   const longform = PATH_LONGFORM_BY_SLUG[path.slug];
   const longformParagraphs = longform?.fullDescription.split("\n\n") ?? [];
+  const upgradeFallback = pathUpgradeCopy[path.slug];
+  const narrativeParagraphs = longformParagraphs.length
+    ? longformParagraphs
+    : path.teaser?.length
+      ? path.teaser
+      : [path.overviewLine, upgradeFallback?.benefit ?? ui.premiumOrientationBody];
 
   return (
-  <main className="space-y-5">
+  <LibraryDetailBody>
     <section className="rounded-[28px] border border-amber-400/20 bg-gradient-to-br from-amber-500/12 via-background to-background p-5 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.5)]">
       <div className="flex items-center gap-2">
         <TierBadge tier="premium" />
@@ -2330,7 +2355,7 @@ const PremiumPathContent = ({ path }: { path: PathDetail }) => {
         <p className="mt-2 text-xs uppercase tracking-[0.12em] text-primary/80">{longform.subtitle}</p>
       ) : null}
       <div className="mt-4 space-y-3 text-sm leading-7 text-muted-foreground">
-        {(longformParagraphs.length ? longformParagraphs : path.teaser ?? []).map((line) => (
+        {narrativeParagraphs.map((line) => (
           <p key={line}>{line}</p>
         ))}
       </div>
@@ -2349,7 +2374,7 @@ const PremiumPathContent = ({ path }: { path: PathDetail }) => {
       <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{ui.whyItMattersForCouples}</p>
       <div className="mt-4 space-y-2">
         {(longform?.forCouples
-          ? [longform.forCouples, ...longformParagraphs.slice(0, 2)]
+          ? [longform.forCouples, ...narrativeParagraphs.slice(0, 2)]
           : [ui.premiumWhy1, ui.premiumWhy2, ui.premiumWhy3]
         ).map((line) => (
           <div key={line} className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
@@ -2447,7 +2472,7 @@ const PremiumPathContent = ({ path }: { path: PathDetail }) => {
     </section>
 
     <PathPremiumBlock path={path} />
-  </main>
+  </LibraryDetailBody>
   );
 };
 
@@ -2748,7 +2773,7 @@ const Paths = () => {
       <LibraryDetailSplitLayout
         isMobile={isMobile}
         focusedDetail={desktopFocusedDetail}
-        showDesktopBack={detailOnlyMode}
+        showDesktopBack={true}
         backLabel={ui.backToLibrary}
         onBack={() => setDetailOnlyMode(false)}
         mobileHeader={
