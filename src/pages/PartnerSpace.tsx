@@ -68,6 +68,7 @@ import {
 import { getPremiumTriggerCopy, getTempleJourneys, getTempleMembershipName } from "@/lib/premiumArchitecture";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { pickLatestWeatherForCouple, sortWeatherEntriesByRecency } from "@/lib/weatherEntries";
+import { useSelectedDailyMainCard } from "@/lib/weatherEngine";
 
 type ToolKey = "weather" | "rituals" | "positions" | "messages" | "guide" | "repair" | "pathways" | "altar";
 type ViewMode = "doorways" | "journey" | "oracle";
@@ -721,6 +722,11 @@ const PartnerSpace = () => {
     [belovedWeatherEntry?.state, lang, myWeatherEntry?.state],
   );
   const weatherMatch = activeTonightExperience.weatherMatch;
+  const sharedMainCardState = useSelectedDailyMainCard({
+    partnerAWeather: myWeatherEntry?.state,
+    partnerBWeather: belovedWeatherEntry?.state,
+    coupleId,
+  });
 
   // Home entry should land users directly on a complete Tonight Path surface.
   useEffect(() => {
@@ -1907,6 +1913,9 @@ const PartnerSpace = () => {
                   myWeather={myWeatherCard}
                   belovedWeather={belovedWeatherCard}
                   sharedStatusLabel={sharedStatusLabel}
+                  selectedDailyMainCard={sharedMainCardState.selectedDailyMainCard}
+                  alternateCards={sharedMainCardState.alternates}
+                  weatherEngineDebug={sharedMainCardState.debug}
                 />
               ) : (
                 <section className="space-y-4">

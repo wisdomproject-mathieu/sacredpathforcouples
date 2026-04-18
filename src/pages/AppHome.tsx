@@ -28,6 +28,7 @@ import {
 import { deriveActiveTonightExperience, getWeatherPresentation, type WeatherKey } from "@/lib/weatherMatch";
 import { getLocalDayRange, pickLatestWeatherForCouple } from "@/lib/weatherEntries";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
+import { useSelectedDailyMainCard } from "@/lib/weatherEngine";
 
 type RitualItem = Tables<"ritual_items">;
 type Pathway = Tables<"pathways">;
@@ -1268,13 +1269,18 @@ const AppHome = () => {
     () => deriveActiveTonightExperience(myWeatherEntry?.state, partnerWeatherEntry?.state, lang),
     [lang, myWeatherEntry?.state, partnerWeatherEntry?.state],
   );
-  const bothCheckedIn = activeTonightExperience.bothCheckedIn;
+  const sharedMainCardState = useSelectedDailyMainCard({
+    partnerAWeather: myWeatherEntry?.state,
+    partnerBWeather: partnerWeatherEntry?.state,
+    coupleId,
+  });
+  const bothCheckedIn = sharedMainCardState.ready;
   const weatherMatch = activeTonightExperience.weatherMatch;
 
   const weatherCardState: "picker" | "mine_only" | "both" =
     weatherPickerVisible || !myWeatherEntry
       ? "picker"
-      : bothCheckedIn && weatherMatch
+      : bothCheckedIn
       ? "both"
       : "mine_only";
 
@@ -1330,15 +1336,17 @@ const AppHome = () => {
     ? `sms:?body=${encodeURIComponent(weatherShareText)}`
     : "#";
 
-  const featuredPathTitle = weatherMatch
-    ? `${weatherMatch.archetype.title} · ${weatherMatch.pairLabel}`
+  const featuredPathTitle = bothCheckedIn
+    ? sharedMainCardState.selectedDailyMainCard?.title ?? "No mapped ritual"
     : dailyCards[0]?.title ?? copy.selecting;
-  const featuredPathDescription = weatherMatch?.interpretation ?? dailyCards[0]?.description ?? copy.calibrating;
+  const featuredPathDescription = bothCheckedIn
+    ? sharedMainCardState.selectedDailyMainCard?.description ?? "No mapped weather ritual for this pair."
+    : dailyCards[0]?.description ?? copy.calibrating;
   const featuredPathLabel = weatherUi.tonightPath;
-  const tonightRitual = weatherMatch?.recommendations?.[0] ?? null;
-  const tonightRitualTitle = tonightRitual?.title ?? dailyCards[0]?.title ?? copy.selecting;
+  const tonightRitual = sharedMainCardState.selectedDailyMainCard;
+  const tonightRitualTitle = tonightRitual?.title ?? (bothCheckedIn ? "No mapped ritual" : dailyCards[0]?.title ?? copy.selecting);
   const tonightRitualDescription = tonightRitual?.description ?? featuredPathDescription;
-  const tonightRitualSteps = tonightRitual?.ritualSteps?.slice(0, 3) ?? dailyCards[0]?.steps?.slice(0, 3) ?? [];
+  const tonightRitualSteps = tonightRitual?.ritualSteps?.slice(0, 3) ?? (bothCheckedIn ? [] : dailyCards[0]?.steps?.slice(0, 3) ?? []);
   const waitingPathCopy = lang === "fr"
     ? "Partagez vos deux météos pour afficher votre séquence complète de ce soir."
     : lang === "cs"
@@ -1504,8 +1512,8 @@ const AppHome = () => {
               <div className="mt-3 rounded-[10px] border border-border/30 bg-background/45 px-3 py-2">
                 <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{weatherUi.latestMatch}</p>
                 <p className="mt-1 text-sm text-foreground">
-                  {bothCheckedIn && weatherMatch
-                    ? `${weatherMatch.archetype.title} · ${weatherMatch.pairLabel}`
+                  {bothCheckedIn
+                    ? `${sharedMainCardState.archetype ?? "weather_match"} · ${featuredPathTitle}`
                     : connectedPanelUi.waitingBoth}
                 </p>
               </div>
@@ -1679,7 +1687,7 @@ const AppHome = () => {
             {tonightRitual ? (
               <div className="mt-3 flex flex-wrap gap-1.5">
                 <span className="rounded-full border border-border/35 bg-card/45 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/90">
-                  {tonightRitual.ritualDuration}
+                  {tonightRitual.duration}
                 </span>
                 <span className="rounded-full border border-border/35 bg-card/45 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/90">
                   {tonightRitual.intimacyLevel}
@@ -1700,7 +1708,7 @@ const AppHome = () => {
               </div>
             ) : null}
             <div className="mt-5">
-              {bothCheckedIn && weatherMatch ? (
+              {bothCheckedIn ? (
                 <Link
                   to="/app/space?view=journey&openMatch=1"
                   className="inline-flex items-center gap-1.5 rounded-[12px] border border-amber-400/30 bg-amber-400/10 px-4 py-2.5 text-sm text-amber-300 transition-all hover:bg-amber-400/20"
@@ -1716,6 +1724,27 @@ const AppHome = () => {
           </div>
         </div>
       </section>
+
+      {import.meta.env.DEV ? (
+        <section className="rounded-[16px] border border-cyan-300/20 bg-cyan-500/8 p-3">
+          <p className="text-[10px] uppercase tracking-[0.14em] text-cyan-200/80">Weather Engine Debug</p>
+          <pre className="mt-2 overflow-auto text-xs leading-5 text-cyan-100/90">
+{JSON.stringify(
+  {
+    partnerAWeather: sharedMainCardState.debug.partnerAWeather,
+    partnerBWeather: sharedMainCardState.debug.partnerBWeather,
+    normalizedKey: sharedMainCardState.debug.normalizedKey,
+    archetype: sharedMainCardState.debug.archetype,
+    selectedMainCard: sharedMainCardState.debug.selectedMainCardId,
+    alternates: sharedMainCardState.debug.alternateIds,
+    recentHistory: sharedMainCardState.debug.recentHistory,
+  },
+  null,
+  2,
+)}
+          </pre>
+        </section>
+      ) : null}
 
       {entitlementResolved && !hasPremiumAccess && (
         <section className="rounded-[28px] bg-[rgba(255,255,255,0.02)] px-5 pb-6 pt-5">

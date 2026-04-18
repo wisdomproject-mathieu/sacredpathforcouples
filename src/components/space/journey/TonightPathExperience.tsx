@@ -3,9 +3,8 @@ import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 import { BookOpen, Check, Copy, Flame, Hand, Heart, MessageCircle, Wind } from "lucide-react";
 
 import type { Language } from "@/contexts/LanguageContext";
-import { supabase } from "@/integrations/supabase/client";
-import type { Tables } from "@/integrations/supabase/types";
-import type { WeatherMatchResult, RitualRecommendation } from "@/lib/weatherMatch";
+import type { WeatherMatchResult } from "@/lib/weatherMatch";
+import type { SelectedDailyMainCard, WeatherEngineDebugState } from "@/lib/weatherEngine";
 import type { WeatherCardData } from "@/components/space/journey/SharedWeatherCard";
 
 type WeatherStateMode = "none" | "mine_only" | "beloved_only" | "both";
@@ -18,6 +17,9 @@ type Props = {
   myWeather: WeatherCardData | null;
   belovedWeather: WeatherCardData | null;
   sharedStatusLabel: string;
+  selectedDailyMainCard: SelectedDailyMainCard | null;
+  alternateCards: SelectedDailyMainCard[];
+  weatherEngineDebug: WeatherEngineDebugState;
 };
 
 type PracticeItem = {
@@ -27,12 +29,8 @@ type PracticeItem = {
   actions: string[];
   tags: string[];
   theme: ThemeKey;
+  subtitle: string;
 };
-
-type RitualToolRow = Pick<
-  Tables<"ritual_items">,
-  "id" | "title" | "hook" | "category" | "duration" | "tone" | "intensity" | "steps" | "item_type" | "premium_required"
->;
 
 type ThemeMeta = {
   title: string;
@@ -316,189 +314,34 @@ Language,
   },
 };
 
-const formatSourceLabel = (recommendation: RitualRecommendation, lang: Language) => {
-  const labelByLang = {
-    en: {
-      withTraditionAndAuthor: (tradition: string, author: string) => `Inspired by ${tradition} and ${author}`,
-      withTradition: (tradition: string) => `Inspired by ${tradition} tradition`,
-      withAuthor: (author: string) => `Inspired by ${author}`,
-      fallback: "Inspired by sacred relationship practice",
-    },
-    fr: {
-      withTraditionAndAuthor: (tradition: string, author: string) => `Inspiré par ${tradition} et ${author}`,
-      withTradition: (tradition: string) => `Inspiré par la tradition ${tradition}`,
-      withAuthor: (author: string) => `Inspiré par ${author}`,
-      fallback: "Inspiré par une pratique relationnelle sacrée",
-    },
-    cs: {
-      withTraditionAndAuthor: (tradition: string, author: string) => `Inspirováno ${tradition} a ${author}`,
-      withTradition: (tradition: string) => `Inspirováno tradicí ${tradition}`,
-      withAuthor: (author: string) => `Inspirováno ${author}`,
-      fallback: "Inspirováno posvátnou vztahovou praxí",
-    },
-  }[lang];
-  const tradition = recommendation.sourceTraditions[0];
-  const author = recommendation.sourceAuthors[0];
-  if (tradition && author) return labelByLang.withTraditionAndAuthor(tradition, author);
-  if (tradition) return labelByLang.withTradition(tradition);
-  if (author) return labelByLang.withAuthor(author);
-  return labelByLang.fallback;
-};
-
-const classifyTheme = (recommendation: RitualRecommendation): ThemeKey => {
-  const text = [
-    recommendation.title,
-    recommendation.subtitle,
-    recommendation.description,
-    recommendation.primaryNeed,
-    recommendation.tonightEnergy,
-    recommendation.whatToAvoid,
-    ...recommendation.ritualSteps,
-    ...recommendation.sourceConcepts,
-  ]
-    .join(" ")
-    .toLowerCase();
-
-  if (/(breath|breathing|respir|souffle|dech|dých)/.test(text)) return "breathing";
-  if (/(massage|bodywork|pressure|masáž|huile)/.test(text)) return "massage";
-  if (/(repair|reconnect|truth|listen|safe|sécur|uklid|znovu)/.test(text)) return "emotional_connection";
-  if (/(polarity|desire|erotic|flirt|charge|tantra|tao)/.test(text)) return "sacred_intimacy";
-  if (/(afterglow|reflect|gratitude|integration|journal|debrief)/.test(text)) return "reflection";
-  return "touch";
-};
-
-const parseToolSteps = (steps: unknown): string[] => {
-  if (Array.isArray(steps)) {
-    return steps
-      .filter((value): value is string => typeof value === "string")
-      .map((value) => value.trim())
-      .filter(Boolean);
-  }
-  if (typeof steps === "string") {
-    try {
-      const parsed = JSON.parse(steps);
-      if (Array.isArray(parsed)) {
-        return parsed
-          .filter((value): value is string => typeof value === "string")
-          .map((value) => value.trim())
-          .filter(Boolean);
-      }
-    } catch {
-      return steps.trim() ? [steps.trim()] : [];
-    }
-  }
-  return [];
-};
-
 const normalizePracticeKey = (value: string): string =>
   value.toLowerCase().replace(/[^a-z0-9]+/gi, " ").trim();
 
-const toThemeFromToolCategory = (category: string, title: string, hook: string): ThemeKey => {
-  const normalized = `${category} ${title} ${hook}`.toLowerCase();
-  if (/(massage|bodywork|press|massag|masáž)/.test(normalized)) return "massage";
-  if (/(breath|respir|dech|dých|bedtime|sleep|rest)/.test(normalized)) return "breathing";
-  if (/(reconnect|repair|emotion|truth|listen|safe|secure|care)/.test(normalized)) return "emotional_connection";
-  if (/(polarity|playful|desire|erotic|tantra|tao|spark|charge)/.test(normalized)) return "sacred_intimacy";
-  if (/(reflect|after|gratitude|journal|integration|insight)/.test(normalized)) return "reflection";
+const classifyThemeFromCard = (card: SelectedDailyMainCard): ThemeKey => {
+  const normalizedTheme = (card.theme || "").toLowerCase();
+  const text = `${normalizedTheme} ${card.title} ${card.subtitle} ${card.description} ${card.primaryNeed}`
+    .toLowerCase();
+
+  if (/(breath|breathing|respir|dech|dých)/.test(text)) return "breathing";
+  if (/(massage|bodywork|press|masáž)/.test(text)) return "massage";
+  if (/(repair|reconnect|truth|safety|safe|witness|attune|emotion)/.test(text)) return "emotional_connection";
+  if (/(union|intimacy|desire|erotic|tantra|tao|spark|bliss|wave|karezza)/.test(text)) return "sacred_intimacy";
+  if (/(reflect|integration|quote|gratitude|journal)/.test(text)) return "reflection";
   return "touch";
 };
 
-const weatherGroup = (weatherKeys: string[]) => ({
-  soothing: weatherKeys.some((key) => ["stressed", "tired", "reassurance", "tender"].includes(key)),
-  expressive: weatherKeys.some((key) => ["playful", "erotic", "open", "longing"].includes(key)),
-  repair: weatherKeys.some((key) => ["stressed", "reassurance", "longing"].includes(key)),
-  tenderness: weatherKeys.some((key) => ["tender", "reassurance", "longing"].includes(key)),
+const toPracticeItem = (card: SelectedDailyMainCard, copy: (typeof copyByLang)[Language]): PracticeItem => ({
+  id: card.id,
+  title: card.title,
+  subtitle: card.subtitle,
+  purpose: card.description,
+  actions: card.ritualSteps.slice(0, 4),
+  tags: [
+    `${card.duration} · ${card.intimacyLevel}`,
+    `${copy.tagBestForPrefix} ${card.primaryNeed}`,
+  ],
+  theme: classifyThemeFromCard(card),
 });
-
-const scoreToolForWeather = (tool: RitualToolRow, weatherKeys: string[]): number => {
-  const category = (tool.category ?? "").toLowerCase();
-  const text = `${tool.title} ${tool.hook ?? ""} ${tool.tone ?? ""} ${category}`.toLowerCase();
-  const groups = weatherGroup(weatherKeys);
-  let score = 0;
-
-  if (groups.soothing && /(breath|presence|reconnect|bedtime|touch)/.test(category)) score += 4;
-  if (groups.repair && /(reconnect|presence|breath|touch)/.test(category)) score += 4;
-  if (groups.expressive && /(polarity|playful|touch|presence)/.test(category)) score += 3;
-  if (groups.tenderness && /(touch|presence|reconnect)/.test(category)) score += 3;
-
-  if (/(slow|gentle|soft|calm|ground|safe|consent)/.test(text)) score += 2;
-  if (/(desire|spark|polarity|erotic)/.test(text) && groups.expressive) score += 2;
-  if (/(repair|reconnect|reset|truth|attune)/.test(text) && groups.repair) score += 2;
-
-  const intensity = Math.max(0, Math.min(4, tool.intensity ?? 1));
-  if (groups.soothing) score += Math.max(0, 2 - intensity);
-  if (groups.expressive) score += intensity >= 2 ? 1 : 0;
-
-  return score;
-};
-
-const fallbackPracticePools: Record<ThemeKey, { title: string; purpose: string; actions: string[]; tags: string[] }> = {
-  touch: {
-    title: "Gaze and Palm Contact",
-    purpose: "A gentle way to reconnect without pressure.",
-    actions: [
-      "Sit facing each other.",
-      "Place one palm against your partner's.",
-      "Hold eye contact for three breaths.",
-      "Say one honest sentence about what you need tonight.",
-    ],
-    tags: ["7 minutes", "slow", "emotional safety first"],
-  },
-  breathing: {
-    title: "Shared Exhale Reset",
-    purpose: "Regulate the nervous system before intensity.",
-    actions: [
-      "Inhale for 4 counts together.",
-      "Exhale for 6 counts together.",
-      "Repeat for five rounds.",
-      "Ask each other if you want softer, same, or more closeness.",
-    ],
-    tags: ["5 minutes", "down-regulation", "best for stress or tiredness"],
-  },
-  massage: {
-    title: "Shoulder Warmth Ritual",
-    purpose: "Bring warmth back to the body before deeper touch.",
-    actions: [
-      "Partner A receives 90 seconds of shoulder pressure.",
-      "Switch and Partner B receives the same.",
-      "Add one affectionate stroke down each arm.",
-      "Close with one breath together.",
-    ],
-    tags: ["8 minutes", "grounding touch", "no performance pressure"],
-  },
-  emotional_connection: {
-    title: "One Feeling, One Need",
-    purpose: "Restore emotional attunement before physical escalation.",
-    actions: [
-      "Each partner names one feeling without blame.",
-      "Each partner names one need for tonight.",
-      "Mirror what you heard from your beloved.",
-      "Agree on one shared next step.",
-    ],
-    tags: ["6 minutes", "repair friendly", "consent-forward"],
-  },
-  sacred_intimacy: {
-    title: "Slow Polarity Invitation",
-    purpose: "Keep desire alive while staying emotionally safe.",
-    actions: [
-      "Share one desire sentence each.",
-      "Hold eye contact for 20 seconds.",
-      "Offer one intentional touch each round.",
-      "Pause and ask if pacing still feels right.",
-    ],
-    tags: ["7 minutes", "gentle sacred intensity", "attunement over urgency"],
-  },
-  reflection: {
-    title: "Afterglow Integration",
-    purpose: "End the practice with meaning and closeness.",
-    actions: [
-      "Each partner names one moment to remember.",
-      "Share one gratitude sentence each.",
-      "Set one tiny intention for tomorrow.",
-    ],
-    tags: ["4 minutes", "integration", "relationship growth"],
-  },
-};
 
 const TonightPathExperience = ({
   lang,
@@ -507,119 +350,28 @@ const TonightPathExperience = ({
   myWeather,
   belovedWeather,
   sharedStatusLabel,
+  selectedDailyMainCard,
+  alternateCards,
+  weatherEngineDebug,
 }: Props) => {
   const copy = copyByLang[lang];
   const [copied, setCopied] = useState(false);
-  const [ritualTools, setRitualTools] = useState<RitualToolRow[]>([]);
-
-  useEffect(() => {
-    const loadRitualTools = async () => {
-      const { data } = await supabase
-        .from("ritual_items")
-        .select("id, title, hook, category, duration, tone, intensity, steps, item_type, premium_required")
-        .eq("item_type", "ritual")
-        .order("premium_required", { ascending: true })
-        .order("intensity", { ascending: true });
-      setRitualTools((data as RitualToolRow[] | null) ?? []);
-    };
-    void loadRitualTools();
-  }, []);
-
-  const recommendationPractices = useMemo<PracticeItem[]>(() => {
-    if (!weatherMatch) return [];
-    return weatherMatch.recommendations.slice(0, 3).map((rec, index) => ({
-      id: `rec-${rec.id}`,
-      title: rec.title,
-      purpose: rec.description || rec.subtitle,
-      actions: rec.ritualSteps.slice(0, 4),
-      tags: [
-        `${rec.ritualDuration || `${7 + index} minutes`} · ${rec.intimacyLevel || "gentle pacing"}`,
-        `${copy.tagBestForPrefix} ${rec.primaryNeed}`,
-        formatSourceLabel(rec, lang),
-      ],
-      theme: classifyTheme(rec),
-    }));
-  }, [copy.tagBestForPrefix, lang, weatherMatch]);
-
-  const weatherKeys = useMemo(
-    () => [myWeather?.key, belovedWeather?.key].filter(Boolean) as string[],
-    [belovedWeather?.key, myWeather?.key],
-  );
-
-  const toolPractices = useMemo<PracticeItem[]>(() => {
-    if (!ritualTools.length) return [];
-    const blockedKeys = new Set(recommendationPractices.map((item) => normalizePracticeKey(item.title)));
-
-    return ritualTools
-      .map((tool) => {
-        const hook = tool.hook ?? "";
-        const steps = parseToolSteps(tool.steps);
-        const theme = toThemeFromToolCategory(tool.category ?? "", tool.title, hook);
-        const score = scoreToolForWeather(tool, weatherKeys);
-
-        return {
-          score,
-          item: {
-            id: `tool-${tool.id}`,
-            title: tool.title,
-            purpose: hook || "A guided ritual selected for tonight's weather combination.",
-            actions: (steps.length ? steps : [hook || tool.title]).slice(0, 4),
-            tags: [
-              `${tool.duration || "6-10 minutes"} · ${tool.tone || "attuned pacing"}`,
-              `${copy.tagBestForPrefix} ${copy.themeMeta[theme].title.toLowerCase()}`,
-              "From Ritual Tools",
-            ],
-            theme,
-          } satisfies PracticeItem,
-        };
-      })
-      .filter(({ item }) => !blockedKeys.has(normalizePracticeKey(item.title)))
-      .sort((left, right) => right.score - left.score)
-      .map(({ item }) => item);
-  }, [copy.tagBestForPrefix, recommendationPractices, ritualTools, weatherKeys]);
-
-  const fallbackPractices = useMemo<PracticeItem[]>(
-    () =>
-      themeOrder.map((theme) => {
-        const fallback = fallbackPracticePools[theme];
-        return {
-          id: `fallback-${theme}`,
-          theme,
-          title: fallback.title,
-          purpose: fallback.purpose,
-          actions: fallback.actions,
-          tags: fallback.tags,
-        };
-      }),
-    [],
-  );
-
-  const tonightPractices = useMemo(() => {
-    const combined = [...recommendationPractices, ...toolPractices, ...fallbackPractices];
+  const tonightPractices = useMemo<PracticeItem[]>(() => {
+    const combinedCards = [selectedDailyMainCard, ...alternateCards].filter(
+      (card): card is SelectedDailyMainCard => Boolean(card),
+    );
     const selected: PracticeItem[] = [];
     const usedKeys = new Set<string>();
 
-    for (const theme of themeOrder) {
-      const candidate = combined.find((item) => {
-        const key = normalizePracticeKey(item.title);
-        return item.theme === theme && !usedKeys.has(key);
-      });
-      if (candidate) {
-        selected.push(candidate);
-        usedKeys.add(normalizePracticeKey(candidate.title));
-      }
-    }
-
-    for (const item of combined) {
-      if (selected.length >= 6) break;
-      const key = normalizePracticeKey(item.title);
-      if (usedKeys.has(key)) continue;
-      selected.push(item);
-      usedKeys.add(key);
+    for (const card of combinedCards) {
+      const dedupeKey = normalizePracticeKey(card.id || card.title);
+      if (usedKeys.has(dedupeKey)) continue;
+      selected.push(toPracticeItem(card, copy));
+      usedKeys.add(dedupeKey);
     }
 
     return selected.slice(0, 6);
-  }, [fallbackPractices, recommendationPractices, toolPractices]);
+  }, [alternateCards, copy, selectedDailyMainCard]);
 
   const availableThemes = useMemo(
     () =>
@@ -641,16 +393,23 @@ const TonightPathExperience = ({
     [activeTheme, tonightPractices],
   );
 
-  const primaryRitual = tonightPractices[0] ?? null;
+  const primaryRitual = tonightPractices[0] ?? (selectedDailyMainCard ? toPracticeItem(selectedDailyMainCard, copy) : null);
   const mainSteps = primaryRitual?.actions?.slice(0, 4) ?? copy.fallbackSteps;
   const positionCues = primaryRitual?.actions?.slice(1, 4) ?? copy.fallbackPositions;
-  const suggestionText = weatherMatch?.recommendations?.[0]?.messageSuggestion ?? copy.waitingBody;
+  const suggestionText = primaryRitual
+    ? `${primaryRitual.actions.slice(0, 2).join(" ")}`
+    : copy.waitingBody;
 
   const quote = useMemo(() => {
-    const seed = `${new Date().toDateString()}:${weatherMatch?.matchKey ?? weatherStateMode}`;
+    const seed = `${new Date().toDateString()}:${weatherEngineDebug.normalizedKey ?? weatherStateMode}`;
     return copy.quotes[hashString(seed) % copy.quotes.length];
-  }, [copy.quotes, weatherMatch?.matchKey, weatherStateMode]);
-  const matchHeadline = weatherMatch ? `${weatherMatch.archetype.title} · ${weatherMatch.pairLabel}` : copy.waitingTitle;
+  }, [copy.quotes, weatherEngineDebug.normalizedKey, weatherStateMode]);
+
+  const matchHeadline = weatherEngineDebug.archetype
+    ? weatherEngineDebug.archetype.replaceAll("_", " ")
+    : weatherMatch
+      ? `${weatherMatch.archetype.title} · ${weatherMatch.pairLabel}`
+      : copy.waitingTitle;
 
   const copySuggestion = async () => {
     try {
@@ -676,11 +435,7 @@ const TonightPathExperience = ({
           {matchHeadline}
         </h2>
         <p className="mt-2 max-w-4xl text-sm leading-7 text-muted-foreground">
-          {weatherMatch
-            ? `${copy.title} ${
-                weatherMatch.summary
-              }`
-            : copy.waitingBody}
+          {primaryRitual ? `${copy.title} ${primaryRitual.purpose}` : copy.waitingBody}
         </p>
 
         <div className="mt-3 flex flex-wrap gap-2">
@@ -777,6 +532,7 @@ const TonightPathExperience = ({
                 {activeThemePractices.map((practice) => (
                   <div key={practice.id} className={`rounded-xl border p-3 ${themeVisuals[practice.theme].wrapClass}`}>
                     <h4 className="font-display text-lg text-foreground">{practice.title}</h4>
+                    {practice.subtitle ? <p className="mt-1 text-xs text-muted-foreground/85">{practice.subtitle}</p> : null}
                     <p className="mt-1 text-sm leading-6 text-foreground/85">{practice.purpose}</p>
                     <ul className="mt-2 space-y-1 text-sm leading-6 text-muted-foreground">
                       {practice.actions.slice(0, 4).map((action) => (
@@ -800,10 +556,10 @@ const TonightPathExperience = ({
               <div className="rounded-xl border border-border/30 bg-background/45 p-3">
                 <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">{copy.respectLabel}</p>
                 <p className="mt-1 text-sm leading-6 text-foreground/90">
-                  {weatherMatch ? copy.respectContextLine : copy.waitingBody}
+                  {primaryRitual ? copy.respectContextLine : copy.waitingBody}
                 </p>
                 <p className="mt-1 text-sm leading-6 text-foreground/90">
-                  {weatherMatch ? weatherMatch.interpretation : ""}
+                  {weatherMatch?.interpretation ?? primaryRitual?.purpose ?? ""}
                 </p>
                 <ul className="mt-2 space-y-1 text-sm leading-6 text-muted-foreground">
                   {copy.respectPrompts.map((prompt) => (
@@ -834,6 +590,27 @@ const TonightPathExperience = ({
             </div>
           </article>
         </div>
+
+        {import.meta.env.DEV ? (
+          <div className="mt-4 rounded-xl border border-cyan-300/25 bg-cyan-500/10 p-3">
+            <p className="text-[10px] uppercase tracking-[0.14em] text-cyan-200/85">Tonight Path Debug</p>
+            <pre className="mt-2 overflow-auto text-xs leading-5 text-cyan-100/90">
+{JSON.stringify(
+  {
+    partnerAWeather: weatherEngineDebug.partnerAWeather,
+    partnerBWeather: weatherEngineDebug.partnerBWeather,
+    normalizedKey: weatherEngineDebug.normalizedKey,
+    archetype: weatherEngineDebug.archetype,
+    selectedMainCard: weatherEngineDebug.selectedMainCardId,
+    alternates: weatherEngineDebug.alternateIds,
+    recentHistory: weatherEngineDebug.recentHistory,
+  },
+  null,
+  2,
+)}
+            </pre>
+          </div>
+        ) : null}
       </div>
     </section>
   );
