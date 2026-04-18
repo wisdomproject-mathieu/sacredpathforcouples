@@ -48,6 +48,95 @@ const getRitualPreview = (ritual: SacredRepairRitual) => {
   return sentence ? `${sentence}.` : ritual.intention;
 };
 
+const ChapterCard = ({
+  chapter,
+  selected,
+  onClick,
+}: {
+  chapter: SacredRepairChapter;
+  selected?: boolean;
+  onClick?: () => void;
+}) => {
+  const Icon = (chapterVisuals[chapter.id] ?? chapterVisuals["touch-massage-sacred-spot"]).icon;
+  const iconClass = (chapterVisuals[chapter.id] ?? chapterVisuals["touch-massage-sacred-spot"]).iconClass;
+
+  const className = `group flex min-h-[236px] flex-col rounded-[24px] border p-4 text-left transition-all ${
+    selected
+      ? "border-primary/30 bg-primary/10 shadow-[0_16px_50px_-40px_rgba(255,173,70,0.45)]"
+      : "border-border/30 bg-background/45 hover:border-primary/20 hover:bg-card/55"
+  }`;
+
+  if (onClick) {
+    return (
+      <button type="button" onClick={onClick} className={className}>
+        <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-3 ${iconClass}`}>
+          <Icon className="h-4 w-4" />
+        </div>
+        <h2 className="mt-3 font-display text-[1.9rem] leading-[1.14] text-foreground">{chapter.title}</h2>
+        <p className="mt-2 text-base leading-7 text-muted-foreground/95">{chapter.emotionalFrame}</p>
+      </button>
+    );
+  }
+
+  return (
+    <article className={className}>
+      <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-3 ${iconClass}`}>
+        <Icon className="h-4 w-4" />
+      </div>
+      <h2 className="mt-3 font-display text-[1.9rem] leading-[1.14] text-foreground">{chapter.title}</h2>
+      <p className="mt-2 text-base leading-7 text-muted-foreground/95">{chapter.emotionalFrame}</p>
+    </article>
+  );
+};
+
+const RitualCard = ({
+  ritual,
+  active,
+  unlocked,
+  onClick,
+}: {
+  ritual: SacredRepairRitual;
+  active?: boolean;
+  unlocked: boolean;
+  onClick?: () => void;
+}) => {
+  const className = `group flex min-h-[228px] flex-col rounded-[24px] border p-4 text-left transition-all ${
+    active
+      ? "border-primary/30 bg-primary/10 shadow-[0_16px_50px_-40px_rgba(255,173,70,0.45)]"
+      : "border-border/30 bg-background/45 hover:border-primary/20 hover:bg-card/55"
+  }`;
+
+  const content = (
+    <>
+      <div className="flex items-start justify-between gap-3">
+        <p className="text-xs uppercase tracking-[0.16em] text-primary/80">{ritual.duration || "Ritual"}</p>
+        {!unlocked ? (
+          <span className="inline-flex items-center rounded-full border border-amber-400/40 bg-amber-400/10 p-2 text-amber-300">
+            <Lock className="h-3.5 w-3.5" />
+          </span>
+        ) : null}
+      </div>
+
+      <h3 className="mt-2 font-display text-[2rem] leading-[1.1] text-foreground">{ritual.title}</h3>
+      <p className="mt-2 text-base leading-7 text-muted-foreground/95">{getRitualPreview(ritual)}</p>
+      <p className="mt-3 text-sm leading-6 text-foreground/82">{ritual.lineage}</p>
+      <p className="mt-auto pt-3 text-xs uppercase tracking-[0.12em] text-primary/85">
+        {unlocked ? "Open ritual" : "Locked in premium"}
+      </p>
+    </>
+  );
+
+  if (onClick) {
+    return (
+      <button type="button" onClick={onClick} className={className}>
+        {content}
+      </button>
+    );
+  }
+
+  return <article className={className}>{content}</article>;
+};
+
 const RitualDetail = ({
   ritual,
   chapter,
@@ -176,139 +265,111 @@ const SacredRepair = () => {
 
       {!selectedChapter ? (
         <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-2">
-          {SACRED_REPAIR_CHAPTERS.map((chapter) => {
-            const Icon = (chapterVisuals[chapter.id] ?? chapterVisuals["touch-massage-sacred-spot"]).icon;
-            const iconClass = (chapterVisuals[chapter.id] ?? chapterVisuals["touch-massage-sacred-spot"]).iconClass;
-            return (
-              <button
-                key={chapter.id}
-                type="button"
-                onClick={() => {
-                  setSelectedChapterId(chapter.id);
-                  setSelectedRitualTitle(null);
-                }}
-                className="group flex min-h-[236px] flex-col rounded-[24px] border border-border/30 bg-background/45 p-4 text-left transition-all hover:border-primary/20 hover:bg-card/55"
-              >
-                <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-3 ${iconClass}`}>
-                  <Icon className="h-4 w-4" />
-                </div>
-                <h2 className="mt-3 font-display text-[1.9rem] leading-[1.14] text-foreground">{chapter.title}</h2>
-                <p className="mt-2 text-base leading-7 text-muted-foreground/95">{chapter.emotionalFrame}</p>
-              </button>
-            );
-          })}
+          {SACRED_REPAIR_CHAPTERS.map((chapter) => (
+            <ChapterCard
+              key={chapter.id}
+              chapter={chapter}
+              onClick={() => {
+                setSelectedChapterId(chapter.id);
+                setSelectedRitualTitle(null);
+              }}
+            />
+          ))}
         </section>
       ) : (
         <section className="space-y-4">
-          <div className="rounded-[24px] border border-primary/30 bg-primary/10 p-4 text-left shadow-[0_16px_50px_-40px_rgba(255,173,70,0.45)]">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <h2 className="font-display text-4xl leading-tight text-foreground md:text-5xl">{selectedChapter.title}</h2>
-                <p className="mt-2 text-lg leading-8 text-muted-foreground">{selectedChapter.emotionalFrame}</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedChapterId(null);
-                  setSelectedRitualTitle(null);
-                }}
-                className="inline-flex items-center gap-2 rounded-xl border border-border/35 bg-card/45 px-3 py-2 text-xs uppercase tracking-[0.14em] text-foreground transition-all hover:border-border/55 hover:bg-card/60"
-              >
-                <ArrowLeft className="h-3.5 w-3.5" />
-                Back to Sacred Repair
-              </button>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="w-full max-w-[780px]">
+              <ChapterCard chapter={selectedChapter} selected />
             </div>
-          </div>
-
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-2">
-            {selectedChapter.rituals.map((ritual) => {
-              const unlocked = isRitualUnlocked(selectedChapter.id, ritual.title);
-              const active = selectedRitualTitle === ritual.title;
-
-              return (
-                <button
-                  key={ritual.title}
-                  type="button"
-                  onClick={() => handleRitualClick(selectedChapter, ritual)}
-                  className={`group flex min-h-[228px] flex-col rounded-[24px] border p-4 text-left transition-all ${
-                    active
-                      ? "border-primary/30 bg-primary/10 shadow-[0_16px_50px_-40px_rgba(255,173,70,0.45)]"
-                      : "border-border/30 bg-background/45 hover:border-primary/20 hover:bg-card/55"
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <p className="text-xs uppercase tracking-[0.16em] text-primary/80">{ritual.duration || "Ritual"}</p>
-                    {!unlocked ? (
-                      <span className="inline-flex items-center rounded-full border border-amber-400/40 bg-amber-400/10 p-2 text-amber-300">
-                        <Lock className="h-3.5 w-3.5" />
-                      </span>
-                    ) : null}
-                  </div>
-
-                  <h3 className="mt-2 font-display text-[2rem] leading-[1.1] text-foreground">{ritual.title}</h3>
-                  <p className="mt-2 text-base leading-7 text-muted-foreground/95">{getRitualPreview(ritual)}</p>
-                  <p className="mt-3 text-sm leading-6 text-foreground/82">{ritual.lineage}</p>
-                  <p className="mt-auto pt-3 text-xs uppercase tracking-[0.12em] text-primary/85">
-                    {unlocked ? "Open ritual" : "Locked in premium"}
-                  </p>
-                </button>
-              );
-            })}
-          </div>
-
-          <section
-            ref={premiumRef}
-            className={`rounded-[24px] border p-5 transition-all md:p-6 ${
-              premiumHighlight
-                ? "border-amber-300/65 bg-amber-500/12 shadow-[0_18px_50px_-36px_rgba(245,158,11,0.45)]"
-                : "border-amber-300/30 bg-gradient-to-br from-amber-950/60 via-card/50 to-card/30"
-            }`}
-          >
-            <p className="text-xs uppercase tracking-[0.22em] text-amber-300/90">Unlock deeper repair</p>
-            <h3 className="mt-2 font-display text-4xl leading-tight text-foreground md:text-5xl">More than 50 sacred rituals for modern couples</h3>
-            <p className="mt-3 max-w-4xl text-lg leading-8 text-muted-foreground">
-              to soften resentment, restore tenderness, rebuild trust, speak the unsaid, and find your way back to each other.
-            </p>
-            <p className="mt-3 max-w-4xl text-base leading-7 text-foreground/88">
-              When love feels fragile, do not guess. Enter the full Sacred Path and repair with guidance, presence, and practice.
-            </p>
-
-            <div className="mt-4 grid gap-3 md:grid-cols-3">
-              {[
-                "Repair through touch",
-                "Repair through truth",
-                "Repair through conscious intimacy",
-              ].map((item) => (
-                <div key={item} className="rounded-[16px] border border-amber-300/25 bg-background/35 p-3 text-sm leading-6 text-foreground/92">
-                  {item}
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-5 flex flex-wrap gap-3">
-              <Link
-                to="/pricing"
-                className="inline-flex items-center justify-center rounded-[12px] border border-amber-400/45 bg-amber-400/15 px-5 py-3 text-sm font-medium text-amber-300 transition-all hover:bg-amber-400/25"
-              >
-                Explore 50+ Rituals
-              </Link>
-            </div>
-          </section>
-
-          {selectedRitual ? (
-            <RitualDetail
-              ritual={selectedRitual}
-              chapter={selectedChapter}
-              onBackToRituals={() => setSelectedRitualTitle(null)}
-              onBackToRepair={() => {
-                setSelectedRitualTitle(null);
+            <button
+              type="button"
+              onClick={() => {
                 setSelectedChapterId(null);
+                setSelectedRitualTitle(null);
               }}
-            />
-          ) : null}
+              className="inline-flex items-center gap-2 rounded-xl border border-border/35 bg-card/45 px-3 py-2 text-xs uppercase tracking-[0.14em] text-foreground transition-all hover:border-border/55 hover:bg-card/60"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+              Back to Sacred Repair
+            </button>
+          </div>
+
+          {!selectedRitual ? (
+            <>
+              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-2">
+                {selectedChapter.rituals.map((ritual) => (
+                  <RitualCard
+                    key={ritual.title}
+                    ritual={ritual}
+                    unlocked={isRitualUnlocked(selectedChapter.id, ritual.title)}
+                    onClick={() => handleRitualClick(selectedChapter, ritual)}
+                  />
+                ))}
+              </div>
+
+              <section
+                ref={premiumRef}
+                className={`rounded-[24px] border p-5 transition-all md:p-6 ${
+                  premiumHighlight
+                    ? "border-amber-300/65 bg-amber-500/12 shadow-[0_18px_50px_-36px_rgba(245,158,11,0.45)]"
+                    : "border-amber-300/30 bg-gradient-to-br from-amber-950/60 via-card/50 to-card/30"
+                }`}
+              >
+                <p className="text-xs uppercase tracking-[0.22em] text-amber-300/90">Unlock deeper repair</p>
+                <h3 className="mt-2 font-display text-4xl leading-tight text-foreground md:text-5xl">More than 50 sacred rituals for modern couples</h3>
+                <p className="mt-3 max-w-4xl text-lg leading-8 text-muted-foreground">
+                  to soften resentment, restore tenderness, rebuild trust, speak the unsaid, and find your way back to each other.
+                </p>
+                <p className="mt-3 max-w-4xl text-base leading-7 text-foreground/88">
+                  When love feels fragile, do not guess. Enter the full Sacred Path and repair with guidance, presence, and practice.
+                </p>
+
+                <div className="mt-4 grid gap-3 md:grid-cols-3">
+                  {[
+                    "Repair through touch",
+                    "Repair through truth",
+                    "Repair through conscious intimacy",
+                  ].map((item) => (
+                    <div key={item} className="rounded-[16px] border border-amber-300/25 bg-background/35 p-3 text-sm leading-6 text-foreground/92">
+                      {item}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-5 flex flex-wrap gap-3">
+                  <Link
+                    to="/pricing"
+                    className="inline-flex items-center justify-center rounded-[12px] border border-amber-400/45 bg-amber-400/15 px-5 py-3 text-sm font-medium text-amber-300 transition-all hover:bg-amber-400/25"
+                  >
+                    Explore 50+ Rituals
+                  </Link>
+                </div>
+              </section>
+            </>
+          ) : (
+            <>
+              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-2">
+                <RitualCard
+                  ritual={selectedRitual}
+                  unlocked={true}
+                  active={true}
+                />
+              </div>
+
+              <RitualDetail
+                ritual={selectedRitual}
+                chapter={selectedChapter}
+                onBackToRituals={() => setSelectedRitualTitle(null)}
+                onBackToRepair={() => {
+                  setSelectedRitualTitle(null);
+                  setSelectedChapterId(null);
+                }}
+              />
+            </>
+          )}
         </section>
       )}
-
     </div>
   );
 };
