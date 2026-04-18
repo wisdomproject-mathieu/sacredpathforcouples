@@ -1071,7 +1071,7 @@ const PartnerSpace = () => {
 
     setTempleSendingKind(kind);
     try {
-      await sendSacredMessage(messageType, text);
+      await sendSacredMessage(messageType as unknown as SacredComposerType, text);
     } finally {
       setTempleSendingKind(null);
     }
