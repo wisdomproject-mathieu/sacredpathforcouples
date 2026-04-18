@@ -19,6 +19,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
 import { PATH_LONGFORM_BY_SLUG } from "@/lib/libraryLongform";
+import LibraryDetailSplitLayout from "@/components/library/LibraryDetailSplitLayout";
 
 type Tier = "free" | "premium";
 
@@ -2744,36 +2745,34 @@ const Paths = () => {
       ) : null}
 
       {showDetail ? (
-      <section className={`${isMobile ? "space-y-4" : `grid items-start gap-6 lg:grid-cols-[minmax(280px,360px)_minmax(0,1fr)] ${desktopFocusedDetail ? "" : "lg:h-[calc(100vh-8rem)]"}`}`}>
-        {!isMobile && detailOnlyMode ? (
-          <div className="lg:col-span-2">
-            <button
-              type="button"
-              onClick={() => setDetailOnlyMode(false)}
-              className="rounded-xl border border-border/35 bg-card/45 px-3 py-2 text-xs uppercase tracking-[0.14em] text-foreground transition-all hover:border-border/55 hover:bg-card/60"
-            >
-              {ui.backToLibrary}
-            </button>
-          </div>
-        ) : null}
-        {isMobile ? <MobileDetailHeader title={selected.name} tier={selected.tier} onBack={() => setMobileDetailMode(false)} /> : null}
-
-        <aside
-          ref={sidePaneRef}
-          className={`space-y-4 lg:sticky lg:top-24 ${desktopFocusedDetail ? "lg:pr-1" : "lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-1"}`}
-        >
-          <PathHeroCard path={selected} />
-          {!hasPremiumAccess ? <PremiumMiniCard path={selected} /> : null}
-        </aside>
-
-        <div
-          ref={detailPaneRef}
-          className={`space-y-4 ${desktopFocusedDetail ? "lg:pr-1" : "lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-1"}`}
-        >
-          {selected.tier === "free" ? <FreePathContent path={selected} /> : <PremiumPathContent path={selected} />}
-          {isMobile ? <RelatedPathCarousel items={relatedPaths} onSelect={handleSelectPath} /> : null}
-        </div>
-      </section>
+      <LibraryDetailSplitLayout
+        isMobile={isMobile}
+        focusedDetail={desktopFocusedDetail}
+        showDesktopBack={detailOnlyMode}
+        backLabel={ui.backToLibrary}
+        onBack={() => setDetailOnlyMode(false)}
+        mobileHeader={
+          <MobileDetailHeader
+            title={selected.name}
+            tier={selected.tier}
+            onBack={() => setMobileDetailMode(false)}
+          />
+        }
+        sidePaneRef={sidePaneRef}
+        detailPaneRef={detailPaneRef}
+        sidePane={(
+          <>
+            <PathHeroCard path={selected} />
+            {!hasPremiumAccess ? <PremiumMiniCard path={selected} /> : null}
+          </>
+        )}
+        detailPane={(
+          <>
+            {selected.tier === "free" ? <FreePathContent path={selected} /> : <PremiumPathContent path={selected} />}
+            {isMobile ? <RelatedPathCarousel items={relatedPaths} onSelect={handleSelectPath} /> : null}
+          </>
+        )}
+      />
       ) : null}
     </div>
   );
