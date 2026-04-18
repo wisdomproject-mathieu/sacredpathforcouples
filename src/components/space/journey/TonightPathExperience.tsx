@@ -3,6 +3,8 @@ import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 import { BookOpen, Check, Copy, Flame, Hand, Heart, MessageCircle, Wind } from "lucide-react";
 
 import type { Language } from "@/contexts/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
+import type { Tables } from "@/integrations/supabase/types";
 import type { WeatherMatchResult, RitualRecommendation } from "@/lib/weatherMatch";
 import type { WeatherCardData } from "@/components/space/journey/SharedWeatherCard";
 
@@ -26,6 +28,11 @@ type PracticeItem = {
   tags: string[];
   theme: ThemeKey;
 };
+
+type RitualToolRow = Pick<
+  Tables<"ritual_items">,
+  "id" | "title" | "hook" | "category" | "duration" | "tone" | "intensity" | "steps" | "item_type" | "premium_required"
+>;
 
 type ThemeMeta = {
   title: string;
@@ -360,15 +367,73 @@ const classifyTheme = (recommendation: RitualRecommendation): ThemeKey => {
   return "touch";
 };
 
-const buildGeneratedPractices = (
-  myLabel: string,
-  belovedLabel: string,
-  archetypeTitle: string,
-  copy: (typeof copyByLang)[Language],
-): PracticeItem[] => [
-  {
-    id: "generated-touch",
-    theme: "touch",
+const parseToolSteps = (steps: unknown): string[] => {
+  if (Array.isArray(steps)) {
+    return steps
+      .filter((value): value is string => typeof value === "string")
+      .map((value) => value.trim())
+      .filter(Boolean);
+  }
+  if (typeof steps === "string") {
+    try {
+      const parsed = JSON.parse(steps);
+      if (Array.isArray(parsed)) {
+        return parsed
+          .filter((value): value is string => typeof value === "string")
+          .map((value) => value.trim())
+          .filter(Boolean);
+      }
+    } catch {
+      return steps.trim() ? [steps.trim()] : [];
+    }
+  }
+  return [];
+};
+
+const normalizePracticeKey = (value: string): string =>
+  value.toLowerCase().replace(/[^a-z0-9]+/gi, " ").trim();
+
+const toThemeFromToolCategory = (category: string, title: string, hook: string): ThemeKey => {
+  const normalized = `${category} ${title} ${hook}`.toLowerCase();
+  if (/(massage|bodywork|press|massag|masáž)/.test(normalized)) return "massage";
+  if (/(breath|respir|dech|dých|bedtime|sleep|rest)/.test(normalized)) return "breathing";
+  if (/(reconnect|repair|emotion|truth|listen|safe|secure|care)/.test(normalized)) return "emotional_connection";
+  if (/(polarity|playful|desire|erotic|tantra|tao|spark|charge)/.test(normalized)) return "sacred_intimacy";
+  if (/(reflect|after|gratitude|journal|integration|insight)/.test(normalized)) return "reflection";
+  return "touch";
+};
+
+const weatherGroup = (weatherKeys: string[]) => ({
+  soothing: weatherKeys.some((key) => ["stressed", "tired", "reassurance", "tender"].includes(key)),
+  expressive: weatherKeys.some((key) => ["playful", "erotic", "open", "longing"].includes(key)),
+  repair: weatherKeys.some((key) => ["stressed", "reassurance", "longing"].includes(key)),
+  tenderness: weatherKeys.some((key) => ["tender", "reassurance", "longing"].includes(key)),
+});
+
+const scoreToolForWeather = (tool: RitualToolRow, weatherKeys: string[]): number => {
+  const category = (tool.category ?? "").toLowerCase();
+  const text = `${tool.title} ${tool.hook ?? ""} ${tool.tone ?? ""} ${category}`.toLowerCase();
+  const groups = weatherGroup(weatherKeys);
+  let score = 0;
+
+  if (groups.soothing && /(breath|presence|reconnect|bedtime|touch)/.test(category)) score += 4;
+  if (groups.repair && /(reconnect|presence|breath|touch)/.test(category)) score += 4;
+  if (groups.expressive && /(polarity|playful|touch|presence)/.test(category)) score += 3;
+  if (groups.tenderness && /(touch|presence|reconnect)/.test(category)) score += 3;
+
+  if (/(slow|gentle|soft|calm|ground|safe|consent)/.test(text)) score += 2;
+  if (/(desire|spark|polarity|erotic)/.test(text) && groups.expressive) score += 2;
+  if (/(repair|reconnect|reset|truth|attune)/.test(text) && groups.repair) score += 2;
+
+  const intensity = Math.max(0, Math.min(4, tool.intensity ?? 1));
+  if (groups.soothing) score += Math.max(0, 2 - intensity);
+  if (groups.expressive) score += intensity >= 2 ? 1 : 0;
+
+  return score;
+};
+
+const fallbackPracticePools: Record<ThemeKey, { title: string; purpose: string; actions: string[]; tags: string[] }> = {
+  touch: {
     title: "Gaze and Palm Contact",
     purpose: "A gentle way to reconnect without pressure.",
     actions: [
@@ -377,93 +442,63 @@ const buildGeneratedPractices = (
       "Hold eye contact for three breaths.",
       "Say one honest sentence about what you need tonight.",
     ],
-    tags: [
-      "7 minutes · slow eye contact and palm-to-palm connection",
-      `${copy.tagBestForPrefix} couples wanting closeness before intensity`,
-      copy.tagsEmotionalSafety,
-    ],
+    tags: ["7 minutes", "slow", "emotional safety first"],
   },
-  {
-    id: "generated-breathing",
-    theme: "breathing",
-    title: "4-6 Co-Regulation Breath",
-    purpose: `${myLabel} + ${belovedLabel} can meet more gently when both nervous systems settle first.`,
+  breathing: {
+    title: "Shared Exhale Reset",
+    purpose: "Regulate the nervous system before intensity.",
     actions: [
-      "Inhale for 4 counts and exhale for 6 counts.",
-      "Stay with this for five rounds.",
-      "Between rounds, ask: 'Do you feel more here now?'",
+      "Inhale for 4 counts together.",
+      "Exhale for 6 counts together.",
+      "Repeat for five rounds.",
+      "Ask each other if you want softer, same, or more closeness.",
     ],
-    tags: [
-      "5 minutes · breath-led grounding before touch",
-      `${copy.tagBestForPrefix} tired or emotionally sensitive evenings`,
-      copy.tagsPaceSlow,
-    ],
+    tags: ["5 minutes", "down-regulation", "best for stress or tiredness"],
   },
-  {
-    id: "generated-massage",
-    theme: "massage",
-    title: "Shoulder and Neck Melt",
-    purpose: "Release body tension so tenderness has space to arrive.",
+  massage: {
+    title: "Shoulder Warmth Ritual",
+    purpose: "Bring warmth back to the body before deeper touch.",
     actions: [
-      "Partner A receives 90 seconds of slow shoulder pressure.",
-      "Switch and repeat for Partner B.",
-      "After both rounds, hold each other for three breaths.",
+      "Partner A receives 90 seconds of shoulder pressure.",
+      "Switch and Partner B receives the same.",
+      "Add one affectionate stroke down each arm.",
+      "Close with one breath together.",
     ],
-    tags: [
-      "8 minutes · soft pressure and warm regulation",
-      "Tao-inspired slow touch and grounding",
-      copy.tagsConsentForward,
-    ],
+    tags: ["8 minutes", "grounding touch", "no performance pressure"],
   },
-  {
-    id: "generated-emotional-connection",
-    theme: "emotional_connection",
-    title: "Respect and Reconnect Round",
-    purpose: "Closeness deepens when each partner feels understood before anything physical.",
+  emotional_connection: {
+    title: "One Feeling, One Need",
+    purpose: "Restore emotional attunement before physical escalation.",
     actions: [
-      "Each partner shares one feeling and one need.",
-      "Mirror your partner's words back in one sentence.",
-      "Agree on one shared intention for tonight.",
+      "Each partner names one feeling without blame.",
+      "Each partner names one need for tonight.",
+      "Mirror what you heard from your beloved.",
+      "Agree on one shared next step.",
     ],
-    tags: [
-      "6 minutes · emotional attunement before intimacy",
-      `${copy.tagBestForPrefix} moments with subtle disconnection`,
-      copy.tagsEmotionalSafety,
-    ],
+    tags: ["6 minutes", "repair friendly", "consent-forward"],
   },
-  {
-    id: "generated-sacred-intimacy",
-    theme: "sacred_intimacy",
-    title: "Lead and Receive Practice",
-    purpose: `${archetypeTitle} becomes safer and more alive when leadership and receptivity alternate.`,
+  sacred_intimacy: {
+    title: "Slow Polarity Invitation",
+    purpose: "Keep desire alive while staying emotionally safe.",
     actions: [
-      "Round one: Partner A leads one slow movement or touch pattern.",
-      "Round two: Partner B leads with a different rhythm.",
-      "Round three: blend both rhythms and stay attuned.",
+      "Share one desire sentence each.",
+      "Hold eye contact for 20 seconds.",
+      "Offer one intentional touch each round.",
+      "Pause and ask if pacing still feels right.",
     ],
-      tags: [
-        "9 minutes · polarity with consent and pacing",
-        `${copy.tagBestForPrefix} couples wanting gentle sacred intensity`,
-        copy.tagsConsentForward,
-      ],
+    tags: ["7 minutes", "gentle sacred intensity", "attunement over urgency"],
   },
-  {
-    id: "generated-reflection",
-    theme: "reflection",
+  reflection: {
     title: "Afterglow Integration",
-    purpose: "Keep tonight meaningful by closing with reflection instead of rushing away.",
+    purpose: "End the practice with meaning and closeness.",
     actions: [
-      "Each partner names one moment they want to remember.",
-      "Share one gratitude line out loud.",
-      "Set one tiny intention for tomorrow evening.",
+      "Each partner names one moment to remember.",
+      "Share one gratitude sentence each.",
+      "Set one tiny intention for tomorrow.",
     ],
-      tags: [
-        "4 minutes · emotional integration and closure",
-        `${copy.tagBestForPrefix} modern couples building consistency`,
-        "Reflection that strengthens trust over time",
-      ],
+    tags: ["4 minutes", "integration", "relationship growth"],
   },
-];
+};
 
 const TonightPathExperience = ({
   lang,
@@ -475,6 +510,20 @@ const TonightPathExperience = ({
 }: Props) => {
   const copy = copyByLang[lang];
   const [copied, setCopied] = useState(false);
+  const [ritualTools, setRitualTools] = useState<RitualToolRow[]>([]);
+
+  useEffect(() => {
+    const loadRitualTools = async () => {
+      const { data } = await supabase
+        .from("ritual_items")
+        .select("id, title, hook, category, duration, tone, intensity, steps, item_type, premium_required")
+        .eq("item_type", "ritual")
+        .order("premium_required", { ascending: true })
+        .order("intensity", { ascending: true });
+      setRitualTools((data as RitualToolRow[] | null) ?? []);
+    };
+    void loadRitualTools();
+  }, []);
 
   const recommendationPractices = useMemo<PracticeItem[]>(() => {
     if (!weatherMatch) return [];
@@ -492,39 +541,85 @@ const TonightPathExperience = ({
     }));
   }, [copy.tagBestForPrefix, lang, weatherMatch]);
 
-  const generatedPractices = useMemo(
+  const weatherKeys = useMemo(
+    () => [myWeather?.key, belovedWeather?.key].filter(Boolean) as string[],
+    [belovedWeather?.key, myWeather?.key],
+  );
+
+  const toolPractices = useMemo<PracticeItem[]>(() => {
+    if (!ritualTools.length) return [];
+    const blockedKeys = new Set(recommendationPractices.map((item) => normalizePracticeKey(item.title)));
+
+    return ritualTools
+      .map((tool) => {
+        const hook = tool.hook ?? "";
+        const steps = parseToolSteps(tool.steps);
+        const theme = toThemeFromToolCategory(tool.category ?? "", tool.title, hook);
+        const score = scoreToolForWeather(tool, weatherKeys);
+
+        return {
+          score,
+          item: {
+            id: `tool-${tool.id}`,
+            title: tool.title,
+            purpose: hook || "A guided ritual selected for tonight's weather combination.",
+            actions: (steps.length ? steps : [hook || tool.title]).slice(0, 4),
+            tags: [
+              `${tool.duration || "6-10 minutes"} · ${tool.tone || "attuned pacing"}`,
+              `${copy.tagBestForPrefix} ${copy.themeMeta[theme].title.toLowerCase()}`,
+              "From Ritual Tools",
+            ],
+            theme,
+          } satisfies PracticeItem,
+        };
+      })
+      .filter(({ item }) => !blockedKeys.has(normalizePracticeKey(item.title)))
+      .sort((left, right) => right.score - left.score)
+      .map(({ item }) => item);
+  }, [copy.tagBestForPrefix, recommendationPractices, ritualTools, weatherKeys]);
+
+  const fallbackPractices = useMemo<PracticeItem[]>(
     () =>
-      buildGeneratedPractices(
-        myWeather?.label ?? copy.waitingWeather,
-        belovedWeather?.label ?? copy.waitingWeather,
-        weatherMatch?.archetype.title ?? copy.waitingTitle,
-        copy,
-      ),
-    [belovedWeather?.label, copy, myWeather?.label, weatherMatch?.archetype.title],
+      themeOrder.map((theme) => {
+        const fallback = fallbackPracticePools[theme];
+        return {
+          id: `fallback-${theme}`,
+          theme,
+          title: fallback.title,
+          purpose: fallback.purpose,
+          actions: fallback.actions,
+          tags: fallback.tags,
+        };
+      }),
+    [],
   );
 
   const tonightPractices = useMemo(() => {
-    const combined = [...recommendationPractices, ...generatedPractices];
+    const combined = [...recommendationPractices, ...toolPractices, ...fallbackPractices];
     const selected: PracticeItem[] = [];
-    const usedTitles = new Set<string>();
+    const usedKeys = new Set<string>();
 
     for (const theme of themeOrder) {
-      const candidate = combined.find((item) => item.theme === theme && !usedTitles.has(item.title));
+      const candidate = combined.find((item) => {
+        const key = normalizePracticeKey(item.title);
+        return item.theme === theme && !usedKeys.has(key);
+      });
       if (candidate) {
         selected.push(candidate);
-        usedTitles.add(candidate.title);
+        usedKeys.add(normalizePracticeKey(candidate.title));
       }
     }
 
     for (const item of combined) {
       if (selected.length >= 6) break;
-      if (usedTitles.has(item.title)) continue;
+      const key = normalizePracticeKey(item.title);
+      if (usedKeys.has(key)) continue;
       selected.push(item);
-      usedTitles.add(item.title);
+      usedKeys.add(key);
     }
 
     return selected.slice(0, 6);
-  }, [generatedPractices, recommendationPractices]);
+  }, [fallbackPractices, recommendationPractices, toolPractices]);
 
   const availableThemes = useMemo(
     () =>

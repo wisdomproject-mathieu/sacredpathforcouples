@@ -732,6 +732,46 @@ const resolveArchetypeKey = (first: WeatherKey, second: WeatherKey) => {
   return "attuned-bridge";
 };
 
+const weatherActionAnchor: Record<WeatherKey, Localized> = {
+  open: lz("clear contact and direct emotional honesty"),
+  tender: lz("slow reassurance and gentle touch"),
+  playful: lz("light teasing and low-pressure curiosity"),
+  stressed: lz("nervous-system regulation before intensity"),
+  longing: lz("honest words and meaningful closeness"),
+  erotic: lz("paced arousal with explicit consent"),
+  tired: lz("restorative holding and low-demand intimacy"),
+  reassurance: lz("safety statements and affectionate presence"),
+};
+
+const localizedPairBridge = (first: WeatherKey, second: WeatherKey): {
+  title: Localized;
+  interpretation: Localized;
+  summary: Localized;
+} => {
+  const firstLabel = weatherMeta[first].label;
+  const secondLabel = weatherMeta[second].label;
+  const firstAnchor = weatherActionAnchor[first];
+  const secondAnchor = weatherActionAnchor[second];
+
+  return {
+    title: lz(
+      `${firstLabel.en} + ${secondLabel.en} Bridge`,
+      `Pont ${firstLabel.fr} + ${secondLabel.fr}`,
+      `Most ${firstLabel.cs} + ${secondLabel.cs}`,
+    ),
+    interpretation: lz(
+      `${firstLabel.en} is meeting ${secondLabel.en}. Let both realities stay visible before choosing pace.`,
+      `${firstLabel.fr} rencontre ${secondLabel.fr}. Gardez les deux réalités visibles avant de choisir le rythme.`,
+      `${firstLabel.cs} se setkává s ${secondLabel.cs}. Nechte obě reality viditelné, než zvolíte tempo.`,
+    ),
+    summary: lz(
+      `Start with ${firstAnchor.en}, then layer ${secondAnchor.en} once both bodies soften.`,
+      `Commencez par ${firstAnchor.fr}, puis ajoutez ${secondAnchor.fr} quand les deux corps se détendent.`,
+      `Začněte přes ${firstAnchor.cs}, pak přidejte ${secondAnchor.cs}, jakmile obě těla změknou.`,
+    ),
+  };
+};
+
 const fallbackArchetype = (first: WeatherKey, second: WeatherKey): ArchetypeTemplate => {
   const left = weatherMeta[first];
   const right = weatherMeta[second];
@@ -746,15 +786,16 @@ const fallbackArchetype = (first: WeatherKey, second: WeatherKey): ArchetypeTemp
   const intimacyTone = avgIntimacy >= 4
     ? lz("Emotionally close and depth-seeking")
     : lz("Needs gentle trust-building first");
+  const pairBridge = localizedPairBridge(first, second);
 
   return {
-    key: "attuned-bridge",
-    title: lz("Attuned Bridge"),
+    key: `attuned-bridge-${canonicalPair(first, second)}`,
+    title: pairBridge.title,
     symbolicMeaning: lz("Two different energies meeting in one shared practice."),
     bestPath: lz("Find shared pace, then choose depth."),
     wordingTone: lz("Grounded, precise, caring."),
-    interpretation: lz("A unique shared weather is forming."),
-    summary: lz("This pairing needs personalized pacing rather than generic ritual advice."),
+    interpretation: pairBridge.interpretation,
+    summary: pairBridge.summary,
     combinedMeaning: lz("Honor both energies and choose one concrete next step together."),
     heroImageKey: "attuned-bridge",
     sourceTraditions: ["Tantra", "Tao", "Slow Sex"],
@@ -852,6 +893,7 @@ export const buildWeatherMatchResult = (
   const matchKey = canonicalPair(first, second);
   const archetypeKey = resolveArchetypeKey(first, second);
   const archetypeTemplate = archetypeTemplates[archetypeKey] ?? fallbackArchetype(first, second);
+  const pairBridge = localizedPairBridge(first, second);
   const heroRef = heroImageByKey[archetypeTemplate.heroImageKey] ?? heroImageByKey["attuned-bridge"];
   const recommendations = archetypeTemplate.rituals.map((item, index) => toRitualRecommendation(item, lang, index));
   const libraryLinks = Array.from(
@@ -864,12 +906,17 @@ export const buildWeatherMatchResult = (
   const safeConfidence: Exclude<SourceConfidence, "low"> =
     archetypeTemplate.sourceConfidence === "low" ? "medium" : archetypeTemplate.sourceConfidence;
   const sourceAuthors = normalizeAuthors(archetypeTemplate.sourceAuthors);
+  const archetypeInterpretation = t(archetypeTemplate.interpretation, lang);
+  const archetypeSummary = t(archetypeTemplate.summary, lang);
+  const pairInterpretation = t(pairBridge.interpretation, lang);
+  const pairSummary = t(pairBridge.summary, lang);
+  const usePairOnly = archetypeTemplate.key.startsWith("attuned-bridge");
 
   return {
     matchKey,
     pairLabel: `${firstMeta.label} ${firstMeta.emoji} + ${secondMeta.label} ${secondMeta.emoji}`,
-    interpretation: t(archetypeTemplate.interpretation, lang),
-    summary: t(archetypeTemplate.summary, lang),
+    interpretation: usePairOnly ? archetypeInterpretation : `${archetypeInterpretation} ${pairInterpretation}`,
+    summary: usePairOnly ? archetypeSummary : `${archetypeSummary} ${pairSummary}`,
     firstMeaning: firstMeta.meaning,
     secondMeaning: secondMeta.meaning,
     combinedMeaning: t(archetypeTemplate.combinedMeaning, lang),
