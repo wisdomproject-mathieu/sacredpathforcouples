@@ -25,7 +25,8 @@ import {
   readEverConnected,
   storeConnectedCoupleId,
 } from "@/lib/couples";
-import { buildWeatherMatchResult, getWeatherPresentation, type WeatherKey } from "@/lib/weatherMatch";
+import { deriveActiveTonightExperience, getWeatherPresentation, type WeatherKey } from "@/lib/weatherMatch";
+import { getLocalDayRange, pickLatestWeatherForCouple } from "@/lib/weatherEntries";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 
 type RitualItem = Tables<"ritual_items">;
@@ -33,7 +34,7 @@ type Pathway = Tables<"pathways">;
 type PartnerMessage = Tables<"partner_messages">;
 type AltarItem = Tables<"altar_items">;
 type Profile = Tables<"profiles">;
-type HomeWeatherEntry = Pick<Tables<"weather_entries">, "state" | "user_id" | "created_at">;
+type HomeWeatherEntry = Pick<Tables<"weather_entries">, "id" | "state" | "user_id" | "created_at">;
 
 type DailyCard = {
   id: string;
@@ -461,17 +462,6 @@ const parseRitualSteps = (steps: RitualItem["steps"]): string[] => {
 const fallbackBelovedValues = new Set(Object.values(homeCopy).map((copySet) => copySet.beloved));
 const WEATHER_KEYS: WeatherKey[] = ["open", "tender", "playful", "stressed", "longing", "erotic", "tired", "reassurance"];
 
-const getLocalDayRange = () => {
-  const dayStart = new Date();
-  dayStart.setHours(0, 0, 0, 0);
-  const dayEnd = new Date(dayStart);
-  dayEnd.setDate(dayEnd.getDate() + 1);
-  return {
-    startIso: dayStart.toISOString(),
-    endIso: dayEnd.toISOString(),
-  };
-};
-
 const AppHome = () => {
   const { user } = useAuth();
   const { lang } = useLanguage();
@@ -491,8 +481,9 @@ const AppHome = () => {
   const [rituals, setRituals] = useState<RitualItem[]>([]);
   const [pathways, setPathways] = useState<Pathway[]>([]);
   const [coupleId, setCoupleId] = useState<string | null>(null);
-  const [myWeatherEntry, setMyWeatherEntry] = useState<Pick<HomeWeatherEntry, "state" | "user_id"> | null>(null);
-  const [partnerWeatherEntry, setPartnerWeatherEntry] = useState<Pick<HomeWeatherEntry, "state" | "user_id"> | null>(null);
+  const [partnerUserId, setPartnerUserId] = useState<string | null>(null);
+  const [myWeatherEntry, setMyWeatherEntry] = useState<HomeWeatherEntry | null>(null);
+  const [partnerWeatherEntry, setPartnerWeatherEntry] = useState<HomeWeatherEntry | null>(null);
   const [myWeatherSelected, setMyWeatherSelected] = useState<string | null>(null);
   const [savingWeather, setSavingWeather] = useState(false);
   const [weatherPickerVisible, setWeatherPickerVisible] = useState(false);
@@ -602,6 +593,7 @@ const AppHome = () => {
       if (!coupleState.connected) {
         setRelationshipConnected(false);
         setCoupleId(null);
+        setPartnerUserId(null);
         setMessages([]);
         setAltarItems([]);
         setMyWeatherEntry(null);
@@ -639,29 +631,28 @@ const AppHome = () => {
       setRelationshipConnected(connected);
 
       setCoupleId(activeCouple.id);
+      setPartnerUserId(coupleState.partnerId ?? null);
       setInviteCode(activeCouple.couple_code ?? null);
 
       // Load weather entries for the local current day and keep only latest per partner.
       const { startIso, endIso } = getLocalDayRange();
       const { data: weatherData } = await supabase
         .from("weather_entries")
-        .select("state, user_id, created_at")
+        .select("id, state, user_id, created_at")
         .eq("couple_id", activeCouple.id)
         .gte("created_at", startIso)
         .lt("created_at", endIso)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .order("id", { ascending: false });
 
-      const latestByUser = new Map<string, HomeWeatherEntry>();
-      for (const row of weatherData ?? []) {
-        if (!latestByUser.has(row.user_id)) latestByUser.set(row.user_id, row);
-      }
-      const myW = latestByUser.get(user.id) ?? null;
-      const partnerW = coupleState.partnerId
-        ? (latestByUser.get(coupleState.partnerId) ?? null)
-        : (Array.from(latestByUser.values()).find((w) => w.user_id !== user.id) ?? null);
+      const { myEntry: myW, partnerEntry: partnerW } = pickLatestWeatherForCouple(
+        weatherData ?? [],
+        user.id,
+        coupleState.partnerId ?? null,
+      );
 
-      setMyWeatherEntry(myW ? { state: myW.state, user_id: myW.user_id } : null);
-      setPartnerWeatherEntry(partnerW ? { state: partnerW.state, user_id: partnerW.user_id } : null);
+      setMyWeatherEntry(myW);
+      setPartnerWeatherEntry(partnerW);
       setMyWeatherSelected(myW?.state ?? null);
 
       const partnerId = coupleState.partnerId;
@@ -728,21 +719,21 @@ const AppHome = () => {
       const { startIso, endIso } = getLocalDayRange();
       const { data: weatherData } = await supabase
         .from("weather_entries")
-        .select("state, user_id, created_at")
+        .select("id, state, user_id, created_at")
         .eq("couple_id", coupleId)
         .gte("created_at", startIso)
         .lt("created_at", endIso)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .order("id", { ascending: false });
 
-      const latestByUser = new Map<string, HomeWeatherEntry>();
-      for (const row of weatherData ?? []) {
-        if (!latestByUser.has(row.user_id)) latestByUser.set(row.user_id, row);
-      }
+      const { myEntry: myW, partnerEntry: partnerW } = pickLatestWeatherForCouple(
+        weatherData ?? [],
+        user.id,
+        partnerUserId,
+      );
 
-      const myW = latestByUser.get(user.id) ?? null;
-      const partnerW = Array.from(latestByUser.values()).find((entry) => entry.user_id !== user.id) ?? null;
-      setMyWeatherEntry(myW ? { state: myW.state, user_id: myW.user_id } : null);
-      setPartnerWeatherEntry(partnerW ? { state: partnerW.state, user_id: partnerW.user_id } : null);
+      setMyWeatherEntry(myW);
+      setPartnerWeatherEntry(partnerW);
       setMyWeatherSelected(myW?.state ?? null);
     };
 
@@ -759,7 +750,7 @@ const AppHome = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [coupleId, user]);
+  }, [coupleId, partnerUserId, user]);
 
   const latestPartnerMessage = useMemo(
     () => messages.find((message) => message.sender_id !== user?.id) ?? null,
@@ -1089,7 +1080,12 @@ const AppHome = () => {
       state: myWeatherSelected,
     });
     if (!error) {
-      setMyWeatherEntry({ state: myWeatherSelected, user_id: user.id });
+      setMyWeatherEntry({
+        id: `optimistic-${Date.now()}`,
+        state: myWeatherSelected,
+        user_id: user.id,
+        created_at: new Date().toISOString(),
+      });
     }
     setSavingWeather(false);
   };
@@ -1104,7 +1100,12 @@ const AppHome = () => {
       state: key,
     });
     if (!error) {
-      setMyWeatherEntry({ state: key, user_id: user.id });
+      setMyWeatherEntry({
+        id: `optimistic-${Date.now()}`,
+        state: key,
+        user_id: user.id,
+        created_at: new Date().toISOString(),
+      });
       setWeatherPickerVisible(false);
     }
     setSavingWeather(false);
@@ -1176,6 +1177,7 @@ const AppHome = () => {
 
     setRelationshipConnected(false);
     setCoupleId(null);
+    setPartnerUserId(null);
     setInviteCode(null);
     setPartnerName(null);
     setMessages([]);
@@ -1262,14 +1264,12 @@ const AppHome = () => {
 
   const myMood = myWeatherEntry ? getWeatherPresentation(myWeatherEntry.state, lang) : null;
   const partnerMood = partnerWeatherEntry ? getWeatherPresentation(partnerWeatherEntry.state, lang) : null;
-  const bothCheckedIn = Boolean(myWeatherEntry && partnerWeatherEntry);
-  const weatherMatch = useMemo(
-    () =>
-      bothCheckedIn && myWeatherEntry && partnerWeatherEntry
-        ? buildWeatherMatchResult(myWeatherEntry.state, partnerWeatherEntry.state, lang)
-        : null,
-    [bothCheckedIn, lang, myWeatherEntry, partnerWeatherEntry],
+  const activeTonightExperience = useMemo(
+    () => deriveActiveTonightExperience(myWeatherEntry?.state, partnerWeatherEntry?.state, lang),
+    [lang, myWeatherEntry?.state, partnerWeatherEntry?.state],
   );
+  const bothCheckedIn = activeTonightExperience.bothCheckedIn;
+  const weatherMatch = activeTonightExperience.weatherMatch;
 
   const weatherCardState: "picker" | "mine_only" | "both" =
     weatherPickerVisible || !myWeatherEntry
@@ -1330,7 +1330,9 @@ const AppHome = () => {
     ? `sms:?body=${encodeURIComponent(weatherShareText)}`
     : "#";
 
-  const featuredPathTitle = weatherMatch?.archetype.title ?? dailyCards[0]?.title ?? copy.selecting;
+  const featuredPathTitle = weatherMatch
+    ? `${weatherMatch.archetype.title} · ${weatherMatch.pairLabel}`
+    : dailyCards[0]?.title ?? copy.selecting;
   const featuredPathDescription = weatherMatch?.interpretation ?? dailyCards[0]?.description ?? copy.calibrating;
   const featuredPathLabel = weatherUi.tonightPath;
   const tonightRitual = weatherMatch?.recommendations?.[0] ?? null;
@@ -1503,7 +1505,7 @@ const AppHome = () => {
                 <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{weatherUi.latestMatch}</p>
                 <p className="mt-1 text-sm text-foreground">
                   {bothCheckedIn && weatherMatch
-                    ? weatherMatch.archetype.title
+                    ? `${weatherMatch.archetype.title} · ${weatherMatch.pairLabel}`
                     : connectedPanelUi.waitingBoth}
                 </p>
               </div>
@@ -1667,8 +1669,13 @@ const AppHome = () => {
           <img src={shivaShaktiIcon} alt="" className="pointer-events-none absolute right-0 top-0 h-40 w-40 object-cover opacity-20" />
           <div className="relative">
             <p className="text-xs uppercase tracking-[0.2em] text-amber-400/75">{featuredPathLabel}</p>
-            <h3 className="mt-2 font-display text-2xl text-foreground">{tonightRitualTitle}</h3>
-            <p className="mt-3 text-sm leading-6 text-muted-foreground">{tonightRitualDescription}</p>
+            <h3 className="mt-2 font-display text-2xl text-foreground">{featuredPathTitle}</h3>
+            <p className="mt-3 text-sm leading-6 text-muted-foreground">{featuredPathDescription}</p>
+            {tonightRitual ? (
+              <p className="mt-2 text-xs uppercase tracking-[0.14em] text-amber-200/90">
+                {weatherUi.tonightPath}: {tonightRitualTitle}
+              </p>
+            ) : null}
             {tonightRitual ? (
               <div className="mt-3 flex flex-wrap gap-1.5">
                 <span className="rounded-full border border-border/35 bg-card/45 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/90">

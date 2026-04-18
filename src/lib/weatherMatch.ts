@@ -813,6 +813,33 @@ export const getWeatherPresentation = (state: string, lang: Language) => {
   };
 };
 
+export type ActiveTonightExperience = {
+  bothCheckedIn: boolean;
+  weatherMatch: WeatherMatchResult | null;
+  combinationKey: string | null;
+};
+
+export const deriveActiveTonightExperience = (
+  myWeatherRaw: string | null | undefined,
+  partnerWeatherRaw: string | null | undefined,
+  lang: Language,
+): ActiveTonightExperience => {
+  if (!myWeatherRaw || !partnerWeatherRaw) {
+    return {
+      bothCheckedIn: false,
+      weatherMatch: null,
+      combinationKey: null,
+    };
+  }
+
+  const weatherMatch = buildWeatherMatchResult(myWeatherRaw, partnerWeatherRaw, lang);
+  return {
+    bothCheckedIn: true,
+    weatherMatch,
+    combinationKey: weatherMatch.matchKey,
+  };
+};
+
 export const buildWeatherMatchResult = (
   firstRaw: string,
   secondRaw: string,

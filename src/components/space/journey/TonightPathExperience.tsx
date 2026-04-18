@@ -555,6 +555,7 @@ const TonightPathExperience = ({
     const seed = `${new Date().toDateString()}:${weatherMatch?.matchKey ?? weatherStateMode}`;
     return copy.quotes[hashString(seed) % copy.quotes.length];
   }, [copy.quotes, weatherMatch?.matchKey, weatherStateMode]);
+  const matchHeadline = weatherMatch ? `${weatherMatch.archetype.title} · ${weatherMatch.pairLabel}` : copy.waitingTitle;
 
   const copySuggestion = async () => {
     try {
@@ -577,7 +578,7 @@ const TonightPathExperience = ({
       <div className="relative">
         <p className="text-xs uppercase tracking-[0.26em] text-primary/80">{copy.eyebrow}</p>
         <h2 className="mt-2 font-display text-3xl text-foreground md:text-4xl">
-          {weatherMatch ? weatherMatch.archetype.title : copy.waitingTitle}
+          {matchHeadline}
         </h2>
         <p className="mt-2 max-w-4xl text-sm leading-7 text-muted-foreground">
           {weatherMatch

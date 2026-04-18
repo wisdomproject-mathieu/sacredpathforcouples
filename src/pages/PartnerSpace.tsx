@@ -57,7 +57,7 @@ import {
   unreadCountSince,
   type JourneyNotificationSection,
 } from "@/lib/journeyNotifications";
-import { buildWeatherMatchResult, getWeatherPresentation } from "@/lib/weatherMatch";
+import { deriveActiveTonightExperience, getWeatherPresentation } from "@/lib/weatherMatch";
 import {
   fetchCoupleStateForUser,
   markEverConnected,
@@ -67,6 +67,7 @@ import {
 } from "@/lib/couples";
 import { getPremiumTriggerCopy, getTempleJourneys, getTempleMembershipName } from "@/lib/premiumArchitecture";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { pickLatestWeatherForCouple, sortWeatherEntriesByRecency } from "@/lib/weatherEntries";
 
 type ToolKey = "weather" | "rituals" | "positions" | "messages" | "guide" | "repair" | "pathways" | "altar";
 type ViewMode = "doorways" | "journey" | "oracle";
@@ -612,6 +613,7 @@ const PartnerSpace = () => {
           .gte("created_at", dayStart.toISOString())
           .lt("created_at", dayEnd.toISOString())
           .order("created_at", { ascending: false })
+          .order("id", { ascending: false })
           .limit(60),
         supabase
           .from("partner_messages")
@@ -669,25 +671,19 @@ const PartnerSpace = () => {
     setSeenMap((current) => ({ ...current, [section]: timestamp }));
   };
 
-  const latestWeatherByUser = useMemo(() => {
-    const map = new Map<string, JourneyWeatherItem>();
-    for (const item of weatherEntries) {
-      if (!map.has(item.user_id)) map.set(item.user_id, item);
+  const sortedWeatherEntries = useMemo(
+    () => sortWeatherEntriesByRecency(weatherEntries),
+    [weatherEntries],
+  );
+  const { myEntry: myWeatherEntry, partnerEntry: belovedWeatherEntry } = useMemo(() => {
+    if (!user?.id) {
+      return {
+        myEntry: null as JourneyWeatherItem | null,
+        partnerEntry: null as JourneyWeatherItem | null,
+      };
     }
-    return map;
-  }, [weatherEntries]);
-
-  const myWeatherEntry = useMemo(
-    () => (user?.id ? latestWeatherByUser.get(user.id) ?? null : null),
-    [latestWeatherByUser, user?.id],
-  );
-  const belovedWeatherEntry = useMemo(
-    () => {
-      if (partnerUserId) return latestWeatherByUser.get(partnerUserId) ?? null;
-      return Array.from(latestWeatherByUser.values()).find((item) => item.user_id !== user?.id) ?? null;
-    },
-    [latestWeatherByUser, partnerUserId, user?.id],
-  );
+    return pickLatestWeatherForCouple(sortedWeatherEntries, user.id, partnerUserId);
+  }, [partnerUserId, sortedWeatherEntries, user?.id]);
 
   const myWeatherCard: WeatherCardData | null = useMemo(() => {
     if (!myWeatherEntry) return null;
@@ -720,13 +716,11 @@ const PartnerSpace = () => {
     return "both";
   }, [belovedWeatherEntry, myWeatherEntry]);
 
-  const weatherMatch = useMemo(
-    () =>
-      myWeatherEntry && belovedWeatherEntry
-        ? buildWeatherMatchResult(myWeatherEntry.state, belovedWeatherEntry.state, lang)
-        : null,
-    [belovedWeatherEntry, lang, myWeatherEntry],
+  const activeTonightExperience = useMemo(
+    () => deriveActiveTonightExperience(myWeatherEntry?.state, belovedWeatherEntry?.state, lang),
+    [belovedWeatherEntry?.state, lang, myWeatherEntry?.state],
   );
+  const weatherMatch = activeTonightExperience.weatherMatch;
 
   // Home entry should land users directly on a complete Tonight Path surface.
   useEffect(() => {
@@ -960,7 +954,7 @@ const PartnerSpace = () => {
     };
 
     const latestWeatherByUser = new Map<string, JourneyWeatherItem>();
-    for (const item of weatherEntries) {
+    for (const item of sortedWeatherEntries) {
       if (!latestWeatherByUser.has(item.user_id)) {
         latestWeatherByUser.set(item.user_id, item);
       }
@@ -1059,8 +1053,8 @@ const PartnerSpace = () => {
     l,
     matchTimestamp,
     seenTimeline,
+    sortedWeatherEntries,
     user?.id,
-    weatherEntries,
     weatherMatch,
   ]);
 
@@ -1539,7 +1533,7 @@ const PartnerSpace = () => {
                   <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{l("Latest match", "Dernier match", "Poslední souhra")}</p>
                   <p className="mt-1 text-sm text-foreground">
                     {weatherMatch
-                      ? weatherMatch.archetype.title
+                      ? `${weatherMatch.archetype.title} · ${weatherMatch.pairLabel}`
                       : l("Waiting for both weather check-ins.", "En attente de vos deux météos.", "Čekáme na obě počasí.")}
                   </p>
                 </div>
