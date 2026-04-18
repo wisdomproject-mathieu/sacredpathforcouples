@@ -343,6 +343,90 @@ const toPracticeItem = (card: SelectedDailyMainCard, copy: (typeof copyByLang)[L
   theme: classifyThemeFromCard(card),
 });
 
+const buildThemeBridgePractice = (
+  theme: ThemeKey,
+  copy: (typeof copyByLang)[Language],
+): PracticeItem => {
+  const themeMeta = copy.themeMeta[theme];
+  const base = {
+    id: `theme-bridge-${theme}`,
+    subtitle: themeMeta.title,
+    purpose: themeMeta.whyTonight,
+    tags: [copy.tagsPaceSlow, copy.tagsEmotionalSafety, copy.tagsConsentForward],
+    theme,
+  } satisfies Omit<PracticeItem, "title" | "actions">;
+
+  if (theme === "breathing") {
+    return {
+      ...base,
+      title: "Shared Exhale Reset",
+      actions: [
+        "Inhale together for 4 counts.",
+        "Exhale together for 6 counts.",
+        "Repeat for five rounds before deciding the next step.",
+      ],
+    };
+  }
+
+  if (theme === "massage") {
+    return {
+      ...base,
+      title: "Shoulder Warmth Ritual",
+      actions: [
+        "One partner receives slow shoulder pressure for 90 seconds.",
+        "Switch roles and mirror the same rhythm.",
+        "Close with one grounding embrace.",
+      ],
+    };
+  }
+
+  if (theme === "emotional_connection") {
+    return {
+      ...base,
+      title: "One Feeling, One Need",
+      actions: [
+        "Each partner names one feeling without blame.",
+        "Each partner names one need for tonight.",
+        "Mirror what you heard before offering touch.",
+      ],
+    };
+  }
+
+  if (theme === "sacred_intimacy") {
+    return {
+      ...base,
+      title: "Slow Polarity Invitation",
+      actions: [
+        "Share one desire sentence each.",
+        "Hold eye contact for 20 seconds.",
+        "Offer one intentional touch and pause for consent.",
+      ],
+    };
+  }
+
+  if (theme === "reflection") {
+    return {
+      ...base,
+      title: "Afterglow Integration",
+      actions: [
+        "Name one moment you want to remember.",
+        "Share one gratitude sentence each.",
+        "Set one tiny intention for tomorrow.",
+      ],
+    };
+  }
+
+  return {
+    ...base,
+    title: "Gaze and Palm Contact",
+    actions: [
+      "Sit facing each other.",
+      "Place one palm against your partner's.",
+      "Hold eye contact for three breaths.",
+    ],
+  };
+};
+
 const TonightPathExperience = ({
   lang,
   weatherMatch,
@@ -360,6 +444,8 @@ const TonightPathExperience = ({
     const combinedCards = [selectedDailyMainCard, ...alternateCards].filter(
       (card): card is SelectedDailyMainCard => Boolean(card),
     );
+    if (!combinedCards.length) return [];
+
     const selected: PracticeItem[] = [];
     const usedKeys = new Set<string>();
 
@@ -368,6 +454,16 @@ const TonightPathExperience = ({
       if (usedKeys.has(dedupeKey)) continue;
       selected.push(toPracticeItem(card, copy));
       usedKeys.add(dedupeKey);
+    }
+
+    const seenThemes = new Set<ThemeKey>(selected.map((item) => item.theme));
+    for (const theme of themeOrder) {
+      if (seenThemes.has(theme)) continue;
+      const bridge = buildThemeBridgePractice(theme, copy);
+      const bridgeKey = normalizePracticeKey(bridge.id);
+      if (usedKeys.has(bridgeKey)) continue;
+      selected.push(bridge);
+      usedKeys.add(bridgeKey);
     }
 
     return selected.slice(0, 6);
