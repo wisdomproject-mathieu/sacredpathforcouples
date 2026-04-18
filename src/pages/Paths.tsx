@@ -1727,7 +1727,7 @@ const pathUpgradeCopy: Record<
 };
 
 const shellCardClass =
-  "rounded-[28px] border border-border/30 bg-card/45 p-5 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.46)]";
+  "rounded-[24px] border border-amber-400/20 bg-card/50 p-5";
 
 const pathsUiCopy: Record<Language, Record<string, string>> = {
   en: {
@@ -2636,19 +2636,19 @@ const Paths = () => {
   return (
     <div className="space-y-4 md:space-y-6">
       {showBrowse ? (
-      <section className="relative overflow-hidden rounded-[30px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-5 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] md:p-8">
-        <div className="absolute top-4 right-4 opacity-20 hover:opacity-40 transition-opacity">
-          <img src={shivaShaktiIcon} alt="" className="h-12 w-12 rounded-[10px]" />
+      <section className="relative overflow-hidden rounded-[24px] border border-amber-400/20 bg-card/35 p-5">
+        <div className="absolute -right-10 top-0 opacity-15">
+          <img src={shivaShaktiIcon} alt="" className="h-40 w-40 rounded-[20px]" />
         </div>
         <div className="max-w-4xl">
           <p className="text-xs uppercase tracking-[0.28em] text-primary/80">{ui.heroEyebrow}</p>
-          <h1 className="mt-3 font-display text-3xl text-foreground md:text-5xl">{ui.heroTitle}</h1>
-          <p className="mt-4 text-sm leading-7 text-muted-foreground md:text-base">
+          <h1 className="mt-2 font-display text-3xl text-foreground">{ui.heroTitle}</h1>
+          <p className="mt-3 text-sm leading-7 text-muted-foreground">
             {ui.heroDesc}
           </p>
         </div>
 
-        <div className="mt-6 w-full rounded-[24px] border border-border/30 bg-card/45 p-4">
+        <div className="mt-4 w-full rounded-[18px] border border-border/30 bg-background/35 p-3">
           <div className="text-xs uppercase tracking-[0.22em] text-primary/80">{ui.sacredPages}</div>
           <div className="mt-3 grid gap-3 md:grid-cols-2">
             {libraryPages.map((page) => {

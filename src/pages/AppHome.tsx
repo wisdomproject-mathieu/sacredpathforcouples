@@ -1361,6 +1361,17 @@ const AppHome = () => {
     () => pickBySeed(quotes, `${todayKey}:home-end-quote`),
     [quotes, todayKey],
   );
+  const dailyQuoteCard = (
+    <div className="rounded-[20px] border border-amber-300/20 bg-amber-500/6 p-5 text-center">
+      <p className="mb-3 text-xs uppercase tracking-[0.22em] text-amber-300/70">
+        {lang === "fr" ? "Citation du jour" : lang === "cs" ? "Citát dne" : "Daily quote"}
+      </p>
+      <p className="mx-auto max-w-2xl font-display text-lg italic leading-8 text-foreground/80">
+        “{rotatingQuote.quote}”
+      </p>
+      <p className="mt-3 text-xs uppercase tracking-[0.16em] text-muted-foreground/65">{rotatingQuote.author}</p>
+    </div>
+  );
 
   const copyWeatherShare = async () => {
     if (!weatherShareText) return;
@@ -1572,8 +1583,9 @@ const AppHome = () => {
         </div>
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-[1.25fr_0.75fr]">
-        <div className="rounded-[24px] border border-amber-400/20 bg-card/50 p-5">
+      <section className="grid items-start gap-4 lg:grid-cols-[1.25fr_0.75fr]">
+        <div className="space-y-4">
+          <div className="rounded-[24px] border border-amber-400/20 bg-card/50 p-5">
           <p className="text-xs uppercase tracking-[0.22em] text-amber-400/70">{weatherUi.sectionLabel}</p>
           <h3 className="mt-2 font-display text-xl text-foreground">{weatherUi.sectionTitle}</h3>
           <div className="mt-4 grid grid-cols-4 gap-2">
@@ -1671,6 +1683,8 @@ const AppHome = () => {
               {joinSuccess && <p className="mt-2 text-xs text-emerald-300/80">{joinSuccess}</p>}
             </div>
           )}
+        </div>
+          <div className="hidden lg:block">{dailyQuoteCard}</div>
         </div>
 
         <div className="relative overflow-hidden rounded-[24px] border border-amber-400/20 bg-card/50 p-5">
@@ -1800,15 +1814,7 @@ const AppHome = () => {
         </section>
       )}
 
-      <div className="rounded-[20px] border border-amber-300/20 bg-amber-500/6 p-5 text-center">
-        <p className="mb-3 text-xs uppercase tracking-[0.22em] text-amber-300/70">
-          {lang === "fr" ? "Citation du jour" : lang === "cs" ? "Citát dne" : "Daily quote"}
-        </p>
-        <p className="mx-auto max-w-2xl font-display text-lg italic leading-8 text-foreground/80">
-          “{rotatingQuote.quote}”
-        </p>
-        <p className="mt-3 text-xs uppercase tracking-[0.16em] text-muted-foreground/65">{rotatingQuote.author}</p>
-      </div>
+      <div className="lg:hidden">{dailyQuoteCard}</div>
     </div>
   );
 };

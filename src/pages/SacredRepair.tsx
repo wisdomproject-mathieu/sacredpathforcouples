@@ -1,11 +1,9 @@
 import { useMemo, useRef, useState } from "react";
 import { ArrowLeft, Flame, Hand, Heart, Lock, MessageCircle, type LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
+import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 
 import { SACRED_REPAIR_CHAPTERS, type SacredRepairChapter, type SacredRepairRitual } from "@/lib/sacredRepairData";
-
-const shellCardClass =
-  "rounded-[28px] border border-border/30 bg-card/45 p-5 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.46)]";
 
 type ChapterVisual = {
   icon: LucideIcon;
@@ -97,7 +95,7 @@ const ChapterCard = ({
   const iconClass = (chapterVisuals[chapter.id] ?? chapterVisuals["touch-massage-sacred-spot"]).iconClass;
   const narrative = CHAPTER_NARRATIVE_BY_ID[chapter.id];
 
-  const className = `group rounded-[24px] border p-4 text-left transition-all md:p-5 ${
+  const className = `group flex min-h-[236px] flex-col rounded-[24px] border p-4 text-left transition-all ${
     selected
       ? "border-primary/30 bg-primary/10 shadow-[0_16px_50px_-40px_rgba(255,173,70,0.45)]"
       : "border-border/30 bg-background/45 hover:border-primary/20 hover:bg-card/55"
@@ -108,14 +106,14 @@ const ChapterCard = ({
       <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-3 ${iconClass}`}>
         <Icon className="h-4 w-4" />
       </div>
-      <h2 className={`mt-3 font-display leading-[1.14] text-foreground ${compact ? "text-[1.7rem]" : "text-[1.9rem]"}`}>
+      <h2 className={`mt-3 font-display leading-[1.15] text-foreground ${compact ? "text-[1.7rem]" : "text-[1.75rem]"}`}>
         {chapter.title}
       </h2>
-      <p className="mt-1.5 text-base leading-7 text-primary/90">{narrative?.subtitle ?? chapter.emotionalFrame}</p>
-      <p className={`mt-2 text-base leading-7 text-muted-foreground/95 ${compact ? "" : "line-clamp-3"}`}>
+      <p className="mt-1.5 text-sm leading-6 text-primary/90">{narrative?.subtitle ?? chapter.emotionalFrame}</p>
+      <p className={`mt-2 text-sm leading-6 text-muted-foreground/95 ${compact ? "" : "line-clamp-3"}`}>
         {narrative?.supportingCopy ?? chapter.emotionalFrame}
       </p>
-      <div className="mt-3 flex flex-wrap items-center gap-2">
+      <div className="mt-3 flex flex-wrap items-center gap-2 pt-1">
         <span className="rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-xs uppercase tracking-[0.14em] text-primary/90">
           {chapter.rituals.length} rituals
         </span>
@@ -153,7 +151,7 @@ const RitualCard = ({
   unlocked: boolean;
   onClick?: () => void;
 }) => {
-  const className = `group rounded-[24px] border p-4 text-left transition-all md:p-5 ${
+  const className = `group flex min-h-[236px] flex-col rounded-[24px] border p-4 text-left transition-all ${
     active
       ? "border-primary/30 bg-primary/10 shadow-[0_16px_50px_-40px_rgba(255,173,70,0.45)]"
       : "border-border/30 bg-background/45 hover:border-primary/20 hover:bg-card/55"
@@ -174,10 +172,10 @@ const RitualCard = ({
         )}
       </div>
 
-      <h3 className="mt-2 font-display text-[1.8rem] leading-[1.12] text-foreground">{ritual.title}</h3>
-      <p className="mt-2 line-clamp-3 text-base leading-7 text-muted-foreground/95">{getRitualPreview(ritual)}</p>
+      <h3 className="mt-2 font-display text-[1.75rem] leading-[1.15] text-foreground">{ritual.title}</h3>
+      <p className="mt-2 line-clamp-3 text-sm leading-6 text-muted-foreground/95">{getRitualPreview(ritual)}</p>
       <p className="mt-3 text-sm leading-6 text-foreground/82">Lineage: {ritual.lineage}</p>
-      <p className="mt-3 text-xs uppercase tracking-[0.12em] text-primary/85">
+      <p className="mt-auto pt-3 text-xs uppercase tracking-[0.12em] text-primary/85">
         {unlocked ? "Open ritual" : "Locked in premium"}
       </p>
     </>
@@ -228,7 +226,7 @@ const RitualDetail = ({
         </button>
       </div>
 
-      <article className="relative overflow-hidden rounded-[28px] border border-primary/25 bg-gradient-to-br from-background/92 via-card/78 to-background/90 p-4 md:p-6">
+      <article className="relative overflow-hidden rounded-[24px] border border-amber-400/20 bg-card/50 p-5">
         <div className="pointer-events-none absolute right-3 top-3 opacity-12" aria-hidden="true">
           <div className={`rounded-full bg-gradient-to-br ${visual.glowClass} p-5 blur-[1px]`}>
             <Icon className={`h-16 w-16 md:h-24 md:w-24 ${visual.iconClass}`} />
@@ -238,7 +236,7 @@ const RitualDetail = ({
         <div className="relative z-10 space-y-6">
           <div>
             <p className="text-sm uppercase tracking-[0.2em] text-primary/80">Ritual Detail</p>
-            <h3 className="mt-2 font-display text-[2.35rem] leading-tight text-foreground md:text-5xl">{ritual.title}</h3>
+            <h3 className="mt-2 font-display text-3xl leading-tight text-foreground md:text-4xl">{ritual.title}</h3>
             <div className="mt-4 flex flex-wrap gap-2 text-sm text-foreground/90">
               <span className="rounded-full border border-border/35 bg-background/45 px-3 py-1.5">{ritual.lineage}</span>
               <span className="rounded-full border border-border/35 bg-background/45 px-3 py-1.5">{ritual.duration}</span>
@@ -246,14 +244,14 @@ const RitualDetail = ({
           </div>
 
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1.2fr)]">
-            <section className="rounded-[22px] border border-border/30 bg-card/50 p-5">
+            <section className="rounded-[20px] border border-border/30 bg-background/45 p-5">
               <h4 className="text-base uppercase tracking-[0.16em] text-primary/80">Intention</h4>
               <p className="mt-2 text-[1.05rem] leading-8 text-foreground/92 md:text-[1.12rem]">{ritual.intention}</p>
               <h4 className="mt-6 text-base uppercase tracking-[0.16em] text-primary/80">Set-up</h4>
               <p className="mt-2 text-[1.05rem] leading-8 text-foreground/92 md:text-[1.12rem]">{ritual.setup}</p>
             </section>
 
-            <section className="rounded-[22px] border border-border/30 bg-card/50 p-5">
+            <section className="rounded-[20px] border border-border/30 bg-background/45 p-5">
               <h4 className="text-base uppercase tracking-[0.16em] text-primary/80">Practice Steps</h4>
               <ol className="mt-4 space-y-4">
                 {ritual.steps.map((step, index) => (
@@ -266,7 +264,7 @@ const RitualDetail = ({
             </section>
           </div>
 
-          <section className="rounded-[22px] border border-border/30 bg-card/50 p-5">
+          <section className="rounded-[20px] border border-border/30 bg-background/45 p-5">
             <h4 className="text-base uppercase tracking-[0.16em] text-primary/80">Teaching</h4>
             <p className="mt-2 text-[1.05rem] leading-8 text-foreground/92 md:text-[1.12rem]">{ritual.teaching}</p>
           </section>
@@ -314,10 +312,13 @@ const SacredRepair = () => {
 
   return (
     <div className="space-y-5 md:space-y-6">
-      <section className={shellCardClass}>
+      <section className="relative overflow-hidden rounded-[24px] border border-amber-400/20 bg-card/35 p-5">
+        <div className="absolute -right-10 top-0 opacity-15">
+          <img src={shivaShaktiIcon} alt="" className="h-40 w-40 rounded-[20px]" />
+        </div>
         <p className="text-xs uppercase tracking-[0.28em] text-primary/80">Sacred Repair</p>
-        <h1 className="mt-3 font-display text-5xl leading-tight text-foreground md:text-6xl">Return to Love</h1>
-        <p className="mt-4 max-w-4xl text-base leading-8 text-muted-foreground md:text-xl md:leading-9">{heroCopy}</p>
+        <h1 className="mt-2 font-display text-3xl leading-tight text-foreground">Return to Love</h1>
+        <p className="mt-3 max-w-4xl text-sm leading-7 text-muted-foreground">{heroCopy}</p>
       </section>
 
       {!selectedChapter ? (
