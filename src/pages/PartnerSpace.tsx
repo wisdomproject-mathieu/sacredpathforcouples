@@ -1495,27 +1495,50 @@ const PartnerSpace = () => {
                   </span>
                 ) : null}
               </h1>
-              <p className="mt-2 text-sm text-muted-foreground/75">{connectedJourneyLine}</p>
-              <div className="mt-3 rounded-[12px] border border-emerald-300/25 bg-emerald-500/8 px-3 py-2.5">
-                <p className="text-[10px] uppercase tracking-[0.14em] text-emerald-200/80">{connectedReminderLabel}</p>
-                <p className="mt-1 text-sm leading-6 text-foreground/90">{connectedDailyReminder}</p>
-              </div>
+              <p className="mt-2 text-sm text-muted-foreground/75">
+                {hasConnectedPartner
+                  ? connectedJourneyLine
+                  : l(
+                      "Not connected yet. Invite your partner to begin your shared path.",
+                      "Pas encore connectés. Invitez votre partenaire pour commencer votre chemin partagé.",
+                      "Ještě nejste propojeni. Pozvěte partnera a začněte společnou cestu.",
+                    )}
+              </p>
+              {hasConnectedPartner ? (
+                <div className="mt-3 rounded-[12px] border border-emerald-300/25 bg-emerald-500/8 px-3 py-2.5">
+                  <p className="text-[10px] uppercase tracking-[0.14em] text-emerald-200/80">{connectedReminderLabel}</p>
+                  <p className="mt-1 text-sm leading-6 text-foreground/90">{connectedDailyReminder}</p>
+                </div>
+              ) : null}
             </div>
 
-            <div className="rounded-[18px] border border-emerald-300/25 bg-emerald-500/8 p-3">
-              <p className="text-xs uppercase tracking-[0.18em] text-emerald-200/85">{l("Connected together", "Connectés", "Společně propojeni")}</p>
-              <p className="mt-2 text-sm leading-6 text-foreground/90">
-                {partnerDisplayName ?? l("Your partner", "Votre partenaire", "Partner")} {l("is connected. Stay here and open tonight's ritual cards below.", "est connecté(e). Restez ici et ouvrez les cartes rituelles de ce soir ci-dessous.", "je propojený/á. Zůstaňte zde a otevřete níže dnešní rituální karty.")}
-              </p>
-              <div className="mt-3 rounded-[10px] border border-border/30 bg-background/45 px-3 py-2">
-                <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{l("Latest match", "Dernier match", "Poslední souhra")}</p>
-                <p className="mt-1 text-sm text-foreground">
-                  {weatherMatch
-                    ? weatherMatch.archetype.title
-                    : l("Waiting for both weather check-ins.", "En attente de vos deux météos.", "Čekáme na obě počasí.")}
+            {hasConnectedPartner ? (
+              <div className="rounded-[18px] border border-emerald-300/25 bg-emerald-500/8 p-3">
+                <p className="text-xs uppercase tracking-[0.18em] text-emerald-200/85">{l("Connected together", "Connectés", "Společně propojeni")}</p>
+                <p className="mt-2 text-sm leading-6 text-foreground/90">
+                  {partnerDisplayName ?? l("Your partner", "Votre partenaire", "Partner")} {l("is connected. Stay here and open tonight's ritual cards below.", "est connecté(e). Restez ici et ouvrez les cartes rituelles de ce soir ci-dessous.", "je propojený/á. Zůstaňte zde a otevřete níže dnešní rituální karty.")}
+                </p>
+                <div className="mt-3 rounded-[10px] border border-border/30 bg-background/45 px-3 py-2">
+                  <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{l("Latest match", "Dernier match", "Poslední souhra")}</p>
+                  <p className="mt-1 text-sm text-foreground">
+                    {weatherMatch
+                      ? weatherMatch.archetype.title
+                      : l("Waiting for both weather check-ins.", "En attente de vos deux météos.", "Čekáme na obě počasí.")}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="rounded-[18px] border border-amber-400/20 bg-background/35 p-3">
+                <p className="text-xs uppercase tracking-[0.18em] text-amber-300/80">{l("Temple status", "Statut du temple", "Stav chrámu")}</p>
+                <p className="mt-2 text-sm leading-6 text-foreground/90">
+                  {l(
+                    "Connect your partner to unlock the shared journey, live weather matching, and temple messages.",
+                    "Connectez votre partenaire pour débloquer le parcours partagé, la météo en direct et les messages du temple.",
+                    "Propojte partnera a odemkněte sdílenou cestu, živé párování počasí a chrámové zprávy.",
+                  )}
                 </p>
               </div>
-            </div>
+            )}
           </div>
 
           <div className="max-w-4xl">
