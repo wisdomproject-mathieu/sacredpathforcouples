@@ -2653,18 +2653,6 @@ const Paths = () => {
               );
             })}
           </div>
-          <div className="mt-3 rounded-2xl border border-border/25 bg-background/40 px-3 py-2">
-            <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-              {lang === "fr" ? "Reconnect intégré" : lang === "cs" ? "Reconnect integrován" : "Reconnect integrated"}
-            </p>
-            <p className="mt-1 text-xs leading-5 text-foreground/85">
-              {lang === "fr"
-                ? "Les outils Reconnect restent actifs dans Tonight Path, les recommandations météo et More Rituals for Two."
-                : lang === "cs"
-                  ? "Reconnect obsah zůstává aktivní v Dnešní cestě, doporučeních podle počasí a ve Více rituálů pro dva."
-                  : "Reconnect tools remain active in Tonight Path, weather-based recommendations, and More Rituals for Two."}
-            </p>
-          </div>
         </div>
       </section>
       ) : null}
