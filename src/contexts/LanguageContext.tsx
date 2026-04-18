@@ -984,10 +984,16 @@ const translations: Record<string, Record<Language, string>> = {
   "settings.membership_desc": { en: "View your plan and unlock more intimacy tools.", fr: "Consultez votre plan et débloquez plus d'outils d'intimité.", cs: "Zobrazte svůj plán a odemkněte další nástroje intimity." },
   "settings.view_plans": { en: "View plans", fr: "Voir les plans", cs: "Zobrazit plány" },
   "settings.account": { en: "Account", fr: "Compte", cs: "Účet" },
-  "settings.account_desc": { en: "Sign out now. Account deletion flow will be finalized next.", fr: "Déconnectez-vous. La suppression du compte sera finalisée ensuite.", cs: "Odhlaste se. Smazání účtu dokončíme v další fázi." },
+  "settings.account_desc": { en: "Manage your session and permanently delete your account if needed.", fr: "Gérez votre session et supprimez définitivement votre compte si nécessaire.", cs: "Spravujte relaci a v případě potřeby trvale smažte účet." },
   "settings.sign_out": { en: "Sign out", fr: "Déconnexion", cs: "Odhlásit se" },
   "settings.delete_account": { en: "Delete account", fr: "Supprimer le compte", cs: "Smazat účet" },
-  "settings.delete_account_note": { en: "Next phase: wire this button to a secure account deletion flow.", fr: "Étape suivante : connecter ce bouton à un flux sécurisé de suppression du compte.", cs: "Další fáze: napojit toto tlačítko na bezpečné smazání účtu." },
+  "settings.deleting_account": { en: "Deleting account...", fr: "Suppression du compte...", cs: "Mazání účtu..." },
+  "settings.delete_account_note": { en: "Account deletion is permanent and removes your profile, couple data access, and saved history.", fr: "La suppression du compte est définitive et retire votre profil, l'accès aux données de couple et l'historique enregistré.", cs: "Smazání účtu je trvalé a odstraní profil, přístup k párovým datům i uloženou historii." },
+  "settings.delete_confirm": { en: "Delete your account permanently? This cannot be undone.", fr: "Supprimer définitivement votre compte ? Cette action est irréversible.", cs: "Trvale smazat účet? Tuto akci nelze vrátit." },
+  "settings.delete_failed": { en: "Unable to delete account right now.", fr: "Impossible de supprimer le compte pour le moment.", cs: "Účet se teď nepodařilo smazat." },
+  "settings.delete_success": { en: "Your account was deleted.", fr: "Votre compte a été supprimé.", cs: "Váš účet byl smazán." },
+  "settings.delete_session_missing": { en: "Please sign in again before deleting your account.", fr: "Veuillez vous reconnecter avant de supprimer votre compte.", cs: "Před smazáním účtu se prosím znovu přihlaste." },
+  "settings.privacy_link": { en: "Privacy policy", fr: "Politique de confidentialité", cs: "Zásady ochrany soukromí" },
 };
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {

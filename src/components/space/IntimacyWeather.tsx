@@ -4,6 +4,7 @@ import { Cloud, Heart, MoonStar, Sparkles, SunMedium, Wind } from "lucide-react"
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
+import type { Tables } from "@/integrations/supabase/types";
 import DoorwayShell from "@/components/space/DoorwayShell";
 import ShareCardButton from "@/components/space/ShareCardButton";
 
@@ -19,6 +20,21 @@ type WeatherStateMeta = {
   hint: string;
   icon: typeof SunMedium;
   iconClass: string;
+};
+
+type WeatherEntry = Pick<Tables<"weather_entries">, "state" | "created_at" | "user_id"> & {
+  id?: string;
+};
+
+const getLocalDayRange = () => {
+  const dayStart = new Date();
+  dayStart.setHours(0, 0, 0, 0);
+  const dayEnd = new Date(dayStart);
+  dayEnd.setDate(dayEnd.getDate() + 1);
+  return {
+    startIso: dayStart.toISOString(),
+    endIso: dayEnd.toISOString(),
+  };
 };
 
 const weatherStatesByLanguage: Record<Language, WeatherStateMeta[]> = {
@@ -136,31 +152,37 @@ const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
   const states = weatherStatesByLanguage[lang];
   const isPreview = !coupleId;
   const [selected, setSelected] = useState<string | null>(null);
-  const [myEntry, setMyEntry] = useState<any | null>(null);
-  const [partnerEntry, setPartnerEntry] = useState<any | null>(null);
+  const [myEntry, setMyEntry] = useState<WeatherEntry | null>(null);
+  const [partnerEntry, setPartnerEntry] = useState<WeatherEntry | null>(null);
   const [saving, setSaving] = useState(false);
 
   const selectedState = useMemo(
     () => states.find((state) => state.key === selected) ?? null,
-    [selected]
+    [selected, states]
   );
 
   useEffect(() => {
     if (!coupleId || !user) return;
 
-    const today = new Date().toISOString().slice(0, 10);
-
     const load = async () => {
+      const { startIso, endIso } = getLocalDayRange();
       const { data } = await supabase
         .from("weather_entries")
-        .select("*")
+        .select("id, state, created_at, user_id")
         .eq("couple_id", coupleId)
-        .gte("created_at", today)
+        .gte("created_at", startIso)
+        .lt("created_at", endIso)
         .order("created_at", { ascending: false });
 
       if (data) {
-        const mine = data.find((item: any) => item.user_id === user.id);
-        const partner = data.find((item: any) => item.user_id !== user.id);
+        const latestByUser = new Map<string, WeatherEntry>();
+        for (const item of data) {
+          if (!latestByUser.has(item.user_id)) {
+            latestByUser.set(item.user_id, item);
+          }
+        }
+        const mine = latestByUser.get(user.id) ?? null;
+        const partner = Array.from(latestByUser.values()).find((item) => item.user_id !== user.id) ?? null;
         setMyEntry(mine ?? null);
         setPartnerEntry(partner ?? null);
         if (mine?.state) setSelected(mine.state);
@@ -199,7 +221,7 @@ const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
     setSaving(false);
   };
 
-  const renderCard = (title: string, entry: any | null, mine = false) => {
+  const renderCard = (title: string, entry: WeatherEntry | null, mine = false) => {
     const stateMeta = states.find((state) => state.key === entry?.state) ?? null;
     return (
       <div className="rounded-[22px] border border-border/22 bg-background/50 p-4 backdrop-blur-sm">

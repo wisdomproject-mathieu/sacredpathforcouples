@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
+import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -1093,14 +1094,25 @@ const PartnerSpace = () => {
   const shouldShowDepthUpgrade = Boolean(!hasPremiumAccess && weatherMatch && sharedMatchesThisWeek >= 3);
 
   const sendSacredMessage = async (type: SacredComposerType | "acknowledgement", body: string) => {
-    if (!coupleId || !user || !body.trim()) return;
-    await supabase.from("partner_messages").insert({
+    if (!coupleId || !user || !body.trim()) return false;
+    const { error } = await supabase.from("partner_messages").insert({
       couple_id: coupleId,
       sender_id: user.id,
       message_type: type,
       content: body.trim(),
     });
+    if (error) {
+      toast.error(
+        l(
+          "Message was not sent. Please try again.",
+          "Le message n'a pas été envoyé. Veuillez réessayer.",
+          "Zpráva nebyla odeslána. Zkuste to prosím znovu.",
+        ),
+      );
+      return false;
+    }
     setActivityTick((value) => value + 1);
+    return true;
   };
 
   const quickComposeTemplates: Record<SacredComposerType, string> = {
@@ -1113,7 +1125,16 @@ const PartnerSpace = () => {
   };
 
   const handleQuickCompose = async (type: SacredComposerType) => {
-    await sendSacredMessage(type, quickComposeTemplates[type]);
+    const sent = await sendSacredMessage(type, quickComposeTemplates[type]);
+    if (sent) {
+      toast.success(
+        l(
+          "Message sent to your beloved.",
+          "Message envoyé à votre partenaire.",
+          "Zpráva odeslána partnerovi.",
+        ),
+      );
+    }
   };
 
   const sendTempleSuggestion = async (kind: "whisper" | "gratitude" | "quote") => {
@@ -1127,7 +1148,16 @@ const PartnerSpace = () => {
 
     setTempleSendingKind(kind);
     try {
-      await sendSacredMessage(messageType as unknown as SacredComposerType, text);
+      const sent = await sendSacredMessage(messageType as unknown as SacredComposerType, text);
+      if (sent) {
+        toast.success(
+          kind === "whisper"
+            ? l("Whisper sent.", "Murmure envoyé.", "Šepot odeslán.")
+            : kind === "gratitude"
+              ? l("Gratitude sent.", "Gratitude envoyée.", "Vděčnost odeslána.")
+              : l("Sacred quote sent.", "Citation sacrée envoyée.", "Posvátný citát odeslán."),
+        );
+      }
     } finally {
       setTempleSendingKind(null);
     }
@@ -1583,7 +1613,7 @@ const PartnerSpace = () => {
                           </p>
                           {templeComposerKind === "quote" ? (
                             <span className="rounded-full border border-amber-300/25 bg-amber-500/10 px-2 py-0.5 text-[9px] uppercase tracking-[0.1em] text-amber-100/85">
-                              {templeSendUi.quotesToday} · {(templeQuoteIndex % dailyTempleQuotes.length) + 1}/{dailyTempleQuotes.length}
+                              {templeSendUi.quotesToday}
                             </span>
                           ) : null}
                         </div>
@@ -1645,7 +1675,7 @@ const PartnerSpace = () => {
                       onClick={() => openJourneyScreen("tonight_path")}
                       className="rounded-[22px] border border-primary/35 bg-primary/14 p-4 text-left transition-all hover:border-primary/55 hover:bg-primary/20"
                     >
-                      <p className="text-xs uppercase tracking-[0.2em] text-primary/85">{l("Button", "Bouton", "Tlačítko")}</p>
+                      <p className="text-xs uppercase tracking-[0.2em] text-primary/85">{l("Next move", "Prochain pas", "Další krok")}</p>
                       <h3 className="mt-2 font-display text-2xl text-foreground">{l("Tonight Path", "Chemin de ce soir", "Dnešní cesta")}</h3>
                       <p className="mt-1 text-sm leading-6 text-muted-foreground">
                         {l(
@@ -1660,7 +1690,7 @@ const PartnerSpace = () => {
                       onClick={() => openJourneyScreen("more_rituals")}
                       className="rounded-[22px] border border-border/35 bg-card/55 p-4 text-left transition-all hover:border-border/55 hover:bg-card/70"
                     >
-                      <p className="text-xs uppercase tracking-[0.2em] text-primary/85">{l("Button", "Bouton", "Tlačítko")}</p>
+                      <p className="text-xs uppercase tracking-[0.2em] text-primary/85">{l("Explore", "Explorer", "Prozkoumat")}</p>
                       <h3 className="mt-2 font-display text-2xl text-foreground">{l("More Rituals For Two", "Plus de rituels à deux", "Více rituálů pro dva")}</h3>
                       <p className="mt-1 text-sm leading-6 text-muted-foreground">
                         {l(
@@ -1876,25 +1906,88 @@ const PartnerSpace = () => {
         {viewMode === "journey" && (
           <section className="space-y-5">
             {journeyScreen === "tonight_path" ? (
-              <TonightPathExperience
-                lang={lang}
-                weatherMatch={weatherMatch}
-                weatherStateMode={weatherStateMode}
-                myWeather={myWeatherCard}
-                belovedWeather={belovedWeatherCard}
-                sharedStatusLabel={sharedStatusLabel}
-              />
+              hasPremiumAccess ? (
+                <TonightPathExperience
+                  lang={lang}
+                  weatherMatch={weatherMatch}
+                  weatherStateMode={weatherStateMode}
+                  myWeather={myWeatherCard}
+                  belovedWeather={belovedWeatherCard}
+                  sharedStatusLabel={sharedStatusLabel}
+                />
+              ) : (
+                <section className="space-y-4">
+                  {premiumPreviewBanner(
+                    l("Tonight Path Premium", "Chemin de ce soir Premium", "Dnešní cesta Premium"),
+                    l(
+                      "Unlock the complete Tonight Path flow",
+                      "Débloquez le flow complet du chemin de ce soir",
+                      "Odemkněte kompletní flow dnešní cesty",
+                    ),
+                    l(
+                      "Get the full guided ritual sequence based on your shared weather, with richer steps, pacing, and emotional guidance.",
+                      "Accédez à la séquence rituelle complète basée sur votre météo partagée, avec plus d'étapes, de rythme et de guidance émotionnelle.",
+                      "Získejte plnou vedenou rituální sekvenci podle sdíleného počasí s hlubšími kroky, tempem a emočním vedením.",
+                    ),
+                    [
+                      l("Full ritual flow", "Flow rituel complet", "Plný rituální flow"),
+                      l("Couple pacing", "Rythme de couple", "Párové tempo"),
+                      l("Deep emotional guidance", "Guidage émotionnel profond", "Hlubší emoční vedení"),
+                    ],
+                  )}
+                  <div className="rounded-[22px] border border-border/30 bg-card/45 p-4">
+                    <p className="text-xs uppercase tracking-[0.18em] text-primary/80">
+                      {l("Free preview", "Aperçu gratuit", "Ukázka zdarma")}
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-foreground/90">
+                      {weatherMatch
+                        ? `${weatherMatch.archetype.title}: ${weatherMatch.summary}`
+                        : l(
+                            "Share both weather states to preview tonight's direction.",
+                            "Partagez les deux météos pour prévisualiser la direction de ce soir.",
+                            "Sdílejte obě počasí pro náhled dnešního směru.",
+                          )}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => activateTool("weather")}
+                      className="mt-3 rounded-xl border border-border/35 bg-background/45 px-3 py-2 text-xs text-foreground transition-all hover:border-border/55 hover:bg-background/60"
+                    >
+                      {l("Update shared weather", "Mettre à jour la météo partagée", "Aktualizovat sdílené počasí")}
+                    </button>
+                  </div>
+                </section>
+              )
             ) : null}
             {journeyScreen === "more_rituals" ? (
-              <MoreRitualsForTwoExperience
-                lang={lang}
-                weatherMatch={weatherMatch}
-                isPremium={hasPremiumAccess}
-                canSend={Boolean(coupleId && user)}
-                onSend={async (message) => {
-                  await sendSacredMessage("ritual_share", message);
-                }}
-              />
+              hasPremiumAccess ? (
+                <MoreRitualsForTwoExperience
+                  lang={lang}
+                  weatherMatch={weatherMatch}
+                  isPremium={hasPremiumAccess}
+                  canSend={Boolean(coupleId && user)}
+                  onSend={async (message) => sendSacredMessage("ritual_share", message)}
+                />
+              ) : (
+                premiumPreviewBanner(
+                  l("More Rituals Premium", "Plus de rituels Premium", "Více rituálů Premium"),
+                  l(
+                    "Unlock all rituals for two",
+                    "Débloquez tous les rituels à deux",
+                    "Odemkněte všechny rituály pro dva",
+                  ),
+                  l(
+                    "Premium opens the full themed library of breathing, touch, massage, reconnect, and guided pathways in one focused screen.",
+                    "Premium ouvre la bibliothèque complète par thèmes: souffle, toucher, massage, reconnexion et parcours guidés sur un seul écran.",
+                    "Premium odemyká celou tematickou knihovnu dechu, doteku, masáže, reconnectu a vedených cest na jedné obrazovce.",
+                  ),
+                  [
+                    l("All themes unlocked", "Tous les thèmes débloqués", "Všechna témata odemčena"),
+                    l("Sendable ritual cards", "Cartes rituelles partageables", "Sdílené rituální karty"),
+                    l("Daily couple depth", "Denní párová hloubka", "Každodenní párová hloubka"),
+                  ],
+                )
+              )
             ) : null}
           </section>
         )}

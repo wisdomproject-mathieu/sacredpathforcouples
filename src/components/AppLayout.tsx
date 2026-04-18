@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { BookOpen, Home, LogOut, Sparkles } from "lucide-react";
+import { BookOpen, Home, LogOut, Settings, Sparkles } from "lucide-react";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -95,6 +95,17 @@ const AppLayout = () => {
 
             <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-border/30 bg-background/40 p-3">
               <LanguageSwitcher />
+              <Link
+                to="/app/settings"
+                className={`inline-flex h-9 w-9 items-center justify-center rounded-xl border transition-colors ${
+                  location.pathname === "/app/settings"
+                    ? "border-primary/35 bg-primary/12 text-primary"
+                    : "border-border/30 bg-card/45 text-foreground hover:bg-card/60"
+                }`}
+                aria-label={t("nav.settings")}
+              >
+                <Settings className="h-4 w-4" />
+              </Link>
               <Button variant="ghost" size="icon" onClick={signOut} className="rounded-xl border border-border/30 bg-card/45 hover:bg-card/60">
                 <LogOut className="h-4 w-4" />
               </Button>

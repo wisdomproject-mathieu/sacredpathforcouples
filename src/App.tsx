@@ -18,9 +18,9 @@ import Paths from "./pages/Paths";
 import Authors from "./pages/Authors";
 import Pricing from "./pages/Pricing";
 import Privacy from "./pages/Privacy";
-import TempleEntry from "./pages/TempleEntry";
 import PartnerSpace from "./pages/PartnerSpace";
 import ShareWisdom from "./pages/ShareWisdom";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -156,9 +156,10 @@ const App = () => (
                 <Route path="rituals" element={<Rituals />} />
                 <Route path="paths" element={<Paths />} />
                 <Route path="authors" element={<Authors />} />
-                <Route path="temple" element={<TempleEntry />} />
+                <Route path="temple" element={<Navigate to="/app/space" replace />} />
                 <Route path="space" element={<PartnerSpace />} />
                 <Route path="wisdom" element={<ShareWisdom />} />
+                <Route path="settings" element={<Settings />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>

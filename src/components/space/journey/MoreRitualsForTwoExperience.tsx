@@ -63,7 +63,7 @@ type Props = {
   weatherMatch: WeatherMatchResult | null;
   isPremium: boolean;
   canSend: boolean;
-  onSend?: (message: string) => Promise<void>;
+  onSend?: (message: string) => Promise<boolean>;
 };
 
 const themeOrder: ThemeKey[] = [
@@ -655,9 +655,11 @@ const MoreRitualsForTwoExperience = ({ lang, weatherMatch, isPremium, canSend, o
     if (!onSend || !canSend) return;
     setSendingId(card.id);
     try {
-      await onSend(card.shareText);
-      setSentId(card.id);
-      window.setTimeout(() => setSentId(null), 1700);
+      const sent = await onSend(card.shareText);
+      if (sent) {
+        setSentId(card.id);
+        window.setTimeout(() => setSentId(null), 1700);
+      }
     } finally {
       setSendingId(null);
     }
