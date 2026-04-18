@@ -423,6 +423,62 @@ const PartnerSpace = () => {
       : templeComposerKind === "gratitude"
         ? activeTempleGratitude
         : activeTempleQuote;
+  const todayLabel = useMemo(
+    () =>
+      new Intl.DateTimeFormat(
+        lang === "fr" ? "fr-FR" : lang === "cs" ? "cs-CZ" : "en-US",
+        {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+        },
+      ).format(new Date()),
+    [lang],
+  );
+  const connectedJourneyLine = useMemo(
+    () =>
+      lang === "fr"
+        ? "Vous êtes reliés. Nourrissez ce lien avec présence, tendresse, et gestes qui vous ramènent l'un à l'autre."
+        : lang === "cs"
+          ? "Jste propojeni. Pečujte o pouto přítomností, něhou a drobnými kroky, které vás vrací k sobě."
+          : "You are connected. Keep this bond warm through presence, tenderness, and small acts that bring you back to each other.",
+    [lang],
+  );
+  const connectedReminderLabel = lang === "fr"
+    ? "RAPPEL DU JOUR"
+    : lang === "cs"
+      ? "DNESNÍ PŘIPOMÍNKA"
+      : "TODAY'S REMINDER";
+  const connectedDailyReminder = useMemo(() => {
+    const remindersByLang: Record<Language, string[]> = {
+      en: [
+        "Connection is built in small acts of presence.",
+        "Gratitude keeps love warm between the great moments.",
+        "Today, choose softness before speed.",
+        "The bond deepens when both hearts stay available.",
+        "Two people do not stay close by accident. They return on purpose.",
+        "A loving ritual can begin with one gentle message.",
+      ],
+      fr: [
+        "La connexion se construit dans de petits gestes de présence.",
+        "La gratitude garde l'amour vivant entre les grands moments.",
+        "Aujourd'hui, choisissez la douceur avant la vitesse.",
+        "Le lien se renforce quand les deux cœurs restent disponibles.",
+        "Deux personnes restent proches quand elles se choisissent à nouveau, chaque jour.",
+        "Un rituel d'amour peut commencer par un message tendre.",
+      ],
+      cs: [
+        "Spojení se tvoří malými akty přítomnosti.",
+        "Vděčnost drží lásku v teple mezi velkými momenty.",
+        "Dnes zvolte jemnost před spěchem.",
+        "Pouto sílí, když zůstávají otevřená obě srdce.",
+        "Blízkost nevzniká náhodou. Dva lidé se k sobě vracejí záměrně.",
+        "Láskyplný rituál může začít jednou jemnou zprávou.",
+      ],
+    };
+    const reminders = remindersByLang[lang];
+    return reminders[new Date().getDate() % reminders.length];
+  }, [lang]);
   const templeSendUi = lang === "fr"
     ? {
         title: "Whisper, gratitude, quote",
@@ -1411,7 +1467,7 @@ const PartnerSpace = () => {
           </section>
         )}
 
-        <section className={`relative overflow-hidden rounded-[24px] border border-amber-400/20 bg-card/35 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] backdrop-blur-sm ${isJourneyView ? "p-4 md:p-5" : "p-5 md:p-6"}`}>
+        <section className="relative overflow-hidden rounded-[24px] border border-amber-400/20 bg-card/35 p-5">
           <div className="absolute -right-10 top-0 opacity-15">
             <img src={shivaShaktiIcon} alt="" className="h-40 w-40 rounded-[20px]" />
           </div>
@@ -1423,18 +1479,73 @@ const PartnerSpace = () => {
               "„Pár, který praktikuje společně, k sobě přichází znovu a znovu.“",
             )}
           </p>
+          <div className="mt-4 grid gap-4 lg:grid-cols-[1.3fr_1fr]">
+            <div>
+              <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground/65">{todayLabel}</p>
+              <h1 className="mt-2 flex flex-wrap items-center gap-2 font-display text-3xl text-foreground">
+                <span>
+                  {myDisplayName ?? l("You", "Vous", "Ty")}
+                  <span className="text-amber-400/65"> &amp; </span>
+                  {partnerDisplayName ?? l("your beloved", "votre bien-aimé(e)", "tvůj milovaný protějšek")}
+                </span>
+                {hasConnectedPartner ? (
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300/35 bg-emerald-500/10 px-2.5 py-1 text-emerald-200">
+                    <Heart className="h-4 w-4 fill-current" />
+                    <Sparkles className="h-4 w-4" />
+                  </span>
+                ) : null}
+              </h1>
+              <p className="mt-2 text-sm text-muted-foreground/75">
+                {hasConnectedPartner
+                  ? connectedJourneyLine
+                  : l(
+                      "Not connected yet. Invite your partner to begin your shared path.",
+                      "Pas encore connectés. Invitez votre partenaire pour commencer votre chemin partagé.",
+                      "Ještě nejste propojeni. Pozvěte partnera a začněte společnou cestu.",
+                    )}
+              </p>
+              {hasConnectedPartner ? (
+                <div className="mt-3 rounded-[12px] border border-emerald-300/25 bg-emerald-500/8 px-3 py-2.5">
+                  <p className="text-[10px] uppercase tracking-[0.14em] text-emerald-200/80">{connectedReminderLabel}</p>
+                  <p className="mt-1 text-sm leading-6 text-foreground/90">{connectedDailyReminder}</p>
+                </div>
+              ) : null}
+            </div>
+
+            {hasConnectedPartner ? (
+              <div className="rounded-[18px] border border-emerald-300/25 bg-emerald-500/8 p-3">
+                <p className="text-xs uppercase tracking-[0.18em] text-emerald-200/85">{l("Connected together", "Connectés", "Společně propojeni")}</p>
+                <p className="mt-2 text-sm leading-6 text-foreground/90">
+                  {partnerDisplayName ?? l("Your partner", "Votre partenaire", "Partner")} {l("is connected. Stay here and open tonight's ritual cards below.", "est connecté(e). Restez ici et ouvrez les cartes rituelles de ce soir ci-dessous.", "je propojený/á. Zůstaňte zde a otevřete níže dnešní rituální karty.")}
+                </p>
+                <div className="mt-3 rounded-[10px] border border-border/30 bg-background/45 px-3 py-2">
+                  <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{l("Latest match", "Dernier match", "Poslední souhra")}</p>
+                  <p className="mt-1 text-sm text-foreground">
+                    {weatherMatch
+                      ? weatherMatch.archetype.title
+                      : l("Waiting for both weather check-ins.", "En attente de vos deux météos.", "Čekáme na obě počasí.")}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="rounded-[18px] border border-amber-400/20 bg-background/35 p-3">
+                <p className="text-xs uppercase tracking-[0.18em] text-amber-300/80">{l("Temple status", "Statut du temple", "Stav chrámu")}</p>
+                <p className="mt-2 text-sm leading-6 text-foreground/90">
+                  {l(
+                    "Connect your partner to unlock the shared journey, live weather matching, and temple messages.",
+                    "Connectez votre partenaire pour débloquer le parcours partagé, la météo en direct et les messages du temple.",
+                    "Propojte partnera a odemkněte sdílenou cestu, živé párování počasí a chrámové zprávy.",
+                  )}
+                </p>
+              </div>
+            )}
+          </div>
+
           <div className="max-w-4xl">
             <p className="mt-4 text-xs uppercase tracking-[0.28em] text-primary/80">{l("Sacred Temple", "Temple sacré", "Posvátný chrám")}</p>
-            {(myDisplayName || partnerDisplayName) && (
-              <p className="mt-2 font-display text-base text-foreground/90 md:text-lg">
-                {myDisplayName ?? l("You", "Vous", "Ty")}
-                <span className="text-amber-400/70"> &amp; </span>
-                {partnerDisplayName ?? l("your beloved", "votre bien-aimé(e)", "tvůj milovaný protějšek")}
-              </p>
-            )}
-            <h1 className={`mt-3 font-display text-foreground ${isJourneyView ? "text-2xl md:text-3xl" : "text-3xl md:text-4xl"}`}>
+            <h2 className={`mt-3 font-display text-foreground ${isJourneyView ? "text-2xl md:text-3xl" : "text-3xl md:text-4xl"}`}>
               {journeyHeaderTitle}
-            </h1>
+            </h2>
             <p className={`mt-3 max-w-2xl text-sm text-muted-foreground ${isJourneyView ? "leading-6" : "leading-7 md:text-base"}`}>
               {journeyHeaderDescription}
             </p>
