@@ -32,6 +32,7 @@ import {
 } from "@/lib/authorsRichContent";
 import LibraryDetailBody from "@/components/library/LibraryDetailBody";
 import LibraryDetailSplitLayout from "@/components/library/LibraryDetailSplitLayout";
+import { sacredVisualSystem } from "@/lib/sacredVisualSystem";
 
 type Tier = "free" | "premium";
 
@@ -1480,7 +1481,7 @@ const authorUpgradeCopy: Record<
 };
 
 const shellCardClass =
-  "rounded-[24px] border border-amber-400/20 bg-card/50 p-5";
+  sacredVisualSystem.sectionFrame;
 
 const authorsUiCopy: Record<Language, Record<string, string>> = {
   en: {
@@ -2335,7 +2336,7 @@ const Authors = () => {
   return (
     <div className="space-y-4 md:space-y-6">
       {showBrowse ? (
-      <section className="relative overflow-hidden rounded-[24px] border border-amber-400/20 bg-card/35 p-5">
+      <section className={sacredVisualSystem.heroFrame}>
         <div className="absolute -right-10 top-0 opacity-15">
           <img src={shivaShaktiIcon} alt="" className="h-40 w-40 rounded-[20px]" />
         </div>
@@ -2347,7 +2348,7 @@ const Authors = () => {
           </p>
         </div>
 
-        <div className="mt-4 w-full rounded-[18px] border border-border/30 bg-background/35 p-3">
+        <div className={sacredVisualSystem.contourEmerald}>
           <div className="text-xs uppercase tracking-[0.22em] text-primary/80">{ui.sacredPages}</div>
           <div className="mt-3 grid gap-3 md:grid-cols-2">
             {libraryPages.map((page) => {
@@ -2381,7 +2382,8 @@ const Authors = () => {
         <p className="text-xs uppercase tracking-[0.22em] text-primary/80">{ui.overviewEyebrow}</p>
         <h2 className="mt-2 font-display text-3xl text-foreground">{ui.overviewTitle}</h2>
 
-        <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-2">
+        <div className={`mt-5 ${sacredVisualSystem.contourCyan}`}>
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-2">
           {localizedAuthors.map((author) => {
             const Icon = author.icon;
             const isSelected = selectedSlug === author.slug;
@@ -2390,14 +2392,12 @@ const Authors = () => {
                 key={author.slug}
                 type="button"
                 onClick={() => handleSelectAuthor(author.slug)}
-                className={`group flex min-h-[236px] flex-col rounded-[24px] border p-4 text-left transition-all ${
-                  isSelected
-                    ? "border-primary/30 bg-primary/10 shadow-[0_16px_50px_-40px_rgba(255,173,70,0.45)]"
-                    : "border-border/30 bg-background/45 hover:border-primary/20 hover:bg-card/55"
+                className={`${sacredVisualSystem.overviewCardBase} ${
+                  isSelected ? sacredVisualSystem.overviewCardActive : sacredVisualSystem.overviewCardIdle
                 }`}
               >
                 <div className="flex items-start justify-between gap-3">
-                  <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-3 ${author.iconClass}`}>
+                  <div className={`${sacredVisualSystem.iconBadge} ${author.iconClass}`}>
                     <Icon className="h-4 w-4" />
                   </div>
                   <TierBadge tier={author.tier} />
@@ -2411,7 +2411,7 @@ const Authors = () => {
                     ? `${ui.practicePreview}: ${author.content?.exercises[0]?.title ?? ui.practicePreviewFallback}`
                     : `${ui.premiumPreview}: ${AUTHOR_LONGFORM_BY_SLUG[author.slug]?.tagline ?? author.oneLiner ?? ui.premiumPreviewFallback}`}
                 </p>
-                <p className="mt-auto pt-3 text-xs uppercase tracking-[0.12em] text-primary/85 group-hover:text-primary">
+                <p className="mt-3 text-xs uppercase tracking-[0.12em] text-primary/85 group-hover:text-primary">
                   {openCardHint}
                 </p>
               </button>
@@ -2461,6 +2461,7 @@ const Authors = () => {
               </div>
             </Link>
           ) : null}
+          </div>
         </div>
 
         {entitlementResolved && !hasPremiumAccess ? (

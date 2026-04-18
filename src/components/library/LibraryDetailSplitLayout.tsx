@@ -1,4 +1,5 @@
 import type { ReactNode, RefObject } from "react";
+import { sacredVisualSystem } from "@/lib/sacredVisualSystem";
 
 type LibraryDetailSplitLayoutProps = {
   isMobile: boolean;
@@ -42,14 +43,14 @@ const LibraryDetailSplitLayout = ({
 
     <aside
       ref={sidePaneRef}
-      className="w-full min-w-0 space-y-4"
+      className={`w-full min-w-0 space-y-4 ${sacredVisualSystem.contourEmerald}`}
     >
       {sidePane}
     </aside>
 
     <div
       ref={detailPaneRef}
-      className="w-full min-w-0"
+      className={`w-full min-w-0 ${sacredVisualSystem.contourCyan}`}
     >
       {detailPane}
     </div>

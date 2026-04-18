@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 
 import { SACRED_REPAIR_CHAPTERS, type SacredRepairChapter, type SacredRepairRitual } from "@/lib/sacredRepairData";
+import { sacredVisualSystem } from "@/lib/sacredVisualSystem";
 
 type ChapterVisual = {
   icon: LucideIcon;
@@ -95,15 +96,15 @@ const ChapterCard = ({
   const iconClass = (chapterVisuals[chapter.id] ?? chapterVisuals["touch-massage-sacred-spot"]).iconClass;
   const narrative = CHAPTER_NARRATIVE_BY_ID[chapter.id];
 
-  const className = `group flex min-h-[236px] flex-col rounded-[24px] border p-4 text-left transition-all ${
+  const className = `${sacredVisualSystem.overviewCardBase} ${
     selected
-      ? "border-primary/30 bg-primary/10 shadow-[0_16px_50px_-40px_rgba(255,173,70,0.45)]"
-      : "border-border/30 bg-background/45 hover:border-primary/20 hover:bg-card/55"
+      ? sacredVisualSystem.overviewCardActive
+      : sacredVisualSystem.overviewCardIdle
   }`;
 
   const body = (
     <>
-      <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-3 ${iconClass}`}>
+      <div className={`${sacredVisualSystem.iconBadge} ${iconClass}`}>
         <Icon className="h-4 w-4" />
       </div>
       <h2 className={`mt-3 font-display leading-[1.15] text-foreground ${compact ? "text-[1.7rem]" : "text-[1.75rem]"}`}>
@@ -151,10 +152,10 @@ const RitualCard = ({
   unlocked: boolean;
   onClick?: () => void;
 }) => {
-  const className = `group flex min-h-[236px] flex-col rounded-[24px] border p-4 text-left transition-all ${
+  const className = `${sacredVisualSystem.overviewCardBase} ${
     active
-      ? "border-primary/30 bg-primary/10 shadow-[0_16px_50px_-40px_rgba(255,173,70,0.45)]"
-      : "border-border/30 bg-background/45 hover:border-primary/20 hover:bg-card/55"
+      ? sacredVisualSystem.overviewCardActive
+      : sacredVisualSystem.overviewCardIdle
   }`;
 
   const content = (
@@ -226,7 +227,7 @@ const RitualDetail = ({
         </button>
       </div>
 
-      <article className="relative overflow-hidden rounded-[24px] border border-amber-400/20 bg-card/50 p-5">
+      <article className={`relative overflow-hidden ${sacredVisualSystem.sectionFrame}`}>
         <div className="pointer-events-none absolute right-3 top-3 opacity-12" aria-hidden="true">
           <div className={`rounded-full bg-gradient-to-br ${visual.glowClass} p-5 blur-[1px]`}>
             <Icon className={`h-16 w-16 md:h-24 md:w-24 ${visual.iconClass}`} />
@@ -312,7 +313,7 @@ const SacredRepair = () => {
 
   return (
     <div className="space-y-5 md:space-y-6">
-      <section className="relative overflow-hidden rounded-[24px] border border-amber-400/20 bg-card/35 p-5">
+      <section className={sacredVisualSystem.heroFrame}>
         <div className="absolute -right-10 top-0 opacity-15">
           <img src={shivaShaktiIcon} alt="" className="h-40 w-40 rounded-[20px]" />
         </div>
@@ -322,17 +323,20 @@ const SacredRepair = () => {
       </section>
 
       {!selectedChapter ? (
-        <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-2">
-          {SACRED_REPAIR_CHAPTERS.map((chapter) => (
-            <ChapterCard
-              key={chapter.id}
-              chapter={chapter}
-              onClick={() => {
-                setSelectedChapterId(chapter.id);
-                setSelectedRitualTitle(null);
-              }}
-            />
-          ))}
+        <section className={sacredVisualSystem.contourEmerald}>
+          <p className={sacredVisualSystem.contourEyebrow}>Repair chapters</p>
+          <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-2">
+            {SACRED_REPAIR_CHAPTERS.map((chapter) => (
+              <ChapterCard
+                key={chapter.id}
+                chapter={chapter}
+                onClick={() => {
+                  setSelectedChapterId(chapter.id);
+                  setSelectedRitualTitle(null);
+                }}
+              />
+            ))}
+          </div>
         </section>
       ) : (
         <section className="space-y-4">
@@ -353,15 +357,18 @@ const SacredRepair = () => {
 
           {!selectedRitual ? (
             <>
-              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-2">
-                {selectedChapter.rituals.map((ritual) => (
-                  <RitualCard
-                    key={ritual.title}
-                    ritual={ritual}
-                    unlocked={isRitualUnlocked(selectedChapter.id, ritual.title)}
-                    onClick={() => handleRitualClick(selectedChapter, ritual)}
-                  />
-                ))}
+              <div className={sacredVisualSystem.contourCyan}>
+                <p className={sacredVisualSystem.contourEyebrow}>Practice rituals</p>
+                <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-2">
+                  {selectedChapter.rituals.map((ritual) => (
+                    <RitualCard
+                      key={ritual.title}
+                      ritual={ritual}
+                      unlocked={isRitualUnlocked(selectedChapter.id, ritual.title)}
+                      onClick={() => handleRitualClick(selectedChapter, ritual)}
+                    />
+                  ))}
+                </div>
               </div>
 
               <section
@@ -405,7 +412,9 @@ const SacredRepair = () => {
             </>
           ) : (
             <>
-              <RitualCard ritual={selectedRitual} unlocked={true} active={true} />
+              <div className={sacredVisualSystem.contourCyan}>
+                <RitualCard ritual={selectedRitual} unlocked={true} active={true} />
+              </div>
 
               <RitualDetail
                 ritual={selectedRitual}
