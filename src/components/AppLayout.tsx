@@ -16,8 +16,8 @@ const AppLayout = () => {
   const navItems = useMemo(
     () => [
       { to: "/app", icon: Home, label: t("nav.home"), iconClass: "text-amber-300" },
-      { to: "/app/paths", icon: BookOpen, label: t("nav.library"), iconClass: "text-violet-300" },
       { to: "/app/space", icon: Sparkles, label: t("nav.temple"), iconClass: "text-fuchsia-300" },
+      { to: "/app/paths", icon: BookOpen, label: t("nav.library"), iconClass: "text-violet-300" },
     ],
     [t]
   );
