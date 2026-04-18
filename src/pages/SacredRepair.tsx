@@ -43,50 +43,103 @@ const FREE_RITUAL_BY_CHAPTER: Record<string, string> = {
   "emotional-clearing-authentic-relating": "Appreciation & Witness",
 };
 
+type ChapterNarrative = {
+  subtitle: string;
+  supportingCopy: string;
+  chips: string[];
+};
+
+const CHAPTER_NARRATIVE_BY_ID: Record<string, ChapterNarrative> = {
+  "touch-massage-sacred-spot": {
+    subtitle: "Repair through reverent touch",
+    supportingCopy:
+      "Begin where the body still says yes. Slow touch, devotional massage, and sacred spot practices that soften defence and rebuild trust through presence.",
+    chips: ["Body-led repair", "Trust through touch"],
+  },
+  "embrace-embodied-connection": {
+    subtitle: "Repair through holding and nervous-system settling",
+    supportingCopy:
+      "Before passion returns, safety must return. These practices help couples hold, breathe, settle, and feel each other again without pressure.",
+    chips: ["Nervous-system safety", "Presence before pressure"],
+  },
+  "sacred-union-rituals": {
+    subtitle: "Repair through conscious lovemaking",
+    supportingCopy:
+      "When tenderness reopens, union can become medicine. Slow sex, karezza, and bliss-based practices replace urgency with presence.",
+    chips: ["Conscious union", "Slow intimacy"],
+  },
+  "emotional-clearing-authentic-relating": {
+    subtitle: "Repair through truth and emotional honesty",
+    supportingCopy:
+      "For the truths sitting between you. Boundaries, appreciation, intention, and shadow work that help love breathe again.",
+    chips: ["Truth practices", "Relational repair"],
+  },
+};
+
 const getRitualPreview = (ritual: SacredRepairRitual) => {
-  const sentence = ritual.intention.split(".")[0]?.trim();
-  return sentence ? `${sentence}.` : ritual.intention;
+  const intentionSentence = ritual.intention.split(".")[0]?.trim();
+  const setupSentence = ritual.setup.split(".")[0]?.trim();
+  return [intentionSentence, setupSentence].filter(Boolean).map((line) => `${line}.`).join(" ");
 };
 
 const ChapterCard = ({
   chapter,
   selected,
+  compact,
   onClick,
 }: {
   chapter: SacredRepairChapter;
   selected?: boolean;
+  compact?: boolean;
   onClick?: () => void;
 }) => {
   const Icon = (chapterVisuals[chapter.id] ?? chapterVisuals["touch-massage-sacred-spot"]).icon;
   const iconClass = (chapterVisuals[chapter.id] ?? chapterVisuals["touch-massage-sacred-spot"]).iconClass;
+  const narrative = CHAPTER_NARRATIVE_BY_ID[chapter.id];
 
-  const className = `group flex min-h-[236px] flex-col rounded-[24px] border p-4 text-left transition-all ${
+  const className = `group rounded-[24px] border p-4 text-left transition-all md:p-5 ${
     selected
       ? "border-primary/30 bg-primary/10 shadow-[0_16px_50px_-40px_rgba(255,173,70,0.45)]"
       : "border-border/30 bg-background/45 hover:border-primary/20 hover:bg-card/55"
   }`;
 
+  const body = (
+    <>
+      <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-3 ${iconClass}`}>
+        <Icon className="h-4 w-4" />
+      </div>
+      <h2 className={`mt-3 font-display leading-[1.14] text-foreground ${compact ? "text-[1.7rem]" : "text-[1.9rem]"}`}>
+        {chapter.title}
+      </h2>
+      <p className="mt-1.5 text-base leading-7 text-primary/90">{narrative?.subtitle ?? chapter.emotionalFrame}</p>
+      <p className={`mt-2 text-base leading-7 text-muted-foreground/95 ${compact ? "" : "line-clamp-3"}`}>
+        {narrative?.supportingCopy ?? chapter.emotionalFrame}
+      </p>
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <span className="rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-xs uppercase tracking-[0.14em] text-primary/90">
+          {chapter.rituals.length} rituals
+        </span>
+        {(narrative?.chips ?? []).slice(0, 2).map((chip) => (
+          <span
+            key={`${chapter.id}-${chip}`}
+            className="rounded-full border border-border/30 bg-background/35 px-3 py-1 text-xs uppercase tracking-[0.12em] text-foreground/85"
+          >
+            {chip}
+          </span>
+        ))}
+      </div>
+    </>
+  );
+
   if (onClick) {
     return (
       <button type="button" onClick={onClick} className={className}>
-        <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-3 ${iconClass}`}>
-          <Icon className="h-4 w-4" />
-        </div>
-        <h2 className="mt-3 font-display text-[1.9rem] leading-[1.14] text-foreground">{chapter.title}</h2>
-        <p className="mt-2 text-base leading-7 text-muted-foreground/95">{chapter.emotionalFrame}</p>
+        {body}
       </button>
     );
   }
 
-  return (
-    <article className={className}>
-      <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-3 ${iconClass}`}>
-        <Icon className="h-4 w-4" />
-      </div>
-      <h2 className="mt-3 font-display text-[1.9rem] leading-[1.14] text-foreground">{chapter.title}</h2>
-      <p className="mt-2 text-base leading-7 text-muted-foreground/95">{chapter.emotionalFrame}</p>
-    </article>
-  );
+  return <article className={className}>{body}</article>;
 };
 
 const RitualCard = ({
@@ -100,7 +153,7 @@ const RitualCard = ({
   unlocked: boolean;
   onClick?: () => void;
 }) => {
-  const className = `group flex min-h-[228px] flex-col rounded-[24px] border p-4 text-left transition-all ${
+  const className = `group rounded-[24px] border p-4 text-left transition-all md:p-5 ${
     active
       ? "border-primary/30 bg-primary/10 shadow-[0_16px_50px_-40px_rgba(255,173,70,0.45)]"
       : "border-border/30 bg-background/45 hover:border-primary/20 hover:bg-card/55"
@@ -114,13 +167,17 @@ const RitualCard = ({
           <span className="inline-flex items-center rounded-full border border-amber-400/40 bg-amber-400/10 p-2 text-amber-300">
             <Lock className="h-3.5 w-3.5" />
           </span>
-        ) : null}
+        ) : (
+          <span className="inline-flex rounded-full border border-emerald-300/40 bg-emerald-500/10 px-2.5 py-1 text-[10px] uppercase tracking-[0.15em] text-emerald-200">
+            Free ritual
+          </span>
+        )}
       </div>
 
-      <h3 className="mt-2 font-display text-[2rem] leading-[1.1] text-foreground">{ritual.title}</h3>
-      <p className="mt-2 text-base leading-7 text-muted-foreground/95">{getRitualPreview(ritual)}</p>
-      <p className="mt-3 text-sm leading-6 text-foreground/82">{ritual.lineage}</p>
-      <p className="mt-auto pt-3 text-xs uppercase tracking-[0.12em] text-primary/85">
+      <h3 className="mt-2 font-display text-[1.8rem] leading-[1.12] text-foreground">{ritual.title}</h3>
+      <p className="mt-2 line-clamp-3 text-base leading-7 text-muted-foreground/95">{getRitualPreview(ritual)}</p>
+      <p className="mt-3 text-sm leading-6 text-foreground/82">Lineage: {ritual.lineage}</p>
+      <p className="mt-3 text-xs uppercase tracking-[0.12em] text-primary/85">
         {unlocked ? "Open ritual" : "Locked in premium"}
       </p>
     </>
@@ -171,38 +228,38 @@ const RitualDetail = ({
         </button>
       </div>
 
-      <article className="relative overflow-hidden rounded-[28px] border border-primary/25 bg-gradient-to-br from-background/92 via-card/75 to-background/90 p-5 md:p-7">
-        <div className="pointer-events-none absolute right-4 top-4 opacity-20" aria-hidden="true">
+      <article className="relative overflow-hidden rounded-[28px] border border-primary/25 bg-gradient-to-br from-background/92 via-card/78 to-background/90 p-4 md:p-6">
+        <div className="pointer-events-none absolute right-3 top-3 opacity-12" aria-hidden="true">
           <div className={`rounded-full bg-gradient-to-br ${visual.glowClass} p-5 blur-[1px]`}>
-            <Icon className={`h-24 w-24 md:h-36 md:w-36 ${visual.iconClass}`} />
+            <Icon className={`h-16 w-16 md:h-24 md:w-24 ${visual.iconClass}`} />
           </div>
         </div>
 
         <div className="relative z-10 space-y-6">
           <div>
             <p className="text-sm uppercase tracking-[0.2em] text-primary/80">Ritual Detail</p>
-            <h3 className="mt-2 font-display text-4xl leading-tight text-foreground md:text-5xl">{ritual.title}</h3>
+            <h3 className="mt-2 font-display text-[2.35rem] leading-tight text-foreground md:text-5xl">{ritual.title}</h3>
             <div className="mt-4 flex flex-wrap gap-2 text-sm text-foreground/90">
               <span className="rounded-full border border-border/35 bg-background/45 px-3 py-1.5">{ritual.lineage}</span>
               <span className="rounded-full border border-border/35 bg-background/45 px-3 py-1.5">{ritual.duration}</span>
             </div>
           </div>
 
-          <div className="grid gap-6 xl:grid-cols-[minmax(0,1.05fr)_minmax(0,1.2fr)]">
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1.2fr)]">
             <section className="rounded-[22px] border border-border/30 bg-card/50 p-5">
-              <h4 className="text-sm uppercase tracking-[0.18em] text-primary/80">Intention</h4>
-              <p className="mt-2 text-base leading-8 text-foreground/92 md:text-lg">{ritual.intention}</p>
-              <h4 className="mt-6 text-sm uppercase tracking-[0.18em] text-primary/80">Set-up</h4>
-              <p className="mt-2 text-base leading-8 text-foreground/92 md:text-lg">{ritual.setup}</p>
+              <h4 className="text-base uppercase tracking-[0.16em] text-primary/80">Intention</h4>
+              <p className="mt-2 text-[1.05rem] leading-8 text-foreground/92 md:text-[1.12rem]">{ritual.intention}</p>
+              <h4 className="mt-6 text-base uppercase tracking-[0.16em] text-primary/80">Set-up</h4>
+              <p className="mt-2 text-[1.05rem] leading-8 text-foreground/92 md:text-[1.12rem]">{ritual.setup}</p>
             </section>
 
             <section className="rounded-[22px] border border-border/30 bg-card/50 p-5">
-              <h4 className="text-sm uppercase tracking-[0.18em] text-primary/80">Practice Steps</h4>
+              <h4 className="text-base uppercase tracking-[0.16em] text-primary/80">Practice Steps</h4>
               <ol className="mt-4 space-y-4">
                 {ritual.steps.map((step, index) => (
                   <li key={`${ritual.title}-step-${index + 1}`} className="rounded-[16px] border border-border/30 bg-background/40 p-4">
-                    <p className="text-xs uppercase tracking-[0.18em] text-primary/80">Step {index + 1}</p>
-                    <p className="mt-1.5 text-base leading-7 text-foreground/92 md:text-lg">{step}</p>
+                    <p className="text-xs uppercase tracking-[0.17em] text-primary/80">Step {index + 1}</p>
+                    <p className="mt-1.5 text-[1.02rem] leading-8 text-foreground/92 md:text-[1.1rem]">{step}</p>
                   </li>
                 ))}
               </ol>
@@ -210,8 +267,8 @@ const RitualDetail = ({
           </div>
 
           <section className="rounded-[22px] border border-border/30 bg-card/50 p-5">
-            <h4 className="text-sm uppercase tracking-[0.18em] text-primary/80">Teaching</h4>
-            <p className="mt-2 text-base leading-8 text-foreground/92 md:text-lg">{ritual.teaching}</p>
+            <h4 className="text-base uppercase tracking-[0.16em] text-primary/80">Teaching</h4>
+            <p className="mt-2 text-[1.05rem] leading-8 text-foreground/92 md:text-[1.12rem]">{ritual.teaching}</p>
           </section>
         </div>
       </article>
@@ -278,17 +335,15 @@ const SacredRepair = () => {
         </section>
       ) : (
         <section className="space-y-4">
-          <div className="flex flex-wrap items-start justify-between gap-3">
-            <div className="w-full max-w-[780px]">
-              <ChapterCard chapter={selectedChapter} selected />
-            </div>
+          <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
+            <ChapterCard chapter={selectedChapter} selected compact />
             <button
               type="button"
               onClick={() => {
                 setSelectedChapterId(null);
                 setSelectedRitualTitle(null);
               }}
-              className="inline-flex items-center gap-2 rounded-xl border border-border/35 bg-card/45 px-3 py-2 text-xs uppercase tracking-[0.14em] text-foreground transition-all hover:border-border/55 hover:bg-card/60"
+              className="inline-flex h-fit items-center gap-2 rounded-xl border border-border/35 bg-card/45 px-3 py-2 text-xs uppercase tracking-[0.14em] text-foreground transition-all hover:border-border/55 hover:bg-card/60"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
               Back to Sacred Repair
@@ -349,13 +404,7 @@ const SacredRepair = () => {
             </>
           ) : (
             <>
-              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-2">
-                <RitualCard
-                  ritual={selectedRitual}
-                  unlocked={true}
-                  active={true}
-                />
-              </div>
+              <RitualCard ritual={selectedRitual} unlocked={true} active={true} />
 
               <RitualDetail
                 ritual={selectedRitual}
