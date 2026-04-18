@@ -102,10 +102,6 @@ const AppLayout = () => {
           </div>
         </aside>
 
-<<<<<<< Updated upstream
-        <main className={`min-w-0 flex-1 py-2 ${isLibraryRoute ? "relative z-10 lg:py-4" : "lg:py-0"}`}>
-          <Outlet />
-=======
         <main
           className={`relative min-w-0 flex-1 py-2 ${usesSacredSectionShell ? "lg:py-4" : "lg:py-0"}`}
         >
@@ -116,7 +112,6 @@ const AppLayout = () => {
           ) : (
             <Outlet />
           )}
->>>>>>> Stashed changes
         </main>
       </div>
     </div>
