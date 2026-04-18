@@ -1411,12 +1411,20 @@ const PartnerSpace = () => {
           </section>
         )}
 
-        <section className={`relative overflow-hidden rounded-[30px] border border-primary/18 bg-gradient-to-br from-primary/14 via-background/92 to-background/88 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] backdrop-blur-sm ${isJourneyView ? "p-4 md:p-5" : "p-6 md:p-7"}`}>
-          <div className="absolute top-4 right-4 opacity-10 hover:opacity-20 transition-opacity">
-            <img src={shivaShaktiIcon} alt="" className="h-12 w-12 rounded-[10px]" />
+        <section className={`relative overflow-hidden rounded-[24px] border border-amber-400/20 bg-card/35 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] backdrop-blur-sm ${isJourneyView ? "p-4 md:p-5" : "p-5 md:p-6"}`}>
+          <div className="absolute -right-10 top-0 opacity-15">
+            <img src={shivaShaktiIcon} alt="" className="h-40 w-40 rounded-[20px]" />
           </div>
+          <p className="text-xs uppercase tracking-[0.22em] text-amber-400/75">{l("Sacred Path for Couples", "Chemin sacré pour les couples", "Posvátná cesta pro páry")}</p>
+          <p className="mt-2 max-w-2xl text-sm italic text-muted-foreground/80">
+            {l(
+              "“The couple that practices together arrives at each other again and again.”",
+              "« Le couple qui pratique ensemble se rejoint encore et encore. »",
+              "„Pár, který praktikuje společně, k sobě přichází znovu a znovu.“",
+            )}
+          </p>
           <div className="max-w-4xl">
-            <p className="text-xs uppercase tracking-[0.28em] text-primary/80">{l("Sacred Temple", "Temple sacré", "Posvátný chrám")}</p>
+            <p className="mt-4 text-xs uppercase tracking-[0.28em] text-primary/80">{l("Sacred Temple", "Temple sacré", "Posvátný chrám")}</p>
             {(myDisplayName || partnerDisplayName) && (
               <p className="mt-2 font-display text-base text-foreground/90 md:text-lg">
                 {myDisplayName ?? l("You", "Vous", "Ty")}
