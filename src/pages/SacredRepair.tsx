@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import { ArrowLeft, Flame, Hand, Heart, Lock, MessageCircle, type LucideIcon } from "lucide-react";
+import { ArrowLeft, Flame, Hand, Heart, Lock, MessageCircle, Sparkles, type LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 
@@ -279,6 +279,11 @@ const SacredRepair = () => {
   const [selectedChapterId, setSelectedChapterId] = useState<string | null>(null);
   const [selectedRitualTitle, setSelectedRitualTitle] = useState<string | null>(null);
   const [premiumHighlight, setPremiumHighlight] = useState(false);
+  const [repairConnected, setRepairConnected] = useState(true);
+  const [myName, setMyName] = useState("Mathieu");
+  const [partnerName] = useState("Edita");
+  const [editingName, setEditingName] = useState(false);
+  const [nameDraft, setNameDraft] = useState("Mathieu");
   const premiumRef = useRef<HTMLElement | null>(null);
 
   const selectedChapter = useMemo(
@@ -293,6 +298,17 @@ const SacredRepair = () => {
 
   const heroCopy =
     "When love starts to shake, most couples search for help too late. One partner panics. One partner closes. Sacred Repair brings you back through truth, touch, safety, and slow reconnection. Ancient wisdom for modern couples — especially when talking is no longer enough.";
+  const todayLabel = useMemo(
+    () =>
+      new Intl.DateTimeFormat("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+      })
+        .format(new Date())
+        .toUpperCase(),
+    [],
+  );
 
   const scrollToPremium = () => {
     setPremiumHighlight(true);
@@ -311,25 +327,104 @@ const SacredRepair = () => {
     setSelectedRitualTitle(ritual.title);
   };
 
+  const saveName = () => {
+    const clean = nameDraft.trim();
+    if (!clean) return;
+    setMyName(clean);
+    setEditingName(false);
+  };
+
   return (
     <div className="space-y-5 md:space-y-6">
       <section className="relative overflow-hidden rounded-[24px] border border-amber-400/20 bg-card/35 p-5">
         <div className="absolute -right-10 top-0 opacity-15">
           <img src={shivaShaktiIcon} alt="" className="h-40 w-40 rounded-[20px]" />
         </div>
-        <p className="text-xs uppercase tracking-[0.22em] text-amber-400/75">Sacred Repair</p>
+        <p className="text-xs uppercase tracking-[0.22em] text-amber-400/75">Sacred Path for Couples</p>
         <p className="mt-2 max-w-2xl text-sm italic text-muted-foreground/80">
           "The couple that practices together arrives at each other again and again."
         </p>
         <div className="mt-4 grid gap-4 lg:grid-cols-[1.3fr_1fr]">
           <div>
-            <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground/65">Sacred Repair</p>
+            <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground/65">{todayLabel}</p>
             <h1 className="mt-2 flex flex-wrap items-center gap-2 font-display text-3xl text-foreground">
-              <span>Return to Love</span>
+              <span>
+                {myName}
+                <span className="text-amber-400/65"> &amp; </span>
+                {repairConnected ? partnerName : "your beloved"}
+              </span>
+              {repairConnected ? (
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300/35 bg-emerald-500/10 px-2.5 py-1 text-emerald-200">
+                  <Heart className="h-4 w-4 fill-current" />
+                  <Sparkles className="h-4 w-4" />
+                </span>
+              ) : null}
             </h1>
+            <p className="mt-2 text-sm text-muted-foreground/75">
+              You are connected. Repair asks for softness, truth, and practices that help you come back to each other slowly and safely.
+            </p>
+            <div className="mt-3 rounded-[12px] border border-emerald-300/25 bg-emerald-500/8 px-3 py-2.5">
+              <p className="text-[10px] uppercase tracking-[0.14em] text-emerald-200/80">TODAY&apos;S REMINDER</p>
+              <p className="mt-1 text-sm leading-6 text-foreground/90">Repair begins where both hearts feel safe enough to stay.</p>
+            </div>
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <span
+                className={`rounded-full border px-3 py-1 text-xs ${
+                  repairConnected
+                    ? "border-emerald-300/35 bg-emerald-500/10 text-emerald-200"
+                    : "border-amber-300/25 bg-amber-500/10 text-amber-200"
+                }`}
+              >
+                {repairConnected ? "Connected" : "Solo"}
+              </span>
+              <button
+                type="button"
+                onClick={() => setRepairConnected(false)}
+                className="rounded-full border border-rose-300/35 bg-rose-500/10 px-3 py-1 text-xs text-rose-200 transition-colors hover:bg-rose-500/18"
+              >
+                Disconnect
+              </button>
+              {!editingName ? (
+                <button
+                  type="button"
+                  onClick={() => setEditingName(true)}
+                  className="rounded-full border border-border/30 bg-background/35 px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-amber-400/35 hover:text-foreground"
+                >
+                  Edit your name
+                </button>
+              ) : (
+                <div className="flex flex-wrap items-center gap-2">
+                  <input
+                    value={nameDraft}
+                    onChange={(event) => setNameDraft(event.target.value)}
+                    maxLength={40}
+                    placeholder="Your name"
+                    className="h-8 rounded-lg border border-border/35 bg-background/45 px-2.5 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground/60 focus:border-amber-400/35"
+                  />
+                  <button
+                    type="button"
+                    onClick={saveName}
+                    disabled={!nameDraft.trim()}
+                    className="rounded-lg border border-amber-400/30 bg-amber-400/10 px-2.5 py-1 text-xs text-amber-300 transition-all hover:bg-amber-400/20 disabled:opacity-50"
+                  >
+                    Save
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingName(false);
+                      setNameDraft(myName);
+                    }}
+                    className="rounded-lg border border-border/30 bg-background/40 px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
           <div className="rounded-[18px] border border-emerald-300/25 bg-emerald-500/8 p-3">
-            <p className="text-xs uppercase tracking-[0.18em] text-emerald-200/85">Connected together</p>
+            <p className="text-xs uppercase tracking-[0.18em] text-emerald-200/85">RETURN TO LOVE</p>
             <p className="mt-2 text-sm leading-6 text-foreground/90">{heroCopy}</p>
           </div>
         </div>
@@ -337,7 +432,6 @@ const SacredRepair = () => {
 
       {!selectedChapter ? (
         <section className={sacredVisualSystem.contourEmerald}>
-          <p className={sacredVisualSystem.contourEyebrow}>Repair Overview</p>
           <h2 className="mt-2 font-display text-2xl text-foreground">Repairs Overview</h2>
           <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-2">
             {SACRED_REPAIR_CHAPTERS.map((chapter) => (
