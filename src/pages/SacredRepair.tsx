@@ -313,18 +313,32 @@ const SacredRepair = () => {
 
   return (
     <div className="space-y-5 md:space-y-6">
-      <section className={sacredVisualSystem.heroFrame}>
+      <section className="relative overflow-hidden rounded-[24px] border border-amber-400/20 bg-card/35 p-5">
         <div className="absolute -right-10 top-0 opacity-15">
           <img src={shivaShaktiIcon} alt="" className="h-40 w-40 rounded-[20px]" />
         </div>
-        <p className="text-xs uppercase tracking-[0.28em] text-primary/80">Sacred Repair</p>
-        <h1 className="mt-2 font-display text-3xl leading-tight text-foreground">Return to Love</h1>
-        <p className="mt-3 max-w-4xl text-sm leading-7 text-muted-foreground">{heroCopy}</p>
+        <p className="text-xs uppercase tracking-[0.22em] text-amber-400/75">Sacred Repair</p>
+        <p className="mt-2 max-w-2xl text-sm italic text-muted-foreground/80">
+          "The couple that practices together arrives at each other again and again."
+        </p>
+        <div className="mt-4 grid gap-4 lg:grid-cols-[1.3fr_1fr]">
+          <div>
+            <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground/65">Sacred Repair</p>
+            <h1 className="mt-2 flex flex-wrap items-center gap-2 font-display text-3xl text-foreground">
+              <span>Return to Love</span>
+            </h1>
+          </div>
+          <div className="rounded-[18px] border border-emerald-300/25 bg-emerald-500/8 p-3">
+            <p className="text-xs uppercase tracking-[0.18em] text-emerald-200/85">Connected together</p>
+            <p className="mt-2 text-sm leading-6 text-foreground/90">{heroCopy}</p>
+          </div>
+        </div>
       </section>
 
       {!selectedChapter ? (
         <section className={sacredVisualSystem.contourEmerald}>
-          <p className={sacredVisualSystem.contourEyebrow}>Repair chapters</p>
+          <p className={sacredVisualSystem.contourEyebrow}>Repair Overview</p>
+          <h2 className="mt-2 font-display text-2xl text-foreground">Repairs Overview</h2>
           <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-2">
             {SACRED_REPAIR_CHAPTERS.map((chapter) => (
               <ChapterCard
