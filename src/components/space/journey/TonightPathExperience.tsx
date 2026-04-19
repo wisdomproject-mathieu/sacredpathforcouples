@@ -621,7 +621,7 @@ const TonightPathExperience = ({
               })}
             </div>
 
-            {activeThemePractices.length ? (
+            {themeFocused && activeThemePractices.length ? (
               <div ref={themeResultsRef} className="mt-3 flex-1 space-y-2">
                 <div className={`rounded-xl border p-3 ${themeVisuals[activeTheme].wrapClass}`}>
                   <p className="text-xs leading-5 text-foreground/90">{copy.themeMeta[activeTheme].whyTonight}</p>
