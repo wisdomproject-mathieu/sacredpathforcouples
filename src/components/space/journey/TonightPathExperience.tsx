@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 import { BookOpen, Check, Copy, Eye, Flame, Hand, Heart, MessageCircle, MoveHorizontal, Orbit, PauseCircle, Volume2, Wind } from "lucide-react";
+import RITUAL_LIBRARY_55 from "@/data/sacred_path_ritual_library_55.json";
 
 import type { Language } from "@/contexts/LanguageContext";
 import type { WeatherMatchResult } from "@/lib/weatherMatch";
@@ -38,6 +39,14 @@ type PracticeItem = {
 type ThemeMeta = {
   title: string;
   whyTonight: string;
+};
+
+type ThemePracticeOverride = {
+  ritualId: string;
+  title: string;
+  purpose: string;
+  actions: string[];
+  tags?: string[];
 };
 
 const hashString = (value: string) =>
@@ -364,31 +373,204 @@ const buildPracticePurpose = (
   return `${copy.themeMeta[theme].whyTonight} ${card.duration} · ${card.intimacyLevel}.`;
 };
 
+const hasBoilerplateSteps = (steps: string[]) => {
+  const normalized = steps.map((step) => normalizeSentence(step));
+  if (!normalized.length) return true;
+  return (
+    normalized.includes("arrive with one shared breath and one sentence of intention") &&
+    normalized.includes("follow slow pacing check in clearly and keep contact attuned") &&
+    normalized.includes("close with one appreciation and one next step invitation")
+  );
+};
+
 const buildPracticeSteps = (
   card: SelectedDailyMainCard,
-  _theme: ThemeKey,
+  theme: ThemeKey,
   copy: (typeof copyByLang)[Language],
+  themeOverride: ThemePracticeOverride | null,
 ) => {
   const steps = Array.from(new Set(card.ritualSteps.map((step) => step.trim()).filter(Boolean))).slice(0, 5);
-  return steps.length ? steps : copy.fallbackSteps.slice(0, 4);
+  if (steps.length && !hasBoilerplateSteps(steps)) return steps;
+  if (themeOverride?.actions?.length) return themeOverride.actions.slice(0, 5);
+  return copy.fallbackSteps.slice(0, 4);
 };
 
 const toPracticeItem = (
   card: SelectedDailyMainCard,
   theme: ThemeKey,
   copy: (typeof copyByLang)[Language],
+  themeOverride: ThemePracticeOverride | null,
 ): PracticeItem => ({
   id: card.id,
-  title: card.title,
+  title: themeOverride?.title ?? card.title,
   subtitle: isBoilerplateSentence(card.subtitle) ? "" : card.subtitle,
-  purpose: buildPracticePurpose(card, theme, copy),
-  actions: buildPracticeSteps(card, theme, copy),
-  tags: [
-    `${card.duration} · ${card.intimacyLevel}`,
-    `${copy.tagBestForPrefix} ${card.primaryNeed}`,
-  ],
+  purpose: themeOverride?.purpose ?? buildPracticePurpose(card, theme, copy),
+  actions: buildPracticeSteps(card, theme, copy, themeOverride),
+  tags: themeOverride?.tags?.length
+    ? themeOverride.tags
+    : [
+        `${card.duration} · ${card.intimacyLevel}`,
+        `${copy.tagBestForPrefix} ${card.primaryNeed}`,
+      ],
   theme,
 });
+
+const ritualLibraryMap = new Map<string, SelectedDailyMainCard>(
+  (RITUAL_LIBRARY_55 as unknown[]).map((row) => {
+    const card = row as Record<string, unknown>;
+    return [
+      String(card.id),
+      {
+        id: String(card.id),
+        title: String(card.title ?? ""),
+        subtitle: String(card.subtitle ?? ""),
+        description: String(card.description ?? ""),
+        duration: String(card.duration ?? "7 minutes"),
+        intimacyLevel: String(card.intimacyLevel ?? "Gentle"),
+        primaryNeed: String(card.primaryNeed ?? "Connection"),
+        ritualSteps: Array.isArray(card.ritualSteps)
+          ? card.ritualSteps.filter((step): step is string => typeof step === "string").slice(0, 6)
+          : [],
+        theme: String(card.theme ?? "touch"),
+      } satisfies SelectedDailyMainCard,
+    ] as const;
+  }),
+);
+
+const themePracticeOverrides: Record<ThemeKey, ThemePracticeOverride> = {
+  breath: {
+    ritualId: "synchronized_heart_breathing",
+    title: "Synchronized Heart Breathing",
+    purpose: "Regulate together first, then choose your next ritual from a calmer place.",
+    actions: [
+      "Sit face-to-face and place one hand on your own heart.",
+      "Inhale for 4 counts and exhale for 6 counts for five rounds.",
+      "After each round, ask: softer, same, or more?",
+      "Name one feeling each before moving into touch.",
+    ],
+    tags: ["5 minutes · Gentle", "Best for nervous-system settling"],
+  },
+  gaze: {
+    ritualId: "soul_gazing",
+    title: "Soul Gazing",
+    purpose: "Rebuild attunement through direct seeing before words or intensity.",
+    actions: [
+      "Sit close enough to keep soft eye contact comfortably.",
+      "Breathe slowly together for three shared breaths.",
+      "Each partner says one sentence beginning with: I feel...",
+      "Hold the gaze for one final breath, then choose your next move.",
+    ],
+    tags: ["6 minutes · Gentle", "Best for emotional attunement"],
+  },
+  touch: {
+    ritualId: "yoga_of_touch",
+    title: "The Yoga of Touch",
+    purpose: "Use listening touch to restore closeness with consent and clarity.",
+    actions: [
+      "Place one hand on your partner's shoulder and one on their forearm.",
+      "Keep pressure light and move slower than your impulse.",
+      "Pause every 30 seconds for a consent check-in.",
+      "Close with one appreciation and one clear next-step invitation.",
+    ],
+    tags: ["7 minutes · Gentle to medium", "Best for safe closeness"],
+  },
+  massage: {
+    ritualId: "skydancing_tantric_massage",
+    title: "SkyDancing Tantric Massage",
+    purpose: "Soften body tension and emotional guard before deeper intimacy.",
+    actions: [
+      "Warm your hands first and begin with shoulders and upper back.",
+      "Use long, slow strokes and stay with the breath rhythm.",
+      "Switch giver and receiver after 3 minutes.",
+      "End with still palms and one question: What do you need now?",
+    ],
+    tags: ["8 minutes · Medium", "Best for grounded warmth"],
+  },
+  embrace: {
+    ritualId: "melting_hug",
+    title: "The Melting Hug",
+    purpose: "Re-establish safety and warmth through steady holding.",
+    actions: [
+      "Stand and hold each other chest-to-chest without speaking.",
+      "Breathe in sync for one full minute.",
+      "Relax shoulders and jaw while keeping contact.",
+      "Share one sentence of reassurance before moving on.",
+    ],
+    tags: ["6 minutes · Gentle", "Best for reassurance and trust"],
+  },
+  movement: {
+    ritualId: "spinal_rocking",
+    title: "Spinal Rocking — Back to Back",
+    purpose: "Discharge tension and restore shared rhythm quickly.",
+    actions: [
+      "Sit back-to-back with both spines upright.",
+      "Inhale as one partner rocks back and the other leans forward.",
+      "Switch on each exhale for ten slow cycles.",
+      "Finish in stillness and choose one intentional touch.",
+    ],
+    tags: ["5 minutes · Medium", "Best for rhythm reset"],
+  },
+  stillness: {
+    ritualId: "karezza",
+    title: "Karezza — Union Without Discharge",
+    purpose: "Slow down and stay in contact without pressure or performance.",
+    actions: [
+      "Choose still contact: hand-to-heart or seated embrace.",
+      "Breathe slowly and keep movement minimal for two minutes.",
+      "Name one need and one boundary before deepening.",
+      "Close with a soft exhale together and appreciation.",
+    ],
+    tags: ["7 minutes · Gentle", "Best for pacing and calm desire"],
+  },
+  sound: {
+    ritualId: "the_unsaid_voice",
+    title: "The Unsaid Voice",
+    purpose: "Release what is held inside so touch can feel safer and clearer.",
+    actions: [
+      "Take one breath together and soften your tone.",
+      "Each partner says one truth in a single sentence.",
+      "The listener mirrors the sentence back before responding.",
+      "End with one shared phrase: I hear you, I stay with you.",
+    ],
+    tags: ["6 minutes · Gentle", "Best for emotional clarity"],
+  },
+  union: {
+    ritualId: "slow_sex",
+    title: "Slow Sex — Diana Richardson's Core Practice",
+    purpose: "Build intimacy through presence, pacing, and full-body awareness.",
+    actions: [
+      "Begin with two minutes of breath and eye contact.",
+      "Choose slow, minimal movement and stay aware of comfort.",
+      "Pause often to check if both partners remain open.",
+      "End in stillness before separating contact.",
+    ],
+    tags: ["9 minutes · Medium", "Best for conscious union"],
+  },
+  emotional_clearing: {
+    ritualId: "appreciation_witness",
+    title: "Appreciation & Witness",
+    purpose: "Repair emotional distance through truth, witnessing, and appreciation.",
+    actions: [
+      "Each partner names one feeling and one unmet need.",
+      "The listener mirrors without defending or fixing.",
+      "Each shares one appreciation for the other.",
+      "Agree on one gentle repair move for tonight.",
+    ],
+    tags: ["7 minutes · Gentle", "Best for repair and reconnection"],
+  },
+  energy: {
+    ritualId: "microcosmic_orbit_dual",
+    title: "Microcosmic Orbit in Dual Cultivation",
+    purpose: "Channel shared charge into grounded vitality and presence.",
+    actions: [
+      "Sit aligned and breathe into lower belly for five rounds.",
+      "On inhale, imagine energy rising along the spine.",
+      "On exhale, imagine energy descending through the front body.",
+      "Stay synchronized and close with one gratitude sentence.",
+    ],
+    tags: ["8 minutes · Medium", "Best for energy circulation"],
+  },
+};
 
 const TonightPathExperience = ({
   lang,
@@ -451,7 +633,13 @@ const TonightPathExperience = ({
 
   const activeThemePractices = useMemo(() => {
     const cards = resolvedTonightPath.themedRituals[activeTheme] ?? [];
-    return cards.map((card) => toPracticeItem(card, activeTheme, copy));
+    const themeOverride = themePracticeOverrides[activeTheme] ?? null;
+    const themed = cards.map((card) => toPracticeItem(card, activeTheme, copy, themeOverride));
+    if (themed.length) return themed;
+
+    const fallbackCard = ritualLibraryMap.get(themeOverride?.ritualId ?? "");
+    if (!fallbackCard) return themed;
+    return [toPracticeItem(fallbackCard, activeTheme, copy, themeOverride)];
   }, [activeTheme, copy, resolvedTonightPath.themedRituals]);
 
   const primaryRitual = useMemo(() => {
@@ -461,7 +649,7 @@ const TonightPathExperience = ({
       availableThemes.find((theme) =>
         (resolvedTonightPath.themedRituals[theme] ?? []).some((item) => item.id === card.id),
       ) ?? resolvedTonightPath.defaultTheme;
-    return toPracticeItem(card, mainTheme, copy);
+    return toPracticeItem(card, mainTheme, copy, null);
   }, [availableThemes, copy, resolvedTonightPath]);
   const mainSteps = primaryRitual?.actions?.slice(0, 4) ?? copy.fallbackSteps;
   const positionCues = copy.fallbackPositions;
