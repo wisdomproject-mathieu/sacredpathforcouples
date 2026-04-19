@@ -6,6 +6,7 @@ export type TonightTheme =
   | "breath"
   | "gaze"
   | "touch"
+  | "massage"
   | "embrace"
   | "movement"
   | "stillness"
@@ -35,6 +36,7 @@ const allThemes: TonightTheme[] = [
   "breath",
   "gaze",
   "touch",
+  "massage",
   "embrace",
   "movement",
   "stillness",
@@ -69,12 +71,25 @@ const asCard = (value: unknown): SelectedDailyMainCard | null => {
 const normalizeText = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 
 const classifyTheme = (card: SelectedDailyMainCard): TonightTheme => {
+  const themeToken = normalizeText(String(card.theme ?? ""));
+  if (/(breath|breathing|respir)/.test(themeToken)) return "breath";
+  if (/(massage|bodywork)/.test(themeToken)) return "massage";
+  if (/(touch|contact)/.test(themeToken)) return "touch";
+  if (/(embrace|holding|hug)/.test(themeToken)) return "embrace";
+  if (/(movement|motion|rocking|shake)/.test(themeToken)) return "movement";
+  if (/(still|stillness|pause|rest)/.test(themeToken)) return "stillness";
+  if (/(sound|voice|speak|tone)/.test(themeToken)) return "sound";
+  if (/(union|sexual|erotic)/.test(themeToken)) return "union";
+  if (/(repair|reconnect|clear|emotion)/.test(themeToken)) return "emotional_clearing";
+  if (/(energy|qi|chakra|orbit|fire)/.test(themeToken)) return "energy";
+
   const text = normalizeText(
     [card.theme, card.title, card.subtitle, card.description, card.primaryNeed, ...card.ritualSteps].join(" "),
   );
   if (/(breath|respir|coherent|exhale|inhale)/.test(text)) return "breath";
   if (/(gaze|eye|seeing|soft eye)/.test(text)) return "gaze";
   if (/(touch|palm|hand|contact|stroke)/.test(text)) return "touch";
+  if (/(massage|bodywork|oil|press|release)/.test(text)) return "massage";
   if (/(embrace|hug|holding|homecoming|yab yum|lataveshtitaka)/.test(text)) return "embrace";
   if (/(movement|rocking|shaking|twining|dynamic|dance)/.test(text)) return "movement";
   if (/(still|stillness|pause|slow|karezza|resting)/.test(text)) return "stillness";
@@ -89,6 +104,7 @@ const supportByPrimary: Record<TonightTheme, TonightTheme[]> = {
   breath: ["gaze", "stillness", "embrace", "touch"],
   gaze: ["breath", "stillness", "embrace", "touch"],
   touch: ["embrace", "breath", "gaze", "stillness"],
+  massage: ["touch", "embrace", "breath", "stillness"],
   embrace: ["breath", "touch", "stillness", "gaze"],
   movement: ["breath", "energy", "touch", "embrace"],
   stillness: ["breath", "gaze", "union", "embrace"],
@@ -114,6 +130,7 @@ const supportByWeather = (weatherA?: string | null, weatherB?: string | null): T
   if (keys.some((key) => ["reassurance", "tender"].includes(key))) {
     support.add("embrace");
     support.add("touch");
+    support.add("massage");
     support.add("stillness");
   }
   if (keys.some((key) => ["playful"].includes(key))) {
@@ -246,6 +263,7 @@ export const resolveTonightPath = ({
     breath: [],
     gaze: [],
     touch: [],
+    massage: [],
     embrace: [],
     movement: [],
     stillness: [],
@@ -308,4 +326,3 @@ export const resolveTonightPath = ({
     defaultTheme,
   };
 };
-
