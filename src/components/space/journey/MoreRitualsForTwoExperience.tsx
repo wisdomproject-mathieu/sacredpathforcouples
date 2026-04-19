@@ -106,9 +106,9 @@ const copyByLang: Record<
 > = {
   en: {
     eyebrow: "More Rituals For Two",
-    title: "All couple tools in one focused page",
+    title: "Practices That Bring You Back To Each Other",
     intro:
-      "Choose one theme, open one practice, and act immediately. Everything stays on this page so couples are never sent into chaotic navigation.",
+      "Choose the ritual, reflection, or intimate practice that meets this moment. Each offering is here to help couples return to presence, deepen understanding, and make love a lived practice.",
     filtersLabel: "Choose a theme",
     hiddenHint: "Only the selected theme is shown to keep this page calm and easy to scan.",
     noCards: "No practices yet in this theme.",
