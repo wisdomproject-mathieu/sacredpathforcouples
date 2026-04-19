@@ -1531,12 +1531,23 @@ const PartnerSpace = () => {
 
             {hasConnectedPartner ? (
               <div className="rounded-[18px] border border-emerald-300/25 bg-emerald-500/8 p-3">
-                <p className="text-xs uppercase tracking-[0.18em] text-emerald-200/85">{l("Connected together", "Connectés", "Společně propojeni")}</p>
+                <p className="text-xs uppercase tracking-[0.18em] text-emerald-200/85">{l("RETURN TO LOVE", "RETOUR À L'AMOUR", "NÁVRAT K LÁSCE")}</p>
                 <p className="mt-2 text-sm leading-6 text-foreground/90">
-                  {partnerDisplayName ?? l("Your partner", "Votre partenaire", "Partner")} {l("is connected. Stay here and open tonight's ritual cards below.", "est connecté(e). Restez ici et ouvrez les cartes rituelles de ce soir ci-dessous.", "je propojený/á. Zůstaňte zde a otevřete níže dnešní rituální karty.")}
+                  {l(
+                    "Practice one ritual together each day. Small shared moments keep tenderness alive, rebuild trust faster, and deepen desire through real presence.",
+                    "Pratiquez un rituel ensemble chaque jour. De petits moments partagés gardent la tendresse vivante, restaurent la confiance plus vite et approfondissent le désir grâce à une présence réelle.",
+                    "Cvičte každý den jeden rituál spolu. Malé sdílené momenty udržují něhu živou, rychleji obnovují důvěru a prohlubují touhu skrze opravdovou přítomnost.",
+                  )}
                 </p>
                 <div className="mt-3 rounded-[10px] border border-border/30 bg-background/45 px-3 py-2">
-                  <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{l("Latest match", "Dernier match", "Poslední souhra")}</p>
+                  <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{l("TODAY'S PRACTICE IMPACT", "IMPACT DE PRATIQUE DU JOUR", "DOPAD DNEŠNÍ PRAXE")}</p>
+                  <p className="mt-1 text-sm text-foreground/90">
+                    {l(
+                      "Daily rituals help you reconnect sooner after tension and feel closer in ordinary moments.",
+                      "Les rituels quotidiens vous aident à vous reconnecter plus vite après les tensions et à vous sentir plus proches au quotidien.",
+                      "Denní rituály vám pomáhají znovu se propojit dříve po napětí a cítit větší blízkost i v běžných chvílích.",
+                    )}
+                  </p>
                   <p className="mt-1 text-sm text-foreground">
                     {weatherMatch
                       ? `${weatherMatch.archetype.title} · ${weatherMatch.pairLabel}`
