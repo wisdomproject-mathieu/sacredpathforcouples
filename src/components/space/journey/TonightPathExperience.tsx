@@ -376,11 +376,24 @@ const buildPracticePurpose = (
 const hasBoilerplateSteps = (steps: string[]) => {
   const normalized = steps.map((step) => normalizeSentence(step));
   if (!normalized.length) return true;
-  return (
+  const hasPrimaryTemplate =
     normalized.includes("arrive with one shared breath and one sentence of intention") &&
     normalized.includes("follow slow pacing check in clearly and keep contact attuned") &&
-    normalized.includes("close with one appreciation and one next step invitation")
+    normalized.includes("close with one appreciation and one next step invitation");
+  const hasReserveTemplate =
+    normalized.includes("begin with one shared breath and eye contact") &&
+    normalized.includes("move slowly and check in with consent language") &&
+    normalized.includes("close with one appreciation and one next step for tomorrow");
+
+  if (hasPrimaryTemplate || hasReserveTemplate) return true;
+
+  const hasGenericBreathOpening = normalized.some((step) => step.includes("shared breath"));
+  const hasGenericConsentStep = normalized.some((step) => step.includes("consent"));
+  const hasGenericCloseStep = normalized.some(
+    (step) => step.includes("one appreciation") && step.includes("next step"),
   );
+
+  return normalized.length <= 3 && hasGenericBreathOpening && hasGenericConsentStep && hasGenericCloseStep;
 };
 
 const buildPracticeSteps = (
