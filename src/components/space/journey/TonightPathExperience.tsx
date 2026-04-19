@@ -58,6 +58,11 @@ const themeVisuals: Record<ThemeKey, { icon: typeof Heart; wrapClass: string; ic
     wrapClass: "border-rose-300/30 bg-gradient-to-br from-rose-500/12 via-background/60 to-background/40",
     iconClass: "text-rose-200",
   },
+  massage: {
+    icon: Hand,
+    wrapClass: "border-amber-300/30 bg-gradient-to-br from-amber-500/12 via-background/60 to-background/40",
+    iconClass: "text-amber-200",
+  },
   embrace: {
     icon: Hand,
     wrapClass: "border-amber-300/30 bg-gradient-to-br from-amber-500/12 via-background/60 to-background/40",
@@ -110,6 +115,8 @@ Language,
   sentButton: string;
   themesLabel: string;
   themesBody: string;
+  focusedThemeLabel: string;
+  showAllThemesLabel: string;
   guidanceLabel: string;
   respectLabel: string;
   respectContextLine: string;
@@ -143,6 +150,8 @@ Language,
     sentButton: "Copied",
     themesLabel: "Practice themes",
     themesBody: "Choose one theme and run one clear practice now. All practices are selected for your current weather combination.",
+    focusedThemeLabel: "Focused theme",
+    showAllThemesLabel: "Show all themes",
     guidanceLabel: "Guidance for your dynamic",
     respectLabel: "Respect and reconnect",
     respectContextLine:
@@ -161,6 +170,7 @@ Language,
       breath: { title: "Breath", whyTonight: "Regulate together before anything intense." },
       gaze: { title: "Gaze", whyTonight: "Rebuild attunement through eye connection." },
       touch: { title: "Touch", whyTonight: "Restore closeness with consent-led contact." },
+      massage: { title: "Massage", whyTonight: "Use grounded touch to soften tension before deeper intimacy." },
       embrace: { title: "Embrace", whyTonight: "Let holding re-establish safety and warmth." },
       movement: { title: "Movement", whyTonight: "Discharge tension and find shared rhythm." },
       stillness: { title: "Stillness", whyTonight: "Slow down enough to feel each other again." },
@@ -206,6 +216,8 @@ Language,
     sentButton: "Copié",
     themesLabel: "Thèmes de pratique",
     themesBody: "Choisissez un thème et lancez une pratique claire maintenant. Toutes les pratiques sont sélectionnées pour votre combinaison actuelle.",
+    focusedThemeLabel: "Thème actif",
+    showAllThemesLabel: "Voir tous les thèmes",
     guidanceLabel: "Guidance pour votre dynamique",
     respectLabel: "Respect et reconnexion",
     respectContextLine:
@@ -224,6 +236,7 @@ Language,
       breath: { title: "Souffle", whyTonight: "Se réguler ensemble avant toute intensité." },
       gaze: { title: "Regard", whyTonight: "Retrouver l'accord par les yeux." },
       touch: { title: "Toucher", whyTonight: "Rétablir la proximité avec consentement." },
+      massage: { title: "Massage", whyTonight: "Adoucir les tensions corporelles avant d'aller plus loin." },
       embrace: { title: "Étreinte", whyTonight: "Laisser le corps revenir à la sécurité." },
       movement: { title: "Mouvement", whyTonight: "Libérer la tension et retrouver un rythme commun." },
       stillness: { title: "Immobilité", whyTonight: "Ralentir pour sentir l'autre pleinement." },
@@ -269,6 +282,8 @@ Language,
     sentButton: "Zkopírováno",
     themesLabel: "Témata praxe",
     themesBody: "Vyberte jedno téma a spusťte jednu jasnou praxi hned teď. Vše je vybrané pro vaši aktuální kombinaci.",
+    focusedThemeLabel: "Aktivní téma",
+    showAllThemesLabel: "Zobrazit všechna témata",
     guidanceLabel: "Vedení pro vaši dynamiku",
     respectLabel: "Respekt a znovupropojení",
     respectContextLine:
@@ -287,6 +302,7 @@ Language,
       breath: { title: "Dech", whyTonight: "Nejdřív společně zregulujte nervový systém." },
       gaze: { title: "Pohled", whyTonight: "Obnovte naladění přes oční kontakt." },
       touch: { title: "Dotek", whyTonight: "Vraťte blízkost vědomým dotekem." },
+      massage: { title: "Masáž", whyTonight: "Uvolněte tělo vědomým dotekem před hlubší intimitou." },
       embrace: { title: "Objetí", whyTonight: "Nechte těla vrátit se do bezpečí." },
       movement: { title: "Pohyb", whyTonight: "Uvolněte napětí a najděte společný rytmus." },
       stillness: { title: "Klid", whyTonight: "Zpomalte a opravdu se vnímejte." },
@@ -321,6 +337,58 @@ Language,
   },
 };
 
+const normalizeSentence = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+
+const isBoilerplateSentence = (value: string) => {
+  const normalized = normalizeSentence(value);
+  return (
+    normalized.includes("a guided sequence aligned to the active couple weather combination") ||
+    normalized.includes("a supporting practice chosen to reinforce tonight s main weather ritual") ||
+    normalized.includes("weather aligned ritual for tonight") ||
+    normalized.includes("reserve supporting ritual")
+  );
+};
+
+const hasBoilerplateSteps = (steps: string[]) => {
+  const normalized = steps.map((step) => normalizeSentence(step));
+  if (!normalized.length) return true;
+  return (
+    normalized.includes("arrive with one shared breath and one sentence of intention") &&
+    normalized.includes("follow slow pacing check in clearly and keep contact attuned")
+  );
+};
+
+const buildPracticePurpose = (
+  card: SelectedDailyMainCard,
+  theme: ThemeKey,
+  copy: (typeof copyByLang)[Language],
+) => {
+  if (card.description && !isBoilerplateSentence(card.description)) return card.description;
+  if (card.subtitle && !isBoilerplateSentence(card.subtitle)) return card.subtitle;
+  return `${copy.themeMeta[theme].whyTonight} ${card.duration} · ${card.intimacyLevel}.`;
+};
+
+const buildPracticeSteps = (
+  card: SelectedDailyMainCard,
+  theme: ThemeKey,
+  copy: (typeof copyByLang)[Language],
+) => {
+  if (!hasBoilerplateSteps(card.ritualSteps)) {
+    return Array.from(new Set(card.ritualSteps.map((step) => step.trim()).filter(Boolean))).slice(0, 5);
+  }
+
+  const generated = [
+    `${card.title}: ${copy.themeMeta[theme].whyTonight}`,
+    ...copy.fallbackSteps.slice(0, 3),
+    copy.reflectionPrompt,
+  ];
+  return Array.from(new Set(generated.map((step) => step.trim()).filter(Boolean))).slice(0, 5);
+};
+
 const toPracticeItem = (
   card: SelectedDailyMainCard,
   theme: ThemeKey,
@@ -328,9 +396,9 @@ const toPracticeItem = (
 ): PracticeItem => ({
   id: card.id,
   title: card.title,
-  subtitle: card.subtitle,
-  purpose: card.description,
-  actions: card.ritualSteps.slice(0, 4),
+  subtitle: isBoilerplateSentence(card.subtitle) ? "" : card.subtitle,
+  purpose: buildPracticePurpose(card, theme, copy),
+  actions: buildPracticeSteps(card, theme, copy),
   tags: [
     `${card.duration} · ${card.intimacyLevel}`,
     `${copy.tagBestForPrefix} ${card.primaryNeed}`,
