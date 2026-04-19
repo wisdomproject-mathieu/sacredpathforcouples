@@ -1225,9 +1225,9 @@ const PartnerSpace = () => {
   const journeyHeaderDescription = isJourneyView
     ? journeyScreen === "dashboard"
       ? l(
-          "See your shared state, then choose one clear next move without clutter.",
-          "Voyez votre état partagé, puis choisissez un prochain pas clair sans encombrement.",
-          "Uvidíte sdílený stav a vyberete jasný další krok bez zahlcení.",
+          "See your shared state, then choose the next step that best serves your connection tonight.",
+          "Voyez votre état partagé, puis choisissez l'étape qui sert le mieux votre connexion ce soir.",
+          "Uvidíte sdílený stav a vyberete další krok, který dnes večer nejlépe podpoří vaše spojení.",
         )
       : journeyScreen === "tonight_path"
         ? l(
@@ -1569,7 +1569,6 @@ const PartnerSpace = () => {
           </div>
 
           <div className="max-w-4xl">
-            <p className="mt-4 text-xs uppercase tracking-[0.28em] text-primary/80">{l("Sacred Temple", "Temple sacré", "Posvátný chrám")}</p>
             <h2 className={`mt-3 font-display text-foreground ${isJourneyView ? "text-2xl md:text-3xl" : "text-3xl md:text-4xl"}`}>
               {journeyHeaderTitle}
             </h2>
@@ -1703,9 +1702,9 @@ const PartnerSpace = () => {
                       <h3 className="mt-2 font-display text-2xl text-foreground">{l("More Rituals For Two", "Plus de rituels à deux", "Více rituálů pro dva")}</h3>
                       <p className="mt-1 text-sm leading-6 text-muted-foreground">
                         {l(
-                          "Explore all practices by theme, with no page jumps.",
-                          "Explorez toutes les pratiques par thème, sans changer de page.",
-                          "Prozkoumejte všechny praxe podle témat bez přeskakování stránek.",
+                          "Explore all practices by theme and open the one that fits your energy tonight.",
+                          "Explorez toutes les pratiques par thème et ouvrez celle qui correspond à votre énergie ce soir.",
+                          "Prozkoumejte všechny praxe podle témat a otevřete tu, která dnes večer odpovídá vaší energii.",
                         )}
                       </p>
                     </button>

@@ -688,27 +688,14 @@ const TonightPathExperience = ({
       </div>
 
       <div className="relative">
-        <p className="text-xs uppercase tracking-[0.26em] text-primary/80">{copy.eyebrow}</p>
         <h2 className="mt-2 font-display text-3xl text-foreground md:text-4xl">
           {matchHeadline}
         </h2>
-        <p className="mt-2 max-w-4xl text-sm leading-7 text-muted-foreground">
-          {tonightPathStatus.isTonightPathReady
-            ? weatherMatch?.summary ?? primaryRitual?.purpose ?? tonightPathStatus.waitingBody
-            : tonightPathStatus.waitingBody}
-        </p>
-
-        <div className="mt-3 flex flex-wrap gap-2">
-          <span className="rounded-full border border-border/30 bg-background/45 px-2.5 py-1 text-[11px] text-foreground/90">
-            {copy.yourWeather}: {myWeather ? `${myWeather.emoji} ${myWeather.label}` : tonightPathStatus.userWeatherPlaceholder}
-          </span>
-          <span className="rounded-full border border-border/30 bg-background/45 px-2.5 py-1 text-[11px] text-foreground/90">
-            {copy.belovedWeather}: {belovedWeather ? `${belovedWeather.emoji} ${belovedWeather.label}` : tonightPathStatus.belovedWeatherPlaceholder}
-          </span>
-          <span className="rounded-full border border-primary/25 bg-primary/12 px-2.5 py-1 text-[11px] uppercase tracking-[0.12em] text-primary/90">
-            {tonightPathStatus.sharedStatusLabel}
-          </span>
-        </div>
+        {tonightPathStatus.isTonightPathReady && (weatherMatch?.summary || primaryRitual?.purpose) ? (
+          <p className="mt-2 max-w-4xl text-sm leading-7 text-muted-foreground">
+            {weatherMatch?.summary ?? primaryRitual?.purpose}
+          </p>
+        ) : null}
 
         <div className="mt-5 grid items-start gap-4 lg:grid-cols-[1.05fr_1fr_1fr]">
           <article className="flex h-full flex-col rounded-[24px] border border-amber-300/30 bg-gradient-to-br from-amber-500/12 via-card/65 to-card/35 p-4 backdrop-blur-sm">
@@ -751,6 +738,12 @@ const TonightPathExperience = ({
                 {copied ? <Check className="h-3.5 w-3.5 text-emerald-300" /> : <Copy className="h-3.5 w-3.5" />}
                 {copied ? copy.sentButton : copy.sendButton}
               </button>
+            </div>
+
+            <div className="mt-3 rounded-xl border border-amber-300/30 bg-amber-500/10 p-3">
+              <p className="text-[11px] uppercase tracking-[0.14em] text-amber-200">{copy.quoteLabel}</p>
+              <p className="mt-2 font-display text-lg leading-7 text-foreground/90">“{quote.quote}”</p>
+              <p className="mt-2 text-xs uppercase tracking-[0.12em] text-muted-foreground">{quote.author}</p>
             </div>
           </article>
 
@@ -832,11 +825,6 @@ const TonightPathExperience = ({
                 <p className="mt-2 text-sm leading-6 text-foreground/90">{copy.reflectionPrompt}</p>
               </div>
 
-              <div className="rounded-xl border border-amber-300/30 bg-amber-500/10 p-3">
-                <p className="text-[11px] uppercase tracking-[0.14em] text-amber-200">{copy.quoteLabel}</p>
-                <p className="mt-2 font-display text-lg leading-7 text-foreground/90">“{quote.quote}”</p>
-                <p className="mt-2 text-xs uppercase tracking-[0.12em] text-muted-foreground">{quote.author}</p>
-              </div>
             </div>
           </article>
         </div>

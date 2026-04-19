@@ -1415,6 +1415,11 @@ const AppHome = () => {
           codeLabel: "Connection code",
           disconnect: "Disconnect",
         };
+  const connectedTogetherBody = lang === "fr"
+    ? `${partnerName ?? "Votre partenaire"} est connecté(e). Restez ici et retrouvez-vous avec présence, patience et douceur. Que ce soir commence par l'écoute, le respect des émotions, et un premier pas tendre l'un vers l'autre.`
+    : lang === "cs"
+      ? `${partnerName ?? "Partner"} je propojený(á). Zůstaňte tady a setkejte se s přítomností, trpělivostí a péčí. Ať dnešní večer začne nasloucháním, respektem k pocitům a jedním jemným krokem k sobě.`
+      : `${partnerName ?? "Your partner"} is connected. Stay here and meet each other with presence, patience, and care. Let tonight begin with listening, respect for feelings, and one gentle step toward each other.`;
 
   return (
     <div className="space-y-4 md:space-y-5">
@@ -1520,19 +1525,16 @@ const AppHome = () => {
           </div>
 
           {relationshipConnected ? (
-            <div className="rounded-[18px] border border-emerald-300/25 bg-emerald-500/8 p-3">
+            <div className="relative overflow-visible rounded-[18px] border border-emerald-300/25 bg-emerald-500/8 p-3">
+              <img
+                src={shivaShaktiIcon}
+                alt=""
+                className="pointer-events-none absolute -top-12 right-0 h-36 w-36 object-cover opacity-20"
+              />
               <p className="text-xs uppercase tracking-[0.18em] text-emerald-200/85">{connectedPanelUi.label}</p>
               <p className="mt-2 text-sm leading-6 text-foreground/90">
-                {connectedPanelUi.partnerConnected} {connectedPanelUi.stayHere}
+                {connectedTogetherBody}
               </p>
-              <div className="mt-3 rounded-[10px] border border-border/30 bg-background/45 px-3 py-2">
-                <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{weatherUi.latestMatch}</p>
-                <p className="mt-1 text-sm text-foreground">
-                  {bothCheckedIn
-                    ? `${sharedMainCardState.archetype ?? "weather_match"} · ${featuredPathTitle}`
-                    : tonightPathStatus.latestMatchWaitingLabel}
-                </p>
-              </div>
             </div>
           ) : (
             <div className="rounded-[18px] border border-amber-400/20 bg-background/35 p-3">
