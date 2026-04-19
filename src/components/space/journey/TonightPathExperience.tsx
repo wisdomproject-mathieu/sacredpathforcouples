@@ -445,13 +445,19 @@ const TonightPathExperience = ({
 
   const availableThemes = resolvedTonightPath.themes;
   const [activeTheme, setActiveTheme] = useState<ThemeKey>(resolvedTonightPath.defaultTheme);
+  const [themeFocused, setThemeFocused] = useState(false);
 
   useEffect(() => {
     if (!availableThemes.length) return;
     if (!availableThemes.includes(activeTheme)) {
       setActiveTheme(availableThemes[0]);
+      setThemeFocused(false);
     }
   }, [activeTheme, availableThemes, resolvedTonightPath.defaultTheme]);
+
+  useEffect(() => {
+    setThemeFocused(false);
+  }, [weatherEngineDebug.normalizedKey]);
 
   const activeThemePractices = useMemo(() => {
     const cards = resolvedTonightPath.themedRituals[activeTheme] ?? [];
@@ -468,10 +474,11 @@ const TonightPathExperience = ({
     return toPracticeItem(card, mainTheme, copy);
   }, [availableThemes, copy, resolvedTonightPath]);
   const mainSteps = primaryRitual?.actions?.slice(0, 4) ?? copy.fallbackSteps;
-  const positionCues = primaryRitual?.actions?.slice(1, 4) ?? copy.fallbackPositions;
+  const positionCues = copy.fallbackPositions;
   const suggestionText = primaryRitual
-    ? `${primaryRitual.actions.slice(0, 2).join(" ")}`
+    ? [primaryRitual.actions[0], primaryRitual.actions[1]].filter(Boolean).join(" ")
     : copy.waitingBody;
+  const visibleThemes = themeFocused ? [activeTheme] : availableThemes;
 
   const quote = useMemo(() => {
     const seed = `${new Date().toDateString()}:${weatherEngineDebug.normalizedKey ?? weatherStateMode}`;
@@ -508,7 +515,7 @@ const TonightPathExperience = ({
           {matchHeadline}
         </h2>
         <p className="mt-2 max-w-4xl text-sm leading-7 text-muted-foreground">
-          {primaryRitual ? `${copy.title} ${primaryRitual.purpose}` : copy.waitingBody}
+          {weatherMatch?.summary ?? primaryRitual?.purpose ?? copy.waitingBody}
         </p>
 
         <div className="mt-3 flex flex-wrap gap-2">
@@ -570,9 +577,21 @@ const TonightPathExperience = ({
           <article className="flex h-full flex-col rounded-[24px] border border-fuchsia-300/25 bg-gradient-to-br from-fuchsia-500/12 via-card/65 to-card/35 p-4 backdrop-blur-sm">
             <p className="text-xs uppercase tracking-[0.2em] text-fuchsia-200/90">{copy.themesLabel}</p>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">{copy.themesBody}</p>
+            {themeFocused ? (
+              <div className="mt-2 flex items-center justify-between gap-2">
+                <p className="text-[11px] uppercase tracking-[0.14em] text-fuchsia-200/80">{copy.focusedThemeLabel}</p>
+                <button
+                  type="button"
+                  onClick={() => setThemeFocused(false)}
+                  className="rounded-lg border border-border/35 bg-background/45 px-2.5 py-1 text-[11px] uppercase tracking-[0.12em] text-foreground transition-all hover:border-border/55 hover:bg-card/60"
+                >
+                  {copy.showAllThemesLabel}
+                </button>
+              </div>
+            ) : null}
 
-            <div className="mt-3 grid gap-2 sm:grid-cols-2">
-              {availableThemes.map((theme) => {
+            <div className={`mt-3 grid gap-2 ${themeFocused ? "grid-cols-1" : "sm:grid-cols-2"}`}>
+              {visibleThemes.map((theme) => {
                 const meta = copy.themeMeta[theme];
                 const active = activeTheme === theme;
                 const Icon = themeVisuals[theme].icon;
@@ -582,6 +601,7 @@ const TonightPathExperience = ({
                     type="button"
                     onClick={() => {
                       setActiveTheme(theme);
+                      setThemeFocused(true);
                       window.requestAnimationFrame(() => {
                         themeResultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
                       });
@@ -612,11 +632,11 @@ const TonightPathExperience = ({
                     <h4 className="font-display text-lg text-foreground">{practice.title}</h4>
                     {practice.subtitle ? <p className="mt-1 text-xs text-muted-foreground/85">{practice.subtitle}</p> : null}
                     <p className="mt-1 text-sm leading-6 text-foreground/85">{practice.purpose}</p>
-                    <ul className="mt-2 space-y-1 text-sm leading-6 text-muted-foreground">
-                      {practice.actions.slice(0, 4).map((action) => (
-                        <li key={`${practice.id}-${action}`}>• {action}</li>
+                    <ol className="mt-2 space-y-1 text-sm leading-6 text-muted-foreground">
+                      {practice.actions.slice(0, 5).map((action, index) => (
+                        <li key={`${practice.id}-${action}`}>{index + 1}. {action}</li>
                       ))}
-                    </ul>
+                    </ol>
                     <div className="mt-2 space-y-1">
                       {practice.tags.map((tag) => (
                         <p key={`${practice.id}-${tag}`} className="break-words text-xs text-foreground/80">{tag}</p>
@@ -636,9 +656,7 @@ const TonightPathExperience = ({
                 <p className="mt-1 text-sm leading-6 text-foreground/90">
                   {primaryRitual ? copy.respectContextLine : copy.waitingBody}
                 </p>
-                <p className="mt-1 text-sm leading-6 text-foreground/90">
-                  {weatherMatch?.interpretation ?? primaryRitual?.purpose ?? ""}
-                </p>
+                {weatherMatch?.interpretation ? <p className="mt-1 text-sm leading-6 text-foreground/90">{weatherMatch.interpretation}</p> : null}
                 <ul className="mt-2 space-y-1 text-sm leading-6 text-muted-foreground">
                   {copy.respectPrompts.map((prompt) => (
                     <li key={prompt}>• {prompt}</li>
