@@ -29,6 +29,7 @@ import { deriveActiveTonightExperience, getWeatherPresentation, type WeatherKey 
 import { getLocalDayRange, pickLatestWeatherForCouple } from "@/lib/weatherEntries";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import { useSelectedDailyMainCard } from "@/lib/weatherEngine";
+import { deriveTonightPathStatus } from "@/lib/tonightPathStatus";
 
 type RitualItem = Tables<"ritual_items">;
 type Pathway = Tables<"pathways">;
@@ -1274,7 +1275,18 @@ const AppHome = () => {
     partnerBWeather: partnerWeatherEntry?.state,
     coupleId,
   });
-  const bothCheckedIn = sharedMainCardState.ready;
+  const tonightPathStatus = useMemo(
+    () =>
+      deriveTonightPathStatus({
+        lang,
+        isConnected: relationshipConnected,
+        userWeatherSelected: Boolean(myWeatherEntry),
+        belovedWeatherSelected: Boolean(partnerWeatherEntry),
+        partnerName,
+      }),
+    [lang, myWeatherEntry, partnerName, partnerWeatherEntry, relationshipConnected],
+  );
+  const bothCheckedIn = tonightPathStatus.isTonightPathReady;
   const weatherMatch = activeTonightExperience.weatherMatch;
 
   const weatherCardState: "picker" | "mine_only" | "both" =
@@ -1347,11 +1359,7 @@ const AppHome = () => {
   const tonightRitualTitle = tonightRitual?.title ?? (bothCheckedIn ? "No mapped ritual" : dailyCards[0]?.title ?? copy.selecting);
   const tonightRitualDescription = tonightRitual?.description ?? featuredPathDescription;
   const tonightRitualSteps = tonightRitual?.ritualSteps?.slice(0, 3) ?? (bothCheckedIn ? [] : dailyCards[0]?.steps?.slice(0, 3) ?? []);
-  const waitingPathCopy = lang === "fr"
-    ? "Partagez vos deux météos pour afficher votre séquence complète de ce soir."
-    : lang === "cs"
-      ? "Sdílejte obě počasí, aby se zobrazila kompletní dnešní sekvence."
-      : "Both partners share weather to reveal the complete tonight sequence.";
+  const waitingPathCopy = tonightPathStatus.waitingBody;
   const enterTonightPathLabel = lang === "fr"
     ? "Entrer dans le chemin de ce soir"
     : lang === "cs"
@@ -1389,7 +1397,6 @@ const AppHome = () => {
         label: "Connectés",
         stayHere: "Restez ici et ouvrez les cartes rituelles de ce soir ci-dessous.",
         partnerConnected: `${partnerName ?? "Votre partenaire"} est connecté(e).`,
-        waitingBoth: "En attente de vos deux météos.",
         codeLabel: "Code de connexion",
         disconnect: "Se déconnecter",
       }
@@ -1398,7 +1405,6 @@ const AppHome = () => {
           label: "Společně propojeni",
           stayHere: "Zůstaňte zde a otevřete níže dnešní rituální karty.",
           partnerConnected: `${partnerName ?? "Partner"} je propojený.`,
-          waitingBoth: "Čekáme na obě počasí.",
           codeLabel: "Párovací kód",
           disconnect: "Odpojit partnera",
         }
@@ -1406,7 +1412,6 @@ const AppHome = () => {
           label: "Connected together",
           stayHere: "Stay here and open tonight's ritual cards below.",
           partnerConnected: `${partnerName ?? "Your partner"} is connected.`,
-          waitingBoth: "Waiting for both weather check-ins.",
           codeLabel: "Connection code",
           disconnect: "Disconnect",
         };
@@ -1525,7 +1530,7 @@ const AppHome = () => {
                 <p className="mt-1 text-sm text-foreground">
                   {bothCheckedIn
                     ? `${sharedMainCardState.archetype ?? "weather_match"} · ${featuredPathTitle}`
-                    : connectedPanelUi.waitingBoth}
+                    : tonightPathStatus.latestMatchWaitingLabel}
                 </p>
               </div>
             </div>
@@ -1647,13 +1652,15 @@ const AppHome = () => {
             <div className="rounded-[12px] border border-border/30 bg-background/40 p-3">
               <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{weatherUi.yourWeather}</p>
               <p className="mt-1 font-display text-base">
-                {myMood ? `${myMood.emoji} ${myMood.label}` : (shareMood ? `${shareMood.emoji} ${shareMood.label}` : "Not set yet")}
+                {myMood
+                  ? `${myMood.emoji} ${myMood.label}`
+                  : (shareMood ? `${shareMood.emoji} ${shareMood.label}` : tonightPathStatus.userWeatherPlaceholder)}
               </p>
             </div>
             <div className="rounded-[12px] border border-border/30 bg-background/40 p-3">
               <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{weatherUi.belovedWeather}</p>
               <p className="mt-1 font-display text-base">
-                {partnerMood ? `${partnerMood.emoji} ${partnerMood.label}` : "Waiting..."}
+                {partnerMood ? `${partnerMood.emoji} ${partnerMood.label}` : tonightPathStatus.belovedWeatherPlaceholder}
               </p>
             </div>
           </div>

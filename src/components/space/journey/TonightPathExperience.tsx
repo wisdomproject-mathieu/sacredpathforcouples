@@ -5,6 +5,7 @@ import { BookOpen, Check, Copy, Eye, Flame, Hand, Heart, MessageCircle, MoveHori
 import type { Language } from "@/contexts/LanguageContext";
 import type { WeatherMatchResult } from "@/lib/weatherMatch";
 import type { SelectedDailyMainCard, WeatherEngineDebugState } from "@/lib/weatherEngine";
+import type { TonightPathStatusViewModel } from "@/lib/tonightPathStatus";
 import type { WeatherCardData } from "@/components/space/journey/SharedWeatherCard";
 import { resolveTonightPath, type TonightTheme } from "@/lib/tonightPathResolver";
 
@@ -17,7 +18,7 @@ type Props = {
   weatherStateMode: WeatherStateMode;
   myWeather: WeatherCardData | null;
   belovedWeather: WeatherCardData | null;
-  sharedStatusLabel: string;
+  tonightPathStatus: TonightPathStatusViewModel;
   coupleId?: string | null;
   selectedDailyMainCard: SelectedDailyMainCard | null;
   alternateCards: SelectedDailyMainCard[];
@@ -395,7 +396,7 @@ const TonightPathExperience = ({
   weatherStateMode,
   myWeather,
   belovedWeather,
-  sharedStatusLabel,
+  tonightPathStatus,
   coupleId,
   selectedDailyMainCard,
   alternateCards,
@@ -470,15 +471,15 @@ const TonightPathExperience = ({
   const visibleThemes = availableThemes;
 
   const quote = useMemo(() => {
-    const seed = `${new Date().toDateString()}:${weatherEngineDebug.normalizedKey ?? weatherStateMode}`;
+    const seed = `${new Date().toDateString()}:${weatherEngineDebug.normalizedKey ?? tonightPathStatus.waitingOn ?? weatherStateMode}`;
     return copy.quotes[hashString(seed) % copy.quotes.length];
-  }, [copy.quotes, weatherEngineDebug.normalizedKey, weatherStateMode]);
+  }, [copy.quotes, tonightPathStatus.waitingOn, weatherEngineDebug.normalizedKey, weatherStateMode]);
 
-  const matchHeadline = weatherEngineDebug.archetype
+  const matchHeadline = tonightPathStatus.isTonightPathReady && weatherEngineDebug.archetype
     ? weatherEngineDebug.archetype.replaceAll("_", " ")
-    : weatherMatch
+    : tonightPathStatus.isTonightPathReady && weatherMatch
       ? `${weatherMatch.archetype.title} · ${weatherMatch.pairLabel}`
-      : copy.waitingTitle;
+      : tonightPathStatus.waitingTitle;
 
   const copySuggestion = async () => {
     try {
@@ -504,18 +505,20 @@ const TonightPathExperience = ({
           {matchHeadline}
         </h2>
         <p className="mt-2 max-w-4xl text-sm leading-7 text-muted-foreground">
-          {weatherMatch?.summary ?? primaryRitual?.purpose ?? copy.waitingBody}
+          {tonightPathStatus.isTonightPathReady
+            ? weatherMatch?.summary ?? primaryRitual?.purpose ?? tonightPathStatus.waitingBody
+            : tonightPathStatus.waitingBody}
         </p>
 
         <div className="mt-3 flex flex-wrap gap-2">
           <span className="rounded-full border border-border/30 bg-background/45 px-2.5 py-1 text-[11px] text-foreground/90">
-            {copy.yourWeather}: {myWeather ? `${myWeather.emoji} ${myWeather.label}` : copy.waitingWeather}
+            {copy.yourWeather}: {myWeather ? `${myWeather.emoji} ${myWeather.label}` : tonightPathStatus.userWeatherPlaceholder}
           </span>
           <span className="rounded-full border border-border/30 bg-background/45 px-2.5 py-1 text-[11px] text-foreground/90">
-            {copy.belovedWeather}: {belovedWeather ? `${belovedWeather.emoji} ${belovedWeather.label}` : copy.waitingWeather}
+            {copy.belovedWeather}: {belovedWeather ? `${belovedWeather.emoji} ${belovedWeather.label}` : tonightPathStatus.belovedWeatherPlaceholder}
           </span>
           <span className="rounded-full border border-primary/25 bg-primary/12 px-2.5 py-1 text-[11px] uppercase tracking-[0.12em] text-primary/90">
-            {sharedStatusLabel}
+            {tonightPathStatus.sharedStatusLabel}
           </span>
         </div>
 
@@ -523,11 +526,11 @@ const TonightPathExperience = ({
           <article className="flex h-full flex-col rounded-[24px] border border-amber-300/30 bg-gradient-to-br from-amber-500/12 via-card/65 to-card/35 p-4 backdrop-blur-sm">
             <p className="text-xs uppercase tracking-[0.2em] text-amber-200/90">{copy.ritualLabel}</p>
             <h3 className="mt-2 font-display text-2xl text-foreground">
-              {primaryRitual?.title ?? copy.waitingTitle}
+              {primaryRitual?.title ?? tonightPathStatus.waitingTitle}
             </h3>
             <p className="mt-2 text-xs uppercase tracking-[0.14em] text-amber-100/80">{copy.ritualPurposeLabel}</p>
             <p className="mt-1 text-sm leading-6 text-muted-foreground">
-              {primaryRitual?.purpose ?? copy.waitingBody}
+              {primaryRitual?.purpose ?? tonightPathStatus.waitingBody}
             </p>
 
             {primaryRitual?.tags?.length ? (
@@ -617,7 +620,7 @@ const TonightPathExperience = ({
               <div className="rounded-xl border border-border/30 bg-background/45 p-3">
                 <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">{copy.respectLabel}</p>
                 <p className="mt-1 text-sm leading-6 text-foreground/90">
-                  {primaryRitual ? copy.respectContextLine : copy.waitingBody}
+                  {primaryRitual ? copy.respectContextLine : tonightPathStatus.waitingBody}
                 </p>
                 {weatherMatch?.interpretation ? <p className="mt-1 text-sm leading-6 text-foreground/90">{weatherMatch.interpretation}</p> : null}
                 <ul className="mt-2 space-y-1 text-sm leading-6 text-muted-foreground">

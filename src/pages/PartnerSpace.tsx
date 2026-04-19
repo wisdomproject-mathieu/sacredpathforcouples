@@ -69,6 +69,7 @@ import { getPremiumTriggerCopy, getTempleJourneys, getTempleMembershipName } fro
 import { useIsMobile } from "@/hooks/use-mobile";
 import { pickLatestWeatherForCouple, sortWeatherEntriesByRecency } from "@/lib/weatherEntries";
 import { useSelectedDailyMainCard } from "@/lib/weatherEngine";
+import { deriveTonightPathStatus } from "@/lib/tonightPathStatus";
 
 type ToolKey = "weather" | "rituals" | "positions" | "messages" | "guide" | "repair" | "pathways" | "altar";
 type ViewMode = "doorways" | "journey" | "oracle";
@@ -727,6 +728,17 @@ const PartnerSpace = () => {
     partnerBWeather: belovedWeatherEntry?.state,
     coupleId,
   });
+  const tonightPathStatus = useMemo(
+    () =>
+      deriveTonightPathStatus({
+        lang,
+        isConnected: hasConnectedPartner,
+        userWeatherSelected: Boolean(myWeatherEntry),
+        belovedWeatherSelected: Boolean(belovedWeatherEntry),
+        partnerName: partnerDisplayName,
+      }),
+    [belovedWeatherEntry, hasConnectedPartner, lang, myWeatherEntry, partnerDisplayName],
+  );
 
   // Home entry should land users directly on a complete Tonight Path surface.
   useEffect(() => {
@@ -889,14 +901,6 @@ const PartnerSpace = () => {
     };
   }, [l, latestFromBeloved, weatherMatch]);
   const latestBoardItem = boardItems[0] ?? null;
-  const sharedStatusLabel = weatherStateMode === "both"
-    ? l("Both shared", "Les deux ont partagé", "Oba sdíleli")
-    : weatherStateMode === "mine_only"
-    ? l("Waiting for beloved", "En attente du partenaire", "Čeká se na partnera")
-    : weatherStateMode === "beloved_only"
-    ? l("Your turn", "À votre tour", "Teď jsi na řadě")
-    : l("Not shared yet", "Pas encore partagé", "Zatím nesdíleno");
-
   const timelineItems: JourneyTimelineItem[] = useMemo(() => {
     const typeLabels: Record<JourneyTimelineItem["type"], string> = {
       weather: l("Weather", "Météo", "Počasí"),
@@ -1918,7 +1922,7 @@ const PartnerSpace = () => {
                   weatherStateMode={weatherStateMode}
                   myWeather={myWeatherCard}
                   belovedWeather={belovedWeatherCard}
-                  sharedStatusLabel={sharedStatusLabel}
+                  tonightPathStatus={tonightPathStatus}
                   coupleId={coupleId}
                   selectedDailyMainCard={sharedMainCardState.selectedDailyMainCard}
                   alternateCards={sharedMainCardState.alternates}
