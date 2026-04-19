@@ -353,15 +353,6 @@ const isBoilerplateSentence = (value: string) => {
   );
 };
 
-const hasBoilerplateSteps = (steps: string[]) => {
-  const normalized = steps.map((step) => normalizeSentence(step));
-  if (!normalized.length) return true;
-  return (
-    normalized.includes("arrive with one shared breath and one sentence of intention") &&
-    normalized.includes("follow slow pacing check in clearly and keep contact attuned")
-  );
-};
-
 const buildPracticePurpose = (
   card: SelectedDailyMainCard,
   theme: ThemeKey,
@@ -374,19 +365,11 @@ const buildPracticePurpose = (
 
 const buildPracticeSteps = (
   card: SelectedDailyMainCard,
-  theme: ThemeKey,
+  _theme: ThemeKey,
   copy: (typeof copyByLang)[Language],
 ) => {
-  if (!hasBoilerplateSteps(card.ritualSteps)) {
-    return Array.from(new Set(card.ritualSteps.map((step) => step.trim()).filter(Boolean))).slice(0, 5);
-  }
-
-  const generated = [
-    `${card.title}: ${copy.themeMeta[theme].whyTonight}`,
-    ...copy.fallbackSteps.slice(0, 3),
-    copy.reflectionPrompt,
-  ];
-  return Array.from(new Set(generated.map((step) => step.trim()).filter(Boolean))).slice(0, 5);
+  const steps = Array.from(new Set(card.ritualSteps.map((step) => step.trim()).filter(Boolean))).slice(0, 5);
+  return steps.length ? steps : copy.fallbackSteps.slice(0, 4);
 };
 
 const toPracticeItem = (
@@ -456,8 +439,14 @@ const TonightPathExperience = ({
   }, [activeTheme, availableThemes, resolvedTonightPath.defaultTheme]);
 
   useEffect(() => {
+    // Always return to button-only state when the weather pair or selected main ritual changes.
     setThemeFocused(false);
-  }, [weatherEngineDebug.normalizedKey]);
+  }, [
+    weatherEngineDebug.normalizedKey,
+    weatherEngineDebug.partnerAWeather,
+    weatherEngineDebug.partnerBWeather,
+    weatherEngineDebug.selectedMainCardId,
+  ]);
 
   const activeThemePractices = useMemo(() => {
     const cards = resolvedTonightPath.themedRituals[activeTheme] ?? [];
@@ -478,7 +467,7 @@ const TonightPathExperience = ({
   const suggestionText = primaryRitual
     ? [primaryRitual.actions[0], primaryRitual.actions[1]].filter(Boolean).join(" ")
     : copy.waitingBody;
-  const visibleThemes = themeFocused ? [activeTheme] : availableThemes;
+  const visibleThemes = availableThemes;
 
   const quote = useMemo(() => {
     const seed = `${new Date().toDateString()}:${weatherEngineDebug.normalizedKey ?? weatherStateMode}`;
@@ -576,21 +565,7 @@ const TonightPathExperience = ({
 
           <article className="flex h-full flex-col rounded-[24px] border border-fuchsia-300/25 bg-gradient-to-br from-fuchsia-500/12 via-card/65 to-card/35 p-4 backdrop-blur-sm">
             <p className="text-xs uppercase tracking-[0.2em] text-fuchsia-200/90">{copy.themesLabel}</p>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">{copy.themesBody}</p>
-            {themeFocused ? (
-              <div className="mt-2 flex items-center justify-between gap-2">
-                <p className="text-[11px] uppercase tracking-[0.14em] text-fuchsia-200/80">{copy.focusedThemeLabel}</p>
-                <button
-                  type="button"
-                  onClick={() => setThemeFocused(false)}
-                  className="rounded-lg border border-border/35 bg-background/45 px-2.5 py-1 text-[11px] uppercase tracking-[0.12em] text-foreground transition-all hover:border-border/55 hover:bg-card/60"
-                >
-                  {copy.showAllThemesLabel}
-                </button>
-              </div>
-            ) : null}
-
-            <div className={`mt-3 grid gap-2 ${themeFocused ? "grid-cols-1" : "sm:grid-cols-2"}`}>
+            <div className="mt-3 grid gap-2 sm:grid-cols-2">
               {visibleThemes.map((theme) => {
                 const meta = copy.themeMeta[theme];
                 const active = activeTheme === theme;
@@ -623,25 +598,13 @@ const TonightPathExperience = ({
 
             {themeFocused && activeThemePractices.length ? (
               <div ref={themeResultsRef} className="mt-3 flex-1 space-y-2">
-                <div className={`rounded-xl border p-3 ${themeVisuals[activeTheme].wrapClass}`}>
-                  <p className="text-xs leading-5 text-foreground/90">{copy.themeMeta[activeTheme].whyTonight}</p>
-                </div>
-
-                {activeThemePractices.map((practice) => (
+                {activeThemePractices.slice(0, 1).map((practice) => (
                   <div key={practice.id} className={`rounded-xl border p-3 ${themeVisuals[practice.theme].wrapClass}`}>
-                    <h4 className="font-display text-lg text-foreground">{practice.title}</h4>
-                    {practice.subtitle ? <p className="mt-1 text-xs text-muted-foreground/85">{practice.subtitle}</p> : null}
-                    <p className="mt-1 text-sm leading-6 text-foreground/85">{practice.purpose}</p>
-                    <ol className="mt-2 space-y-1 text-sm leading-6 text-muted-foreground">
+                    <ol className="space-y-1 text-sm leading-6 text-foreground/90">
                       {practice.actions.slice(0, 5).map((action, index) => (
                         <li key={`${practice.id}-${action}`}>{index + 1}. {action}</li>
                       ))}
                     </ol>
-                    <div className="mt-2 space-y-1">
-                      {practice.tags.map((tag) => (
-                        <p key={`${practice.id}-${tag}`} className="break-words text-xs text-foreground/80">{tag}</p>
-                      ))}
-                    </div>
                   </div>
                 ))}
               </div>

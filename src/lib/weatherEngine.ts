@@ -65,6 +65,17 @@ const WEATHER_TO_MATRIX: Record<AppWeather, MatrixWeather> = {
   erotic: "radiant",
 };
 
+const WEATHER_VARIANCE_INDEX: Record<AppWeather, number> = {
+  open: 0,
+  tender: 1,
+  playful: 2,
+  stressed: 3,
+  longing: 4,
+  erotic: 5,
+  tired: 6,
+  reassurance: 7,
+};
+
 const isRadiantSet = (value: string | null | undefined) =>
   value === "open" || value === "longing" || value === "erotic";
 
@@ -99,6 +110,7 @@ const writeHistory = (coupleId: string | null | undefined, history: string[]) =>
 type PersistedSelection = {
   dayKey: string;
   normalizedKey: string;
+  weatherPairKey?: string;
   selectedId: string;
   alternateIds: string[];
 };
@@ -132,13 +144,39 @@ const writeDailySelection = (coupleId: string | null | undefined, value: Persist
   }
 };
 
+const hashString = (value: string) =>
+  Array.from(value).reduce((acc, char) => (acc * 31 + char.charCodeAt(0)) >>> 0, 19);
+
+const rotateBy = <T,>(items: T[], index: number): T[] => {
+  if (!items.length) return [];
+  const offset = ((index % items.length) + items.length) % items.length;
+  if (!offset) return items.slice();
+  return [...items.slice(offset), ...items.slice(0, offset)];
+};
+
+const normalizeSentence = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+
+const isBoilerplateDescription = (value: string) => {
+  const normalized = normalizeSentence(value);
+  return (
+    normalized.includes("a guided sequence aligned to the active couple weather combination") ||
+    normalized.includes("a supporting practice chosen to reinforce tonight s main weather ritual")
+  );
+};
+
 const toCard = (card: RitualLibraryCard | undefined, fallbackId: string): SelectedDailyMainCard | null => {
   if (!card) return null;
+  const subtitle = typeof card.subtitle === "string" && !isBoilerplateDescription(card.subtitle) ? card.subtitle : "";
+  const description = typeof card.description === "string" && !isBoilerplateDescription(card.description) ? card.description : "";
   return {
     id: card.id || fallbackId,
     title: card.title,
-    subtitle: card.subtitle,
-    description: card.description,
+    subtitle,
+    description,
     duration: card.duration,
     intimacyLevel: card.intimacyLevel,
     primaryNeed: card.primaryNeed,
@@ -183,6 +221,7 @@ export const resolveSelectedDailyMainCard = (input: ResolveInput): SelectedDaily
   }
 
   const radiantRichCase = isRadiantSet(partnerAWeather) && isRadiantSet(partnerBWeather);
+  const weatherPairKey = `${partnerAWeather}|${partnerBWeather}`;
   const normalizedKey = radiantRichCase
     ? "radiant|radiant"
     : `${WEATHER_TO_MATRIX[partnerAWeather as AppWeather]}|${WEATHER_TO_MATRIX[partnerBWeather as AppWeather]}`;
@@ -216,18 +255,30 @@ export const resolveSelectedDailyMainCard = (input: ResolveInput): SelectedDaily
     persistedSelection &&
       persistedSelection.dayKey === activeDayKey &&
       persistedSelection.normalizedKey === normalizedKey &&
+      (persistedSelection.weatherPairKey ?? persistedSelection.normalizedKey) === weatherPairKey &&
       candidates.includes(persistedSelection.selectedId),
   );
+  const pairSpecificOffset = (() => {
+    if (!candidates.length || radiantRichCase) return 0;
+    const a = WEATHER_VARIANCE_INDEX[partnerAWeather as AppWeather] ?? 0;
+    const b = WEATHER_VARIANCE_INDEX[partnerBWeather as AppWeather] ?? 0;
+    // Keep normalized matrix behavior but preserve nuance from the exact pair.
+    return (a * 11 + b * 17 + hashString(normalizedKey)) % candidates.length;
+  })();
+  const candidateOrder = radiantRichCase ? candidates : rotateBy(candidates, pairSpecificOffset);
   const selectedId = persistedStillValid
     ? (persistedSelection as PersistedSelection).selectedId
-    : candidates.find((id) => !recentLast7.includes(id)) ?? hardcodedRichMain;
-  const alternateIds = hardcodedRichAlternates.filter((id) => id !== selectedId);
+    : candidateOrder.find((id) => !recentLast7.includes(id)) ?? candidateOrder[0] ?? hardcodedRichMain;
+  const alternateIds = candidateOrder.filter((id) => id !== selectedId);
   const selectedCard = toCard(libraryById.get(selectedId), selectedId);
   const alternateCards = alternateIds
     .map((id) => toCard(libraryById.get(id), id))
     .filter((card): card is SelectedDailyMainCard => Boolean(card));
 
   if (selectedCard) {
+    if (!selectedCard.description) {
+      selectedCard.description = `Tonight centers on ${selectedCard.title}. ${selectedCard.duration} · ${selectedCard.intimacyLevel}. Focus: ${selectedCard.primaryNeed}.`;
+    }
     if (!persistedStillValid) {
       const nextHistory = [...recentHistory, selectedCard.id];
       writeHistory(input.coupleId, nextHistory);
@@ -235,6 +286,7 @@ export const resolveSelectedDailyMainCard = (input: ResolveInput): SelectedDaily
     writeDailySelection(input.coupleId, {
       dayKey: activeDayKey,
       normalizedKey,
+      weatherPairKey,
       selectedId: selectedCard.id,
       alternateIds,
     });
