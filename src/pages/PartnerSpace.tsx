@@ -1531,7 +1531,7 @@ const PartnerSpace = () => {
 
             {hasConnectedPartner ? (
               <div className="rounded-[18px] border border-emerald-300/25 bg-emerald-500/8 p-3">
-                <p className="text-xs uppercase tracking-[0.18em] text-emerald-200/85">{l("RETURN TO LOVE", "RETOUR À L'AMOUR", "NÁVRAT K LÁSCE")}</p>
+                <p className="text-xs uppercase tracking-[0.18em] text-emerald-200/85">{l("PRACTICE DAILY", "PRATIQUE QUOTIDIENNE", "KAŽDODENNÍ PRAXE")}</p>
                 <p className="mt-2 text-sm leading-6 text-foreground/90">
                   {l(
                     "Practice one ritual together each day. Small shared moments keep tenderness alive, rebuild trust faster, and deepen desire through real presence.",
@@ -1547,11 +1547,6 @@ const PartnerSpace = () => {
                       "Les rituels quotidiens vous aident à vous reconnecter plus vite après les tensions et à vous sentir plus proches au quotidien.",
                       "Denní rituály vám pomáhají znovu se propojit dříve po napětí a cítit větší blízkost i v běžných chvílích.",
                     )}
-                  </p>
-                  <p className="mt-1 text-sm text-foreground">
-                    {weatherMatch
-                      ? `${weatherMatch.archetype.title} · ${weatherMatch.pairLabel}`
-                      : l("Waiting for both weather check-ins.", "En attente de vos deux météos.", "Čekáme na obě počasí.")}
                   </p>
                 </div>
               </div>
