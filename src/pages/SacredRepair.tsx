@@ -1,8 +1,10 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Flame, Hand, Heart, Lock, MessageCircle, Sparkles, type LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { SACRED_REPAIR_CHAPTERS, type SacredRepairChapter, type SacredRepairRitual } from "@/lib/sacredRepairData";
 import { sacredVisualSystem } from "@/lib/sacredVisualSystem";
 
@@ -276,6 +278,7 @@ const RitualDetail = ({
 };
 
 const SacredRepair = () => {
+  const { user } = useAuth();
   const [selectedChapterId, setSelectedChapterId] = useState<string | null>(null);
   const [selectedRitualTitle, setSelectedRitualTitle] = useState<string | null>(null);
   const [premiumHighlight, setPremiumHighlight] = useState(false);
@@ -285,6 +288,32 @@ const SacredRepair = () => {
   const [editingName, setEditingName] = useState(false);
   const [nameDraft, setNameDraft] = useState("Mathieu");
   const premiumRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    const loadProfileName = async () => {
+      if (!user?.id) return;
+      const fallback = user.email?.split("@")[0] || "Mathieu";
+      const { data } = await supabase
+        .from("profiles")
+        .select("display_name")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      const resolvedName = data?.display_name?.trim() || fallback;
+      if (!isCancelled) {
+        setMyName(resolvedName);
+        setNameDraft(resolvedName);
+      }
+    };
+
+    void loadProfileName();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [user?.id, user?.email]);
 
   const selectedChapter = useMemo(
     () => SACRED_REPAIR_CHAPTERS.find((chapter) => chapter.id === selectedChapterId) ?? null,
@@ -327,10 +356,16 @@ const SacredRepair = () => {
     setSelectedRitualTitle(ritual.title);
   };
 
-  const saveName = () => {
+  const saveName = async () => {
     const clean = nameDraft.trim();
     if (!clean) return;
+    if (user?.id) {
+      await supabase
+        .from("profiles")
+        .upsert({ id: user.id, user_id: user.id, display_name: clean }, { onConflict: "user_id" });
+    }
     setMyName(clean);
+    setNameDraft(clean);
     setEditingName(false);
   };
 
