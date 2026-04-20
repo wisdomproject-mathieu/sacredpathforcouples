@@ -46,20 +46,29 @@ const FREE_RITUAL_BY_CHAPTER: Record<string, string> = {
 
 type ChapterNarrative = {
   subtitle: string;
+  supportingCopy: string;
 };
 
 const CHAPTER_NARRATIVE_BY_ID: Record<string, ChapterNarrative> = {
   "touch-massage-sacred-spot": {
     subtitle: "Repair through reverent touch",
+    supportingCopy:
+      "Begin where the body still says yes. Slow touch and devotional practice soften defense and rebuild trust through presence.",
   },
   "embrace-embodied-connection": {
     subtitle: "Repair through holding and nervous-system settling",
+    supportingCopy:
+      "Before passion returns, safety returns first. These practices help couples hold, breathe, settle, and feel each other again.",
   },
   "sacred-union-rituals": {
     subtitle: "Repair through conscious lovemaking",
+    supportingCopy:
+      "When tenderness reopens, union becomes medicine. Slow intimacy practices replace urgency with attunement and care.",
   },
   "emotional-clearing-authentic-relating": {
     subtitle: "Repair through truth and emotional honesty",
+    supportingCopy:
+      "For the truths that sit between you. Clear, relational practices help love breathe again after distance or tension.",
   },
 };
 
@@ -103,6 +112,11 @@ const ChapterCard = ({
       <p className="mt-2 rounded-[12px] border border-emerald-300/25 bg-emerald-500/8 px-3 py-2 text-[0.98rem] leading-7 text-primary/90">
         {narrative?.subtitle ?? chapter.emotionalFrame}
       </p>
+      {!compact ? (
+        <p className="mt-2 line-clamp-3 text-sm leading-6 text-foreground/90">
+          {narrative?.supportingCopy}
+        </p>
+      ) : null}
     </>
   );
 
