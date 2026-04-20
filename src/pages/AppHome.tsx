@@ -1733,7 +1733,7 @@ const AppHome = () => {
             <div className="mt-5">
               {bothCheckedIn ? (
                 <Link
-                  to="/app/space?view=journey&openMatch=1"
+                  to="/app/tonight-paths"
                   className="inline-flex items-center gap-1.5 rounded-[12px] border border-amber-400/30 bg-amber-400/10 px-4 py-2.5 text-sm text-amber-300 transition-all hover:bg-amber-400/20"
                 >
                   {enterTonightPathLabel} →

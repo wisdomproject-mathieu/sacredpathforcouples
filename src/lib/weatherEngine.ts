@@ -188,6 +188,56 @@ const toCard = (card: RitualLibraryCard | undefined, fallbackId: string): Select
   };
 };
 
+const registryCards: SelectedDailyMainCard[] = MASTER_RITUAL_REGISTRY.map((entry) => toCard(entry, entry.id)).filter(
+  (card): card is SelectedDailyMainCard => Boolean(card),
+);
+
+export const resolveTonightPathSixCards = (
+  state: Pick<SelectedDailyMainCardState, "selectedDailyMainCard" | "alternates" | "normalizedKey">,
+  limit = 6,
+): SelectedDailyMainCard[] => {
+  if (!state.selectedDailyMainCard) return [];
+
+  const picks: SelectedDailyMainCard[] = [];
+  const seenIds = new Set<string>();
+  const addCard = (card: SelectedDailyMainCard | null | undefined) => {
+    if (!card || seenIds.has(card.id) || picks.length >= limit) return;
+    seenIds.add(card.id);
+    picks.push(card);
+  };
+
+  addCard(state.selectedDailyMainCard);
+  state.alternates.forEach(addCard);
+
+  if (state.normalizedKey) {
+    registryCards.forEach((card) => {
+      if (picks.length >= limit) return;
+      const source = libraryById.get(card.id);
+      if (source?.weatherTags?.includes(state.normalizedKey as string)) addCard(card);
+    });
+  }
+
+  const mainTheme = normalizeSentence(state.selectedDailyMainCard.theme || "");
+  registryCards.forEach((card) => {
+    if (picks.length >= limit) return;
+    if (normalizeSentence(card.theme || "") === mainTheme) addCard(card);
+  });
+
+  const mainNeed = normalizeSentence(state.selectedDailyMainCard.primaryNeed || "");
+  registryCards.forEach((card) => {
+    if (picks.length >= limit) return;
+    if (normalizeSentence(card.primaryNeed || "") === mainNeed) addCard(card);
+  });
+
+  const seed = state.normalizedKey || state.selectedDailyMainCard.id;
+  const deterministicTail = registryCards
+    .slice()
+    .sort((a, b) => hashString(`${seed}:${a.id}`) - hashString(`${seed}:${b.id}`));
+  deterministicTail.forEach(addCard);
+
+  return picks.slice(0, limit);
+};
+
 const defaultState: SelectedDailyMainCardState = {
   selectedDailyMainCard: null,
   alternates: [],
