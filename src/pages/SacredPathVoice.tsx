@@ -15,7 +15,6 @@ import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 import { sacredVisualSystem } from "@/lib/sacredVisualSystem";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import {
-  generateSacredVoiceSession as generateCuratedSacredVoiceSession,
   getSacredVoiceExcerptByRef,
   getSacredVoiceRituals,
   getSacredVoiceTemplateLibrary,
@@ -23,9 +22,11 @@ import {
   SACRED_VOICE_INTENTIONS,
   SACRED_VOICE_MODES,
   SACRED_VOICE_SOURCES,
+  type SacredVoiceAudioProvider,
   type SacredVoiceSelection,
   type SacredVoiceSession,
 } from "@/lib/sacredPathVoiceContent";
+import { generateSacredVoiceSession as generateRoutedSacredVoiceSession } from "@/lib/sacredVoiceRouter";
 import {
   isSacredVoiceAudioSupported,
   pauseSacredVoiceSession,
@@ -35,6 +36,7 @@ import {
   startSacredVoiceSession,
   stopSacredVoiceSession,
   tickSacredVoiceSession,
+  type SacredVoiceStartResult,
   type SacredVoicePlaybackState,
 } from "@/lib/sacredPathVoiceService";
 
@@ -80,6 +82,10 @@ const SacredPathVoice = () => {
   const [playback, setPlayback] = useState<SacredVoicePlaybackState | null>(null);
   const [savedNotice, setSavedNotice] = useState<string>("");
   const [audioSupported, setAudioSupported] = useState(true);
+  const [audioProvider, setAudioProvider] = useState<SacredVoiceAudioProvider | null>(null);
+  const [voiceStatusNote, setVoiceStatusNote] = useState<string>("");
+  const [isStarting, setIsStarting] = useState(false);
+  const [sessionSignal, setSessionSignal] = useState("");
 
   useEffect(() => {
     setAudioSupported(isSacredVoiceAudioSupported());
@@ -127,24 +133,36 @@ const SacredPathVoice = () => {
         ? "A source-grounded reading followed by one practical ritual you can run tonight."
         : "A guided couple session with voice pacing, ritual structure, and a clean closing.";
 
-  const startSession = () => {
-    const curated = generateCuratedSacredVoiceSession(selection);
-    const initialPlayback = startSacredVoiceSession(curated, {
-      onEnd: () => {
-        setPlayback((previous) =>
-          previous
-            ? {
-                ...previous,
-                status: "ended",
-                elapsedSeconds: previous.totalSeconds,
-              }
-            : previous,
-        );
-      },
+  const markEnded = () => {
+    setPlayback((previous) =>
+      previous
+        ? {
+            ...previous,
+            status: "ended",
+            elapsedSeconds: previous.totalSeconds,
+          }
+        : previous,
+    );
+  };
+
+  const applyStartResult = (result: SacredVoiceStartResult) => {
+    setPlayback(result.playback);
+    setAudioProvider(result.provider);
+    setVoiceStatusNote(result.message ?? "");
+  };
+
+  const startSession = async () => {
+    if (isStarting) return;
+    setIsStarting(true);
+
+    const curated = generateRoutedSacredVoiceSession(selection, sessionSignal);
+    const initialPlayback = await startSacredVoiceSession(curated, {
+      onEnd: markEnded,
     });
 
     setActiveSession(curated);
-    setPlayback(initialPlayback);
+    applyStartResult(initialPlayback);
+    setIsStarting(false);
   };
 
   const handlePlayPause = () => {
@@ -158,41 +176,20 @@ const SacredPathVoice = () => {
       return;
     }
     if (playback.status === "ended") {
-      setPlayback(
-        restartSacredVoiceSession(activeSession, {
-          onEnd: () => {
-            setPlayback((previous) =>
-              previous
-                ? {
-                    ...previous,
-                    status: "ended",
-                    elapsedSeconds: previous.totalSeconds,
-                  }
-                : previous,
-            );
-          },
-        }),
-      );
+      void handleRestart();
     }
   };
 
-  const handleRestart = () => {
-    if (!activeSession) return;
-    setPlayback(
-      restartSacredVoiceSession(activeSession, {
-        onEnd: () => {
-          setPlayback((previous) =>
-            previous
-              ? {
-                  ...previous,
-                  status: "ended",
-                  elapsedSeconds: previous.totalSeconds,
-                }
-              : previous,
-          );
-        },
-      }),
-    );
+  const handleRestart = async () => {
+    if (!activeSession || isStarting) return;
+    setIsStarting(true);
+    const restarted = await restartSacredVoiceSession(activeSession, {
+      onEnd: () => {
+        markEnded();
+      },
+    });
+    applyStartResult(restarted);
+    setIsStarting(false);
   };
 
   const handleStop = () => {
@@ -223,8 +220,8 @@ const SacredPathVoice = () => {
     }
   };
 
-  const handleNextPractice = () => {
-    if (!activeSession) return;
+  const handleNextPractice = async () => {
+    if (!activeSession || isStarting) return;
     const library = getSacredVoiceTemplateLibrary();
     const next =
       library.find(
@@ -243,23 +240,15 @@ const SacredPathVoice = () => {
     };
 
     setSelection(nextSelection);
-
-    const nextPlayback = startSacredVoiceSession(next, {
-      onEnd: () => {
-        setPlayback((previous) =>
-          previous
-            ? {
-                ...previous,
-                status: "ended",
-                elapsedSeconds: previous.totalSeconds,
-              }
-            : previous,
-        );
-      },
+    setIsStarting(true);
+    const routed = generateRoutedSacredVoiceSession(nextSelection, sessionSignal);
+    const nextPlayback = await startSacredVoiceSession(routed, {
+      onEnd: markEnded,
     });
 
-    setActiveSession(next);
-    setPlayback(nextPlayback);
+    setActiveSession(routed);
+    applyStartResult(nextPlayback);
+    setIsStarting(false);
   };
 
   const subtitle =
@@ -352,6 +341,18 @@ const SacredPathVoice = () => {
           <p><span className="text-muted-foreground">Length:</span> {selection.duration} min</p>
           <p><span className="text-muted-foreground">Style:</span> {selectedMode}</p>
         </div>
+        <div className="mt-3">
+          <label className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
+            Session Context (optional)
+          </label>
+          <textarea
+            value={sessionSignal}
+            onChange={(event) => setSessionSignal(event.target.value)}
+            rows={3}
+            placeholder="Example: We feel busy and disconnected, but not in conflict."
+            className="mt-2 w-full rounded-2xl border border-border/35 bg-background/40 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/75 focus:outline-none focus:ring-1 focus:ring-primary/35"
+          />
+        </div>
         <p className="mt-3 text-sm leading-7 text-foreground/90">{previewCopy}</p>
 
         {entitlementResolved && !hasPremiumAccess ? (
@@ -370,10 +371,11 @@ const SacredPathVoice = () => {
         ) : (
           <button
             type="button"
-            onClick={startSession}
-            className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-primary/35 bg-primary/16 px-5 py-2.5 text-sm text-foreground transition-all hover:bg-primary/24"
+            onClick={() => void startSession()}
+            disabled={isStarting}
+            className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-primary/35 bg-primary/16 px-5 py-2.5 text-sm text-foreground transition-all hover:bg-primary/24 disabled:cursor-not-allowed disabled:opacity-70"
           >
-            <Mic className="h-4 w-4" /> Begin Sacred Voice
+            <Mic className="h-4 w-4" /> {isStarting ? "Starting..." : "Begin Sacred Voice"}
           </button>
         )}
       </section>
@@ -388,8 +390,11 @@ const SacredPathVoice = () => {
                 {activeSession.intention.split("_").join(" ")} · {activeSession.sourceTag.split("_").join(" ")} · {activeSession.duration} min
               </p>
               <p className="mt-1 text-xs text-muted-foreground">
-                Voice status: {audioSupported ? playback.status : "text-only browser fallback unavailable"}
+                Voice status: {audioSupported ? playback.status : "audio unavailable"} {audioProvider ? `· ${audioProvider}` : ""}
               </p>
+              {voiceStatusNote ? (
+                <p className="mt-1 text-xs text-amber-200/85">{voiceStatusNote}</p>
+              ) : null}
             </div>
             <div className="relative flex items-center gap-2">
               <div className="pointer-events-none absolute -inset-2 rounded-full bg-primary/10 blur-xl" />
@@ -403,7 +408,7 @@ const SacredPathVoice = () => {
               </button>
               <button
                 type="button"
-                onClick={handleRestart}
+                onClick={() => void handleRestart()}
                 className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/35 bg-card/45 text-foreground transition-all hover:bg-card/65"
                 aria-label="Restart"
               >
@@ -481,7 +486,7 @@ const SacredPathVoice = () => {
           <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
-              onClick={handleNextPractice}
+              onClick={() => void handleNextPractice()}
               className="rounded-full border border-border/35 bg-card/45 px-3 py-1.5 text-xs uppercase tracking-[0.14em] text-foreground transition-all hover:bg-card/65"
             >
               Next practice

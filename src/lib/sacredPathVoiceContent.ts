@@ -31,6 +31,15 @@ export type SacredVoiceMode = "read_to_us" | "guide_step_by_step" | "reflect_wit
 
 export type SacredVoiceDuration = 3 | 6 | 8 | 10 | 15 | 20;
 
+export type SacredVoiceTerritory =
+  | "repair"
+  | "deepen"
+  | "mismatch"
+  | "daily"
+  | "reading";
+
+export type SacredVoiceAudioProvider = "elevenlabs" | "browser";
+
 export type SacredVoiceSelection = {
   intention: SacredVoiceIntention;
   sourceTag: SacredVoiceSourceTag;
@@ -65,6 +74,10 @@ export type SacredVoiceSession = {
   ritualRefs: string[];
   excerptRefs: string[];
   closingText: string;
+  territory: SacredVoiceTerritory;
+  knowledgeSource: string;
+  teacherAttribution: string;
+  audioProvider?: SacredVoiceAudioProvider;
 };
 
 export const SACRED_VOICE_INTENTIONS: Array<{ id: SacredVoiceIntention; label: string }> = [
@@ -221,6 +234,15 @@ const promptByIntention: Record<SacredVoiceIntention, string> = {
   read_ancient_wisdom: "Read a source-grounded excerpt from Sacred Path compendium, then lead one linked practice.",
   repair_after_tension: "Offer a calm repair session after tension with emotional safety, one reflection, and one simple ritual.",
   deeper_intimacy: "Guide a couple toward deeper intimacy with slow, reverent, non-explicit ritual language.",
+};
+
+const territoryByIntention: Record<SacredVoiceIntention, SacredVoiceTerritory> = {
+  meditate: "daily",
+  breathe: "daily",
+  guide_us: "deepen",
+  read_ancient_wisdom: "reading",
+  repair_after_tension: "repair",
+  deeper_intimacy: "deepen",
 };
 
 type TemplateDefinition = {
@@ -494,6 +516,13 @@ const compileSession = (template: TemplateDefinition): SacredVoiceSession => ({
   ritualRefs: template.ritualRefs,
   excerptRefs: template.excerptRefs,
   closingText: template.closingText,
+  territory: territoryByIntention[template.intention],
+  knowledgeSource:
+    template.intention === "read_ancient_wisdom"
+      ? "/mnt/data/Sacred_Path_for_Couples.pdf"
+      : "/mnt/data/Sacred_Practices_for_Couples.pdf",
+  teacherAttribution: SACRED_VOICE_SOURCES.find((item) => item.id === template.sourceTag)?.label ?? "Sacred Path",
+  audioProvider: "elevenlabs",
 });
 
 const findTemplate = (selection: SacredVoiceSelection) => {
@@ -574,6 +603,10 @@ const buildRepairSession = (selection: SacredVoiceSelection): SacredVoiceSession
     ritualRefs: [ritualId],
     excerptRefs: excerpt ? [excerpt.excerptId] : [],
     closingText: levelSpecific.closing,
+    territory: "repair",
+    knowledgeSource: "/mnt/data/sacred_path_repair_reconnect_ai_guide.md",
+    teacherAttribution: levelSpecific.teacher,
+    audioProvider: "elevenlabs",
   };
 };
 
@@ -635,3 +668,13 @@ export const getSacredVoiceExcerptByRef = (excerptRef: string) => {
 };
 
 export const getSacredVoiceTemplateLibrary = () => sessionTemplates.map(compileSession);
+
+export const formatSacredVoiceRitualSteps = (ritualId: string) => formatRitualSteps(ritualId);
+
+export const getSacredVoiceRitualById = (ritualId: string) => toVoiceRitual(ritualId);
+
+export const getSacredVoiceExcerptBySourceTag = (sourceTag: SacredVoiceSourceTag) =>
+  sourceExcerpts[sourceTag] ?? null;
+
+export const getSacredVoicePromptTemplate = (intention: SacredVoiceIntention) =>
+  promptByIntention[intention];
