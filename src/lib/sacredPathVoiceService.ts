@@ -235,7 +235,7 @@ export const startSacredVoiceSession = async (
   } catch (error) {
     const fallbackReason =
       error instanceof Error ? error.message : "Unknown backend TTS error";
-    console.warn("[Sacred Voice] Falling back to browser speech", {
+    console.warn("[Sacred Voice] exact fallback reason", {
       reason: fallbackReason,
       sessionId: session.id,
     });

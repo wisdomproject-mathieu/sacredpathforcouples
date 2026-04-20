@@ -4,6 +4,10 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
+export const config = {
+  verify_jwt: false,
+};
+
 const json = (status: number, payload: Record<string, unknown>) =>
   new Response(JSON.stringify(payload), {
     status,
@@ -14,6 +18,9 @@ const json = (status: number, payload: Record<string, unknown>) =>
   });
 
 Deno.serve(async (request) => {
+  console.info("[sacred-voice-tts] sacred-voice-tts invoked");
+  console.info("[sacred-voice-tts] request method", request.method);
+
   if (request.method === "OPTIONS") {
     return new Response(null, { status: 204, headers: corsHeaders });
   }
@@ -30,11 +37,13 @@ Deno.serve(async (request) => {
   }
 
   const text = parsedBody.text?.trim();
+  console.info("[sacred-voice-tts] text present", Boolean(text));
   if (!text) {
     return json(400, { error: "Text is required." });
   }
 
   const apiKey = Deno.env.get("ELEVENLABS_API_KEY");
+  console.info("[sacred-voice-tts] ELEVENLABS_API_KEY present", Boolean(apiKey));
   if (!apiKey) {
     return json(503, { error: "ELEVENLABS_API_KEY is not configured." });
   }
@@ -68,6 +77,10 @@ Deno.serve(async (request) => {
 
     if (!response.ok) {
       const detail = (await response.text().catch(() => "")).slice(0, 400);
+      console.error("[sacred-voice-tts] ElevenLabs failure", {
+        status: response.status,
+        detail,
+      });
       return json(response.status, {
         error: "ElevenLabs synthesis failed.",
         detail,
@@ -84,6 +97,9 @@ Deno.serve(async (request) => {
       },
     });
   } catch (error) {
+    console.error("[sacred-voice-tts] ElevenLabs request exception", {
+      detail: error instanceof Error ? error.message : "Unknown error",
+    });
     return json(502, {
       error: "Unable to reach ElevenLabs.",
       detail: error instanceof Error ? error.message : "Unknown error",

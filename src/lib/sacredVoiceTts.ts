@@ -81,29 +81,37 @@ export const synthesizeSacredVoiceAudio = async ({
     throw new Error("Supabase publishable key is not configured.");
   }
 
-  console.info(
-    `[Sacred Voice] Starting backend TTS call -> ${SACRED_VOICE_SUPABASE_FUNCTION_NAME}`,
-    { sessionId },
-  );
+  console.info("[Sacred Voice] calling sacred-voice-tts", {
+    functionName: SACRED_VOICE_SUPABASE_FUNCTION_NAME,
+    endpoint,
+    payloadLength: text.length,
+    sessionId,
+  });
 
   const response = await fetch(endpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       apikey: publishableKey,
-      Authorization: `Bearer ${publishableKey}`,
     },
     body: JSON.stringify({ text }),
   });
 
-  console.info("[Sacred Voice] Backend TTS response", {
+  console.info("[Sacred Voice] backend response status", {
     functionName: SACRED_VOICE_SUPABASE_FUNCTION_NAME,
+    endpoint,
     status: response.status,
     contentType: response.headers.get("content-type") ?? "unknown",
   });
 
   if (!response.ok) {
     const detail = await parseErrorMessage(response);
+    console.error("[Sacred Voice] backend TTS failed", {
+      functionName: SACRED_VOICE_SUPABASE_FUNCTION_NAME,
+      endpoint,
+      status: response.status,
+      detail,
+    });
     throw new Error(
       detail ? `Supabase TTS request failed (${response.status}): ${detail}` : `Supabase TTS request failed (${response.status})`,
     );
@@ -112,6 +120,13 @@ export const synthesizeSacredVoiceAudio = async ({
   const contentType = response.headers.get("content-type")?.toLowerCase() ?? "";
   if (!contentType.includes("audio/")) {
     const detail = await parseErrorMessage(response);
+    console.error("[Sacred Voice] backend TTS non-audio response", {
+      functionName: SACRED_VOICE_SUPABASE_FUNCTION_NAME,
+      endpoint,
+      status: response.status,
+      contentType: contentType || "unknown",
+      detail,
+    });
     throw new Error(
       `Supabase TTS returned invalid content type "${contentType || "unknown"}"${detail ? ` (${detail})` : ""}`,
     );
