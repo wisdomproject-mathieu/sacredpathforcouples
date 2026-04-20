@@ -49,14 +49,22 @@ const fmtTime = (seconds: number) => {
 };
 
 const optionCardClass = (active: boolean) =>
-  `${sacredVisualSystem.overviewCardBase} min-h-[96px] cursor-pointer ${
-    active ? sacredVisualSystem.overviewCardActive : sacredVisualSystem.overviewCardIdle
+  `flex min-h-[72px] cursor-pointer items-center justify-center rounded-2xl border p-4 text-center transition-all ${
+    active
+      ? "border-primary/40 bg-primary/12 shadow-[0_16px_50px_-40px_rgba(255,173,70,0.45)]"
+      : "border-border/30 bg-background/45 hover:border-primary/25 hover:bg-card/55"
   }`;
 
 const optionLabelClass = (active: boolean) =>
-  `font-display text-lg leading-tight ${active ? "text-foreground" : "text-foreground/85"}`;
+  `font-display text-xl leading-snug md:text-2xl ${active ? "text-foreground" : "text-foreground/90"}`;
 
-const optionEyebrowClass = "text-[10px] uppercase tracking-[0.2em] text-primary/75";
+const groupEyebrowClass = "text-[11px] uppercase tracking-[0.22em] text-primary/80";
+
+const groupShellClass =
+  "rounded-[20px] border border-emerald-300/25 bg-emerald-500/8 p-4 md:p-5";
+
+const groupShellGoldClass =
+  "rounded-[20px] border border-amber-400/25 bg-amber-500/8 p-4 md:p-5";
 
 const SacredPathVoice = () => {
   const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
