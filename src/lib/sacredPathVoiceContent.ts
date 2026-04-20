@@ -208,7 +208,8 @@ const toVoiceRitual = (ritualId: string): SacredVoiceRitual | null => {
 const formatRitualSteps = (ritualId: string) => {
   const ritual = toVoiceRitual(ritualId);
   if (!ritual) return [] as string[];
-  const header = `${ritual.title} (${ritual.duration})`;
+  // Title only — duration is governed by the user-selected session length.
+  const header = ritual.title;
   const steps = ritual.ritualSteps.map((step, index) => `Step ${index + 1}: ${step}`);
   return [header, ...steps];
 };
