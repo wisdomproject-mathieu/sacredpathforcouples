@@ -49,14 +49,22 @@ const fmtTime = (seconds: number) => {
 };
 
 const optionCardClass = (active: boolean) =>
-  `${sacredVisualSystem.overviewCardBase} min-h-[96px] cursor-pointer ${
-    active ? sacredVisualSystem.overviewCardActive : sacredVisualSystem.overviewCardIdle
+  `flex min-h-[72px] cursor-pointer items-center justify-center rounded-2xl border p-4 text-center transition-all ${
+    active
+      ? "border-primary/40 bg-primary/12 shadow-[0_16px_50px_-40px_rgba(255,173,70,0.45)]"
+      : "border-border/30 bg-background/45 hover:border-primary/25 hover:bg-card/55"
   }`;
 
 const optionLabelClass = (active: boolean) =>
-  `font-display text-lg leading-tight ${active ? "text-foreground" : "text-foreground/85"}`;
+  `font-display text-xl leading-snug md:text-2xl ${active ? "text-foreground" : "text-foreground/90"}`;
 
-const optionEyebrowClass = "text-[10px] uppercase tracking-[0.2em] text-primary/75";
+const groupEyebrowClass = "text-[11px] uppercase tracking-[0.22em] text-primary/80";
+
+const groupShellClass =
+  "rounded-[20px] border border-emerald-300/25 bg-emerald-500/8 p-4 md:p-5";
+
+const groupShellGoldClass =
+  "rounded-[20px] border border-amber-400/25 bg-amber-500/8 p-4 md:p-5";
 
 const SacredPathVoice = () => {
   const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
@@ -276,9 +284,9 @@ const SacredPathVoice = () => {
         </p>
 
         <div className="mt-4 space-y-4">
-          <div>
-            <p className={optionEyebrowClass}>Intention</p>
-            <div className="mt-2 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          <div className={groupShellClass}>
+            <p className={groupEyebrowClass}>Intention</p>
+            <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
               {SACRED_VOICE_INTENTIONS.map((item) => {
                 const active = selection.intention === item.id;
                 return (
@@ -288,17 +296,16 @@ const SacredPathVoice = () => {
                     onClick={() => setSelection((current) => ({ ...current, intention: item.id }))}
                     className={optionCardClass(active)}
                   >
-                    <p className={optionEyebrowClass}>Intention</p>
-                    <p className={`mt-2 ${optionLabelClass(active)}`}>{item.label}</p>
+                    <p className={optionLabelClass(active)}>{item.label}</p>
                   </button>
                 );
               })}
             </div>
           </div>
 
-          <div>
-            <p className={optionEyebrowClass}>Source / Flavor</p>
-            <div className="mt-2 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          <div className={groupShellGoldClass}>
+            <p className={groupEyebrowClass}>Path / Authors</p>
+            <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
               {SACRED_VOICE_SOURCES.map((item) => {
                 const active = selection.sourceTag === item.id;
                 return (
@@ -308,8 +315,7 @@ const SacredPathVoice = () => {
                     onClick={() => setSelection((current) => ({ ...current, sourceTag: item.id }))}
                     className={optionCardClass(active)}
                   >
-                    <p className={optionEyebrowClass}>Source</p>
-                    <p className={`mt-2 ${optionLabelClass(active)}`}>{item.label}</p>
+                    <p className={optionLabelClass(active)}>{item.label}</p>
                   </button>
                 );
               })}
@@ -317,9 +323,9 @@ const SacredPathVoice = () => {
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
-            <div>
-              <p className={optionEyebrowClass}>Session Length</p>
-              <div className="mt-2 grid gap-3 grid-cols-2 sm:grid-cols-3">
+            <div className={groupShellClass}>
+              <p className={groupEyebrowClass}>Session Length</p>
+              <div className="mt-3 grid gap-3 grid-cols-2 sm:grid-cols-3">
                 {SACRED_VOICE_DURATIONS.map((duration) => {
                   const active = selection.duration === duration;
                   return (
@@ -329,17 +335,16 @@ const SacredPathVoice = () => {
                       onClick={() => setSelection((current) => ({ ...current, duration }))}
                       className={optionCardClass(active)}
                     >
-                      <p className={optionEyebrowClass}>Length</p>
-                      <p className={`mt-2 ${optionLabelClass(active)}`}>{duration} min</p>
+                      <p className={optionLabelClass(active)}>{duration} min</p>
                     </button>
                   );
                 })}
               </div>
             </div>
 
-            <div>
-              <p className={optionEyebrowClass}>Session Style</p>
-              <div className="mt-2 grid gap-3 grid-cols-1 sm:grid-cols-2">
+            <div className={groupShellGoldClass}>
+              <p className={groupEyebrowClass}>Session Style</p>
+              <div className="mt-3 grid gap-3 grid-cols-1 sm:grid-cols-2">
                 {SACRED_VOICE_MODES.map((mode) => {
                   const active = selection.mode === mode.id;
                   return (
@@ -349,8 +354,7 @@ const SacredPathVoice = () => {
                       onClick={() => setSelection((current) => ({ ...current, mode: mode.id }))}
                       className={optionCardClass(active)}
                     >
-                      <p className={optionEyebrowClass}>Style</p>
-                      <p className={`mt-2 ${optionLabelClass(active)}`}>{mode.label}</p>
+                      <p className={optionLabelClass(active)}>{mode.label}</p>
                     </button>
                   );
                 })}
