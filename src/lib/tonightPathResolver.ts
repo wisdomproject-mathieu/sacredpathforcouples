@@ -296,7 +296,7 @@ export const resolveTonightPath = ({
   });
 
   const nonEmptyThemes = selectedThemes.filter((theme) => themedRituals[theme].length > 0);
-  const effectiveThemes = nonEmptyThemes.length ? nonEmptyThemes : ["touch", "breath", "embrace"];
+  const effectiveThemes: TonightTheme[] = nonEmptyThemes.length ? nonEmptyThemes : (["touch", "breath", "embrace"] as TonightTheme[]);
   const defaultTheme = effectiveThemes[0];
 
   const toSignature = (themes: TonightTheme[], map: Record<TonightTheme, SelectedDailyMainCard[]>) =>
