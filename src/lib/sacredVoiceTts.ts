@@ -1,6 +1,7 @@
 import type { SacredVoiceAudioProvider } from "@/lib/sacredPathVoiceContent";
 
 export const SACRED_VOICE_ELEVENLABS_VOICE_ID = "8quEMRkSpwEaWBzHvTLv";
+export const SACRED_VOICE_SUPABASE_FUNCTION_NAME = "sacred-voice-tts";
 
 export type SacredVoiceTtsResult = {
   provider: SacredVoiceAudioProvider;
@@ -25,7 +26,7 @@ const getSupabaseFunctionEndpoint = () => {
       : "";
   if (!supabaseUrl) return "";
 
-  return `${supabaseUrl.replace(/\/+$/, "")}/functions/v1/sacred-voice-tts`;
+  return `${supabaseUrl.replace(/\/+$/, "")}/functions/v1/${SACRED_VOICE_SUPABASE_FUNCTION_NAME}`;
 };
 
 const getSupabasePublishableKey = () =>
@@ -80,6 +81,11 @@ export const synthesizeSacredVoiceAudio = async ({
     throw new Error("Supabase publishable key is not configured.");
   }
 
+  console.info(
+    `[Sacred Voice] Starting backend TTS call -> ${SACRED_VOICE_SUPABASE_FUNCTION_NAME}`,
+    { sessionId },
+  );
+
   const response = await fetch(endpoint, {
     method: "POST",
     headers: {
@@ -87,11 +93,13 @@ export const synthesizeSacredVoiceAudio = async ({
       apikey: publishableKey,
       Authorization: `Bearer ${publishableKey}`,
     },
-    body: JSON.stringify({
-      text,
-      ...(voiceId && voiceId !== SACRED_VOICE_ELEVENLABS_VOICE_ID ? { voiceId } : {}),
-      modelId: "eleven_multilingual_v2",
-    }),
+    body: JSON.stringify({ text }),
+  });
+
+  console.info("[Sacred Voice] Backend TTS response", {
+    functionName: SACRED_VOICE_SUPABASE_FUNCTION_NAME,
+    status: response.status,
+    contentType: response.headers.get("content-type") ?? "unknown",
   });
 
   if (!response.ok) {
