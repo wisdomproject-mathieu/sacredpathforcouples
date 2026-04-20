@@ -141,11 +141,72 @@ const clearSpeech = () => {
   pausedAtMs = null;
 };
 
+// Queue of phrases for the current session, played sequentially with
+// breathing pauses between them. This produces a much warmer, more
+// sensual cadence than dumping the whole script into one utterance.
+let phraseQueue: string[] = [];
+let phraseIndex = 0;
+let pauseTimer: ReturnType<typeof setTimeout> | null = null;
+
+const clearPauseTimer = () => {
+  if (pauseTimer) {
+    clearTimeout(pauseTimer);
+    pauseTimer = null;
+  }
+};
+
+const speakNextPhrase = () => {
+  if (!hasSpeechSynthesis()) return;
+  if (phraseIndex >= phraseQueue.length) {
+    currentUtterance = null;
+    activeSessionId = null;
+    pausedAtMs = null;
+    if (sessionEndCallback) sessionEndCallback();
+    return;
+  }
+
+  const phrase = phraseQueue[phraseIndex];
+  phraseIndex += 1;
+
+  // Treat ellipsis-only tokens as a longer breath between sections.
+  if (/^[…\.\s]+$/.test(phrase)) {
+    pauseTimer = setTimeout(speakNextPhrase, 1100);
+    return;
+  }
+
+  const utterance = new window.SpeechSynthesisUtterance(phrase);
+  const voice = pickVoice();
+  if (voice) utterance.voice = voice;
+
+  // Sensual, slow, breathy delivery.
+  utterance.rate = 0.78;
+  utterance.pitch = 0.92;
+  utterance.volume = 1;
+
+  utterance.onend = () => {
+    currentUtterance = null;
+    // Short natural pause between phrases — longer after sentence enders.
+    const endsSentence = /[.!?…]\s*$/.test(phrase);
+    const gapMs = endsSentence ? 700 : 320;
+    pauseTimer = setTimeout(speakNextPhrase, gapMs);
+  };
+
+  utterance.onerror = () => {
+    currentUtterance = null;
+    // Continue rather than abort on a single phrase error.
+    pauseTimer = setTimeout(speakNextPhrase, 200);
+  };
+
+  currentUtterance = utterance;
+  window.speechSynthesis.speak(utterance);
+};
+
 export const startSacredVoiceSession = (
   session: SacredVoiceSession,
   options?: SacredVoiceStartOptions,
 ): SacredVoicePlaybackState => {
   clearSpeech();
+  clearPauseTimer();
   sessionEndCallback = options?.onEnd ?? null;
 
   const totalSeconds = session.duration * 60;
@@ -160,35 +221,19 @@ export const startSacredVoiceSession = (
     };
   }
 
-  const utterance = new window.SpeechSynthesisUtterance(buildNarrationText(session));
-  const voice = pickVoice();
-  if (voice) utterance.voice = voice;
-
-  utterance.rate = 0.9;
-  utterance.pitch = 0.98;
-  utterance.volume = 1;
-
-  utterance.onend = () => {
-    currentUtterance = null;
-    activeSessionId = null;
-    pausedAtMs = null;
-    if (sessionEndCallback) {
-      sessionEndCallback();
-    }
-  };
-
-  utterance.onerror = () => {
-    currentUtterance = null;
-    activeSessionId = null;
-    pausedAtMs = null;
-    if (sessionEndCallback) {
-      sessionEndCallback();
-    }
-  };
-
-  currentUtterance = utterance;
+  phraseQueue = buildNarrationPhrases(session);
+  phraseIndex = 0;
   activeSessionId = session.id;
-  window.speechSynthesis.speak(utterance);
+
+  const voices = window.speechSynthesis.getVoices();
+  if (!voices.length && typeof window.speechSynthesis.onvoiceschanged !== "undefined") {
+    window.speechSynthesis.onvoiceschanged = () => {
+      window.speechSynthesis.onvoiceschanged = null;
+      speakNextPhrase();
+    };
+  } else {
+    speakNextPhrase();
+  }
 
   return {
     status: "playing",
