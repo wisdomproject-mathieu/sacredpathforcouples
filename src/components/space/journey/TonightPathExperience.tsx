@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 import { BookOpen, Check, Copy, Eye, Flame, Hand, Heart, MessageCircle, MoveHorizontal, Orbit, PauseCircle, Volume2, Wind } from "lucide-react";
-import RITUAL_LIBRARY_55 from "@/data/sacred_path_ritual_library_55.json";
+import { MASTER_RITUAL_REGISTRY } from "@/lib/masterRitualRegistry";
 
 import type { Language } from "@/contexts/LanguageContext";
 import type { WeatherMatchResult } from "@/lib/weatherMatch";
@@ -429,25 +429,20 @@ const toPracticeItem = (
 });
 
 const ritualLibraryMap = new Map<string, SelectedDailyMainCard>(
-  (RITUAL_LIBRARY_55 as unknown[]).map((row) => {
-    const card = row as Record<string, unknown>;
-    return [
-      String(card.id),
-      {
-        id: String(card.id),
-        title: String(card.title ?? ""),
-        subtitle: String(card.subtitle ?? ""),
-        description: String(card.description ?? ""),
-        duration: String(card.duration ?? "7 minutes"),
-        intimacyLevel: String(card.intimacyLevel ?? "Gentle"),
-        primaryNeed: String(card.primaryNeed ?? "Connection"),
-        ritualSteps: Array.isArray(card.ritualSteps)
-          ? card.ritualSteps.filter((step): step is string => typeof step === "string").slice(0, 6)
-          : [],
-        theme: String(card.theme ?? "touch"),
-      } satisfies SelectedDailyMainCard,
-    ] as const;
-  }),
+  MASTER_RITUAL_REGISTRY.map((card) => [
+    card.id,
+    {
+      id: card.id,
+      title: card.title,
+      subtitle: card.subtitle,
+      description: card.description,
+      duration: card.duration || "7 minutes",
+      intimacyLevel: card.intimacyLevel || "Gentle",
+      primaryNeed: card.primaryNeed || "Connection",
+      ritualSteps: card.ritualSteps.slice(0, 6),
+      theme: card.theme || "touch",
+    } satisfies SelectedDailyMainCard,
+  ]),
 );
 
 const themePracticeOverrides: Record<ThemeKey, ThemePracticeOverride> = {

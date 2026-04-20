@@ -1,5 +1,4 @@
-import RITUAL_LIBRARY_55 from "@/data/sacred_path_ritual_library_55.json";
-import RITUAL_RESERVE_30 from "@/data/sacred_path_ritual_reserve_30.json";
+import { MASTER_RITUAL_REGISTRY } from "@/lib/masterRitualRegistry";
 import type { SelectedDailyMainCard } from "@/lib/weatherEngine";
 
 export type TonightTheme =
@@ -46,27 +45,17 @@ const allThemes: TonightTheme[] = [
   "energy",
 ];
 
-const asCard = (value: unknown): SelectedDailyMainCard | null => {
-  if (!value || typeof value !== "object") return null;
-  const row = value as Record<string, unknown>;
-  const id = typeof row.id === "string" ? row.id : "";
-  const title = typeof row.title === "string" ? row.title : "";
-  if (!id || !title) return null;
-  const steps = Array.isArray(row.ritualSteps)
-    ? row.ritualSteps.filter((step): step is string => typeof step === "string").slice(0, 6)
-    : [];
-  return {
-    id,
-    title,
-    subtitle: typeof row.subtitle === "string" ? row.subtitle : "",
-    description: typeof row.description === "string" ? row.description : "",
-    duration: typeof row.duration === "string" ? row.duration : "7 minutes",
-    intimacyLevel: typeof row.intimacyLevel === "string" ? row.intimacyLevel : "Gentle to medium",
-    primaryNeed: typeof row.primaryNeed === "string" ? row.primaryNeed : "Connection",
-    ritualSteps: steps.length ? steps : ["Begin with one shared breath and one sentence of intention."],
-    theme: typeof row.theme === "string" ? row.theme : "touch",
-  };
-};
+const asCard = (value: (typeof MASTER_RITUAL_REGISTRY)[number]): SelectedDailyMainCard => ({
+  id: value.id,
+  title: value.title,
+  subtitle: value.subtitle,
+  description: value.description,
+  duration: value.duration || "7 minutes",
+  intimacyLevel: value.intimacyLevel || "Gentle to medium",
+  primaryNeed: value.primaryNeed || "Connection",
+  ritualSteps: value.ritualSteps.length ? value.ritualSteps.slice(0, 6) : ["Begin with one shared breath and one sentence of intention."],
+  theme: value.theme || "touch",
+});
 
 const normalizeText = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 
@@ -185,12 +174,11 @@ export const resolveTonightPath = ({
   selectedMainCard,
   alternates,
 }: ResolveTonightPathInput): TonightPathResolved => {
-  const sourcePrimary = (RITUAL_LIBRARY_55 as unknown[]).map(asCard).filter((card): card is SelectedDailyMainCard => Boolean(card));
-  const sourceReserve = (RITUAL_RESERVE_30 as unknown[]).map(asCard).filter((card): card is SelectedDailyMainCard => Boolean(card));
+  const sourcePrimary = MASTER_RITUAL_REGISTRY.map(asCard);
   const mainCard = selectedMainCard ?? alternates[0] ?? null;
 
   const deduped = new Map<string, SelectedDailyMainCard>();
-  [mainCard, ...alternates, ...sourcePrimary, ...sourceReserve].forEach((card) => {
+  [mainCard, ...alternates, ...sourcePrimary].forEach((card) => {
     if (!card || deduped.has(card.id)) return;
     deduped.set(card.id, card);
   });

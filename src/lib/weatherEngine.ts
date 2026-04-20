@@ -1,6 +1,9 @@
 import { useMemo } from "react";
 import WEATHER_MATRIX_25 from "@/data/sacred_path_weather_matrix_25.json";
-import RITUAL_LIBRARY_55 from "@/data/sacred_path_ritual_library_55.json";
+import {
+  MASTER_RITUAL_REGISTRY,
+  type MasterRitualRegistryEntry,
+} from "@/lib/masterRitualRegistry";
 
 type AppWeather =
   | "open"
@@ -15,7 +18,7 @@ type AppWeather =
 type MatrixWeather = "stormy" | "cloudy" | "warm" | "electric" | "radiant";
 
 type MatrixEntry = (typeof WEATHER_MATRIX_25)[keyof typeof WEATHER_MATRIX_25];
-type RitualLibraryCard = (typeof RITUAL_LIBRARY_55)[number];
+type RitualLibraryCard = MasterRitualRegistryEntry;
 
 export type SelectedDailyMainCard = {
   id: string;
@@ -79,7 +82,7 @@ const WEATHER_VARIANCE_INDEX: Record<AppWeather, number> = {
 const isRadiantSet = (value: string | null | undefined) =>
   value === "open" || value === "longing" || value === "erotic";
 
-const libraryById = new Map<string, RitualLibraryCard>(RITUAL_LIBRARY_55.map((card) => [card.id, card]));
+const libraryById = new Map<string, RitualLibraryCard>(MASTER_RITUAL_REGISTRY.map((card) => [card.id, card]));
 
 const historyKey = (coupleId?: string | null) => `sacred_path_weather_card_history_${coupleId || "global"}`;
 const dailySelectionKey = (coupleId?: string | null) => `sacred_path_daily_selected_card_${coupleId || "global"}`;
