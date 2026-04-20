@@ -51,6 +51,7 @@ Deno.serve(async (request) => {
   const secretVoiceId = Deno.env.get("ELEVENLABS_VOICE_ID")?.trim();
   const voiceId = secretVoiceId || parsedBody.voiceId?.trim() || "8quEMRkSpwEaWBzHvTLv";
   const modelId = parsedBody.modelId?.trim() || "eleven_multilingual_v2";
+  console.info("[sacred-voice-tts] ELEVENLABS_VOICE_ID present", Boolean(secretVoiceId));
 
   try {
     const response = await fetch(
@@ -76,14 +77,40 @@ Deno.serve(async (request) => {
     );
 
     if (!response.ok) {
-      const detail = (await response.text().catch(() => "")).slice(0, 400);
+      const rawBody = await response.text().catch(() => "");
+      const trimmedBody = rawBody.slice(0, 2000);
+      let providerStatus = "";
+      let providerMessage = "";
+
+      try {
+        const parsed = JSON.parse(rawBody);
+        providerStatus =
+          parsed?.detail?.status ??
+          parsed?.status ??
+          parsed?.error?.code ??
+          parsed?.error ??
+          "";
+        providerMessage =
+          parsed?.detail?.message ??
+          parsed?.message ??
+          parsed?.detail ??
+          "";
+      } catch {
+        providerStatus = "";
+        providerMessage = "";
+      }
+
       console.error("[sacred-voice-tts] ElevenLabs failure", {
         status: response.status,
-        detail,
+        providerStatus: providerStatus || "unknown",
+        providerMessage: providerMessage || "unknown",
+        responseBody: trimmedBody,
       });
       return json(response.status, {
         error: "ElevenLabs synthesis failed.",
-        detail,
+        providerStatus: providerStatus || "unknown",
+        providerMessage: providerMessage || "unknown",
+        detail: trimmedBody,
       });
     }
 

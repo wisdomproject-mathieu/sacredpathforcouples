@@ -38,7 +38,21 @@ const parseErrorMessage = async (response: Response) => {
   const contentType = response.headers.get("content-type")?.toLowerCase() ?? "";
   if (contentType.includes("application/json")) {
     const payload = await response.json().catch(() => ({}));
-    if (typeof payload?.error === "string") return payload.error;
+    const providerStatus =
+      typeof payload?.providerStatus === "string" ? payload.providerStatus : "";
+    const providerMessage =
+      typeof payload?.providerMessage === "string" ? payload.providerMessage : "";
+    const detail = typeof payload?.detail === "string" ? payload.detail : "";
+    if (typeof payload?.error === "string") {
+      return [
+        payload.error,
+        providerStatus ? `providerStatus=${providerStatus}` : "",
+        providerMessage ? `providerMessage=${providerMessage}` : "",
+        detail ? `detail=${detail.slice(0, 240)}` : "",
+      ]
+        .filter(Boolean)
+        .join(" | ");
+    }
     if (typeof payload?.message === "string") return payload.message;
   }
 
