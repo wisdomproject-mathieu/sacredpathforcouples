@@ -302,26 +302,6 @@ const SacredPathVoice = () => {
               })}
             </div>
           </div>
-
-          <div className={groupShellGoldClass}>
-            <p className={groupEyebrowClass}>Path / Authors</p>
-            <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-              {SACRED_VOICE_SOURCES.map((item) => {
-                const active = selection.sourceTag === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => setSelection((current) => ({ ...current, sourceTag: item.id }))}
-                    className={optionCardClass(active)}
-                  >
-                    <p className={optionLabelClass(active)}>{item.label}</p>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
           <div className="grid gap-4 md:grid-cols-2">
             <div className={groupShellClass}>
               <p className={groupEyebrowClass}>Session Length</p>
