@@ -27,7 +27,7 @@ import {
   type SacredVoiceSession,
 } from "@/lib/sacredPathVoiceContent";
 import {
-  generateSacredVoiceSession as generateRoutedSacredVoiceSession,
+  buildSacredVoiceSession,
   resolveSacredVoiceRoute,
 } from "@/lib/sacredVoiceRouter";
 import {
@@ -90,6 +90,8 @@ const SacredPathVoice = () => {
   const [isStarting, setIsStarting] = useState(false);
   const [sessionSignal, setSessionSignal] = useState("");
   const lastSelectionSignatureRef = useRef<string>("");
+  const activeSessionRef = useRef<SacredVoiceSession | null>(null);
+  const playbackRef = useRef<SacredVoicePlaybackState | null>(null);
 
   useEffect(() => {
     setAudioSupported(isSacredVoiceAudioSupported());
@@ -119,6 +121,11 @@ const SacredPathVoice = () => {
     return () => window.clearTimeout(t);
   }, [savedNotice]);
 
+  useEffect(() => {
+    activeSessionRef.current = activeSession;
+    playbackRef.current = playback;
+  }, [activeSession, playback]);
+
   const currentProgress = playback ? sacredVoiceProgress(playback) : 0;
   const rituals = useMemo(() => (activeSession ? getSacredVoiceRituals(activeSession) : []), [activeSession]);
   const excerpt = useMemo(() => {
@@ -138,7 +145,7 @@ const SacredPathVoice = () => {
     [selection, sessionSignal],
   );
   const activeSessionPreview = useMemo(
-    () => generateRoutedSacredVoiceSession(selection, sessionSignal),
+    () => buildSacredVoiceSession(selection, sessionSignal),
     [selection, sessionSignal],
   );
 
@@ -150,6 +157,10 @@ const SacredPathVoice = () => {
       : "A guided couple session with voice pacing, ritual structure, and a clean closing.";
 
   useEffect(() => {
+    if (lastSelectionSignatureRef.current === selectionSignature) {
+      return;
+    }
+
     console.info("[Sacred Voice] selection state changed", {
       selection,
       sessionSignalLength: sessionSignal.trim().length,
@@ -161,25 +172,21 @@ const SacredPathVoice = () => {
       spokenPayloadLength: activeSessionPreview.spokenBlocks.join(" ").length,
     });
 
-    if (!lastSelectionSignatureRef.current) {
-      lastSelectionSignatureRef.current = selectionSignature;
-      return;
-    }
+    const currentlyActiveSession = activeSessionRef.current;
+    const currentPlayback = playbackRef.current;
 
-    if (lastSelectionSignatureRef.current !== selectionSignature) {
-      if (activeSession || playback) {
-        stopSacredVoiceSession(activeSession ?? undefined);
-        setActiveSession(null);
-        setPlayback(null);
-        setAudioProvider(null);
-        setVoiceStatusNote("");
-        console.info("[Sacred Voice] playback reset after selector change", {
-          previousSessionId: activeSession?.id ?? null,
-        });
-      }
-      lastSelectionSignatureRef.current = selectionSignature;
+    if (currentlyActiveSession || currentPlayback) {
+      stopSacredVoiceSession(currentlyActiveSession ?? undefined);
+      setActiveSession(null);
+      setPlayback(null);
+      setAudioProvider(null);
+      setVoiceStatusNote("");
+      console.info("[Sacred Voice] playback reset after selector change", {
+        previousSessionId: currentlyActiveSession?.id ?? null,
+      });
     }
-  }, [selectionSignature, selection, sessionSignal, resolvedRoute.territory, activeSessionPreview, activeSession, playback]);
+    lastSelectionSignatureRef.current = selectionSignature;
+  }, [selectionSignature, selection, sessionSignal, resolvedRoute.territory, activeSessionPreview]);
 
   const markEnded = () => {
     setPlayback((previous) =>
@@ -203,7 +210,7 @@ const SacredPathVoice = () => {
     if (isStarting) return;
     setIsStarting(true);
 
-    const curated = activeSessionPreview;
+    const curated = buildSacredVoiceSession(selection, sessionSignal);
     const payloadText = [curated.introText, ...curated.spokenBlocks, curated.closingText]
       .filter(Boolean)
       .join("\n\n");
@@ -298,7 +305,7 @@ const SacredPathVoice = () => {
 
     setSelection(nextSelection);
     setIsStarting(true);
-    const routed = generateRoutedSacredVoiceSession(nextSelection, sessionSignal);
+    const routed = buildSacredVoiceSession(nextSelection, sessionSignal);
     const nextPlayback = await startSacredVoiceSession(routed, {
       onEnd: markEnded,
     });
@@ -418,6 +425,8 @@ const SacredPathVoice = () => {
           <p><span className="text-muted-foreground">Style:</span> {selectedMode}</p>
           <p><span className="text-muted-foreground">Territory:</span> {resolvedRoute.territory}</p>
           <p><span className="text-muted-foreground">Session:</span> {activeSessionPreview.title}</p>
+          <p><span className="text-muted-foreground">Teacher:</span> {activeSessionPreview.teacherAttribution}</p>
+          <p><span className="text-muted-foreground">Transcript blocks:</span> {activeSessionPreview.transcriptBlocks.length}</p>
         </div>
         <div className="mt-3">
           <label className="text-xs uppercase tracking-[0.16em] text-muted-foreground">

@@ -94,6 +94,11 @@ const resolveTerritory = (
   return "daily";
 };
 
+export const resolveSacredVoiceTerritory = (
+  selection: SacredVoiceSelection,
+  contextSignal?: string,
+): SacredVoiceTerritory => resolveTerritory(selection, contextSignal);
+
 const pickFirstAvailableRitual = (ids: string[]) => {
   for (const id of ids) {
     if (getSacredVoiceRitualById(id)) return id;
@@ -117,7 +122,7 @@ export const resolveSacredVoiceRoute = (
   selection: SacredVoiceSelection,
   contextSignal?: string,
 ): SacredVoiceRouteResult => {
-  const territory = resolveTerritory(selection, contextSignal);
+  const territory = resolveSacredVoiceTerritory(selection, contextSignal);
   const level = toLevel(selection.duration);
   return {
     territory,
@@ -175,17 +180,24 @@ const buildGuidedTerritorySession = (
   route: SacredVoiceRouteResult,
 ): SacredVoiceSession => {
   const profile = resolveGuideProfile(route.territory, selection.sourceTag);
-  const ritualPool = profile.levelRituals[route.level] ?? profile.levelRituals[1];
+  const sourceLabel = getSacredVoiceExcerptBySourceTag(selection.sourceTag)?.title ?? "Sacred Path";
+  const sourceFallbackPool = readingRitualBySource[selection.sourceTag] ?? [];
+  const ritualPool = dedupe([
+    ...(profile.levelRituals[route.level] ?? profile.levelRituals[1]),
+    ...sourceFallbackPool,
+  ]);
   const ritualId = pickFirstAvailableRitual(ritualPool) ?? "daily_homecoming_ritual";
 
   const ritualSteps = formatSacredVoiceRitualSteps(ritualId);
   const excerpt = getSacredVoiceExcerptBySourceTag(selection.sourceTag);
+  const teacherAttribution = profile.teacher === "Sacred Path" ? sourceLabel : `${profile.teacher} · ${sourceLabel}`;
 
   const spokenBlocks = [
     `Pacing: ${selection.duration} minutes.`,
     modeOpeningLine(selection.mode),
+    `Source flavor: ${sourceLabel}.`,
     profile.opening,
-    `Teacher lens: ${profile.teacher}.`,
+    `Teacher lens: ${teacherAttribution}.`,
     `Reflection: ${profile.reflection}`,
     ...ritualSteps,
   ];
@@ -196,7 +208,7 @@ const buildGuidedTerritorySession = (
 
   return {
     id: `${route.territory}-${selection.sourceTag}-${selection.duration}-${selection.mode}`,
-    title: `${profile.teacher} ${route.territory === "daily" ? "Daily" : "Guided"} Session`,
+    title: `${sourceLabel} ${route.territory === "daily" ? "Daily" : "Guided"} Session`,
     premium: true,
     intention: selection.intention,
     sourceTag: selection.sourceTag,
@@ -211,12 +223,12 @@ const buildGuidedTerritorySession = (
     closingText: `${profile.closing} ${modeClosingLine(selection.mode)}`,
     territory: route.territory,
     knowledgeSource: route.knowledgeSource,
-    teacherAttribution: profile.teacher,
+    teacherAttribution,
     audioProvider: "elevenlabs",
   };
 };
 
-export const generateSacredVoiceSession = (
+export const buildSacredVoiceSession = (
   selection: SacredVoiceSelection,
   contextSignal?: string,
 ): SacredVoiceSession => {
@@ -228,3 +240,8 @@ export const generateSacredVoiceSession = (
 
   return buildGuidedTerritorySession(selection, route);
 };
+
+export const generateSacredVoiceSession = (
+  selection: SacredVoiceSelection,
+  contextSignal?: string,
+): SacredVoiceSession => buildSacredVoiceSession(selection, contextSignal);
