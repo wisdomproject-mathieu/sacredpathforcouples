@@ -3,6 +3,11 @@
 // Complete replacement. All 13 authors + 6 paths.
 // ─────────────────────────────────────────────────────────────────────────────
 
+import {
+  AUTHOR_COMPENDIUM_FULL_DESCRIPTION_BY_SLUG,
+  PATH_COMPENDIUM_FULL_DESCRIPTION_BY_SLUG,
+} from "@/lib/compendiumOverrides";
+
 export interface LongformPracticePreview {
   title: string;
   durationMinutes?: number;
@@ -939,3 +944,15 @@ export const PATH_LONGFORM_BY_SLUG: Record<string, LongformPath> = {
     ],
   },
 };
+
+for (const [slug, chapterText] of Object.entries(PATH_COMPENDIUM_FULL_DESCRIPTION_BY_SLUG)) {
+  if (PATH_LONGFORM_BY_SLUG[slug]) {
+    PATH_LONGFORM_BY_SLUG[slug].fullDescription = chapterText;
+  }
+}
+
+for (const [slug, chapterText] of Object.entries(AUTHOR_COMPENDIUM_FULL_DESCRIPTION_BY_SLUG)) {
+  if (AUTHOR_LONGFORM_BY_SLUG[slug]) {
+    AUTHOR_LONGFORM_BY_SLUG[slug].fullDescription = chapterText;
+  }
+}
