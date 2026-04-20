@@ -84,10 +84,10 @@ const ChapterCard = ({
   const iconClass = (chapterVisuals[chapter.id] ?? chapterVisuals["touch-massage-sacred-spot"]).iconClass;
   const narrative = CHAPTER_NARRATIVE_BY_ID[chapter.id];
 
-  const className = `${sacredVisualSystem.overviewCardBase} min-h-0 ${
+  const className = `${sacredVisualSystem.overviewCardBase} min-h-0 p-3.5 md:p-4 ${
     selected
-      ? sacredVisualSystem.overviewCardActive
-      : sacredVisualSystem.overviewCardIdle
+      ? `${sacredVisualSystem.overviewCardActive} border-emerald-300/45 bg-emerald-500/12`
+      : `${sacredVisualSystem.overviewCardIdle} border-emerald-300/30 bg-emerald-500/8`
   }`;
 
   const body = (
@@ -96,11 +96,13 @@ const ChapterCard = ({
         <div className={`${sacredVisualSystem.iconBadge} ${iconClass}`}>
           <Icon className="h-4 w-4" />
         </div>
-        <h2 className={`min-w-0 font-display leading-[1.15] text-foreground ${compact ? "text-[1.9rem]" : "text-[2rem]"}`}>
+        <h2 className={`min-w-0 font-display leading-[1.12] text-foreground ${compact ? "text-[1.65rem]" : "text-[1.72rem]"}`}>
           {chapter.title}
         </h2>
       </div>
-      <p className="mt-2 text-base leading-7 text-primary/90">{narrative?.subtitle ?? chapter.emotionalFrame}</p>
+      <p className="mt-2 rounded-[12px] border border-emerald-300/25 bg-emerald-500/8 px-3 py-2 text-[0.98rem] leading-7 text-primary/90">
+        {narrative?.subtitle ?? chapter.emotionalFrame}
+      </p>
     </>
   );
 
