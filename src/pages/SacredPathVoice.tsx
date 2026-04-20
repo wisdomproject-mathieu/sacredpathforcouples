@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
+import { sacredVisualSystem } from "@/lib/sacredVisualSystem";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import {
   generateSacredVoiceSession as generateCuratedSacredVoiceSession,
@@ -47,15 +48,15 @@ const fmtTime = (seconds: number) => {
   return `${min}:${sec}`;
 };
 
-const selectionButtonClass = (active: boolean) =>
-  `rounded-full border px-3 py-1.5 text-xs uppercase tracking-[0.14em] transition-all ${
-    active
-      ? "border-primary/45 bg-primary/18 text-foreground shadow-[0_0_0_1px_rgba(16,185,129,0.18)]"
-      : "border-border/35 bg-background/40 text-muted-foreground hover:border-primary/25 hover:text-foreground"
+const optionCardClass = (active: boolean) =>
+  `${sacredVisualSystem.overviewCardBase} min-h-[96px] cursor-pointer ${
+    active ? sacredVisualSystem.overviewCardActive : sacredVisualSystem.overviewCardIdle
   }`;
 
-const selectionCardClass =
-  "rounded-[20px] border border-border/35 bg-background/45 p-4 md:p-5 shadow-[0_12px_40px_-32px_rgba(0,0,0,0.85)]";
+const optionLabelClass = (active: boolean) =>
+  `font-display text-lg leading-tight ${active ? "text-foreground" : "text-foreground/85"}`;
+
+const optionEyebrowClass = "text-[10px] uppercase tracking-[0.2em] text-primary/75";
 
 const SacredPathVoice = () => {
   const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
@@ -258,80 +259,105 @@ const SacredPathVoice = () => {
 
   return (
     <div className="space-y-4 md:space-y-5">
-      <section className="relative overflow-hidden rounded-[24px] border border-amber-400/20 bg-card/35 p-5 md:p-6">
+      <section className={sacredVisualSystem.heroFrame}>
         <div className="absolute -right-12 -top-2 opacity-20">
           <img src={shivaShaktiIcon} alt="" className="h-48 w-48 rounded-[20px]" />
         </div>
 
-        <p className="text-xs uppercase tracking-[0.22em] text-amber-400/75">Sacred Voice</p>
+        <p className="text-xs uppercase tracking-[0.22em] text-primary/75">Sacred Voice</p>
         <h1 className="mt-2 font-display text-3xl text-foreground md:text-4xl">Sacred Voice</h1>
         <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground/90">{subtitle}</p>
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-2">
-        <article className={selectionCardClass}>
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Intention</p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {SACRED_VOICE_INTENTIONS.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => setSelection((current) => ({ ...current, intention: item.id }))}
-                className={selectionButtonClass(selection.intention === item.id)}
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-        </article>
+      <section className={sacredVisualSystem.contourEmerald}>
+        <p className={sacredVisualSystem.contourEyebrow}>Shape your session</p>
+        <p className="mt-1 text-xs text-muted-foreground/80">
+          Choose intention, source, length and style — same flow as the Sacred Temple.
+        </p>
 
-        <article className={selectionCardClass}>
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Source / Flavor</p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {SACRED_VOICE_SOURCES.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => setSelection((current) => ({ ...current, sourceTag: item.id }))}
-                className={selectionButtonClass(selection.sourceTag === item.id)}
-              >
-                {item.label}
-              </button>
-            ))}
+        <div className="mt-4 space-y-4">
+          <div>
+            <p className={optionEyebrowClass}>Intention</p>
+            <div className="mt-2 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {SACRED_VOICE_INTENTIONS.map((item) => {
+                const active = selection.intention === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => setSelection((current) => ({ ...current, intention: item.id }))}
+                    className={optionCardClass(active)}
+                  >
+                    <p className={optionEyebrowClass}>Intention</p>
+                    <p className={`mt-2 ${optionLabelClass(active)}`}>{item.label}</p>
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </article>
 
-        <article className={selectionCardClass}>
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Session Length</p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {SACRED_VOICE_DURATIONS.map((duration) => (
-              <button
-                key={duration}
-                type="button"
-                onClick={() => setSelection((current) => ({ ...current, duration }))}
-                className={selectionButtonClass(selection.duration === duration)}
-              >
-                {duration} min
-              </button>
-            ))}
+          <div>
+            <p className={optionEyebrowClass}>Source / Flavor</p>
+            <div className="mt-2 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {SACRED_VOICE_SOURCES.map((item) => {
+                const active = selection.sourceTag === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => setSelection((current) => ({ ...current, sourceTag: item.id }))}
+                    className={optionCardClass(active)}
+                  >
+                    <p className={optionEyebrowClass}>Source</p>
+                    <p className={`mt-2 ${optionLabelClass(active)}`}>{item.label}</p>
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </article>
 
-        <article className={selectionCardClass}>
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Session Style</p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {SACRED_VOICE_MODES.map((mode) => (
-              <button
-                key={mode.id}
-                type="button"
-                onClick={() => setSelection((current) => ({ ...current, mode: mode.id }))}
-                className={selectionButtonClass(selection.mode === mode.id)}
-              >
-                {mode.label}
-              </button>
-            ))}
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <p className={optionEyebrowClass}>Session Length</p>
+              <div className="mt-2 grid gap-3 grid-cols-2 sm:grid-cols-3">
+                {SACRED_VOICE_DURATIONS.map((duration) => {
+                  const active = selection.duration === duration;
+                  return (
+                    <button
+                      key={duration}
+                      type="button"
+                      onClick={() => setSelection((current) => ({ ...current, duration }))}
+                      className={optionCardClass(active)}
+                    >
+                      <p className={optionEyebrowClass}>Length</p>
+                      <p className={`mt-2 ${optionLabelClass(active)}`}>{duration} min</p>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div>
+              <p className={optionEyebrowClass}>Session Style</p>
+              <div className="mt-2 grid gap-3 grid-cols-1 sm:grid-cols-2">
+                {SACRED_VOICE_MODES.map((mode) => {
+                  const active = selection.mode === mode.id;
+                  return (
+                    <button
+                      key={mode.id}
+                      type="button"
+                      onClick={() => setSelection((current) => ({ ...current, mode: mode.id }))}
+                      className={optionCardClass(active)}
+                    >
+                      <p className={optionEyebrowClass}>Style</p>
+                      <p className={`mt-2 ${optionLabelClass(active)}`}>{mode.label}</p>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
-        </article>
+        </div>
       </section>
 
       <section className="rounded-[24px] border border-primary/25 bg-primary/8 p-5 md:p-6">
@@ -375,7 +401,7 @@ const SacredPathVoice = () => {
               <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Now Playing</p>
               <h2 className="mt-1 font-display text-3xl text-foreground">{activeSession.title}</h2>
               <p className="mt-1 text-xs uppercase tracking-[0.14em] text-primary/80">
-                {activeSession.intention.replaceAll("_", " ")} · {activeSession.sourceTag.replaceAll("_", " ")} · {activeSession.duration} min
+                {activeSession.intention.split("_").join(" ")} · {activeSession.sourceTag.split("_").join(" ")} · {activeSession.duration} min
               </p>
               <p className="mt-1 text-xs text-muted-foreground">
                 Voice status: {audioSupported ? playback.status : "text-only browser fallback unavailable"}
