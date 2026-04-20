@@ -362,7 +362,6 @@ const SacredPathVoice = () => {
             </div>
           </div>
         </div>
-        </div>
       </section>
 
       <section className="rounded-[24px] border border-primary/25 bg-primary/8 p-5 md:p-6">
