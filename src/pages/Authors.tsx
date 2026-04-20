@@ -2265,7 +2265,7 @@ const Authors = () => {
   const [mobileDetailMode, setMobileDetailMode] = useState(false);
   const [detailOnlyMode, setDetailOnlyMode] = useState(Boolean(focusSlug));
   const detailPaneRef = useRef<HTMLDivElement | null>(null);
-  const sidePaneRef = useRef<HTMLElement | null>(null);
+  const sidePaneRef = useRef<HTMLDivElement | null>(null);
   const selected = useMemo(
     () => localizedAuthors.find((author) => author.slug === selectedSlug) ?? localizedAuthors[0],
     [localizedAuthors, selectedSlug],

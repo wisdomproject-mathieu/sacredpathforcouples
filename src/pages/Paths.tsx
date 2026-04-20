@@ -2566,7 +2566,7 @@ const Paths = () => {
   const [mobileDetailMode, setMobileDetailMode] = useState(false);
   const [detailOnlyMode, setDetailOnlyMode] = useState(Boolean(focusSlug));
   const detailPaneRef = useRef<HTMLDivElement | null>(null);
-  const sidePaneRef = useRef<HTMLElement | null>(null);
+  const sidePaneRef = useRef<HTMLDivElement | null>(null);
   const selected = useMemo(
     () => localizedPathDetails.find((path) => path.slug === selectedSlug) ?? localizedPathDetails[0],
     [localizedPathDetails, selectedSlug],
