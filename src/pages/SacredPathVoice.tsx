@@ -49,22 +49,22 @@ const fmtTime = (seconds: number) => {
 };
 
 const optionCardClass = (active: boolean) =>
-  `flex min-h-[72px] cursor-pointer items-center justify-center rounded-2xl border p-4 text-center transition-all ${
+  `flex min-h-[78px] cursor-pointer items-center justify-center rounded-2xl border p-4 text-center transition-all ${
     active
-      ? "border-primary/40 bg-primary/12 shadow-[0_16px_50px_-40px_rgba(255,173,70,0.45)]"
-      : "border-border/30 bg-background/45 hover:border-primary/25 hover:bg-card/55"
+      ? "border-primary/60 bg-gradient-to-br from-primary/25 via-primary/15 to-amber-500/10 shadow-[0_18px_55px_-32px_rgba(255,173,70,0.65)]"
+      : "border-amber-300/30 bg-gradient-to-br from-card/55 via-background/40 to-card/55 hover:border-primary/45 hover:from-primary/10 hover:to-amber-500/10"
   }`;
 
 const optionLabelClass = (active: boolean) =>
-  `font-display text-xl leading-snug md:text-2xl ${active ? "text-foreground" : "text-foreground/90"}`;
+  `font-display text-xl leading-snug md:text-2xl ${active ? "text-foreground" : "text-foreground/95"}`;
 
 const groupEyebrowClass = "text-[11px] uppercase tracking-[0.22em] text-primary/80";
 
 const groupShellClass =
-  "rounded-[20px] border border-emerald-300/25 bg-emerald-500/8 p-4 md:p-5";
+  "rounded-[20px] border border-emerald-300/30 bg-gradient-to-br from-emerald-500/10 via-emerald-500/5 to-transparent p-4 md:p-5";
 
 const groupShellGoldClass =
-  "rounded-[20px] border border-amber-400/25 bg-amber-500/8 p-4 md:p-5";
+  "rounded-[20px] border border-amber-400/30 bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent p-4 md:p-5";
 
 const SacredPathVoice = () => {
   const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
@@ -302,26 +302,6 @@ const SacredPathVoice = () => {
               })}
             </div>
           </div>
-
-          <div className={groupShellGoldClass}>
-            <p className={groupEyebrowClass}>Path / Authors</p>
-            <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-              {SACRED_VOICE_SOURCES.map((item) => {
-                const active = selection.sourceTag === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => setSelection((current) => ({ ...current, sourceTag: item.id }))}
-                    className={optionCardClass(active)}
-                  >
-                    <p className={optionLabelClass(active)}>{item.label}</p>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
           <div className="grid gap-4 md:grid-cols-2">
             <div className={groupShellClass}>
               <p className={groupEyebrowClass}>Session Length</p>
@@ -368,7 +348,7 @@ const SacredPathVoice = () => {
         <p className="text-xs uppercase tracking-[0.2em] text-primary/80">Session Summary</p>
         <div className="mt-3 grid gap-2 text-sm text-foreground/90 md:grid-cols-2">
           <p><span className="text-muted-foreground">Intention:</span> {selectedIntention}</p>
-          <p><span className="text-muted-foreground">Source:</span> {selectedSource}</p>
+          
           <p><span className="text-muted-foreground">Length:</span> {selection.duration} min</p>
           <p><span className="text-muted-foreground">Style:</span> {selectedMode}</p>
         </div>
