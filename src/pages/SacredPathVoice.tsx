@@ -348,7 +348,7 @@ const SacredPathVoice = () => {
         <p className="text-xs uppercase tracking-[0.2em] text-primary/80">Session Summary</p>
         <div className="mt-3 grid gap-2 text-sm text-foreground/90 md:grid-cols-2">
           <p><span className="text-muted-foreground">Intention:</span> {selectedIntention}</p>
-          <p><span className="text-muted-foreground">Source:</span> {selectedSource}</p>
+          
           <p><span className="text-muted-foreground">Length:</span> {selection.duration} min</p>
           <p><span className="text-muted-foreground">Style:</span> {selectedMode}</p>
         </div>
