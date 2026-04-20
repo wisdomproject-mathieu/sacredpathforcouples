@@ -101,6 +101,18 @@ const pickFirstAvailableRitual = (ids: string[]) => {
   return null;
 };
 
+const modeOpeningLine = (mode: SacredVoiceSelection["mode"]) => {
+  if (mode === "guide_step_by_step") return "I will guide this slowly, one step at a time.";
+  if (mode === "reflect_with_us") return "Pause after each section and answer aloud together.";
+  return "Receive this as a spoken reading you can soften into together.";
+};
+
+const modeClosingLine = (mode: SacredVoiceSelection["mode"]) => {
+  if (mode === "guide_step_by_step") return "Complete one final step, then close with one appreciation each.";
+  if (mode === "reflect_with_us") return "Name one insight each, then choose one action for tonight.";
+  return "Let these words settle before you move into the rest of your evening.";
+};
+
 export const resolveSacredVoiceRoute = (
   selection: SacredVoiceSelection,
   contextSignal?: string,
@@ -129,6 +141,8 @@ const buildReadingSession = (
   const sourceLabel = excerpt?.title ?? "Sacred Path";
 
   const spokenBlocks = [
+    `Pacing: ${selection.duration} minutes.`,
+    modeOpeningLine(selection.mode),
     excerpt?.text ?? "Read slowly. Let the words land before you move.",
     `To embody this wisdom tonight, run ${getSacredVoiceRitualById(ritualId)?.title ?? "one gentle ritual"}.`,
     ...ritualSteps,
@@ -148,7 +162,7 @@ const buildReadingSession = (
     transcriptBlocks: spokenBlocks,
     ritualRefs: [ritualId],
     excerptRefs: excerpt ? [excerpt.excerptId] : [],
-    closingText: "Keep one sentence from this reading close to your heart for the rest of your evening.",
+    closingText: `Keep one sentence from this reading close to your heart for the rest of your evening. ${modeClosingLine(selection.mode)}`,
     territory: route.territory,
     knowledgeSource: route.knowledgeSource,
     teacherAttribution: sourceLabel,
@@ -168,6 +182,8 @@ const buildGuidedTerritorySession = (
   const excerpt = getSacredVoiceExcerptBySourceTag(selection.sourceTag);
 
   const spokenBlocks = [
+    `Pacing: ${selection.duration} minutes.`,
+    modeOpeningLine(selection.mode),
     profile.opening,
     `Teacher lens: ${profile.teacher}.`,
     `Reflection: ${profile.reflection}`,
@@ -192,7 +208,7 @@ const buildGuidedTerritorySession = (
     transcriptBlocks: spokenBlocks,
     ritualRefs,
     excerptRefs: excerpt ? [excerpt.excerptId] : [],
-    closingText: profile.closing,
+    closingText: `${profile.closing} ${modeClosingLine(selection.mode)}`,
     territory: route.territory,
     knowledgeSource: route.knowledgeSource,
     teacherAttribution: profile.teacher,

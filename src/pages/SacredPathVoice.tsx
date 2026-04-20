@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Mic,
@@ -26,7 +26,10 @@ import {
   type SacredVoiceSelection,
   type SacredVoiceSession,
 } from "@/lib/sacredPathVoiceContent";
-import { generateSacredVoiceSession as generateRoutedSacredVoiceSession } from "@/lib/sacredVoiceRouter";
+import {
+  generateSacredVoiceSession as generateRoutedSacredVoiceSession,
+  resolveSacredVoiceRoute,
+} from "@/lib/sacredVoiceRouter";
 import {
   isSacredVoiceAudioSupported,
   pauseSacredVoiceSession,
@@ -86,6 +89,7 @@ const SacredPathVoice = () => {
   const [voiceStatusNote, setVoiceStatusNote] = useState<string>("");
   const [isStarting, setIsStarting] = useState(false);
   const [sessionSignal, setSessionSignal] = useState("");
+  const lastSelectionSignatureRef = useRef<string>("");
 
   useEffect(() => {
     setAudioSupported(isSacredVoiceAudioSupported());
@@ -125,13 +129,57 @@ const SacredPathVoice = () => {
   const selectedIntention = SACRED_VOICE_INTENTIONS.find((item) => item.id === selection.intention)?.label ?? "Meditate";
   const selectedSource = SACRED_VOICE_SOURCES.find((item) => item.id === selection.sourceTag)?.label ?? "Sacred Path";
   const selectedMode = SACRED_VOICE_MODES.find((item) => item.id === selection.mode)?.label ?? "Read to us";
+  const selectionSignature = useMemo(
+    () => JSON.stringify({ ...selection, sessionSignal: sessionSignal.trim() }),
+    [selection, sessionSignal],
+  );
+  const resolvedRoute = useMemo(
+    () => resolveSacredVoiceRoute(selection, sessionSignal),
+    [selection, sessionSignal],
+  );
+  const activeSessionPreview = useMemo(
+    () => generateRoutedSacredVoiceSession(selection, sessionSignal),
+    [selection, sessionSignal],
+  );
 
   const previewCopy =
     selection.intention === "repair_after_tension"
       ? "A calm repair flow with one clear practice, one reflection, and grounded next steps."
       : selection.intention === "read_ancient_wisdom"
         ? "A source-grounded reading followed by one practical ritual you can run tonight."
-        : "A guided couple session with voice pacing, ritual structure, and a clean closing.";
+      : "A guided couple session with voice pacing, ritual structure, and a clean closing.";
+
+  useEffect(() => {
+    console.info("[Sacred Voice] selection state changed", {
+      selection,
+      sessionSignalLength: sessionSignal.trim().length,
+      territory: resolvedRoute.territory,
+      sessionId: activeSessionPreview.id,
+      sessionTitle: activeSessionPreview.title,
+      transcriptBlocks: activeSessionPreview.transcriptBlocks.length,
+      spokenBlocks: activeSessionPreview.spokenBlocks.length,
+      spokenPayloadLength: activeSessionPreview.spokenBlocks.join(" ").length,
+    });
+
+    if (!lastSelectionSignatureRef.current) {
+      lastSelectionSignatureRef.current = selectionSignature;
+      return;
+    }
+
+    if (lastSelectionSignatureRef.current !== selectionSignature) {
+      if (activeSession || playback) {
+        stopSacredVoiceSession(activeSession ?? undefined);
+        setActiveSession(null);
+        setPlayback(null);
+        setAudioProvider(null);
+        setVoiceStatusNote("");
+        console.info("[Sacred Voice] playback reset after selector change", {
+          previousSessionId: activeSession?.id ?? null,
+        });
+      }
+      lastSelectionSignatureRef.current = selectionSignature;
+    }
+  }, [selectionSignature, selection, sessionSignal, resolvedRoute.territory, activeSessionPreview, activeSession, playback]);
 
   const markEnded = () => {
     setPlayback((previous) =>
@@ -155,7 +203,16 @@ const SacredPathVoice = () => {
     if (isStarting) return;
     setIsStarting(true);
 
-    const curated = generateRoutedSacredVoiceSession(selection, sessionSignal);
+    const curated = activeSessionPreview;
+    const payloadText = [curated.introText, ...curated.spokenBlocks, curated.closingText]
+      .filter(Boolean)
+      .join("\n\n");
+    console.info("[Sacred Voice] begin session with active preview", {
+      sessionId: curated.id,
+      sessionTitle: curated.title,
+      territory: resolvedRoute.territory,
+      payloadLength: payloadText.length,
+    });
     const initialPlayback = await startSacredVoiceSession(curated, {
       onEnd: markEnded,
     });
@@ -293,6 +350,25 @@ const SacredPathVoice = () => {
           </div>
           <div className="grid gap-4 md:grid-cols-2">
             <div className={groupShellClass}>
+              <p className={groupEyebrowClass}>Source / Flavor</p>
+              <div className="mt-3 grid gap-3 grid-cols-2 xl:grid-cols-3">
+                {SACRED_VOICE_SOURCES.map((source) => {
+                  const active = selection.sourceTag === source.id;
+                  return (
+                    <button
+                      key={source.id}
+                      type="button"
+                      onClick={() => setSelection((current) => ({ ...current, sourceTag: source.id }))}
+                      className={optionCardClass(active)}
+                    >
+                      <p className={optionLabelClass(active)}>{source.label}</p>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className={groupShellClass}>
               <p className={groupEyebrowClass}>Session Length</p>
               <div className="mt-3 grid gap-3 grid-cols-2 sm:grid-cols-3">
                 {SACRED_VOICE_DURATIONS.map((duration) => {
@@ -337,9 +413,11 @@ const SacredPathVoice = () => {
         <p className="text-xs uppercase tracking-[0.2em] text-primary/80">Session Summary</p>
         <div className="mt-3 grid gap-2 text-sm text-foreground/90 md:grid-cols-2">
           <p><span className="text-muted-foreground">Intention:</span> {selectedIntention}</p>
-          
+          <p><span className="text-muted-foreground">Source:</span> {selectedSource}</p>
           <p><span className="text-muted-foreground">Length:</span> {selection.duration} min</p>
           <p><span className="text-muted-foreground">Style:</span> {selectedMode}</p>
+          <p><span className="text-muted-foreground">Territory:</span> {resolvedRoute.territory}</p>
+          <p><span className="text-muted-foreground">Session:</span> {activeSessionPreview.title}</p>
         </div>
         <div className="mt-3">
           <label className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
