@@ -46,34 +46,20 @@ const FREE_RITUAL_BY_CHAPTER: Record<string, string> = {
 
 type ChapterNarrative = {
   subtitle: string;
-  supportingCopy: string;
-  chips: string[];
 };
 
 const CHAPTER_NARRATIVE_BY_ID: Record<string, ChapterNarrative> = {
   "touch-massage-sacred-spot": {
     subtitle: "Repair through reverent touch",
-    supportingCopy:
-      "Begin where the body still says yes. Slow touch, devotional massage, and sacred spot practices that soften defence and rebuild trust through presence.",
-    chips: ["Body-led repair", "Trust through touch"],
   },
   "embrace-embodied-connection": {
     subtitle: "Repair through holding and nervous-system settling",
-    supportingCopy:
-      "Before passion returns, safety must return. These practices help couples hold, breathe, settle, and feel each other again without pressure.",
-    chips: ["Nervous-system safety", "Presence before pressure"],
   },
   "sacred-union-rituals": {
     subtitle: "Repair through conscious lovemaking",
-    supportingCopy:
-      "When tenderness reopens, union can become medicine. Slow sex, karezza, and bliss-based practices replace urgency with presence.",
-    chips: ["Conscious union", "Slow intimacy"],
   },
   "emotional-clearing-authentic-relating": {
     subtitle: "Repair through truth and emotional honesty",
-    supportingCopy:
-      "For the truths sitting between you. Boundaries, appreciation, intention, and shadow work that help love breathe again.",
-    chips: ["Truth practices", "Relational repair"],
   },
 };
 
@@ -98,7 +84,7 @@ const ChapterCard = ({
   const iconClass = (chapterVisuals[chapter.id] ?? chapterVisuals["touch-massage-sacred-spot"]).iconClass;
   const narrative = CHAPTER_NARRATIVE_BY_ID[chapter.id];
 
-  const className = `${sacredVisualSystem.overviewCardBase} ${
+  const className = `${sacredVisualSystem.overviewCardBase} min-h-0 ${
     selected
       ? sacredVisualSystem.overviewCardActive
       : sacredVisualSystem.overviewCardIdle
@@ -106,29 +92,15 @@ const ChapterCard = ({
 
   const body = (
     <>
-      <div className={`${sacredVisualSystem.iconBadge} ${iconClass}`}>
-        <Icon className="h-4 w-4" />
+      <div className="flex items-center gap-3">
+        <div className={`${sacredVisualSystem.iconBadge} ${iconClass}`}>
+          <Icon className="h-4 w-4" />
+        </div>
+        <h2 className={`min-w-0 font-display leading-[1.15] text-foreground ${compact ? "text-[1.9rem]" : "text-[2rem]"}`}>
+          {chapter.title}
+        </h2>
       </div>
-      <h2 className={`mt-3 font-display leading-[1.15] text-foreground ${compact ? "text-[1.7rem]" : "text-[1.75rem]"}`}>
-        {chapter.title}
-      </h2>
-      <p className="mt-1.5 text-sm leading-6 text-primary/90">{narrative?.subtitle ?? chapter.emotionalFrame}</p>
-      <p className={`mt-2 text-sm leading-6 text-muted-foreground/95 ${compact ? "" : "line-clamp-3"}`}>
-        {narrative?.supportingCopy ?? chapter.emotionalFrame}
-      </p>
-      <div className="mt-3 flex flex-wrap items-center gap-2 pt-1">
-        <span className="rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-xs uppercase tracking-[0.14em] text-primary/90">
-          {chapter.rituals.length} rituals
-        </span>
-        {(narrative?.chips ?? []).slice(0, 2).map((chip) => (
-          <span
-            key={`${chapter.id}-${chip}`}
-            className="rounded-full border border-border/30 bg-background/35 px-3 py-1 text-xs uppercase tracking-[0.12em] text-foreground/85"
-          >
-            {chip}
-          </span>
-        ))}
-      </div>
+      <p className="mt-2 text-base leading-7 text-primary/90">{narrative?.subtitle ?? chapter.emotionalFrame}</p>
     </>
   );
 
@@ -376,7 +348,7 @@ const SacredRepair = () => {
           <img src={shivaShaktiIcon} alt="" className="h-40 w-40 rounded-[20px]" />
         </div>
         <p className="text-xs uppercase tracking-[0.22em] text-amber-400/75">Sacred Path for Couples</p>
-        <p className="mt-2 max-w-2xl text-sm italic text-muted-foreground/80">
+        <p className="mt-2 max-w-2xl text-base italic text-muted-foreground/80">
           "The couple that practices together arrives at each other again and again."
         </p>
         <div className="mt-4 grid gap-4 lg:grid-cols-[1.3fr_1fr]">
@@ -395,12 +367,12 @@ const SacredRepair = () => {
                 </span>
               ) : null}
             </h1>
-            <p className="mt-2 text-sm text-muted-foreground/75">
+            <p className="mt-2 text-base leading-7 text-muted-foreground/80">
               You are connected. Repair asks for softness, truth, and practices that help you come back to each other slowly and safely.
             </p>
             <div className="mt-3 rounded-[12px] border border-emerald-300/25 bg-emerald-500/8 px-3 py-2.5">
               <p className="text-[10px] uppercase tracking-[0.14em] text-emerald-200/80">TODAY&apos;S REMINDER</p>
-              <p className="mt-1 text-sm leading-6 text-foreground/90">Repair begins where both hearts feel safe enough to stay.</p>
+              <p className="mt-1 text-base leading-7 text-foreground/90">Repair begins where both hearts feel safe enough to stay.</p>
             </div>
             <div className="mt-3 flex flex-wrap items-center gap-2">
               <span
@@ -460,14 +432,17 @@ const SacredRepair = () => {
           </div>
           <div className="rounded-[18px] border border-emerald-300/25 bg-emerald-500/8 p-3">
             <p className="text-xs uppercase tracking-[0.18em] text-emerald-200/85">RETURN TO LOVE</p>
-            <p className="mt-2 text-sm leading-6 text-foreground/90">{heroCopy}</p>
+            <p className="mt-2 text-base leading-7 text-foreground/90">{heroCopy}</p>
           </div>
         </div>
       </section>
 
       {!selectedChapter ? (
         <section className={sacredVisualSystem.contourEmerald}>
-          <h2 className="mt-2 font-display text-2xl text-foreground">Repairs Overview</h2>
+          <h2 className="mt-2 font-display text-[2.05rem] leading-tight text-foreground md:text-[2.3rem]">Repairs Overview</h2>
+          <p className="mt-2 max-w-4xl text-base leading-7 text-muted-foreground/90">
+            Sacred Repair supports couples in returning to presence after tension, softening defense through embodied practice, and rebuilding trust with tenderness, truth, and steady devotion. Ancient wisdom becomes living repair when two people choose to come back to each other, one honest ritual at a time.
+          </p>
           <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-2">
             {SACRED_REPAIR_CHAPTERS.map((chapter) => (
               <ChapterCard
