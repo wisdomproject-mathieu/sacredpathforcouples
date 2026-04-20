@@ -12,20 +12,26 @@ const audioCache = new Map<string, string>();
 
 const buildCacheKey = (sessionId: string, voiceId: string) => `${sessionId}:${voiceId}`;
 
-const getSacredVoiceTtsEndpoints = () => {
-  const envEndpoint =
+const getSupabaseFunctionEndpoint = () => {
+  const envOverride =
     typeof import.meta !== "undefined" && typeof import.meta.env?.VITE_SACRED_VOICE_TTS_URL === "string"
       ? import.meta.env.VITE_SACRED_VOICE_TTS_URL.trim()
       : "";
+  if (envOverride) return envOverride;
 
-  const endpoints = [
-    envEndpoint,
-    "/api/sacred-voice-tts",
-    "/.netlify/functions/sacred-voice-tts",
-  ].filter(Boolean);
+  const supabaseUrl =
+    typeof import.meta !== "undefined" && typeof import.meta.env?.VITE_SUPABASE_URL === "string"
+      ? import.meta.env.VITE_SUPABASE_URL.trim()
+      : "";
+  if (!supabaseUrl) return "";
 
-  return Array.from(new Set(endpoints));
+  return `${supabaseUrl.replace(/\/+$/, "")}/functions/v1/sacred-voice-tts`;
 };
+
+const getSupabasePublishableKey = () =>
+  typeof import.meta !== "undefined" && typeof import.meta.env?.VITE_SUPABASE_PUBLISHABLE_KEY === "string"
+    ? import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY.trim()
+    : "";
 
 const parseErrorMessage = async (response: Response) => {
   const contentType = response.headers.get("content-type")?.toLowerCase() ?? "";
@@ -65,57 +71,51 @@ export const synthesizeSacredVoiceAudio = async ({
     };
   }
 
-  const endpoints = getSacredVoiceTtsEndpoints();
-  const attempts: string[] = [];
-
-  for (const endpoint of endpoints) {
-    try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          text,
-          voiceId,
-          modelId: "eleven_multilingual_v2",
-        }),
-      });
-
-      if (!response.ok) {
-        const detail = await parseErrorMessage(response);
-        attempts.push(`${endpoint} -> ${response.status}${detail ? ` (${detail})` : ""}`);
-        continue;
-      }
-
-      const contentType = response.headers.get("content-type")?.toLowerCase() ?? "";
-      if (!contentType.includes("audio/")) {
-        const detail = await parseErrorMessage(response);
-        attempts.push(
-          `${endpoint} -> invalid content type "${contentType || "unknown"}"${detail ? ` (${detail})` : ""}`,
-        );
-        continue;
-      }
-
-      const audioBlob = await response.blob();
-      const audioUrl = URL.createObjectURL(audioBlob);
-      audioCache.set(key, audioUrl);
-
-      return {
-        provider: "elevenlabs",
-        audioUrl,
-        fromCache: false,
-      };
-    } catch (error) {
-      attempts.push(
-        `${endpoint} -> ${
-          error instanceof Error ? error.message : "network error"
-        }`,
-      );
-    }
+  const endpoint = getSupabaseFunctionEndpoint();
+  const publishableKey = getSupabasePublishableKey();
+  if (!endpoint) {
+    throw new Error("Supabase function endpoint is not configured.");
+  }
+  if (!publishableKey) {
+    throw new Error("Supabase publishable key is not configured.");
   }
 
-  throw new Error(
-    `ElevenLabs request failed across all endpoints. ${attempts.join(" | ")}`.trim(),
-  );
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      apikey: publishableKey,
+      Authorization: `Bearer ${publishableKey}`,
+    },
+    body: JSON.stringify({
+      text,
+      ...(voiceId && voiceId !== SACRED_VOICE_ELEVENLABS_VOICE_ID ? { voiceId } : {}),
+      modelId: "eleven_multilingual_v2",
+    }),
+  });
+
+  if (!response.ok) {
+    const detail = await parseErrorMessage(response);
+    throw new Error(
+      detail ? `Supabase TTS request failed (${response.status}): ${detail}` : `Supabase TTS request failed (${response.status})`,
+    );
+  }
+
+  const contentType = response.headers.get("content-type")?.toLowerCase() ?? "";
+  if (!contentType.includes("audio/")) {
+    const detail = await parseErrorMessage(response);
+    throw new Error(
+      `Supabase TTS returned invalid content type "${contentType || "unknown"}"${detail ? ` (${detail})` : ""}`,
+    );
+  }
+
+  const audioBlob = await response.blob();
+  const audioUrl = URL.createObjectURL(audioBlob);
+  audioCache.set(key, audioUrl);
+
+  return {
+    provider: "elevenlabs",
+    audioUrl,
+    fromCache: false,
+  };
 };

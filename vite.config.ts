@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin, type ViteDevServer } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
@@ -23,9 +23,9 @@ const sendJson = (
 
 // Dev-only proxy so Sacred Voice can use ElevenLabs while running `npm run dev`
 // without requiring Netlify Functions locally.
-const sacredVoiceDevProxy = () => ({
+const sacredVoiceDevProxy = (): Plugin => ({
   name: "sacred-voice-dev-proxy",
-  configureServer(server: import("vite").ViteDevServer) {
+  configureServer(server: ViteDevServer) {
     server.middlewares.use(async (req, res, next) => {
       const requestPath = req.url?.split("?")[0] ?? "";
       const isTtsPath =
