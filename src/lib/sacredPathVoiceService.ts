@@ -139,6 +139,12 @@ const clearSpeech = () => {
   currentUtterance = null;
   activeSessionId = null;
   pausedAtMs = null;
+  phraseQueue = [];
+  phraseIndex = 0;
+  if (pauseTimer) {
+    clearTimeout(pauseTimer);
+    pauseTimer = null;
+  }
 };
 
 // Queue of phrases for the current session, played sequentially with
