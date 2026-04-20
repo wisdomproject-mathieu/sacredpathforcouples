@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
+import { sacredVisualSystem } from "@/lib/sacredVisualSystem";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import {
   generateSacredVoiceSession as generateCuratedSacredVoiceSession,
@@ -47,15 +48,15 @@ const fmtTime = (seconds: number) => {
   return `${min}:${sec}`;
 };
 
-const selectionButtonClass = (active: boolean) =>
-  `rounded-full border px-3 py-1.5 text-xs uppercase tracking-[0.14em] transition-all ${
-    active
-      ? "border-primary/45 bg-primary/18 text-foreground shadow-[0_0_0_1px_rgba(16,185,129,0.18)]"
-      : "border-border/35 bg-background/40 text-muted-foreground hover:border-primary/25 hover:text-foreground"
+const optionCardClass = (active: boolean) =>
+  `${sacredVisualSystem.overviewCardBase} min-h-[96px] cursor-pointer ${
+    active ? sacredVisualSystem.overviewCardActive : sacredVisualSystem.overviewCardIdle
   }`;
 
-const selectionCardClass =
-  "rounded-[20px] border border-border/35 bg-background/45 p-4 md:p-5 shadow-[0_12px_40px_-32px_rgba(0,0,0,0.85)]";
+const optionLabelClass = (active: boolean) =>
+  `font-display text-lg leading-tight ${active ? "text-foreground" : "text-foreground/85"}`;
+
+const optionEyebrowClass = "text-[10px] uppercase tracking-[0.2em] text-primary/75";
 
 const SacredPathVoice = () => {
   const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
