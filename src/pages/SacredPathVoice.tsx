@@ -401,7 +401,7 @@ const SacredPathVoice = () => {
               <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Now Playing</p>
               <h2 className="mt-1 font-display text-3xl text-foreground">{activeSession.title}</h2>
               <p className="mt-1 text-xs uppercase tracking-[0.14em] text-primary/80">
-                {activeSession.intention.replaceAll("_", " ")} · {activeSession.sourceTag.replaceAll("_", " ")} · {activeSession.duration} min
+                {activeSession.intention.split("_").join(" ")} · {activeSession.sourceTag.split("_").join(" ")} · {activeSession.duration} min
               </p>
               <p className="mt-1 text-xs text-muted-foreground">
                 Voice status: {audioSupported ? playback.status : "text-only browser fallback unavailable"}
