@@ -576,24 +576,50 @@ const buildRepairSession = (selection: SacredVoiceSelection): SacredVoiceSession
   };
 };
 
+const intentionLabel: Record<SacredVoiceIntention, string> = {
+  meditate: "Meditation",
+  breathe: "Breath Practice",
+  guide_us: "Guided Sequence",
+  read_ancient_wisdom: "Wisdom Reading",
+  repair_after_tension: "Repair Session",
+  deeper_intimacy: "Intimacy Session",
+};
+
+const sourceLabel: Record<SacredVoiceSourceTag, string> = {
+  tantra: "Tantra",
+  tao: "Tao",
+  slow_love: "Slow Love",
+  polarity: "Polarity",
+  heart_path: "Heart Path",
+  osho: "Osho",
+  diana_richardson: "Diana Richardson",
+  deida: "Deida",
+  margot_anand: "Margot Anand",
+  jan_day: "Jan Day",
+  daniel_odier: "Daniel Odier",
+  sacred_path: "Sacred Path",
+};
+
 export const generateSacredVoiceSession = (selection: SacredVoiceSelection): SacredVoiceSession => {
   if (selection.intention === "repair_after_tension") {
-    return buildRepairSession(selection);
+    const repair = buildRepairSession(selection);
+    return { ...repair, duration: selection.duration, mode: selection.mode };
   }
 
   const template = findTemplate(selection);
   const base = compileSession(template);
 
-  if (template.duration === selection.duration && template.mode === selection.mode) {
-    return base;
-  }
+  // Always honor the user's selection for duration, mode, source and title
+  // so the "Now Playing" card never shows a stale ritual name or length.
+  const dynamicTitle = `${sourceLabel[selection.sourceTag]} ${intentionLabel[selection.intention]} · ${selection.duration} min`;
 
   return {
     ...base,
-    id: `${base.id}-${selection.duration}-${selection.mode}`,
+    id: `${base.id}-${selection.sourceTag}-${selection.duration}-${selection.mode}`,
+    sourceTag: selection.sourceTag,
     duration: selection.duration,
     mode: selection.mode,
-    title: `${base.title}`,
+    title: dynamicTitle,
   };
 };
 
