@@ -20,6 +20,7 @@ import Pricing from "./pages/Pricing";
 import Privacy from "./pages/Privacy";
 import PartnerSpace from "./pages/PartnerSpace";
 import SacredRepair from "./pages/SacredRepair";
+import SacredPathVoice from "./pages/SacredPathVoice";
 import ShareWisdom from "./pages/ShareWisdom";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
@@ -161,6 +162,7 @@ const App = () => (
                 <Route path="space" element={<PartnerSpace />} />
                 <Route path="repair" element={<SacredRepair />} />
                 <Route path="sacred-repair" element={<Navigate to="/app/repair" replace />} />
+                <Route path="voice" element={<SacredPathVoice />} />
                 <Route path="wisdom" element={<ShareWisdom />} />
                 <Route path="settings" element={<Settings />} />
               </Route>

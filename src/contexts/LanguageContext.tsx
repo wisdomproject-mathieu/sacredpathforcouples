@@ -35,6 +35,7 @@ const translations: Record<string, Record<Language, string>> = {
   "nav.features": { en: "Features", fr: "Fonctionnalités", cs: "Funkce" },
   "nav.connect_partner": { en: "Connect with Partner", fr: "Se connecter au partenaire", cs: "Propojit s partnerem" },
   "nav.library": { en: "Sacred Library", fr: "Bibliothèque sacrée", cs: "Posvátná knihovna" },
+  "nav.voice": { en: "Sacred Path Voice", fr: "Voix du Chemin Sacré", cs: "Hlas Posvátné Cesty" },
   "nav.temple": { en: "Sacred Temple", fr: "Chrám intimity", cs: "Posvátný chrám" },
   "nav.repair": { en: "Sacred Repair", fr: "Réparation sacrée", cs: "Posvátná obnova" },
 
