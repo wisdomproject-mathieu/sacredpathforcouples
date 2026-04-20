@@ -236,6 +236,117 @@ type TemplateDefinition = {
   closingText: string;
 };
 
+type RepairLevel = 1 | 2 | 3;
+
+type RepairRoute = {
+  level: RepairLevel;
+  teacher: string;
+  practiceId: string;
+  teaching: string;
+  reflectionPrompt: string;
+  closing: string;
+};
+
+const repairGuideRoutes: Record<SacredVoiceSourceTag, RepairRoute> = {
+  // Primary source: /Users/mathieuescande/Documents/SacredLibrary/sacred_path_repair_reconnect_ai_guide.md
+  tantra: {
+    level: 2,
+    teacher: "Daniel Odier / Classical Tantra",
+    practiceId: "vigyan_bhairava_emotional_yoga",
+    teaching: "Classical Tantra invites full attention to the emotion instead of suppression or reaction.",
+    reflectionPrompt: "Which emotion is strongest right now, and what changes when you breathe into it instead of acting from it?",
+    closing: "Rest in silence for ten breaths before deciding what to say next.",
+  },
+  tao: {
+    level: 1,
+    teacher: "Mantak Chia / Taoist Alchemy",
+    practiceId: "inner_smile_with_partner",
+    teaching: "Taoist repair begins in the body: calm the organs, then language becomes clearer.",
+    reflectionPrompt: "Where is tension stored in your body right now, and how does it shift when you soften there?",
+    closing: "Keep your breath low in the belly for one extra minute together.",
+  },
+  slow_love: {
+    level: 1,
+    teacher: "Diana Richardson / Slow Love",
+    practiceId: "synchronized_heart_breathing",
+    teaching: "When the nervous system settles first, closeness returns without force.",
+    reflectionPrompt: "Can we choose softness before speed for the next ten minutes?",
+    closing: "End with one sentence each: I want to stay close with you.",
+  },
+  polarity: {
+    level: 2,
+    teacher: "David Deida / Polarity",
+    practiceId: "bridge_soft_start",
+    teaching: "After tension, polarity rebuilds through grounded presence instead of defense.",
+    reflectionPrompt: "What would steadiness look like in your body before your next words?",
+    closing: "Let your final breath be slow and deliberate before re-entering conversation.",
+  },
+  heart_path: {
+    level: 1,
+    teacher: "Sacred Path / The Embodied Heart",
+    practiceId: "daily_homecoming_ritual",
+    teaching: "Small daily rituals prevent distance from hardening into rupture.",
+    reflectionPrompt: "What one gentle action would help your partner feel safe with you tonight?",
+    closing: "Keep tonight simple: one request, one yes/no check-in, one thank you.",
+  },
+  osho: {
+    level: 2,
+    teacher: "Osho",
+    practiceId: "gibberish_release",
+    teaching: "Clear the emotional charge first; conversation works better after the body discharges.",
+    reflectionPrompt: "What are you carrying in your nervous system that words alone are not clearing?",
+    closing: "After the practice, sit in quiet for two minutes before speaking.",
+  },
+  diana_richardson: {
+    level: 1,
+    teacher: "Diana Richardson",
+    practiceId: "soft_eye",
+    teaching: "Slow attention and soft gaze can melt defensiveness faster than analysis.",
+    reflectionPrompt: "Can we stay with each other for one minute without fixing or persuading?",
+    closing: "Close by touching foreheads and sharing one appreciation each.",
+  },
+  deida: {
+    level: 2,
+    teacher: "David Deida",
+    practiceId: "parts_work_dialogue",
+    teaching: "Presence is the repair move: respond from grounded love, not from reactivity.",
+    reflectionPrompt: "Which protective part is speaking right now, and what does it actually need?",
+    closing: "When the charge softens, reconnect through one intentional embrace.",
+  },
+  margot_anand: {
+    level: 1,
+    teacher: "Margot Anand",
+    practiceId: "heart_salutation",
+    teaching: "Ceremony helps couples re-enter each other with dignity after friction.",
+    reflectionPrompt: "What intention do you want to set before you touch each other tonight?",
+    closing: "Bow out slowly and name one quality you want to bring into the rest of your evening.",
+  },
+  jan_day: {
+    level: 2,
+    teacher: "Jan Day",
+    practiceId: "yes_no_exercise",
+    teaching: "Repair deepens when partners restore agency and clear consent in the body.",
+    reflectionPrompt: "What yes feels true tonight, and what no needs to be spoken with care?",
+    closing: "End by naming one clear boundary and one clear invitation.",
+  },
+  daniel_odier: {
+    level: 2,
+    teacher: "Daniel Odier",
+    practiceId: "space_between_breaths",
+    teaching: "The pause between breaths interrupts reactivity and restores presence.",
+    reflectionPrompt: "What becomes possible between you when you allow a real pause?",
+    closing: "Stay in that pause for three final breaths together.",
+  },
+  sacred_path: {
+    level: 1,
+    teacher: "Sacred Path",
+    practiceId: "appreciation_witness",
+    teaching: "Micro-repair keeps love warm between the difficult moments.",
+    reflectionPrompt: "What appreciation have you not spoken yet that could soften tonight?",
+    closing: "Close with one sincere appreciation each, spoken slowly and directly.",
+  },
+};
+
 const sessionTemplates: TemplateDefinition[] = [
   {
     id: "meditate-heart-6",
@@ -314,37 +425,6 @@ const sessionTemplates: TemplateDefinition[] = [
     closingText: "Keep your breath low and unforced for one extra minute in silence.",
   },
   {
-    id: "repair-jan-day-10",
-    title: "Truth and Repair",
-    intention: "repair_after_tension",
-    sourceTag: "jan_day",
-    duration: 10,
-    mode: "reflect_with_us",
-    introText: "A calm repair container for couples after friction.",
-    ritualRefs: ["yes_no_exercise", "appreciation_witness"],
-    excerptRefs: [sourceExcerpts.jan_day.excerptId],
-    blocks: [
-      "Pause. No fixing for one minute. Breathe together and soften your shoulders.",
-      "Reflection prompt: What do I need to feel safe enough to stay open right now?",
-      ...formatRitualSteps("yes_no_exercise"),
-      ...formatRitualSteps("appreciation_witness"),
-    ],
-    closingText: "Finish by naming one thing you appreciate in your partner today.",
-  },
-  {
-    id: "repair-sacred-path-6",
-    title: "Daily Repair Reset",
-    intention: "repair_after_tension",
-    sourceTag: "sacred_path",
-    duration: 6,
-    mode: "guide_step_by_step",
-    introText: "A short reset for ordinary tension.",
-    ritualRefs: ["daily_homecoming_ritual", "one_minute_appreciations"],
-    excerptRefs: [sourceExcerpts.sacred_path.excerptId],
-    blocks: [...formatRitualSteps("daily_homecoming_ritual"), ...formatRitualSteps("one_minute_appreciations")],
-    closingText: "Keep tonight simple: one request, one yes/no check-in, one thank you.",
-  },
-  {
     id: "intimacy-diana-10",
     title: "Slow Love Depth Session",
     intention: "deeper_intimacy",
@@ -394,7 +474,7 @@ const fallbackByIntention: Record<SacredVoiceIntention, string> = {
   breathe: "breathe-slow-love-6",
   guide_us: "guide-tantra-10",
   read_ancient_wisdom: "read-tantra-10",
-  repair_after_tension: "repair-sacred-path-6",
+  repair_after_tension: "meditate-heart-6",
   deeper_intimacy: "intimacy-diana-10",
 };
 
@@ -441,7 +521,66 @@ const findTemplate = (selection: SacredVoiceSelection) => {
   return sessionTemplates.find((template) => template.id === fallbackByIntention[selection.intention]) ?? sessionTemplates[0];
 };
 
+const resolveRepairLevel = (selection: SacredVoiceSelection, baseLevel: RepairLevel): RepairLevel => {
+  if (selection.duration >= 15) return 3;
+  if (selection.duration >= 8) return Math.max(2, baseLevel) as RepairLevel;
+  return baseLevel;
+};
+
+const buildRepairSession = (selection: SacredVoiceSelection): SacredVoiceSession => {
+  const route = repairGuideRoutes[selection.sourceTag] ?? repairGuideRoutes.sacred_path;
+  const level = resolveRepairLevel(selection, route.level);
+
+  const levelSpecific =
+    level === 3
+      ? {
+          ritualId: "the_unsaid_voice",
+          teacher: "Jan Day",
+          teaching:
+            "Rupture-level moments need structured truth-telling and slower, supported repair.",
+          reflectionPrompt:
+            "What truth has stayed unsaid that must be spoken without rebuttal?",
+          closing:
+            "If there is betrayal, ongoing deception, violence, or self-harm risk, pair this with a trained therapist or crisis support immediately.",
+        }
+      : route;
+
+  const ritualId = levelSpecific.ritualId;
+  const ritualSteps = formatRitualSteps(ritualId);
+  const excerpt = sourceExcerpts[selection.sourceTag];
+
+  return {
+    id: `repair-${selection.sourceTag}-${selection.duration}-${selection.mode}`,
+    title: `${levelSpecific.teacher} Repair Session`,
+    premium: true,
+    intention: "repair_after_tension",
+    sourceTag: selection.sourceTag,
+    duration: selection.duration,
+    mode: selection.mode,
+    promptTemplate:
+      "Use the Sacred Path repair guide: match repair level, cite one teacher lens, and offer one practice only.",
+    introText: `Repair level ${level}: begin with emotional safety, then one grounded practice.`,
+    spokenBlocks: [
+      `${levelSpecific.teacher} lens: ${levelSpecific.teaching}`,
+      `Reflection: ${levelSpecific.reflectionPrompt}`,
+      ...ritualSteps,
+    ],
+    transcriptBlocks: [
+      `${levelSpecific.teacher} lens: ${levelSpecific.teaching}`,
+      `Reflection: ${levelSpecific.reflectionPrompt}`,
+      ...ritualSteps,
+    ],
+    ritualRefs: [ritualId],
+    excerptRefs: excerpt ? [excerpt.excerptId] : [],
+    closingText: levelSpecific.closing,
+  };
+};
+
 export const generateSacredVoiceSession = (selection: SacredVoiceSelection): SacredVoiceSession => {
+  if (selection.intention === "repair_after_tension") {
+    return buildRepairSession(selection);
+  }
+
   const template = findTemplate(selection);
   const base = compileSession(template);
 
