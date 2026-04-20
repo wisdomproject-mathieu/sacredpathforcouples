@@ -1753,6 +1753,8 @@ const Reconnect = () => {
   const showBrowse = !isMobile || !mobileDetailMode;
   const showDetail = !isMobile || mobileDetailMode;
 
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
+
   useSeoMetadata({
     title: `Reconnect Library - ${selected.title}`,
     description: selected.overviewLine,

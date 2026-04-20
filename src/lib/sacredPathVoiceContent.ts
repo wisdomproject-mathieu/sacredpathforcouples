@@ -545,7 +545,7 @@ const buildRepairSession = (selection: SacredVoiceSelection): SacredVoiceSession
         }
       : route;
 
-  const ritualId = levelSpecific.ritualId;
+  const ritualId = "ritualId" in levelSpecific ? levelSpecific.ritualId : undefined;
   const ritualSteps = formatRitualSteps(ritualId);
   const excerpt = sourceExcerpts[selection.sourceTag];
 

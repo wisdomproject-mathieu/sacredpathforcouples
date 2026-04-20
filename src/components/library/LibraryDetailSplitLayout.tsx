@@ -10,8 +10,8 @@ type LibraryDetailSplitLayoutProps = {
   mobileHeader?: ReactNode;
   sidePane: ReactNode;
   detailPane: ReactNode;
-  sidePaneRef?: RefObject<HTMLElement | null>;
-  detailPaneRef?: RefObject<HTMLElement | null>;
+  sidePaneRef?: RefObject<HTMLDivElement | null>;
+  detailPaneRef?: RefObject<HTMLDivElement | null>;
 };
 
 const LibraryDetailSplitLayout = ({
@@ -41,12 +41,12 @@ const LibraryDetailSplitLayout = ({
 
     {isMobile ? mobileHeader : null}
 
-    <aside
+    <div
       ref={sidePaneRef}
       className={`w-full min-w-0 space-y-4 ${sacredVisualSystem.contourEmerald}`}
     >
       {sidePane}
-    </aside>
+    </div>
 
     <div
       ref={detailPaneRef}

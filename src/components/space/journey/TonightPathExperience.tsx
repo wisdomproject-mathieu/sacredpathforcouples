@@ -677,7 +677,7 @@ const TonightPathExperience = ({
   }, [copy.quotes, tonightPathStatus.waitingOn, weatherEngineDebug.normalizedKey, weatherStateMode]);
 
   const matchHeadline = tonightPathStatus.isTonightPathReady && weatherEngineDebug.archetype
-    ? weatherEngineDebug.archetype.replaceAll("_", " ")
+    ? weatherEngineDebug.archetype.split("_").join(" ")
     : tonightPathStatus.isTonightPathReady && weatherMatch
       ? `${weatherMatch.archetype.title} · ${weatherMatch.pairLabel}`
       : tonightPathStatus.waitingTitle;
