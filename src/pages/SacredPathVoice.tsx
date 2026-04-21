@@ -233,7 +233,7 @@ const SacredPathVoice = () => {
       </section>
 
       {hasPremiumAccess && activeSession && playback ? (
-        <section className="space-y-4 rounded-[24px] border border-primary/30 bg-gradient-to-br from-primary/12 via-background/40 to-emerald-500/10 p-5 md:p-6">
+        <section className={`${sacredVisualSystem.sectionFrame} space-y-4`}>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="text-xs uppercase tracking-[0.2em] text-primary/80">Now Playing</p>
