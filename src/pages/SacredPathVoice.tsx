@@ -33,22 +33,14 @@ const fmtTime = (seconds: number) => {
 };
 
 const optionCardClass = (active: boolean) =>
-  `flex min-h-[88px] cursor-pointer items-center justify-center rounded-2xl border p-5 text-center transition-all ${
+  `flex min-h-[80px] cursor-pointer items-center justify-center rounded-2xl border p-4 text-center transition-all ${
     active
-      ? "border-primary/60 bg-gradient-to-br from-primary/25 via-primary/15 to-amber-500/10 shadow-[0_18px_55px_-32px_rgba(255,173,70,0.65)]"
-      : "border-amber-300/30 bg-gradient-to-br from-card/55 via-background/40 to-card/55 hover:border-primary/45 hover:from-primary/10 hover:to-amber-500/10"
+      ? "border-primary/50 bg-primary/12 shadow-[0_14px_40px_-28px_rgba(255,173,70,0.55)]"
+      : "border-border/30 bg-background/45 hover:border-primary/30 hover:bg-card/55"
   }`;
 
 const optionLabelClass = (active: boolean) =>
-  `font-display text-xl leading-snug md:text-2xl ${active ? "text-foreground" : "text-foreground/95"}`;
-
-const groupEyebrowClass = "text-[11px] uppercase tracking-[0.22em] text-primary/80";
-
-const groupShellEmerald =
-  "rounded-[20px] border border-emerald-300/30 bg-gradient-to-br from-emerald-500/10 via-emerald-500/5 to-transparent p-4 md:p-5";
-
-const groupShellGold =
-  "rounded-[20px] border border-amber-400/30 bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent p-4 md:p-5";
+  `font-display text-lg leading-snug md:text-xl ${active ? "text-foreground" : "text-foreground/95"}`;
 
 const SacredPathVoice = () => {
   const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
@@ -170,15 +162,14 @@ const SacredPathVoice = () => {
         </p>
       </section>
 
-      <section className={sacredVisualSystem.contourEmerald}>
-        <p className={sacredVisualSystem.contourEyebrow}>Shape your session</p>
-        <p className="mt-1 text-xs text-muted-foreground/80">
-          Two simple choices. The voice does the rest.
-        </p>
+      <section className={sacredVisualSystem.sectionFrame}>
+        <p className="text-[11px] uppercase tracking-[0.22em] text-primary/80">Shape your session</p>
+        <h2 className="mt-1 font-display text-xl text-foreground md:text-2xl">Two simple choices</h2>
+        <p className="mt-1 text-xs text-muted-foreground/85">The voice does the rest.</p>
 
-        <div className="mt-4 space-y-4">
-          <div className={groupShellEmerald}>
-            <p className={groupEyebrowClass}>Tonight we want to</p>
+        <div className="mt-4 space-y-3">
+          <div className={sacredVisualSystem.contourEmerald}>
+            <p className={sacredVisualSystem.contourEyebrow}>Tonight we want to</p>
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               {SACRED_VOICE_INTENTIONS.map((item) => {
                 const active = selection.intention === item.id;
@@ -196,9 +187,9 @@ const SacredPathVoice = () => {
             </div>
           </div>
 
-          <div className={groupShellGold}>
-            <p className={groupEyebrowClass}>Length</p>
-            <div className="mt-3 grid gap-3 grid-cols-2">
+          <div className={sacredVisualSystem.contourCyan}>
+            <p className={sacredVisualSystem.contourEyebrow}>Length</p>
+            <div className="mt-3 grid grid-cols-2 gap-3">
               {SACRED_VOICE_DURATIONS.map((duration) => {
                 const active = selection.duration === duration;
                 return (
@@ -217,13 +208,13 @@ const SacredPathVoice = () => {
         </div>
 
         {entitlementResolved && !hasPremiumAccess ? (
-          <div className="mt-4 rounded-2xl border border-amber-300/25 bg-amber-500/10 p-4">
+          <div className="mt-4 rounded-2xl border border-primary/25 bg-primary/8 p-4">
             <p className="text-sm leading-7 text-foreground/90">
               Sacred Voice is part of premium access. One subscription unlocks the full guided voice path for both partners.
             </p>
             <Link
               to="/pricing"
-              className="mt-3 inline-flex items-center gap-2 rounded-2xl border border-amber-300/35 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:bg-amber-500/20"
+              className="mt-3 inline-flex items-center gap-2 rounded-2xl border border-primary/35 bg-primary/12 px-4 py-2 text-sm text-foreground transition-all hover:bg-primary/20"
             >
               Unlock Sacred Voice
               <Sparkles className="h-4 w-4" />
@@ -234,7 +225,7 @@ const SacredPathVoice = () => {
             type="button"
             onClick={() => void startSession()}
             disabled={isStarting}
-            className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-primary/35 bg-primary/16 px-5 py-2.5 text-sm text-foreground transition-all hover:bg-primary/24 disabled:cursor-not-allowed disabled:opacity-70"
+            className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-primary/35 bg-primary/15 px-5 py-2.5 text-sm text-foreground transition-all hover:bg-primary/25 disabled:cursor-not-allowed disabled:opacity-70"
           >
             <Mic className="h-4 w-4" /> {isStarting ? "Starting…" : "Begin Sacred Voice"}
           </button>
@@ -242,7 +233,7 @@ const SacredPathVoice = () => {
       </section>
 
       {hasPremiumAccess && activeSession && playback ? (
-        <section className="space-y-4 rounded-[24px] border border-primary/30 bg-gradient-to-br from-primary/12 via-background/40 to-emerald-500/10 p-5 md:p-6">
+        <section className={`${sacredVisualSystem.sectionFrame} space-y-4`}>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="text-xs uppercase tracking-[0.2em] text-primary/80">Now Playing</p>
