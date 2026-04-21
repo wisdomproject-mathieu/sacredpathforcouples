@@ -8,7 +8,6 @@ export type SacredVoicePlayerStatus = "idle" | "playing" | "paused" | "ended";
 
 export type SacredVoicePlaybackState = {
   status: SacredVoicePlayerStatus;
-  currentBlockIndex: number;
   elapsedSeconds: number;
   totalSeconds: number;
 };
@@ -37,27 +36,6 @@ const hasSpeechSynthesis = () =>
   "speechSynthesis" in window &&
   typeof window.SpeechSynthesisUtterance !== "undefined";
 
-const blockDurations = (session: SacredVoiceSession, totalSeconds: number) => {
-  const blockCount = Math.max(1, session.spokenBlocks.length);
-  const base = Math.max(8, Math.floor(totalSeconds / blockCount));
-  const arr = Array.from({ length: blockCount }, () => base);
-  const allocated = arr.reduce((sum, value) => sum + value, 0);
-  const delta = totalSeconds - allocated;
-  if (delta !== 0) {
-    arr[arr.length - 1] += delta;
-  }
-  return arr;
-};
-
-const deriveBlockIndex = (elapsedSeconds: number, durations: number[]) => {
-  let running = 0;
-  for (let i = 0; i < durations.length; i += 1) {
-    running += durations[i];
-    if (elapsedSeconds < running) return i;
-  }
-  return durations.length - 1;
-};
-
 const pickVoice = () => {
   if (!hasSpeechSynthesis()) return null;
   const voices = window.speechSynthesis.getVoices();
@@ -66,10 +44,10 @@ const pickVoice = () => {
   const preferred = [
     "Samantha",
     "Google UK English Female",
-    "Google US English",
     "Karen",
     "Moira",
     "Ava",
+    "Google US English",
   ];
 
   for (const name of preferred) {
@@ -78,11 +56,6 @@ const pickVoice = () => {
   }
 
   return voices.find((voice) => /en-/i.test(voice.lang)) ?? voices[0];
-};
-
-const buildNarrationText = (session: SacredVoiceSession) => {
-  const blocks = [session.introText, ...session.spokenBlocks, session.closingText].filter(Boolean);
-  return blocks.join("\n\n");
 };
 
 const resetClock = () => {
@@ -122,22 +95,16 @@ const clearOutputs = () => {
 
 const createPlayingState = (totalSeconds: number): SacredVoicePlaybackState => ({
   status: "playing",
-  currentBlockIndex: 0,
   elapsedSeconds: 0,
   totalSeconds,
 });
 
 const bindAudioLifecycle = (audio: HTMLAudioElement) => {
   audio.onended = () => {
-    if (sessionEndCallback) {
-      sessionEndCallback();
-    }
+    if (sessionEndCallback) sessionEndCallback();
   };
-
   audio.onerror = () => {
-    if (sessionEndCallback) {
-      sessionEndCallback();
-    }
+    if (sessionEndCallback) sessionEndCallback();
   };
 };
 
@@ -152,23 +119,19 @@ const startBrowserSpeech = (
 
   if (!hasSpeechSynthesis()) {
     return {
-      playback: {
-        status: "idle",
-        currentBlockIndex: 0,
-        elapsedSeconds: 0,
-        totalSeconds,
-      },
+      playback: { status: "idle", elapsedSeconds: 0, totalSeconds },
       provider: "browser",
       message: "Audio playback is unavailable in this browser.",
     };
   }
 
-  const utterance = new window.SpeechSynthesisUtterance(buildNarrationText(session));
+  const utterance = new window.SpeechSynthesisUtterance(session.narrationText);
   const voice = pickVoice();
   if (voice) utterance.voice = voice;
 
-  utterance.rate = 0.9;
-  utterance.pitch = 0.98;
+  // Sensual, slow pacing for the fallback voice.
+  utterance.rate = 0.78;
+  utterance.pitch = 0.95;
   utterance.volume = 1;
 
   utterance.onend = () => {
@@ -176,9 +139,7 @@ const startBrowserSpeech = (
     activeSessionId = null;
     activeProvider = null;
     pausedAtMs = null;
-    if (sessionEndCallback) {
-      sessionEndCallback();
-    }
+    if (sessionEndCallback) sessionEndCallback();
   };
 
   utterance.onerror = () => {
@@ -186,9 +147,7 @@ const startBrowserSpeech = (
     activeSessionId = null;
     activeProvider = null;
     pausedAtMs = null;
-    if (sessionEndCallback) {
-      sessionEndCallback();
-    }
+    if (sessionEndCallback) sessionEndCallback();
   };
 
   currentUtterance = utterance;
@@ -215,7 +174,7 @@ export const startSacredVoiceSession = async (
   try {
     const ttsResult = await synthesizeSacredVoiceAudio({
       sessionId: session.id,
-      text: buildNarrationText(session),
+      text: session.narrationText,
     });
 
     const audio = new Audio(ttsResult.audioUrl);
@@ -233,60 +192,51 @@ export const startSacredVoiceSession = async (
       provider: "elevenlabs",
     };
   } catch (error) {
-    const fallbackReason =
-      error instanceof Error ? error.message : "Unknown backend TTS error";
-    console.warn("[Sacred Voice] exact fallback reason", {
-      reason: fallbackReason,
+    const reason = error instanceof Error ? error.message : "Unknown TTS error";
+    console.warn("[Sacred Voice] ElevenLabs unavailable, falling back to browser voice", {
+      reason,
       sessionId: session.id,
     });
     const fallback = startBrowserSpeech(session, options);
     return {
       ...fallback,
-      message:
-        error instanceof Error
-          ? `ElevenLabs unavailable. Using browser voice. (${error.message})`
-          : "ElevenLabs unavailable. Using browser voice.",
+      message: `ElevenLabs unavailable. Using browser voice. (${reason})`,
     };
   }
 };
 
-export const pauseSacredVoiceSession = (state: SacredVoicePlaybackState): SacredVoicePlaybackState => {
-  if (activeProvider === "elevenlabs" && activeAudio) {
-    activeAudio.pause();
-  }
-
-  if (activeProvider === "browser" && hasSpeechSynthesis() && window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+export const pauseSacredVoiceSession = (
+  state: SacredVoicePlaybackState,
+): SacredVoicePlaybackState => {
+  if (activeProvider === "elevenlabs" && activeAudio) activeAudio.pause();
+  if (
+    activeProvider === "browser" &&
+    hasSpeechSynthesis() &&
+    window.speechSynthesis.speaking &&
+    !window.speechSynthesis.paused
+  ) {
     window.speechSynthesis.pause();
   }
-
-  if (!pausedAtMs) {
-    pausedAtMs = Date.now();
-  }
-
-  return {
-    ...state,
-    status: "paused",
-  };
+  if (!pausedAtMs) pausedAtMs = Date.now();
+  return { ...state, status: "paused" };
 };
 
-export const resumeSacredVoiceSession = (state: SacredVoicePlaybackState): SacredVoicePlaybackState => {
-  if (activeProvider === "elevenlabs" && activeAudio) {
-    void activeAudio.play();
-  }
-
-  if (activeProvider === "browser" && hasSpeechSynthesis() && window.speechSynthesis.paused) {
+export const resumeSacredVoiceSession = (
+  state: SacredVoicePlaybackState,
+): SacredVoicePlaybackState => {
+  if (activeProvider === "elevenlabs" && activeAudio) void activeAudio.play();
+  if (
+    activeProvider === "browser" &&
+    hasSpeechSynthesis() &&
+    window.speechSynthesis.paused
+  ) {
     window.speechSynthesis.resume();
   }
-
   if (pausedAtMs) {
     pausedDurationMs += Date.now() - pausedAtMs;
     pausedAtMs = null;
   }
-
-  return {
-    ...state,
-    status: "playing",
-  };
+  return { ...state, status: "playing" };
 };
 
 export const restartSacredVoiceSession = async (
@@ -298,10 +248,8 @@ export const stopSacredVoiceSession = (
   session?: SacredVoiceSession,
 ): SacredVoicePlaybackState => {
   clearOutputs();
-
   return {
     status: "idle",
-    currentBlockIndex: 0,
     elapsedSeconds: 0,
     totalSeconds: session ? session.duration * 60 : 0,
   };
@@ -326,27 +274,18 @@ export const tickSacredVoiceSession = (
     elapsedSeconds = Math.min(totalSeconds, getBrowserElapsedSeconds());
   }
 
-  const durations = blockDurations(session, Math.max(1, totalSeconds));
-  const currentBlockIndex = deriveBlockIndex(elapsedSeconds, durations);
-
   if (
     (activeProvider === "elevenlabs" && activeAudio?.ended) ||
     elapsedSeconds >= totalSeconds
   ) {
     return {
       status: "ended",
-      currentBlockIndex,
       elapsedSeconds: Math.max(elapsedSeconds, totalSeconds),
       totalSeconds,
     };
   }
 
-  return {
-    status: "playing",
-    currentBlockIndex,
-    elapsedSeconds,
-    totalSeconds,
-  };
+  return { status: "playing", elapsedSeconds, totalSeconds };
 };
 
 export const sacredVoiceProgress = (state: SacredVoicePlaybackState) => {
@@ -355,6 +294,8 @@ export const sacredVoiceProgress = (state: SacredVoicePlaybackState) => {
 };
 
 export const isSacredVoiceAudioSupported = () =>
-  typeof window !== "undefined" && (typeof window.Audio !== "undefined" || hasSpeechSynthesis());
+  typeof window !== "undefined" &&
+  (typeof window.Audio !== "undefined" || hasSpeechSynthesis());
 
-export const getSacredVoiceAudioProvider = (): SacredVoiceAudioProvider | null => activeProvider;
+export const getSacredVoiceAudioProvider = (): SacredVoiceAudioProvider | null =>
+  activeProvider;

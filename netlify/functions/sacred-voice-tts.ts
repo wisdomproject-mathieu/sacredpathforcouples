@@ -72,10 +72,12 @@ export const handler = async (event: {
         text,
         model_id: modelId,
         voice_settings: {
-          stability: 0.55,
-          similarity_boost: 0.78,
-          style: 0.25,
+          // Slow, sensual, natural pacing for couple rituals.
+          stability: 0.72,
+          similarity_boost: 0.85,
+          style: 0.15,
           use_speaker_boost: true,
+          speed: 0.82,
         },
       }),
     },

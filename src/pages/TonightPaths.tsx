@@ -28,8 +28,8 @@ const copyByLanguage = {
 
 const TonightPaths = () => {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const copy = copyByLanguage[language];
+  const { lang } = useLanguage();
+  const copy = copyByLanguage[lang];
 
   const [loading, setLoading] = useState(true);
   const [coupleId, setCoupleId] = useState<string | null>(null);
