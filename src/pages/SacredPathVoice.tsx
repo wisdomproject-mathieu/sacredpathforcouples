@@ -162,15 +162,14 @@ const SacredPathVoice = () => {
         </p>
       </section>
 
-      <section className={sacredVisualSystem.contourEmerald}>
-        <p className={sacredVisualSystem.contourEyebrow}>Shape your session</p>
-        <p className="mt-1 text-xs text-muted-foreground/80">
-          Two simple choices. The voice does the rest.
-        </p>
+      <section className={sacredVisualSystem.sectionFrame}>
+        <p className="text-[11px] uppercase tracking-[0.22em] text-primary/80">Shape your session</p>
+        <h2 className="mt-1 font-display text-xl text-foreground md:text-2xl">Two simple choices</h2>
+        <p className="mt-1 text-xs text-muted-foreground/85">The voice does the rest.</p>
 
-        <div className="mt-4 space-y-4">
-          <div className={groupShellEmerald}>
-            <p className={groupEyebrowClass}>Tonight we want to</p>
+        <div className="mt-4 space-y-3">
+          <div className={sacredVisualSystem.contourEmerald}>
+            <p className={sacredVisualSystem.contourEyebrow}>Tonight we want to</p>
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               {SACRED_VOICE_INTENTIONS.map((item) => {
                 const active = selection.intention === item.id;
@@ -188,9 +187,9 @@ const SacredPathVoice = () => {
             </div>
           </div>
 
-          <div className={groupShellGold}>
-            <p className={groupEyebrowClass}>Length</p>
-            <div className="mt-3 grid gap-3 grid-cols-2">
+          <div className={sacredVisualSystem.contourCyan}>
+            <p className={sacredVisualSystem.contourEyebrow}>Length</p>
+            <div className="mt-3 grid grid-cols-2 gap-3">
               {SACRED_VOICE_DURATIONS.map((duration) => {
                 const active = selection.duration === duration;
                 return (
@@ -209,13 +208,13 @@ const SacredPathVoice = () => {
         </div>
 
         {entitlementResolved && !hasPremiumAccess ? (
-          <div className="mt-4 rounded-2xl border border-amber-300/25 bg-amber-500/10 p-4">
+          <div className="mt-4 rounded-2xl border border-primary/25 bg-primary/8 p-4">
             <p className="text-sm leading-7 text-foreground/90">
               Sacred Voice is part of premium access. One subscription unlocks the full guided voice path for both partners.
             </p>
             <Link
               to="/pricing"
-              className="mt-3 inline-flex items-center gap-2 rounded-2xl border border-amber-300/35 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:bg-amber-500/20"
+              className="mt-3 inline-flex items-center gap-2 rounded-2xl border border-primary/35 bg-primary/12 px-4 py-2 text-sm text-foreground transition-all hover:bg-primary/20"
             >
               Unlock Sacred Voice
               <Sparkles className="h-4 w-4" />
@@ -226,7 +225,7 @@ const SacredPathVoice = () => {
             type="button"
             onClick={() => void startSession()}
             disabled={isStarting}
-            className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-primary/35 bg-primary/16 px-5 py-2.5 text-sm text-foreground transition-all hover:bg-primary/24 disabled:cursor-not-allowed disabled:opacity-70"
+            className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-primary/35 bg-primary/15 px-5 py-2.5 text-sm text-foreground transition-all hover:bg-primary/25 disabled:cursor-not-allowed disabled:opacity-70"
           >
             <Mic className="h-4 w-4" /> {isStarting ? "Starting…" : "Begin Sacred Voice"}
           </button>
