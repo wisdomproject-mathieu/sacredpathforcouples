@@ -197,10 +197,14 @@ export const startSacredVoiceSession = async (
       reason,
       sessionId: session.id,
     });
+    const isQuota = /quota_exceeded|quota of|credits remaining/i.test(reason);
+    const friendly = isQuota
+      ? "Premium voice is recharging. Continuing with the gentle browser voice."
+      : "Premium voice is resting. Continuing with the gentle browser voice.";
     const fallback = startBrowserSpeech(session, options);
     return {
       ...fallback,
-      message: `ElevenLabs unavailable. Using browser voice. (${reason})`,
+      message: friendly,
     };
   }
 };
