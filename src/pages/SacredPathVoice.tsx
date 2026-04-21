@@ -33,22 +33,14 @@ const fmtTime = (seconds: number) => {
 };
 
 const optionCardClass = (active: boolean) =>
-  `flex min-h-[88px] cursor-pointer items-center justify-center rounded-2xl border p-5 text-center transition-all ${
+  `flex min-h-[80px] cursor-pointer items-center justify-center rounded-2xl border p-4 text-center transition-all ${
     active
-      ? "border-primary/60 bg-gradient-to-br from-primary/25 via-primary/15 to-amber-500/10 shadow-[0_18px_55px_-32px_rgba(255,173,70,0.65)]"
-      : "border-amber-300/30 bg-gradient-to-br from-card/55 via-background/40 to-card/55 hover:border-primary/45 hover:from-primary/10 hover:to-amber-500/10"
+      ? "border-primary/50 bg-primary/12 shadow-[0_14px_40px_-28px_rgba(255,173,70,0.55)]"
+      : "border-border/30 bg-background/45 hover:border-primary/30 hover:bg-card/55"
   }`;
 
 const optionLabelClass = (active: boolean) =>
-  `font-display text-xl leading-snug md:text-2xl ${active ? "text-foreground" : "text-foreground/95"}`;
-
-const groupEyebrowClass = "text-[11px] uppercase tracking-[0.22em] text-primary/80";
-
-const groupShellEmerald =
-  "rounded-[20px] border border-emerald-300/30 bg-gradient-to-br from-emerald-500/10 via-emerald-500/5 to-transparent p-4 md:p-5";
-
-const groupShellGold =
-  "rounded-[20px] border border-amber-400/30 bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent p-4 md:p-5";
+  `font-display text-lg leading-snug md:text-xl ${active ? "text-foreground" : "text-foreground/95"}`;
 
 const SacredPathVoice = () => {
   const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
