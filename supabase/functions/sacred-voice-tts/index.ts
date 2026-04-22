@@ -1,6 +1,6 @@
-// Sacred Voice TTS — Microsoft Edge TTS (free, neural) as primary,
-// ElevenLabs as optional premium, both proxied here so the browser
-// receives clean audio/mpeg bytes.
+// Sacred Voice TTS — free Google Translate TTS as primary (no API key needed),
+// ElevenLabs as optional premium fallback when credits are available.
+// Returns audio/mpeg bytes so the client just plays the blob.
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -18,155 +18,112 @@ const json = (status: number, payload: Record<string, unknown>) =>
     headers: { ...corsHeaders, "Content-Type": "application/json" },
   });
 
-// ---------- Microsoft Edge TTS (free, no API key) ----------
-// Uses the same WebSocket endpoint Microsoft Edge's "Read aloud" feature uses.
-// Voice list: https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/voices/list
+// ---------- Google Translate TTS (free, no key) ----------
+// Public endpoint used by translate.google.com. Returns MP3.
+// Limit: ~200 chars per request, so we chunk on sentence boundaries
+// and concatenate the resulting MP3 segments.
 
-const EDGE_TRUSTED_TOKEN =
-  "6A5AA1D4EAFF4E9FB37E23D68491D6F4";
-const EDGE_WSS_URL =
-  `wss://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?TrustedClientToken=${EDGE_TRUSTED_TOKEN}`;
+const GOOGLE_TTS_MAX_CHARS = 190;
 
-const generateConnectId = () =>
-  crypto.randomUUID().replace(/-/g, "").toUpperCase();
+const splitForGoogleTts = (text: string): string[] => {
+  const normalized = text.replace(/\s+/g, " ").trim();
+  if (!normalized) return [];
 
-const escapeXml = (input: string) =>
-  input
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&apos;");
+  // Split on sentence boundaries first.
+  const sentences = normalized.match(/[^.!?]+[.!?]?/g) ?? [normalized];
+  const chunks: string[] = [];
+  let current = "";
 
-const buildSsml = (
-  text: string,
-  voice: string,
-  rate: string,
-  pitch: string,
-) => {
-  const safeText = escapeXml(text);
-  return (
-    `<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='en-US'>` +
-    `<voice name='${voice}'>` +
-    `<prosody rate='${rate}' pitch='${pitch}'>${safeText}</prosody>` +
-    `</voice></speak>`
-  );
+  const pushCurrent = () => {
+    if (current.trim()) chunks.push(current.trim());
+    current = "";
+  };
+
+  for (const sentence of sentences) {
+    const piece = sentence.trim();
+    if (!piece) continue;
+
+    if (piece.length > GOOGLE_TTS_MAX_CHARS) {
+      // Sentence itself too long: split on commas / spaces.
+      pushCurrent();
+      const words = piece.split(" ");
+      let buffer = "";
+      for (const word of words) {
+        if ((buffer + " " + word).trim().length > GOOGLE_TTS_MAX_CHARS) {
+          if (buffer.trim()) chunks.push(buffer.trim());
+          buffer = word;
+        } else {
+          buffer = buffer ? `${buffer} ${word}` : word;
+        }
+      }
+      if (buffer.trim()) chunks.push(buffer.trim());
+      continue;
+    }
+
+    if ((current + " " + piece).trim().length > GOOGLE_TTS_MAX_CHARS) {
+      pushCurrent();
+      current = piece;
+    } else {
+      current = current ? `${current} ${piece}` : piece;
+    }
+  }
+  pushCurrent();
+  return chunks;
 };
 
-type EdgeTtsParams = {
-  text: string;
-  voice?: string;
-  rate?: string;
-  pitch?: string;
-};
+const fetchGoogleTtsChunk = async (
+  chunk: string,
+  lang: string,
+  index: number,
+  total: number,
+): Promise<Uint8Array> => {
+  const url =
+    `https://translate.google.com/translate_tts?ie=UTF-8` +
+    `&q=${encodeURIComponent(chunk)}` +
+    `&tl=${encodeURIComponent(lang)}` +
+    `&total=${total}&idx=${index}` +
+    `&textlen=${chunk.length}` +
+    `&client=tw-ob&prev=input`;
 
-const synthesizeWithEdgeTts = ({
-  text,
-  voice = "en-US-AriaNeural",
-  rate = "-18%",
-  pitch = "-2%",
-}: EdgeTtsParams): Promise<Uint8Array> =>
-  new Promise((resolve, reject) => {
-    const connectId = generateConnectId();
-    const audioChunks: Uint8Array[] = [];
-    let settled = false;
-
-    const finish = (
-      action: "resolve" | "reject",
-      payload: Uint8Array | Error,
-    ) => {
-      if (settled) return;
-      settled = true;
-      try {
-        socket.close();
-      } catch {
-        /* ignore */
-      }
-      if (action === "resolve") resolve(payload as Uint8Array);
-      else reject(payload as Error);
-    };
-
-    const socket = new WebSocket(EDGE_WSS_URL);
-    socket.binaryType = "arraybuffer";
-
-    const timeout = setTimeout(() => {
-      finish("reject", new Error("Edge TTS timed out after 30s"));
-    }, 30_000);
-
-    socket.onopen = () => {
-      const ts = new Date().toISOString();
-      const configMessage =
-        `X-Timestamp:${ts}\r\n` +
-        `Content-Type:application/json; charset=utf-8\r\n` +
-        `Path:speech.config\r\n\r\n` +
-        `{"context":{"synthesis":{"audio":{"metadataoptions":{"sentenceBoundaryEnabled":"false","wordBoundaryEnabled":"false"},"outputFormat":"audio-24khz-48kbitrate-mono-mp3"}}}}`;
-      socket.send(configMessage);
-
-      const ssml = buildSsml(text, voice, rate, pitch);
-      const ssmlMessage =
-        `X-RequestId:${connectId}\r\n` +
-        `Content-Type:application/ssml+xml\r\n` +
-        `X-Timestamp:${ts}\r\n` +
-        `Path:ssml\r\n\r\n` +
-        ssml;
-      socket.send(ssmlMessage);
-    };
-
-    socket.onmessage = (event) => {
-      if (typeof event.data === "string") {
-        if (event.data.includes("Path:turn.end")) {
-          clearTimeout(timeout);
-          const total = audioChunks.reduce((acc, c) => acc + c.length, 0);
-          const merged = new Uint8Array(total);
-          let offset = 0;
-          for (const chunk of audioChunks) {
-            merged.set(chunk, offset);
-            offset += chunk.length;
-          }
-          if (merged.length === 0) {
-            finish("reject", new Error("Edge TTS returned no audio"));
-          } else {
-            finish("resolve", merged);
-          }
-        }
-        return;
-      }
-
-      // Binary frame: first 2 bytes = big-endian length of header block.
-      const buffer = event.data as ArrayBuffer;
-      const view = new DataView(buffer);
-      const headerLength = view.getUint16(0, false);
-      const audioStart = 2 + headerLength;
-      if (buffer.byteLength > audioStart) {
-        audioChunks.push(new Uint8Array(buffer, audioStart));
-      }
-    };
-
-    socket.onerror = () => {
-      clearTimeout(timeout);
-      finish("reject", new Error("Edge TTS websocket error"));
-    };
-
-    socket.onclose = (event) => {
-      if (settled) return;
-      clearTimeout(timeout);
-      if (audioChunks.length > 0) {
-        const total = audioChunks.reduce((acc, c) => acc + c.length, 0);
-        const merged = new Uint8Array(total);
-        let offset = 0;
-        for (const chunk of audioChunks) {
-          merged.set(chunk, offset);
-          offset += chunk.length;
-        }
-        finish("resolve", merged);
-      } else {
-        finish(
-          "reject",
-          new Error(`Edge TTS closed without audio (code ${event.code})`),
-        );
-      }
-    };
+  const response = await fetch(url, {
+    headers: {
+      "User-Agent":
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36",
+      Referer: "https://translate.google.com/",
+      Accept: "audio/mpeg,*/*",
+    },
   });
+
+  if (!response.ok) {
+    throw new Error(`Google TTS chunk ${index} failed: ${response.status}`);
+  }
+  return new Uint8Array(await response.arrayBuffer());
+};
+
+const synthesizeWithGoogleTts = async ({
+  text,
+  lang = "en",
+}: {
+  text: string;
+  lang?: string;
+}): Promise<Uint8Array> => {
+  const chunks = splitForGoogleTts(text);
+  if (chunks.length === 0) throw new Error("Google TTS: empty text");
+
+  const total = chunks.length;
+  const audioParts = await Promise.all(
+    chunks.map((chunk, idx) => fetchGoogleTtsChunk(chunk, lang, idx, total)),
+  );
+
+  const totalLength = audioParts.reduce((acc, part) => acc + part.length, 0);
+  const merged = new Uint8Array(totalLength);
+  let offset = 0;
+  for (const part of audioParts) {
+    merged.set(part, offset);
+    offset += part.length;
+  }
+  return merged;
+};
 
 // ---------- ElevenLabs (optional premium) ----------
 
@@ -224,11 +181,9 @@ const synthesizeWithElevenLabs = async ({
     } catch {
       /* ignore */
     }
-    const err = new Error(
+    throw new Error(
       `ElevenLabs failed (${response.status}) ${providerStatus} ${providerMessage}`.trim(),
     );
-    (err as { status?: number }).status = response.status;
-    throw err;
   }
 
   return new Uint8Array(await response.arrayBuffer());
@@ -248,7 +203,8 @@ Deno.serve(async (request) => {
     text?: string;
     voiceId?: string;
     modelId?: string;
-    provider?: "edge" | "elevenlabs" | "auto";
+    lang?: string;
+    provider?: "google" | "elevenlabs" | "auto";
   };
   try {
     parsedBody = await request.json();
@@ -262,27 +218,30 @@ Deno.serve(async (request) => {
   const requested = parsedBody.provider ?? "auto";
   const elevenKey = Deno.env.get("ELEVENLABS_API_KEY");
 
-  // Provider order: explicit choice wins, otherwise Edge first (free, reliable).
-  const order: Array<"edge" | "elevenlabs"> =
+  // Provider order:
+  //  - "elevenlabs": try ElevenLabs first, then Google
+  //  - "google" or "auto": Google first (free, reliable), ElevenLabs only if explicit
+  const order: Array<"google" | "elevenlabs"> =
     requested === "elevenlabs"
-      ? ["elevenlabs", "edge"]
-      : requested === "edge"
-        ? ["edge"]
-        : ["edge", "elevenlabs"];
+      ? ["elevenlabs", "google"]
+      : ["google"];
 
   const errors: string[] = [];
 
   for (const provider of order) {
     try {
-      if (provider === "edge") {
-        console.info("[sacred-voice-tts] trying Edge TTS");
-        const audio = await synthesizeWithEdgeTts({ text });
+      if (provider === "google") {
+        console.info("[sacred-voice-tts] trying Google TTS");
+        const audio = await synthesizeWithGoogleTts({
+          text,
+          lang: parsedBody.lang || "en",
+        });
         return new Response(audio, {
           status: 200,
           headers: {
             ...corsHeaders,
             "Content-Type": "audio/mpeg",
-            "X-TTS-Provider": "edge",
+            "X-TTS-Provider": "google",
             "Cache-Control": "public, max-age=1800",
           },
         });
