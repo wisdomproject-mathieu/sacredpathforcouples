@@ -89,7 +89,7 @@ export const synthesizeSacredVoiceAudio = async ({
   const cached = audioCache.get(key);
   if (cached) {
     return {
-      provider: "edge",
+      provider: "google",
       audioUrl: cached,
       fromCache: true,
     };

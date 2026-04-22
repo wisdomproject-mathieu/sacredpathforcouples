@@ -208,7 +208,7 @@ export const startSacredVoiceSession = async (
 export const pauseSacredVoiceSession = (
   state: SacredVoicePlaybackState,
 ): SacredVoicePlaybackState => {
-  if ((activeProvider === "elevenlabs" || activeProvider === "edge") && activeAudio) activeAudio.pause();
+  if ((activeProvider === "elevenlabs" || activeProvider === "edge" || activeProvider === "google") && activeAudio) activeAudio.pause();
   if (
     activeProvider === "browser" &&
     hasSpeechSynthesis() &&
@@ -224,7 +224,7 @@ export const pauseSacredVoiceSession = (
 export const resumeSacredVoiceSession = (
   state: SacredVoicePlaybackState,
 ): SacredVoicePlaybackState => {
-  if ((activeProvider === "elevenlabs" || activeProvider === "edge") && activeAudio) void activeAudio.play();
+  if ((activeProvider === "elevenlabs" || activeProvider === "edge" || activeProvider === "google") && activeAudio) void activeAudio.play();
   if (
     activeProvider === "browser" &&
     hasSpeechSynthesis() &&
@@ -264,7 +264,7 @@ export const tickSacredVoiceSession = (
   let elapsedSeconds = state.elapsedSeconds;
   let totalSeconds = state.totalSeconds || session.duration * 60;
 
-  if ((activeProvider === "elevenlabs" || activeProvider === "edge") && activeAudio) {
+  if ((activeProvider === "elevenlabs" || activeProvider === "edge" || activeProvider === "google") && activeAudio) {
     elapsedSeconds = Math.max(0, Math.floor(activeAudio.currentTime));
     if (Number.isFinite(activeAudio.duration) && activeAudio.duration > 0) {
       totalSeconds = Math.floor(activeAudio.duration);
@@ -275,7 +275,7 @@ export const tickSacredVoiceSession = (
   }
 
   if (
-    ((activeProvider === "elevenlabs" || activeProvider === "edge") && activeAudio?.ended) ||
+    ((activeProvider === "elevenlabs" || activeProvider === "edge" || activeProvider === "google") && activeAudio?.ended) ||
     elapsedSeconds >= totalSeconds
   ) {
     return {
