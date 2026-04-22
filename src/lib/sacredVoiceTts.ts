@@ -15,7 +15,8 @@ const readProviderHeader = (
   const header = response.headers.get("x-tts-provider")?.toLowerCase();
   if (header === "elevenlabs") return "elevenlabs";
   if (header === "edge") return "edge";
-  return "edge";
+  if (header === "google") return "google";
+  return "google";
 };
 
 const audioCache = new Map<string, string>();
