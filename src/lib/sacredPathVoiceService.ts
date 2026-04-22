@@ -182,29 +182,25 @@ export const startSacredVoiceSession = async (
     bindAudioLifecycle(audio);
 
     activeAudio = audio;
-    activeProvider = "elevenlabs";
+    activeProvider = ttsResult.provider;
     activeSessionId = session.id;
 
     await audio.play();
 
     return {
       playback: createPlayingState(totalSeconds),
-      provider: "elevenlabs",
+      provider: ttsResult.provider,
     };
   } catch (error) {
     const reason = error instanceof Error ? error.message : "Unknown TTS error";
-    console.warn("[Sacred Voice] ElevenLabs unavailable, falling back to browser voice", {
+    console.warn("[Sacred Voice] Neural voice unavailable, falling back to browser voice", {
       reason,
       sessionId: session.id,
     });
-    const isQuota = /quota_exceeded|quota of|credits remaining/i.test(reason);
-    const friendly = isQuota
-      ? "Premium voice is recharging. Continuing with the gentle browser voice."
-      : "Premium voice is resting. Continuing with the gentle browser voice.";
     const fallback = startBrowserSpeech(session, options);
     return {
       ...fallback,
-      message: friendly,
+      message: "Sacred voice is resting for a moment. Continuing with the gentle browser voice.",
     };
   }
 };
@@ -212,7 +208,7 @@ export const startSacredVoiceSession = async (
 export const pauseSacredVoiceSession = (
   state: SacredVoicePlaybackState,
 ): SacredVoicePlaybackState => {
-  if (activeProvider === "elevenlabs" && activeAudio) activeAudio.pause();
+  if ((activeProvider === "elevenlabs" || activeProvider === "edge" || activeProvider === "google") && activeAudio) activeAudio.pause();
   if (
     activeProvider === "browser" &&
     hasSpeechSynthesis() &&
@@ -228,7 +224,7 @@ export const pauseSacredVoiceSession = (
 export const resumeSacredVoiceSession = (
   state: SacredVoicePlaybackState,
 ): SacredVoicePlaybackState => {
-  if (activeProvider === "elevenlabs" && activeAudio) void activeAudio.play();
+  if ((activeProvider === "elevenlabs" || activeProvider === "edge" || activeProvider === "google") && activeAudio) void activeAudio.play();
   if (
     activeProvider === "browser" &&
     hasSpeechSynthesis() &&
@@ -268,7 +264,7 @@ export const tickSacredVoiceSession = (
   let elapsedSeconds = state.elapsedSeconds;
   let totalSeconds = state.totalSeconds || session.duration * 60;
 
-  if (activeProvider === "elevenlabs" && activeAudio) {
+  if ((activeProvider === "elevenlabs" || activeProvider === "edge" || activeProvider === "google") && activeAudio) {
     elapsedSeconds = Math.max(0, Math.floor(activeAudio.currentTime));
     if (Number.isFinite(activeAudio.duration) && activeAudio.duration > 0) {
       totalSeconds = Math.floor(activeAudio.duration);
@@ -279,7 +275,7 @@ export const tickSacredVoiceSession = (
   }
 
   if (
-    (activeProvider === "elevenlabs" && activeAudio?.ended) ||
+    ((activeProvider === "elevenlabs" || activeProvider === "edge" || activeProvider === "google") && activeAudio?.ended) ||
     elapsedSeconds >= totalSeconds
   ) {
     return {
