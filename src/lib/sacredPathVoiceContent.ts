@@ -9,7 +9,7 @@ export type SacredVoiceIntention =
 
 export type SacredVoiceDuration = 3 | 5;
 
-export type SacredVoiceAudioProvider = "elevenlabs" | "browser";
+export type SacredVoiceAudioProvider = "edge" | "elevenlabs" | "browser";
 
 export type SacredVoiceSelection = {
   intention: SacredVoiceIntention;

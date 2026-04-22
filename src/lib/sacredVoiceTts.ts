@@ -9,6 +9,15 @@ export type SacredVoiceTtsResult = {
   fromCache: boolean;
 };
 
+const readProviderHeader = (
+  response: Response,
+): SacredVoiceAudioProvider => {
+  const header = response.headers.get("x-tts-provider")?.toLowerCase();
+  if (header === "elevenlabs") return "elevenlabs";
+  if (header === "edge") return "edge";
+  return "edge";
+};
+
 const audioCache = new Map<string, string>();
 
 const buildCacheKey = (sessionId: string, voiceId: string) => `${sessionId}:${voiceId}`;
@@ -80,7 +89,7 @@ export const synthesizeSacredVoiceAudio = async ({
   const cached = audioCache.get(key);
   if (cached) {
     return {
-      provider: "elevenlabs",
+      provider: "edge",
       audioUrl: cached,
       fromCache: true,
     };
@@ -151,7 +160,7 @@ export const synthesizeSacredVoiceAudio = async ({
   audioCache.set(key, audioUrl);
 
   return {
-    provider: "elevenlabs",
+    provider: readProviderHeader(response),
     audioUrl,
     fromCache: false,
   };
