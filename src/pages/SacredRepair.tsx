@@ -1,17 +1,26 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ComponentType } from "react";
 import { ArrowLeft, Flame, Hand, Heart, Lock, MessageCircle, Sparkles, type LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 
 import { useAuth } from "@/contexts/AuthContext";
+import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import { supabase } from "@/integrations/supabase/client";
 import { SACRED_REPAIR_CHAPTERS, type SacredRepairChapter, type SacredRepairRitual } from "@/lib/sacredRepairData";
 import { sacredVisualSystem } from "@/lib/sacredVisualSystem";
+import LotusIcon from "@/components/tantra-icons/LotusIcon";
+import FlameIcon from "@/components/tantra-icons/FlameIcon";
+import ChakraIcon from "@/components/tantra-icons/ChakraIcon";
+import SacredGeometryIcon from "@/components/tantra-icons/SacredGeometryIcon";
+
+type SacredIconComponent = ComponentType<{ className?: string; size?: number }>;
 
 type ChapterVisual = {
   icon: LucideIcon;
   iconClass: string;
   glowClass: string;
+  sacredIcon: SacredIconComponent;
+  accentClass: string;
 };
 
 const chapterVisuals: Record<string, ChapterVisual> = {
@@ -19,21 +28,29 @@ const chapterVisuals: Record<string, ChapterVisual> = {
     icon: Hand,
     iconClass: "text-amber-200",
     glowClass: "from-amber-500/20 via-amber-900/5 to-transparent",
+    sacredIcon: LotusIcon,
+    accentClass: "text-amber-300/80",
   },
   "embrace-embodied-connection": {
     icon: Heart,
     iconClass: "text-rose-200",
     glowClass: "from-rose-500/20 via-rose-900/5 to-transparent",
+    sacredIcon: ChakraIcon,
+    accentClass: "text-rose-300/80",
   },
   "sacred-union-rituals": {
     icon: Flame,
     iconClass: "text-orange-200",
     glowClass: "from-orange-500/20 via-orange-900/5 to-transparent",
+    sacredIcon: FlameIcon,
+    accentClass: "text-orange-300/80",
   },
   "emotional-clearing-authentic-relating": {
     icon: MessageCircle,
     iconClass: "text-cyan-200",
     glowClass: "from-cyan-500/20 via-cyan-900/5 to-transparent",
+    sacredIcon: SacredGeometryIcon,
+    accentClass: "text-cyan-300/80",
   },
 };
 
