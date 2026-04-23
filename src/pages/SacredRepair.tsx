@@ -324,6 +324,7 @@ const RitualDetail = ({
 
 const SacredRepair = () => {
   const { user } = useAuth();
+  const { hasPremiumAccess } = usePremiumAccess();
   const [selectedChapterId, setSelectedChapterId] = useState<string | null>(null);
   const [selectedRitualTitle, setSelectedRitualTitle] = useState<string | null>(null);
   const [premiumHighlight, setPremiumHighlight] = useState(false);
