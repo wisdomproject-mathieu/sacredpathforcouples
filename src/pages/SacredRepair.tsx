@@ -553,62 +553,90 @@ const SacredRepair = () => {
           {!selectedRitual ? (
             <>
               <div className={sacredVisualSystem.contourCyan}>
-                <p className={sacredVisualSystem.contourEyebrow}>Practice rituals</p>
+                <div className="flex items-center justify-between gap-3">
+                  <p className={sacredVisualSystem.contourEyebrow}>Practice rituals</p>
+                  {hasPremiumAccess ? (
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/45 bg-gradient-to-r from-amber-500/20 to-amber-400/10 px-3 py-1 text-[10px] uppercase tracking-[0.16em] text-amber-200">
+                      <Sparkles className="h-3 w-3" />
+                      Sacred access · all rituals open
+                    </span>
+                  ) : null}
+                </div>
                 <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-2">
                   {selectedChapter.rituals.map((ritual) => (
                     <RitualCard
                       key={ritual.title}
                       ritual={ritual}
                       unlocked={isRitualUnlocked(selectedChapter.id, ritual.title)}
+                      isFreeRitual={isFreeRitualForChapter(selectedChapter.id, ritual.title)}
                       onClick={() => handleRitualClick(selectedChapter, ritual)}
                     />
                   ))}
                 </div>
               </div>
 
-              <section
-                ref={premiumRef}
-                className={`rounded-[24px] border p-5 transition-all md:p-6 ${
-                  premiumHighlight
-                    ? "border-amber-300/65 bg-amber-500/12 shadow-[0_18px_50px_-36px_rgba(245,158,11,0.45)]"
-                    : "border-amber-300/30 bg-gradient-to-br from-amber-950/60 via-card/50 to-card/30"
-                }`}
-              >
-                <p className="text-xs uppercase tracking-[0.22em] text-amber-300/90">Unlock deeper repair</p>
-                <h3 className="mt-2 font-display text-4xl leading-tight text-foreground md:text-5xl">More than 50 sacred rituals for modern couples</h3>
-                <p className="mt-3 max-w-4xl text-lg leading-8 text-muted-foreground">
-                  to soften resentment, restore tenderness, rebuild trust, speak the unsaid, and find your way back to each other.
-                </p>
-                <p className="mt-3 max-w-4xl text-base leading-7 text-foreground/88">
-                  When love feels fragile, do not guess. Enter the full Sacred Path and repair with guidance, presence, and practice.
-                </p>
+              {!hasPremiumAccess ? (
+                <section
+                  ref={premiumRef}
+                  className={`relative overflow-hidden rounded-[28px] border p-6 transition-all md:p-8 ${
+                    premiumHighlight
+                      ? "border-amber-300/70 bg-gradient-to-br from-amber-500/18 via-amber-900/30 to-card/40 shadow-[0_24px_70px_-30px_rgba(245,158,11,0.55)]"
+                      : "border-amber-300/40 bg-gradient-to-br from-amber-950/70 via-amber-900/25 to-card/40 shadow-[0_18px_60px_-40px_rgba(245,158,11,0.45)]"
+                  }`}
+                >
+                  <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-gradient-to-br from-amber-400/25 via-amber-500/10 to-transparent blur-3xl" aria-hidden="true" />
+                  <div className="pointer-events-none absolute -bottom-20 -left-10 h-64 w-64 rounded-full bg-gradient-to-tr from-rose-500/15 via-amber-500/8 to-transparent blur-3xl" aria-hidden="true" />
 
-                <div className="mt-4 grid gap-3 md:grid-cols-3">
-                  {[
-                    "Repair through touch",
-                    "Repair through truth",
-                    "Repair through conscious intimacy",
-                  ].map((item) => (
-                    <div key={item} className="rounded-[16px] border border-amber-300/25 bg-background/35 p-3 text-sm leading-6 text-foreground/92">
-                      {item}
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-3">
+                      <div className="rounded-2xl border border-amber-300/40 bg-gradient-to-br from-amber-400/20 to-amber-600/10 p-2.5 text-amber-300">
+                        <LotusIcon size={32} />
+                      </div>
+                      <p className="text-xs uppercase tracking-[0.24em] text-amber-300/95">Sacred · Unlock deeper repair</p>
                     </div>
-                  ))}
-                </div>
+                    <h3 className="mt-4 font-display text-4xl leading-tight text-foreground md:text-5xl">
+                      More than 50 sacred rituals for modern couples
+                    </h3>
+                    <p className="mt-3 max-w-4xl text-lg leading-8 text-muted-foreground">
+                      to soften resentment, restore tenderness, rebuild trust, speak the unsaid, and find your way back to each other.
+                    </p>
 
-                <div className="mt-5 flex flex-wrap gap-3">
-                  <Link
-                    to="/pricing"
-                    className="inline-flex items-center justify-center rounded-[12px] border border-amber-400/45 bg-amber-400/15 px-5 py-3 text-sm font-medium text-amber-300 transition-all hover:bg-amber-400/25"
-                  >
-                    Explore 50+ Rituals
-                  </Link>
-                </div>
-              </section>
+                    <div className="mt-5 grid gap-3 md:grid-cols-3">
+                      {[
+                        { label: "Repair through touch", Icon: LotusIcon },
+                        { label: "Repair through truth", Icon: SacredGeometryIcon },
+                        { label: "Repair through conscious intimacy", Icon: FlameIcon },
+                      ].map(({ label, Icon }) => (
+                        <div
+                          key={label}
+                          className="flex items-center gap-3 rounded-[18px] border border-amber-300/30 bg-gradient-to-br from-amber-500/8 via-card/55 to-card/30 p-3.5"
+                        >
+                          <div className="rounded-xl border border-amber-300/30 bg-amber-500/10 p-2 text-amber-300/90">
+                            <Icon size={26} />
+                          </div>
+                          <span className="text-sm leading-6 text-foreground/92">{label}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="mt-6 flex flex-wrap items-center gap-3">
+                      <Link
+                        to="/pricing"
+                        className="inline-flex items-center justify-center gap-2 rounded-[14px] border border-amber-400/55 bg-gradient-to-r from-amber-400/30 via-amber-400/20 to-amber-500/15 px-6 py-3 text-sm font-medium text-amber-100 shadow-[0_8px_30px_-12px_rgba(245,158,11,0.5)] transition-all hover:from-amber-400/40 hover:to-amber-500/25"
+                      >
+                        <Sparkles className="h-4 w-4" />
+                        Open Sacred Access
+                      </Link>
+                      <span className="text-xs uppercase tracking-[0.16em] text-amber-300/70">One subscription · both partners</span>
+                    </div>
+                  </div>
+                </section>
+              ) : null}
             </>
           ) : (
             <>
               <div className={sacredVisualSystem.contourCyan}>
-                <RitualCard ritual={selectedRitual} unlocked={true} active={true} />
+                <RitualCard ritual={selectedRitual} unlocked={true} active={true} isFreeRitual={isFreeRitualForChapter(selectedChapter.id, selectedRitual.title)} />
               </div>
 
               <RitualDetail
