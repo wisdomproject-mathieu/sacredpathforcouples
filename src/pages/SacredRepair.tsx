@@ -1,17 +1,26 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ComponentType } from "react";
 import { ArrowLeft, Flame, Hand, Heart, Lock, MessageCircle, Sparkles, type LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 
 import { useAuth } from "@/contexts/AuthContext";
+import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import { supabase } from "@/integrations/supabase/client";
 import { SACRED_REPAIR_CHAPTERS, type SacredRepairChapter, type SacredRepairRitual } from "@/lib/sacredRepairData";
 import { sacredVisualSystem } from "@/lib/sacredVisualSystem";
+import LotusIcon from "@/components/tantra-icons/LotusIcon";
+import FlameIcon from "@/components/tantra-icons/FlameIcon";
+import ChakraIcon from "@/components/tantra-icons/ChakraIcon";
+import SacredGeometryIcon from "@/components/tantra-icons/SacredGeometryIcon";
+
+type SacredIconComponent = ComponentType<{ className?: string; size?: number }>;
 
 type ChapterVisual = {
   icon: LucideIcon;
   iconClass: string;
   glowClass: string;
+  sacredIcon: SacredIconComponent;
+  accentClass: string;
 };
 
 const chapterVisuals: Record<string, ChapterVisual> = {
@@ -19,21 +28,29 @@ const chapterVisuals: Record<string, ChapterVisual> = {
     icon: Hand,
     iconClass: "text-amber-200",
     glowClass: "from-amber-500/20 via-amber-900/5 to-transparent",
+    sacredIcon: LotusIcon,
+    accentClass: "text-amber-300/80",
   },
   "embrace-embodied-connection": {
     icon: Heart,
     iconClass: "text-rose-200",
     glowClass: "from-rose-500/20 via-rose-900/5 to-transparent",
+    sacredIcon: ChakraIcon,
+    accentClass: "text-rose-300/80",
   },
   "sacred-union-rituals": {
     icon: Flame,
     iconClass: "text-orange-200",
     glowClass: "from-orange-500/20 via-orange-900/5 to-transparent",
+    sacredIcon: FlameIcon,
+    accentClass: "text-orange-300/80",
   },
   "emotional-clearing-authentic-relating": {
     icon: MessageCircle,
     iconClass: "text-cyan-200",
     glowClass: "from-cyan-500/20 via-cyan-900/5 to-transparent",
+    sacredIcon: SacredGeometryIcon,
+    accentClass: "text-cyan-300/80",
   },
 };
 
@@ -89,11 +106,11 @@ const ChapterCard = ({
   compact?: boolean;
   onClick?: () => void;
 }) => {
-  const Icon = (chapterVisuals[chapter.id] ?? chapterVisuals["touch-massage-sacred-spot"]).icon;
-  const iconClass = (chapterVisuals[chapter.id] ?? chapterVisuals["touch-massage-sacred-spot"]).iconClass;
+  const visual = chapterVisuals[chapter.id] ?? chapterVisuals["touch-massage-sacred-spot"];
+  const SacredIcon = visual.sacredIcon;
   const narrative = CHAPTER_NARRATIVE_BY_ID[chapter.id];
 
-  const className = `${sacredVisualSystem.overviewCardBase} min-h-0 p-3.5 md:p-4 ${
+  const className = `${sacredVisualSystem.overviewCardBase} min-h-0 p-4 md:p-5 ${
     selected
       ? `${sacredVisualSystem.overviewCardActive} border-emerald-300/45 bg-emerald-500/12`
       : `${sacredVisualSystem.overviewCardIdle} border-emerald-300/30 bg-emerald-500/8`
@@ -101,15 +118,18 @@ const ChapterCard = ({
 
   const body = (
     <>
-      <div className="flex items-center gap-3">
-        <div className={`${sacredVisualSystem.iconBadge} ${iconClass}`}>
-          <Icon className="h-4 w-4" />
+      <div className="flex items-start gap-4">
+        <div className={`shrink-0 rounded-2xl border border-amber-300/25 bg-gradient-to-br from-amber-500/10 via-card/40 to-transparent p-2.5 ${visual.accentClass}`}>
+          <SacredIcon className="opacity-90" size={compact ? 36 : 44} />
         </div>
-        <h2 className={`min-w-0 font-display leading-[1.12] text-foreground ${compact ? "text-[1.65rem]" : "text-[1.72rem]"}`}>
-          {chapter.title}
-        </h2>
+        <div className="min-w-0 flex-1">
+          <h2 className={`min-w-0 font-display leading-[1.12] text-foreground ${compact ? "text-[1.65rem]" : "text-[1.72rem]"}`}>
+            {chapter.title}
+          </h2>
+          <p className={`mt-1 text-[10px] uppercase tracking-[0.18em] ${visual.accentClass}`}>{chapter.partLabel}</p>
+        </div>
       </div>
-      <p className="mt-2 rounded-[12px] border border-emerald-300/25 bg-emerald-500/8 px-3 py-2 text-[0.98rem] leading-7 text-primary/90">
+      <p className="mt-3 rounded-[12px] border border-emerald-300/25 bg-emerald-500/8 px-3 py-2 text-[0.98rem] leading-7 text-primary/90">
         {narrative?.subtitle ?? chapter.emotionalFrame}
       </p>
       {!compact ? (
@@ -131,43 +151,80 @@ const ChapterCard = ({
   return <article className={className}>{body}</article>;
 };
 
+const ritualSacredIcons: SacredIconComponent[] = [LotusIcon, FlameIcon, ChakraIcon, SacredGeometryIcon];
+
+const pickRitualIcon = (title: string): SacredIconComponent => {
+  let hash = 0;
+  for (let i = 0; i < title.length; i += 1) hash = (hash * 31 + title.charCodeAt(i)) >>> 0;
+  return ritualSacredIcons[hash % ritualSacredIcons.length];
+};
+
 const RitualCard = ({
   ritual,
   active,
   unlocked,
+  isFreeRitual,
   onClick,
 }: {
   ritual: SacredRepairRitual;
   active?: boolean;
   unlocked: boolean;
+  isFreeRitual?: boolean;
   onClick?: () => void;
 }) => {
-  const className = `${sacredVisualSystem.overviewCardBase} ${
+  const SacredIcon = pickRitualIcon(ritual.title);
+  const className = `group relative flex min-h-[206px] flex-col overflow-hidden rounded-[20px] border p-4 text-left transition-all md:p-5 ${
     active
-      ? sacredVisualSystem.overviewCardActive
-      : sacredVisualSystem.overviewCardIdle
+      ? "border-amber-300/45 bg-gradient-to-br from-amber-500/12 via-card/60 to-card/30 shadow-[0_18px_50px_-36px_rgba(245,158,11,0.4)]"
+      : unlocked
+        ? "border-emerald-300/30 bg-gradient-to-br from-emerald-500/8 via-card/55 to-card/30 hover:border-emerald-300/50"
+        : "border-amber-300/25 bg-gradient-to-br from-amber-500/6 via-card/55 to-card/30 hover:border-amber-300/45"
   }`;
 
   const content = (
     <>
-      <div className="flex items-start justify-between gap-3">
-        <p className="text-xs uppercase tracking-[0.16em] text-primary/80">{ritual.duration || "Ritual"}</p>
-        {!unlocked ? (
-          <span className="inline-flex items-center rounded-full border border-amber-400/40 bg-amber-400/10 p-2 text-amber-300">
-            <Lock className="h-3.5 w-3.5" />
-          </span>
-        ) : (
-          <span className="inline-flex rounded-full border border-emerald-300/40 bg-emerald-500/10 px-2.5 py-1 text-[10px] uppercase tracking-[0.15em] text-emerald-200">
-            Free ritual
-          </span>
-        )}
+      <div className="flex items-start gap-4">
+        <div className={`shrink-0 rounded-2xl border border-amber-300/25 bg-gradient-to-br from-amber-500/10 via-card/40 to-transparent p-2.5 ${unlocked ? "text-amber-300/85" : "text-amber-300/55"}`}>
+          <SacredIcon size={42} className="opacity-90" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <h3 className={`font-display text-[1.4rem] leading-[1.2] md:text-[1.55rem] ${unlocked ? "text-foreground" : "text-foreground/80"}`}>
+            {ritual.title}
+          </h3>
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            {!unlocked ? (
+              <span className="inline-flex items-center gap-1 rounded-full border border-amber-400/45 bg-amber-400/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-amber-300">
+                <Lock className="h-3 w-3" />
+                Premium
+              </span>
+            ) : isFreeRitual ? (
+              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-300/40 bg-emerald-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-emerald-200">
+                <Sparkles className="h-3 w-3" />
+                Free Ritual
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1 rounded-full border border-amber-300/35 bg-amber-400/10 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-amber-200">
+                <Sparkles className="h-3 w-3" />
+                Unlocked
+              </span>
+            )}
+            {ritual.duration ? (
+              <span className="inline-flex rounded-full border border-amber-300/25 bg-amber-500/8 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-amber-200/85">
+                {ritual.duration.replace(/ or longer$/i, "+").replace("minutes", "min")}
+              </span>
+            ) : null}
+          </div>
+        </div>
       </div>
 
-      <h3 className="mt-2 font-display text-[1.75rem] leading-[1.15] text-foreground">{ritual.title}</h3>
-      <p className="mt-2 line-clamp-3 text-sm leading-6 text-muted-foreground/95">{getRitualPreview(ritual)}</p>
-      <p className="mt-3 text-sm leading-6 text-foreground/82">Lineage: {ritual.lineage}</p>
-      <p className="mt-auto pt-3 text-xs uppercase tracking-[0.12em] text-primary/85">
-        {unlocked ? "Open ritual" : "Locked in premium"}
+      <p className={`mt-3 line-clamp-3 text-sm leading-6 ${unlocked ? "text-muted-foreground/95" : "text-muted-foreground/80"}`}>
+        {getRitualPreview(ritual)}
+      </p>
+
+      <p className="mt-3 text-xs leading-5 text-foreground/72">Lineage: {ritual.lineage}</p>
+
+      <p className={`mt-auto pt-3 text-xs uppercase tracking-[0.14em] ${unlocked ? "text-emerald-200/85" : "text-amber-300/80"}`}>
+        {unlocked ? (active ? "Now reading" : "Open ritual →") : "Unlock with a Sacred subscription →"}
       </p>
     </>
   );
@@ -267,6 +324,7 @@ const RitualDetail = ({
 
 const SacredRepair = () => {
   const { user } = useAuth();
+  const { hasPremiumAccess } = usePremiumAccess();
   const [selectedChapterId, setSelectedChapterId] = useState<string | null>(null);
   const [selectedRitualTitle, setSelectedRitualTitle] = useState<string | null>(null);
   const [premiumHighlight, setPremiumHighlight] = useState(false);
@@ -333,8 +391,11 @@ const SacredRepair = () => {
     premiumRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const isRitualUnlocked = (chapterId: string, ritualTitle: string) =>
+  const isFreeRitualForChapter = (chapterId: string, ritualTitle: string) =>
     FREE_RITUAL_BY_CHAPTER[chapterId] === ritualTitle;
+
+  const isRitualUnlocked = (chapterId: string, ritualTitle: string) =>
+    hasPremiumAccess || isFreeRitualForChapter(chapterId, ritualTitle);
 
   const handleRitualClick = (chapter: SacredRepairChapter, ritual: SacredRepairRitual) => {
     if (!isRitualUnlocked(chapter.id, ritual.title)) {
@@ -492,62 +553,90 @@ const SacredRepair = () => {
           {!selectedRitual ? (
             <>
               <div className={sacredVisualSystem.contourCyan}>
-                <p className={sacredVisualSystem.contourEyebrow}>Practice rituals</p>
+                <div className="flex items-center justify-between gap-3">
+                  <p className={sacredVisualSystem.contourEyebrow}>Practice rituals</p>
+                  {hasPremiumAccess ? (
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/45 bg-gradient-to-r from-amber-500/20 to-amber-400/10 px-3 py-1 text-[10px] uppercase tracking-[0.16em] text-amber-200">
+                      <Sparkles className="h-3 w-3" />
+                      Sacred access · all rituals open
+                    </span>
+                  ) : null}
+                </div>
                 <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-2">
                   {selectedChapter.rituals.map((ritual) => (
                     <RitualCard
                       key={ritual.title}
                       ritual={ritual}
                       unlocked={isRitualUnlocked(selectedChapter.id, ritual.title)}
+                      isFreeRitual={isFreeRitualForChapter(selectedChapter.id, ritual.title)}
                       onClick={() => handleRitualClick(selectedChapter, ritual)}
                     />
                   ))}
                 </div>
               </div>
 
-              <section
-                ref={premiumRef}
-                className={`rounded-[24px] border p-5 transition-all md:p-6 ${
-                  premiumHighlight
-                    ? "border-amber-300/65 bg-amber-500/12 shadow-[0_18px_50px_-36px_rgba(245,158,11,0.45)]"
-                    : "border-amber-300/30 bg-gradient-to-br from-amber-950/60 via-card/50 to-card/30"
-                }`}
-              >
-                <p className="text-xs uppercase tracking-[0.22em] text-amber-300/90">Unlock deeper repair</p>
-                <h3 className="mt-2 font-display text-4xl leading-tight text-foreground md:text-5xl">More than 50 sacred rituals for modern couples</h3>
-                <p className="mt-3 max-w-4xl text-lg leading-8 text-muted-foreground">
-                  to soften resentment, restore tenderness, rebuild trust, speak the unsaid, and find your way back to each other.
-                </p>
-                <p className="mt-3 max-w-4xl text-base leading-7 text-foreground/88">
-                  When love feels fragile, do not guess. Enter the full Sacred Path and repair with guidance, presence, and practice.
-                </p>
+              {!hasPremiumAccess ? (
+                <section
+                  ref={premiumRef}
+                  className={`relative overflow-hidden rounded-[28px] border p-6 transition-all md:p-8 ${
+                    premiumHighlight
+                      ? "border-amber-300/70 bg-gradient-to-br from-amber-500/18 via-amber-900/30 to-card/40 shadow-[0_24px_70px_-30px_rgba(245,158,11,0.55)]"
+                      : "border-amber-300/40 bg-gradient-to-br from-amber-950/70 via-amber-900/25 to-card/40 shadow-[0_18px_60px_-40px_rgba(245,158,11,0.45)]"
+                  }`}
+                >
+                  <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-gradient-to-br from-amber-400/25 via-amber-500/10 to-transparent blur-3xl" aria-hidden="true" />
+                  <div className="pointer-events-none absolute -bottom-20 -left-10 h-64 w-64 rounded-full bg-gradient-to-tr from-rose-500/15 via-amber-500/8 to-transparent blur-3xl" aria-hidden="true" />
 
-                <div className="mt-4 grid gap-3 md:grid-cols-3">
-                  {[
-                    "Repair through touch",
-                    "Repair through truth",
-                    "Repair through conscious intimacy",
-                  ].map((item) => (
-                    <div key={item} className="rounded-[16px] border border-amber-300/25 bg-background/35 p-3 text-sm leading-6 text-foreground/92">
-                      {item}
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-3">
+                      <div className="rounded-2xl border border-amber-300/40 bg-gradient-to-br from-amber-400/20 to-amber-600/10 p-2.5 text-amber-300">
+                        <LotusIcon size={32} />
+                      </div>
+                      <p className="text-xs uppercase tracking-[0.24em] text-amber-300/95">Sacred · Unlock deeper repair</p>
                     </div>
-                  ))}
-                </div>
+                    <h3 className="mt-4 font-display text-4xl leading-tight text-foreground md:text-5xl">
+                      More than 50 sacred rituals for modern couples
+                    </h3>
+                    <p className="mt-3 max-w-4xl text-lg leading-8 text-muted-foreground">
+                      to soften resentment, restore tenderness, rebuild trust, speak the unsaid, and find your way back to each other.
+                    </p>
 
-                <div className="mt-5 flex flex-wrap gap-3">
-                  <Link
-                    to="/pricing"
-                    className="inline-flex items-center justify-center rounded-[12px] border border-amber-400/45 bg-amber-400/15 px-5 py-3 text-sm font-medium text-amber-300 transition-all hover:bg-amber-400/25"
-                  >
-                    Explore 50+ Rituals
-                  </Link>
-                </div>
-              </section>
+                    <div className="mt-5 grid gap-3 md:grid-cols-3">
+                      {[
+                        { label: "Repair through touch", Icon: LotusIcon },
+                        { label: "Repair through truth", Icon: SacredGeometryIcon },
+                        { label: "Repair through conscious intimacy", Icon: FlameIcon },
+                      ].map(({ label, Icon }) => (
+                        <div
+                          key={label}
+                          className="flex items-center gap-3 rounded-[18px] border border-amber-300/30 bg-gradient-to-br from-amber-500/8 via-card/55 to-card/30 p-3.5"
+                        >
+                          <div className="rounded-xl border border-amber-300/30 bg-amber-500/10 p-2 text-amber-300/90">
+                            <Icon size={26} />
+                          </div>
+                          <span className="text-sm leading-6 text-foreground/92">{label}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="mt-6 flex flex-wrap items-center gap-3">
+                      <Link
+                        to="/pricing"
+                        className="inline-flex items-center justify-center gap-2 rounded-[14px] border border-amber-400/55 bg-gradient-to-r from-amber-400/30 via-amber-400/20 to-amber-500/15 px-6 py-3 text-sm font-medium text-amber-100 shadow-[0_8px_30px_-12px_rgba(245,158,11,0.5)] transition-all hover:from-amber-400/40 hover:to-amber-500/25"
+                      >
+                        <Sparkles className="h-4 w-4" />
+                        Open Sacred Access
+                      </Link>
+                      <span className="text-xs uppercase tracking-[0.16em] text-amber-300/70">One subscription · both partners</span>
+                    </div>
+                  </div>
+                </section>
+              ) : null}
             </>
           ) : (
             <>
               <div className={sacredVisualSystem.contourCyan}>
-                <RitualCard ritual={selectedRitual} unlocked={true} active={true} />
+                <RitualCard ritual={selectedRitual} unlocked={true} active={true} isFreeRitual={isFreeRitualForChapter(selectedChapter.id, selectedRitual.title)} />
               </div>
 
               <RitualDetail
