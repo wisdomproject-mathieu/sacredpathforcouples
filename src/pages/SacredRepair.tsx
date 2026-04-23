@@ -391,8 +391,11 @@ const SacredRepair = () => {
     premiumRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const isRitualUnlocked = (chapterId: string, ritualTitle: string) =>
+  const isFreeRitualForChapter = (chapterId: string, ritualTitle: string) =>
     FREE_RITUAL_BY_CHAPTER[chapterId] === ritualTitle;
+
+  const isRitualUnlocked = (chapterId: string, ritualTitle: string) =>
+    hasPremiumAccess || isFreeRitualForChapter(chapterId, ritualTitle);
 
   const handleRitualClick = (chapter: SacredRepairChapter, ritual: SacredRepairRitual) => {
     if (!isRitualUnlocked(chapter.id, ritual.title)) {
