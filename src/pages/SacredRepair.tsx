@@ -106,11 +106,11 @@ const ChapterCard = ({
   compact?: boolean;
   onClick?: () => void;
 }) => {
-  const Icon = (chapterVisuals[chapter.id] ?? chapterVisuals["touch-massage-sacred-spot"]).icon;
-  const iconClass = (chapterVisuals[chapter.id] ?? chapterVisuals["touch-massage-sacred-spot"]).iconClass;
+  const visual = chapterVisuals[chapter.id] ?? chapterVisuals["touch-massage-sacred-spot"];
+  const SacredIcon = visual.sacredIcon;
   const narrative = CHAPTER_NARRATIVE_BY_ID[chapter.id];
 
-  const className = `${sacredVisualSystem.overviewCardBase} min-h-0 p-3.5 md:p-4 ${
+  const className = `${sacredVisualSystem.overviewCardBase} min-h-0 p-4 md:p-5 ${
     selected
       ? `${sacredVisualSystem.overviewCardActive} border-emerald-300/45 bg-emerald-500/12`
       : `${sacredVisualSystem.overviewCardIdle} border-emerald-300/30 bg-emerald-500/8`
@@ -118,15 +118,18 @@ const ChapterCard = ({
 
   const body = (
     <>
-      <div className="flex items-center gap-3">
-        <div className={`${sacredVisualSystem.iconBadge} ${iconClass}`}>
-          <Icon className="h-4 w-4" />
+      <div className="flex items-start gap-4">
+        <div className={`shrink-0 rounded-2xl border border-amber-300/25 bg-gradient-to-br from-amber-500/10 via-card/40 to-transparent p-2.5 ${visual.accentClass}`}>
+          <SacredIcon className="opacity-90" size={compact ? 36 : 44} />
         </div>
-        <h2 className={`min-w-0 font-display leading-[1.12] text-foreground ${compact ? "text-[1.65rem]" : "text-[1.72rem]"}`}>
-          {chapter.title}
-        </h2>
+        <div className="min-w-0 flex-1">
+          <h2 className={`min-w-0 font-display leading-[1.12] text-foreground ${compact ? "text-[1.65rem]" : "text-[1.72rem]"}`}>
+            {chapter.title}
+          </h2>
+          <p className={`mt-1 text-[10px] uppercase tracking-[0.18em] ${visual.accentClass}`}>{chapter.partLabel}</p>
+        </div>
       </div>
-      <p className="mt-2 rounded-[12px] border border-emerald-300/25 bg-emerald-500/8 px-3 py-2 text-[0.98rem] leading-7 text-primary/90">
+      <p className="mt-3 rounded-[12px] border border-emerald-300/25 bg-emerald-500/8 px-3 py-2 text-[0.98rem] leading-7 text-primary/90">
         {narrative?.subtitle ?? chapter.emotionalFrame}
       </p>
       {!compact ? (
