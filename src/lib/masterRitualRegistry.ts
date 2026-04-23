@@ -294,7 +294,7 @@ const buildMasterRegistry = (): MasterRitualRegistryEntry[] => {
       ritualSteps,
     };
   });
-}
+};
 
 export const MASTER_RITUAL_REGISTRY: MasterRitualRegistryEntry[] = buildMasterRegistry();
 
