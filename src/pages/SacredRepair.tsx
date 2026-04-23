@@ -151,43 +151,80 @@ const ChapterCard = ({
   return <article className={className}>{body}</article>;
 };
 
+const ritualSacredIcons: SacredIconComponent[] = [LotusIcon, FlameIcon, ChakraIcon, SacredGeometryIcon];
+
+const pickRitualIcon = (title: string): SacredIconComponent => {
+  let hash = 0;
+  for (let i = 0; i < title.length; i += 1) hash = (hash * 31 + title.charCodeAt(i)) >>> 0;
+  return ritualSacredIcons[hash % ritualSacredIcons.length];
+};
+
 const RitualCard = ({
   ritual,
   active,
   unlocked,
+  isFreeRitual,
   onClick,
 }: {
   ritual: SacredRepairRitual;
   active?: boolean;
   unlocked: boolean;
+  isFreeRitual?: boolean;
   onClick?: () => void;
 }) => {
-  const className = `${sacredVisualSystem.overviewCardBase} ${
+  const SacredIcon = pickRitualIcon(ritual.title);
+  const className = `group relative flex min-h-[206px] flex-col overflow-hidden rounded-[20px] border p-4 text-left transition-all md:p-5 ${
     active
-      ? sacredVisualSystem.overviewCardActive
-      : sacredVisualSystem.overviewCardIdle
+      ? "border-amber-300/45 bg-gradient-to-br from-amber-500/12 via-card/60 to-card/30 shadow-[0_18px_50px_-36px_rgba(245,158,11,0.4)]"
+      : unlocked
+        ? "border-emerald-300/30 bg-gradient-to-br from-emerald-500/8 via-card/55 to-card/30 hover:border-emerald-300/50"
+        : "border-amber-300/25 bg-gradient-to-br from-amber-500/6 via-card/55 to-card/30 hover:border-amber-300/45"
   }`;
 
   const content = (
     <>
-      <div className="flex items-start justify-between gap-3">
-        <p className="text-xs uppercase tracking-[0.16em] text-primary/80">{ritual.duration || "Ritual"}</p>
-        {!unlocked ? (
-          <span className="inline-flex items-center rounded-full border border-amber-400/40 bg-amber-400/10 p-2 text-amber-300">
-            <Lock className="h-3.5 w-3.5" />
-          </span>
-        ) : (
-          <span className="inline-flex rounded-full border border-emerald-300/40 bg-emerald-500/10 px-2.5 py-1 text-[10px] uppercase tracking-[0.15em] text-emerald-200">
-            Free ritual
-          </span>
-        )}
+      <div className="flex items-start gap-4">
+        <div className={`shrink-0 rounded-2xl border border-amber-300/25 bg-gradient-to-br from-amber-500/10 via-card/40 to-transparent p-2.5 ${unlocked ? "text-amber-300/85" : "text-amber-300/55"}`}>
+          <SacredIcon size={42} className="opacity-90" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <h3 className={`font-display text-[1.4rem] leading-[1.2] md:text-[1.55rem] ${unlocked ? "text-foreground" : "text-foreground/80"}`}>
+            {ritual.title}
+          </h3>
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            {!unlocked ? (
+              <span className="inline-flex items-center gap-1 rounded-full border border-amber-400/45 bg-amber-400/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-amber-300">
+                <Lock className="h-3 w-3" />
+                Premium
+              </span>
+            ) : isFreeRitual ? (
+              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-300/40 bg-emerald-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-emerald-200">
+                <Sparkles className="h-3 w-3" />
+                Free Ritual
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1 rounded-full border border-amber-300/35 bg-amber-400/10 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-amber-200">
+                <Sparkles className="h-3 w-3" />
+                Unlocked
+              </span>
+            )}
+            {ritual.duration ? (
+              <span className="inline-flex rounded-full border border-amber-300/25 bg-amber-500/8 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-amber-200/85">
+                {ritual.duration.replace(/ or longer$/i, "+").replace("minutes", "min")}
+              </span>
+            ) : null}
+          </div>
+        </div>
       </div>
 
-      <h3 className="mt-2 font-display text-[1.75rem] leading-[1.15] text-foreground">{ritual.title}</h3>
-      <p className="mt-2 line-clamp-3 text-sm leading-6 text-muted-foreground/95">{getRitualPreview(ritual)}</p>
-      <p className="mt-3 text-sm leading-6 text-foreground/82">Lineage: {ritual.lineage}</p>
-      <p className="mt-auto pt-3 text-xs uppercase tracking-[0.12em] text-primary/85">
-        {unlocked ? "Open ritual" : "Locked in premium"}
+      <p className={`mt-3 line-clamp-3 text-sm leading-6 ${unlocked ? "text-muted-foreground/95" : "text-muted-foreground/80"}`}>
+        {getRitualPreview(ritual)}
+      </p>
+
+      <p className="mt-3 text-xs leading-5 text-foreground/72">Lineage: {ritual.lineage}</p>
+
+      <p className={`mt-auto pt-3 text-xs uppercase tracking-[0.14em] ${unlocked ? "text-emerald-200/85" : "text-amber-300/80"}`}>
+        {unlocked ? (active ? "Now reading" : "Open ritual →") : "Unlock with a Sacred subscription →"}
       </p>
     </>
   );
