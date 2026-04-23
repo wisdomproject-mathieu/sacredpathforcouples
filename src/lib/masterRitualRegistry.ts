@@ -2,6 +2,7 @@ import RITUAL_LIBRARY_55 from "@/data/sacred_path_ritual_library_55.json";
 import RITUAL_RESERVE_30 from "@/data/sacred_path_ritual_reserve_30.json";
 import WEATHER_MATRIX_25 from "@/data/sacred_path_weather_matrix_25.json";
 import { SACRED_REPAIR_CHAPTERS } from "@/lib/sacredRepairData";
+import { RITUAL_CONTENT_OVERLAYS } from "@/lib/ritualContentOverlay";
 
 export type MasterRitualTheme =
   | "breath"
