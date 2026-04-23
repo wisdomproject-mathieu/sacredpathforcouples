@@ -267,15 +267,34 @@ const buildMasterRegistry = (): MasterRitualRegistryEntry[] => {
   });
 
   const sorted = Array.from(registryById.values()).sort((a, b) => a.title.localeCompare(b.title));
-  return sorted.map((entry) => ({
-    ...entry,
-    weatherTags: mergeList(entry.weatherTags, Array.from(weatherTagsByRitualId.get(entry.id) ?? [])),
-    sourceTraditions: mergeList(entry.sourceTraditions, []),
-    sourceAuthors: mergeList(entry.sourceAuthors, []),
-    sourceConcepts: mergeList(entry.sourceConcepts, []),
-    ritualSteps: normalizeSteps(entry.ritualSteps),
-  }));
-};
+  return sorted.map((entry) => {
+    const overlay = RITUAL_CONTENT_OVERLAYS[entry.id];
+    const merged: MasterRitualRegistryEntry = {
+      ...entry,
+      weatherTags: mergeList(entry.weatherTags, Array.from(weatherTagsByRitualId.get(entry.id) ?? [])),
+      sourceTraditions: mergeList(entry.sourceTraditions, []),
+      sourceAuthors: mergeList(entry.sourceAuthors, []),
+      sourceConcepts: mergeList(entry.sourceConcepts, []),
+      ritualSteps: normalizeSteps(entry.ritualSteps),
+    };
+    if (!overlay) return merged;
+    // Overlay wins for any field that is empty or boilerplate in the merged entry.
+    const subtitle = !merged.subtitle || isBoilerplateSentence(merged.subtitle) ? overlay.subtitle : merged.subtitle;
+    const description = !merged.description || isBoilerplateSentence(merged.description) ? overlay.description : merged.description;
+    const ritualSteps = isBoilerplateSteps(merged.ritualSteps) || merged.ritualSteps.length < 3
+      ? normalizeSteps(overlay.ritualSteps)
+      : merged.ritualSteps;
+    return {
+      ...merged,
+      subtitle,
+      description,
+      duration: overlay.duration || merged.duration,
+      intimacyLevel: overlay.intimacyLevel || merged.intimacyLevel,
+      primaryNeed: overlay.primaryNeed || merged.primaryNeed,
+      ritualSteps,
+    };
+  });
+}
 
 export const MASTER_RITUAL_REGISTRY: MasterRitualRegistryEntry[] = buildMasterRegistry();
 
