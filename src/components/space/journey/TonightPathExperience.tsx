@@ -192,6 +192,7 @@ const TonightPathExperience = ({
 }: Props) => {
   const copy = copyByLang[lang];
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const cards = useMemo(
     () =>
@@ -205,6 +206,10 @@ const TonightPathExperience = ({
       ),
     [selectedDailyMainCard, alternateCards, weatherEngineDebug.normalizedKey],
   );
+
+  // Auto-expand the main card by default when ready
+  const mainId = cards[0]?.id ?? null;
+  const effectiveExpandedId = expandedId ?? mainId;
 
   const pairLabel = useMemo(
     () => formatPair(myWeather?.label ?? weatherEngineDebug.partnerAWeather, belovedWeather?.label ?? weatherEngineDebug.partnerBWeather),
@@ -225,6 +230,10 @@ const TonightPathExperience = ({
     } catch {
       // ignore
     }
+  };
+
+  const toggleExpand = (id: string) => {
+    setExpandedId((current) => (current === id ? null : id));
   };
 
   return (
