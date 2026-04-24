@@ -128,8 +128,8 @@ const Pathways = ({ coupleId }: Props) => {
                 className="w-full p-6 text-left"
               >
                 <div className="flex items-start justify-between gap-4">
-                  <div className={`inline-flex rounded-2xl border border-border/30 bg-background/45 p-3 ${card.iconClass}`}>
-                    <Icon className="h-5 w-5" />
+                  <div className={`inline-flex rounded-2xl border border-amber-300/25 bg-gradient-to-br from-amber-500/10 via-card/40 to-transparent p-3 ${card.iconClass}`}>
+                    <Icon size={42} className="opacity-90" />
                   </div>
                   <div className="flex items-center gap-2">
                     {card.premium && (
@@ -139,7 +139,6 @@ const Pathways = ({ coupleId }: Props) => {
                       </div>
                     )}
                     <div className="inline-flex items-center gap-1 rounded-full border border-border/30 bg-background/55 px-3 py-1 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-                      <Footprints className="h-3 w-3" />
                       {progressValue}%
                     </div>
                   </div>
