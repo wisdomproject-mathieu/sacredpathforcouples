@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ComponentType } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 import {
@@ -27,7 +27,7 @@ import SacredGeometryIcon from "@/components/tantra-icons/SacredGeometryIcon";
 import YinYangIcon from "@/components/tantra-icons/YinYangIcon";
 import BreathIcon from "@/components/tantra-icons/BreathIcon";
 
-type SacredIconComponent = React.ComponentType<{ className?: string; size?: number }>;
+type SacredIconComponent = ComponentType<{ className?: string; size?: number }>;
 const PATH_SACRED_ICONS: SacredIconComponent[] = [LotusIcon, FlameIcon, ChakraIcon, SacredGeometryIcon, YinYangIcon, BreathIcon];
 const pickPathSacredIcon = (key: string): SacredIconComponent => {
   let hash = 0;
