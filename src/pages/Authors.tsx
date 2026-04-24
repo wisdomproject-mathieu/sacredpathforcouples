@@ -3,15 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 import {
   ArrowRight,
-  Compass,
-  Feather,
-  Flame,
-  Heart,
   Lock,
-  Sparkles,
-  Star,
-  SunMoon,
-  Waves,
   type LucideIcon,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -33,6 +25,14 @@ import {
 import LibraryDetailBody from "@/components/library/LibraryDetailBody";
 import LibraryDetailSplitLayout from "@/components/library/LibraryDetailSplitLayout";
 import { sacredVisualSystem } from "@/lib/sacredVisualSystem";
+import LotusIcon from "@/components/tantra-icons/LotusIcon";
+import ChakraIcon from "@/components/tantra-icons/ChakraIcon";
+import FlameIcon from "@/components/tantra-icons/FlameIcon";
+import SacredGeometryIcon from "@/components/tantra-icons/SacredGeometryIcon";
+import YinYangIcon from "@/components/tantra-icons/YinYangIcon";
+import BreathIcon from "@/components/tantra-icons/BreathIcon";
+
+type AuthorIcon = LucideIcon | React.ComponentType<{ className?: string; size?: number }>;
 
 type Tier = "free" | "premium";
 
@@ -95,7 +95,7 @@ type Author = {
   tradition?: string;
   oneLiner: string;
   overviewLine: string;
-  icon: LucideIcon;
+  icon: AuthorIcon;
   iconClass: string;
   teaser?: string[];
   content?: FreeAuthorContent;
