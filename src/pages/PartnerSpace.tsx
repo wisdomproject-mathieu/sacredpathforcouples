@@ -1582,15 +1582,15 @@ const PartnerSpace = () => {
               {journeyScreen === "dashboard" ? (
                 <>
                   <div className="grid gap-3 md:grid-cols-2">
-                    <div className="rounded-[22px] border border-rose-300/30 bg-gradient-to-br from-rose-500/12 via-card/65 to-card/35 p-4">
-                      <p className="text-xs uppercase tracking-[0.18em] text-rose-200/85">{templeSendUi.title}</p>
-                      <p className="mt-1 text-xs leading-5 text-muted-foreground">{templeSendUi.subtitle}</p>
+                    <div className="rounded-[22px] border border-rose-300/30 bg-gradient-to-br from-rose-500/12 via-card/65 to-card/35 p-5">
+                      <p className="text-sm uppercase tracking-[0.2em] text-rose-200/90">{templeSendUi.title}</p>
+                      <p className="mt-1.5 text-sm leading-6 text-muted-foreground">{templeSendUi.subtitle}</p>
 
-                      <div className="mt-3 flex flex-wrap gap-1.5">
+                      <div className="mt-4 grid grid-cols-3 gap-2">
                         {[
-                          { key: "whisper", label: templeSendUi.whisperLabel },
-                          { key: "gratitude", label: templeSendUi.gratitudeLabel },
-                          { key: "quote", label: templeSendUi.quoteLabel },
+                          { key: "whisper", label: templeSendUi.whisperLabel, accent: "from-cyan-500/22 to-cyan-400/10 border-cyan-300/40 text-cyan-100" },
+                          { key: "gratitude", label: templeSendUi.gratitudeLabel, accent: "from-emerald-500/22 to-emerald-400/10 border-emerald-300/40 text-emerald-100" },
+                          { key: "quote", label: templeSendUi.quoteLabel, accent: "from-amber-500/22 to-amber-400/10 border-amber-300/40 text-amber-100" },
                         ].map((item) => {
                           const active = templeComposerKind === item.key;
                           return (
@@ -1598,10 +1598,10 @@ const PartnerSpace = () => {
                               key={item.key}
                               type="button"
                               onClick={() => setTempleComposerKind(item.key as "whisper" | "gratitude" | "quote")}
-                              className={`rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] transition-all ${
+                              className={`rounded-2xl border px-3 py-2.5 text-sm font-medium transition-all ${
                                 active
-                                  ? "border-primary/35 bg-primary/14 text-foreground"
-                                  : "border-border/35 bg-background/45 text-muted-foreground hover:text-foreground"
+                                  ? `bg-gradient-to-br ${item.accent} shadow-[0_8px_24px_-14px_rgba(255,173,70,0.45)]`
+                                  : "border-border/35 bg-background/45 text-foreground/85 hover:border-amber-300/40 hover:bg-card/65"
                               }`}
                             >
                               {item.label}
@@ -1610,29 +1610,22 @@ const PartnerSpace = () => {
                         })}
                       </div>
 
-                      <div className="mt-3 rounded-[12px] border border-border/35 bg-background/45 p-3">
-                        <div className="flex items-center justify-between gap-2">
-                          <p className="text-[10px] uppercase tracking-[0.14em] text-primary/80">
-                            {templeComposerKind === "quote"
-                              ? templeSendUi.quoteLabel
-                              : templeComposerKind === "gratitude"
-                                ? templeSendUi.gratitudeLabel
-                                : templeSendUi.whisperLabel}
-                          </p>
-                          {templeComposerKind === "quote" ? (
-                            <span className="rounded-full border border-amber-300/25 bg-amber-500/10 px-2 py-0.5 text-[9px] uppercase tracking-[0.1em] text-amber-100/85">
-                              {templeSendUi.quotesToday}
-                            </span>
-                          ) : null}
-                        </div>
-                        <p className="mt-2 text-sm leading-6 text-foreground/90">
+                      <div className="mt-4 rounded-[16px] border border-amber-300/25 bg-background/55 p-4">
+                        <p className="text-[11px] uppercase tracking-[0.16em] text-amber-200/85">
+                          {templeComposerKind === "quote"
+                            ? templeSendUi.quoteLabel
+                            : templeComposerKind === "gratitude"
+                              ? templeSendUi.gratitudeLabel
+                              : templeSendUi.whisperLabel}
+                        </p>
+                        <p className="mt-2.5 text-base leading-7 text-foreground/95">
                           {templeComposerKind === "quote" ? `“${activeTempleSuggestion}”` : activeTempleSuggestion}
                         </p>
-                        <div className="mt-3 flex flex-wrap items-center gap-2">
+                        <div className="mt-4 flex flex-wrap items-center gap-2">
                           <button
                             type="button"
                             onClick={rotateTempleSuggestion}
-                            className="rounded-lg border border-border/35 bg-background/45 px-2.5 py-1.5 text-[10px] text-muted-foreground transition-all hover:text-foreground"
+                            className="rounded-xl border border-border/35 bg-background/50 px-3 py-2 text-xs text-muted-foreground transition-all hover:text-foreground"
                           >
                             {templeComposerKind === "quote" ? templeSendUi.flipQuote : templeSendUi.nextLine}
                           </button>
@@ -1640,13 +1633,13 @@ const PartnerSpace = () => {
                             type="button"
                             disabled={templeSendingKind === templeComposerKind || !hasConnectedPartner}
                             onClick={() => void sendActiveTempleSuggestion()}
-                            className="rounded-lg border border-primary/35 bg-primary/12 px-2.5 py-1.5 text-[10px] text-foreground transition-all hover:border-primary/50 hover:bg-primary/18 disabled:opacity-60"
+                            className="rounded-xl border border-amber-300/45 bg-gradient-to-r from-amber-400/25 via-amber-400/15 to-amber-500/10 px-4 py-2 text-xs font-medium text-amber-100 transition-all hover:from-amber-400/35 hover:to-amber-500/15 disabled:opacity-60"
                           >
                             {templeSendingKind === templeComposerKind ? "..." : templeSendUi.send}
                           </button>
                         </div>
                         {!hasConnectedPartner ? (
-                          <p className="mt-2 text-[11px] leading-5 text-muted-foreground">{templeSendUi.offlineHint}</p>
+                          <p className="mt-2 text-[12px] leading-5 text-muted-foreground">{templeSendUi.offlineHint}</p>
                         ) : null}
                       </div>
                     </div>
