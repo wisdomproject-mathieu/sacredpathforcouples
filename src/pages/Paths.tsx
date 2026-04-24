@@ -20,6 +20,28 @@ import { PATH_LONGFORM_BY_SLUG } from "@/lib/libraryLongform";
 import LibraryDetailBody from "@/components/library/LibraryDetailBody";
 import LibraryDetailSplitLayout from "@/components/library/LibraryDetailSplitLayout";
 import { sacredVisualSystem } from "@/lib/sacredVisualSystem";
+import LotusIcon from "@/components/tantra-icons/LotusIcon";
+import ChakraIcon from "@/components/tantra-icons/ChakraIcon";
+import FlameIcon from "@/components/tantra-icons/FlameIcon";
+import SacredGeometryIcon from "@/components/tantra-icons/SacredGeometryIcon";
+import YinYangIcon from "@/components/tantra-icons/YinYangIcon";
+import BreathIcon from "@/components/tantra-icons/BreathIcon";
+
+type SacredIconComponent = React.ComponentType<{ className?: string; size?: number }>;
+const PATH_SACRED_ICONS: SacredIconComponent[] = [LotusIcon, FlameIcon, ChakraIcon, SacredGeometryIcon, YinYangIcon, BreathIcon];
+const pickPathSacredIcon = (key: string): SacredIconComponent => {
+  let hash = 0;
+  for (let i = 0; i < key.length; i += 1) hash = (hash * 31 + key.charCodeAt(i)) >>> 0;
+  return PATH_SACRED_ICONS[hash % PATH_SACRED_ICONS.length];
+};
+const PATH_ACCENT_BY_INDEX = [
+  "text-amber-300/85",
+  "text-rose-300/85",
+  "text-fuchsia-300/85",
+  "text-cyan-300/85",
+  "text-emerald-300/85",
+  "text-violet-300/85",
+];
 
 type Tier = "free" | "premium";
 
