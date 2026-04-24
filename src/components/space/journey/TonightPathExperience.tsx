@@ -266,50 +266,66 @@ const TonightPathExperience = ({
               const visual = getThemeVisual(card.theme);
               const Icon = visual.icon;
               const isMain = index === 0;
+              const isExpanded = effectiveExpandedId === card.id;
+              const stepsToShow = isExpanded ? card.ritualSteps : card.ritualSteps.slice(0, 2);
               return (
                 <article
                   key={card.id}
-                  className={`rounded-2xl border p-4 ${visual.toneClass} ${
+                  className={`rounded-2xl border p-4 transition-all ${visual.toneClass} ${
                     isMain ? "ring-1 ring-amber-300/40 shadow-[0_14px_35px_-24px_rgba(255,173,70,0.5)]" : ""
-                  }`}
+                  } ${isExpanded ? "lg:col-span-2" : ""}`}
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-start gap-2.5">
-                      <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-border/30 bg-background/55">
-                        <Icon className="h-4 w-4 text-foreground/85" />
-                      </span>
-                      <div>
-                        <h3 className="font-display text-xl text-foreground">{card.title}</h3>
-                        {card.subtitle ? (
-                          <p className="mt-0.5 text-xs uppercase tracking-[0.14em] text-muted-foreground">
-                            {card.subtitle}
+                  <button
+                    type="button"
+                    onClick={() => toggleExpand(card.id)}
+                    className="block w-full text-left"
+                    aria-expanded={isExpanded}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-start gap-3">
+                        <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border/30 bg-background/55">
+                          <Icon className="h-5 w-5 text-foreground/85" />
+                        </span>
+                        <div>
+                          <h3 className="font-display text-2xl text-foreground">{card.title}</h3>
+                          {card.subtitle ? (
+                            <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+                              {card.subtitle}
+                            </p>
+                          ) : null}
+                        </div>
+                      </div>
+                      {isMain ? (
+                        <span className="rounded-full border border-amber-300/35 bg-amber-500/14 px-2 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">
+                          {copy.mainTag}
+                        </span>
+                      ) : null}
+                    </div>
+
+                    {card.description ? (
+                      <p className={`mt-3 text-[0.98rem] leading-7 text-foreground/90 ${isExpanded ? "" : "line-clamp-3"}`}>
+                        {card.description}
+                      </p>
+                    ) : null}
+
+                    {card.ritualSteps.length ? (
+                      <div className="mt-3">
+                        <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">{copy.stepsLabel}</p>
+                        <ol className="mt-2 space-y-1.5 text-[0.98rem] leading-7 text-foreground/90">
+                          {stepsToShow.map((step, stepIndex) => (
+                            <li key={`${card.id}-step-${stepIndex}`}>
+                              {stepIndex + 1}. {step}
+                            </li>
+                          ))}
+                        </ol>
+                        {!isExpanded && card.ritualSteps.length > 2 ? (
+                          <p className="mt-2 text-[11px] uppercase tracking-[0.14em] text-primary/80">
+                            +{card.ritualSteps.length - 2} more · tap to open
                           </p>
                         ) : null}
                       </div>
-                    </div>
-                    {isMain ? (
-                      <span className="rounded-full border border-amber-300/35 bg-amber-500/14 px-2 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">
-                        {copy.mainTag}
-                      </span>
                     ) : null}
-                  </div>
-
-                  {card.description ? (
-                    <p className="mt-3 text-sm leading-6 text-foreground/85">{card.description}</p>
-                  ) : null}
-
-                  {card.ritualSteps.length ? (
-                    <div className="mt-3">
-                      <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">{copy.stepsLabel}</p>
-                      <ol className="mt-2 space-y-1 text-sm leading-6 text-foreground/90">
-                        {card.ritualSteps.slice(0, 4).map((step, stepIndex) => (
-                          <li key={`${card.id}-step-${stepIndex}`}>
-                            {stepIndex + 1}. {step}
-                          </li>
-                        ))}
-                      </ol>
-                    </div>
-                  ) : null}
+                  </button>
 
                   <div className="mt-3 flex flex-wrap gap-1.5">
                     <span className="break-words rounded-lg border border-border/30 bg-background/55 px-2 py-1 text-[11px] text-foreground/85">
@@ -327,7 +343,10 @@ const TonightPathExperience = ({
                     <p className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">{copy.forCombo(pairLabel)}</p>
                     <button
                       type="button"
-                      onClick={() => void handleCopy(card)}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        void handleCopy(card);
+                      }}
                       className="inline-flex items-center gap-1.5 rounded-lg border border-border/35 bg-card/50 px-3 py-1.5 text-xs text-foreground transition-all hover:border-border/55 hover:bg-card/65"
                     >
                       {copiedId === card.id ? (
