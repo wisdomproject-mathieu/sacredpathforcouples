@@ -119,21 +119,20 @@ const ChapterCard = ({
   const body = (
     <>
       <div className="flex items-start gap-4">
-        <div className={`shrink-0 rounded-2xl border border-amber-300/25 bg-gradient-to-br from-amber-500/10 via-card/40 to-transparent p-2.5 ${visual.accentClass}`}>
-          <SacredIcon className="opacity-90" size={compact ? 36 : 44} />
+        <div className={`shrink-0 rounded-2xl border border-amber-300/25 bg-gradient-to-br from-amber-500/10 via-card/40 to-transparent p-3 ${visual.accentClass}`}>
+          <SacredIcon className="opacity-90" size={compact ? 40 : 52} />
         </div>
         <div className="min-w-0 flex-1">
-          <h2 className={`min-w-0 font-display leading-[1.12] text-foreground ${compact ? "text-[1.65rem]" : "text-[1.72rem]"}`}>
+          <h2 className={`min-w-0 font-display leading-[1.12] text-foreground ${compact ? "text-[1.75rem]" : "text-[1.95rem]"}`}>
             {chapter.title}
           </h2>
-          <p className={`mt-1 text-[10px] uppercase tracking-[0.18em] ${visual.accentClass}`}>{chapter.partLabel}</p>
         </div>
       </div>
-      <p className="mt-3 rounded-[12px] border border-emerald-300/25 bg-emerald-500/8 px-3 py-2 text-[0.98rem] leading-7 text-primary/90">
+      <p className="mt-3 rounded-[12px] border border-emerald-300/25 bg-emerald-500/8 px-3 py-2.5 text-[1.05rem] leading-7 text-primary/90">
         {narrative?.subtitle ?? chapter.emotionalFrame}
       </p>
       {!compact ? (
-        <p className="mt-2 line-clamp-3 text-sm leading-6 text-foreground/90">
+        <p className="mt-2 line-clamp-3 text-[0.98rem] leading-7 text-foreground/90">
           {narrative?.supportingCopy}
         </p>
       ) : null}
@@ -516,9 +515,9 @@ const SacredRepair = () => {
 
       {!selectedChapter ? (
         <section className={sacredVisualSystem.contourEmerald}>
-          <h2 className="mt-2 font-display text-[2.05rem] leading-tight text-foreground md:text-[2.3rem]">Repairs Overview</h2>
-          <p className="mt-2 max-w-4xl text-base leading-7 text-muted-foreground/90">
-            Sacred Repair supports couples in returning to presence after tension, softening defense through embodied practice, and rebuilding trust with tenderness, truth, and steady devotion. Ancient wisdom becomes living repair when two people choose to come back to each other, one honest ritual at a time.
+          <h2 className="mt-2 font-display text-[2.2rem] leading-tight text-foreground md:text-[2.6rem]">Repairs Overview</h2>
+          <p className="mt-3 max-w-3xl text-[1.12rem] leading-8 text-foreground/90">
+            Return to presence after tension. Soften defense through embodied practice. Rebuild trust — one honest ritual at a time.
           </p>
           <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-2">
             {SACRED_REPAIR_CHAPTERS.map((chapter) => (
