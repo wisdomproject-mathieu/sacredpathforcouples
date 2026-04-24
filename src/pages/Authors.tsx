@@ -33,6 +33,21 @@ import YinYangIcon from "@/components/tantra-icons/YinYangIcon";
 import BreathIcon from "@/components/tantra-icons/BreathIcon";
 
 type AuthorIcon = LucideIcon | React.ComponentType<{ className?: string; size?: number }>;
+type SacredIconComponent = React.ComponentType<{ className?: string; size?: number }>;
+const AUTHOR_SACRED_ICONS: SacredIconComponent[] = [LotusIcon, FlameIcon, ChakraIcon, SacredGeometryIcon, YinYangIcon, BreathIcon];
+const pickAuthorSacredIcon = (key: string): SacredIconComponent => {
+  let hash = 0;
+  for (let i = 0; i < key.length; i += 1) hash = (hash * 31 + key.charCodeAt(i)) >>> 0;
+  return AUTHOR_SACRED_ICONS[hash % AUTHOR_SACRED_ICONS.length];
+};
+const AUTHOR_ACCENT_BY_INDEX = [
+  "text-amber-300/85",
+  "text-rose-300/85",
+  "text-fuchsia-300/85",
+  "text-cyan-300/85",
+  "text-emerald-300/85",
+  "text-violet-300/85",
+];
 
 type Tier = "free" | "premium";
 
@@ -2384,34 +2399,49 @@ const Authors = () => {
 
         <div className={`mt-5 ${sacredVisualSystem.contourCyan}`}>
           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-2">
-          {localizedAuthors.map((author) => {
-            const Icon = author.icon;
+          {localizedAuthors.map((author, idx) => {
+            const SacredIcon = pickAuthorSacredIcon(author.slug);
             const isSelected = selectedSlug === author.slug;
+            const accent = AUTHOR_ACCENT_BY_INDEX[idx % AUTHOR_ACCENT_BY_INDEX.length];
+            const isPremium = author.tier === "premium";
+            const previewText = isPremium
+              ? `${ui.premiumPreview}: ${AUTHOR_LONGFORM_BY_SLUG[author.slug]?.tagline ?? author.oneLiner ?? ui.premiumPreviewFallback}`
+              : (AUTHOR_LONGFORM_BY_SLUG[author.slug]?.shortDescription ?? author.descriptor);
+            const cardClass = `group relative flex min-h-[206px] flex-col overflow-hidden rounded-[20px] border p-4 text-left transition-all md:p-5 ${
+              isSelected
+                ? "border-amber-300/45 bg-gradient-to-br from-amber-500/12 via-card/60 to-card/30 shadow-[0_18px_50px_-36px_rgba(245,158,11,0.4)]"
+                : isPremium
+                  ? "border-amber-300/25 bg-gradient-to-br from-amber-500/6 via-card/55 to-card/30 hover:border-amber-300/45"
+                  : "border-emerald-300/30 bg-gradient-to-br from-emerald-500/8 via-card/55 to-card/30 hover:border-emerald-300/50"
+            }`;
             return (
-              <button
-                key={author.slug}
-                type="button"
-                onClick={() => handleSelectAuthor(author.slug)}
-                className={`${sacredVisualSystem.overviewCardBase} ${
-                  isSelected ? sacredVisualSystem.overviewCardActive : sacredVisualSystem.overviewCardIdle
-                }`}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className={`${sacredVisualSystem.iconBadge} ${author.iconClass}`}>
-                    <Icon className="h-4 w-4" />
+              <button key={author.slug} type="button" onClick={() => handleSelectAuthor(author.slug)} className={cardClass}>
+                <div className="flex items-start gap-4">
+                  <div className={`shrink-0 rounded-2xl border border-amber-300/25 bg-gradient-to-br from-amber-500/10 via-card/40 to-transparent p-2.5 ${accent}`}>
+                    <SacredIcon size={42} className="opacity-90" />
                   </div>
-                  <TierBadge tier={author.tier} />
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-display text-[1.4rem] leading-[1.2] text-foreground md:text-[1.55rem]">{author.name}</h3>
+                    <div className="mt-2 flex flex-wrap items-center gap-2">
+                      {isPremium ? (
+                        <span className="inline-flex items-center gap-1 rounded-full border border-amber-400/45 bg-amber-400/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-amber-300">
+                          <Lock className="h-3 w-3" />
+                          Premium
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 rounded-full border border-emerald-300/40 bg-emerald-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-emerald-200">
+                          <ArrowRight className="h-3 w-3" />
+                          Free Author
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <h3 className="mt-3 font-display text-[1.75rem] leading-[1.15] text-foreground">{author.name}</h3>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground/95">
-                  {AUTHOR_LONGFORM_BY_SLUG[author.slug]?.shortDescription ?? author.descriptor}
-                </p>
-                <p className="mt-2 text-xs leading-5 text-foreground/82">
-                  {author.tier === "free"
-                    ? `${ui.practicePreview}: ${author.content?.exercises[0]?.title ?? ui.practicePreviewFallback}`
-                    : `${ui.premiumPreview}: ${AUTHOR_LONGFORM_BY_SLUG[author.slug]?.tagline ?? author.oneLiner ?? ui.premiumPreviewFallback}`}
-                </p>
-                <p className="mt-3 text-xs uppercase tracking-[0.12em] text-primary/85 group-hover:text-primary">
+                <p className="mt-3 line-clamp-3 text-sm leading-6 text-muted-foreground/95">{previewText}</p>
+                {author.tradition ? (
+                  <p className="mt-3 text-xs leading-5 text-foreground/72">Lineage: {author.tradition}</p>
+                ) : null}
+                <p className="mt-auto pt-3 text-xs uppercase tracking-[0.14em] text-emerald-200/85 group-hover:text-emerald-100">
                   {openCardHint}
                 </p>
               </button>
