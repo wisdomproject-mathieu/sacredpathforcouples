@@ -490,6 +490,8 @@ const AppHome = () => {
   const [myWeatherSelected, setMyWeatherSelected] = useState<string | null>(null);
   const [savingWeather, setSavingWeather] = useState(false);
   const [weatherPickerVisible, setWeatherPickerVisible] = useState(false);
+  const [showRituals, setShowRituals] = useState(false);
+  const [swapSides, setSwapSides] = useState(false);
   const [inviteCode, setInviteCode] = useState<string | null>(null);
   const [copiedInvite, setCopiedInvite] = useState(false);
   const [copiedWeather, setCopiedWeather] = useState(false);
