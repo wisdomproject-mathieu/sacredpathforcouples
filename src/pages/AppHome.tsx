@@ -1903,7 +1903,7 @@ const AppHome = () => {
         </section>
       )}
 
-      <div className="lg:hidden">{dailyQuoteCard}</div>
+      
     </div>
   );
 };
