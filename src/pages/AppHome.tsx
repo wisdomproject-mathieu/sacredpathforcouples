@@ -1368,21 +1368,11 @@ const AppHome = () => {
     : lang === "cs"
       ? "Vstoupit do dnešní cesty"
       : "Enter tonight path";
-  const rotatingQuote = useMemo(
-    () => pickBySeed(quotes, `${todayKey}:home-end-quote`),
-    [quotes, todayKey],
+  const tonightSixCards = useMemo(
+    () => resolveTonightPathSixCards(sharedMainCardState, 6),
+    [sharedMainCardState],
   );
-  const dailyQuoteCard = (
-    <div className="rounded-[20px] border border-amber-300/20 bg-amber-500/6 p-5 text-center">
-      <p className="mb-3 text-xs uppercase tracking-[0.22em] text-amber-300/70">
-        {lang === "fr" ? "Citation du jour" : lang === "cs" ? "Citát dne" : "Daily quote"}
-      </p>
-      <p className="mx-auto max-w-2xl font-display text-lg italic leading-8 text-foreground/80">
-        “{rotatingQuote.quote}”
-      </p>
-      <p className="mt-3 text-xs uppercase tracking-[0.16em] text-muted-foreground/65">{rotatingQuote.author}</p>
-    </div>
-  );
+
 
   const copyWeatherShare = async () => {
     if (!weatherShareText) return;
