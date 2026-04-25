@@ -28,7 +28,8 @@ import {
 import { deriveActiveTonightExperience, getWeatherPresentation, type WeatherKey } from "@/lib/weatherMatch";
 import { getLocalDayRange, pickLatestWeatherForCouple } from "@/lib/weatherEntries";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
-import { useSelectedDailyMainCard } from "@/lib/weatherEngine";
+import { resolveTonightPathSixCards, useSelectedDailyMainCard } from "@/lib/weatherEngine";
+import intimacyWeatherMockup from "@/assets/intimacy-weather-mockup.png";
 import { deriveTonightPathStatus } from "@/lib/tonightPathStatus";
 
 type RitualItem = Tables<"ritual_items">;
