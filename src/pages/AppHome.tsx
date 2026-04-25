@@ -1583,162 +1583,249 @@ const AppHome = () => {
         </div>
       </section>
 
-      <section className="grid items-start gap-4 lg:grid-cols-[1.25fr_0.75fr]">
-        <div className="space-y-4">
-          <div className="rounded-[24px] border border-amber-400/20 bg-card/50 p-5">
-          <p className="text-xs uppercase tracking-[0.22em] text-amber-400/70">{weatherUi.sectionLabel}</p>
-          <h3 className="mt-2 font-display text-xl text-foreground">{weatherUi.sectionTitle}</h3>
-          <div className="mt-4 grid grid-cols-4 gap-2">
-            {weatherMoods.map((mood) => {
-              const active = relationshipConnected ? myWeatherSelected === mood.key : pendingMoodValue === mood.key;
-              return (
-                <button
-                  key={mood.key}
-                  type="button"
-                  disabled={savingWeather}
-                  onClick={() => {
-                    if (relationshipConnected) {
-                      void handleWeatherSelect(mood.key);
-                    } else {
-                      handleMoodSelect(mood.key, mood.emoji, mood.label);
-                    }
-                  }}
-                  className={`flex flex-col items-center gap-1 rounded-[12px] border p-2.5 transition-all disabled:opacity-50 ${
-                    active
-                      ? "border-amber-400/60 bg-amber-400/15 text-amber-300"
-                      : "border-border/30 bg-background/40 hover:border-amber-400/40 hover:bg-amber-400/10"
+      <section className="rounded-[28px] border border-amber-400/20 bg-gradient-to-br from-amber-950/30 via-card/55 to-background/85 p-5 shadow-[0_30px_90px_-50px_rgba(255,173,70,0.4)] md:p-7">
+        <header className="text-center">
+          <p className="text-[11px] uppercase tracking-[0.3em] text-amber-300/80">{weatherUi.sectionLabel}</p>
+          <h2 className="mt-2 font-display text-3xl text-foreground md:text-4xl">
+            {lang === "fr" ? "Météo d'intimité" : lang === "cs" ? "Počasí intimity" : "Intimacy Weather"}
+          </h2>
+          <p className="mx-auto mt-2 max-w-2xl text-sm leading-6 text-muted-foreground md:text-base">
+            {lang === "fr"
+              ? "Choisissez calmement. Sentez honnêtement. Demandez doucement. Laissez votre partenaire choisir avec respect."
+              : lang === "cs"
+                ? "Vybírejte v klidu. Vnímejte upřímně. Ptejte se jemně. Nechte partnera zvolit s respektem."
+                : "Choose calmly. Sense honestly. Ask gently. Let your partner choose with respect."}
+          </p>
+        </header>
+
+        <div className="mt-6 grid items-stretch gap-4 lg:grid-cols-[1fr_minmax(260px,0.9fr)_1fr]">
+          {/* SHIVA — your weather (interactive) */}
+          {(() => {
+            const yourSide = (
+              <div className="rounded-[22px] border border-amber-400/20 bg-card/45 p-4">
+                <div className="mb-3 flex items-baseline justify-between">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-amber-300/80">
+                    {swapSides ? "SHAKTI" : "SHIVA"}
+                  </p>
+                  <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground/75">
+                    {weatherUi.yourWeather}
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {weatherMoods.map((mood) => {
+                    const active = relationshipConnected
+                      ? myWeatherSelected === mood.key
+                      : pendingMoodValue === mood.key;
+                    return (
+                      <button
+                        key={mood.key}
+                        type="button"
+                        disabled={savingWeather}
+                        onClick={() => {
+                          if (relationshipConnected) {
+                            void handleWeatherSelect(mood.key);
+                          } else {
+                            handleMoodSelect(mood.key, mood.emoji, mood.label);
+                          }
+                        }}
+                        className={`flex flex-col items-start gap-1 rounded-[14px] border p-3 text-left transition-all disabled:opacity-50 ${
+                          active
+                            ? "border-amber-400/70 bg-amber-400/15 shadow-[0_8px_24px_-12px_rgba(255,173,70,0.55)]"
+                            : "border-border/30 bg-background/40 hover:border-amber-400/40 hover:bg-amber-400/10"
+                        }`}
+                      >
+                        <span className="flex items-center gap-1.5 font-display text-sm text-foreground">
+                          <span className="text-base">{mood.emoji}</span>
+                          {mood.label}
+                        </span>
+                        <span className="text-[10px] leading-tight text-muted-foreground/85">
+                          {mood.hint}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+
+            const belovedSide = (
+              <div className="rounded-[22px] border border-amber-400/15 bg-card/35 p-4">
+                <div className="mb-3 flex items-baseline justify-between">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-amber-200/70">
+                    {swapSides ? "SHIVA" : "SHAKTI"}
+                  </p>
+                  <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground/75">
+                    {weatherUi.belovedWeather}
+                  </p>
+                </div>
+                {partnerMood ? (
+                  <div className="rounded-[16px] border border-amber-400/30 bg-amber-400/12 p-4">
+                    <p className="font-display text-2xl text-foreground">
+                      {partnerMood.emoji} {partnerMood.label}
+                    </p>
+                    <p className="mt-2 text-xs leading-5 text-muted-foreground">{partnerMood.hint}</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-2 opacity-55">
+                    {weatherMoods.map((mood) => (
+                      <div
+                        key={mood.key}
+                        className="flex flex-col items-start gap-1 rounded-[14px] border border-border/25 bg-background/30 p-3"
+                      >
+                        <span className="flex items-center gap-1.5 font-display text-sm text-foreground/80">
+                          <span className="text-base">{mood.emoji}</span>
+                          {mood.label}
+                        </span>
+                        <span className="text-[10px] leading-tight text-muted-foreground/65">
+                          {mood.hint}
+                        </span>
+                      </div>
+                    ))}
+                    <p className="col-span-2 mt-1 text-center text-[11px] uppercase tracking-[0.18em] text-amber-200/65">
+                      {tonightPathStatus.belovedWeatherPlaceholder}
+                    </p>
+                  </div>
+                )}
+              </div>
+            );
+
+            return (
+              <>
+                {swapSides ? belovedSide : yourSide}
+                {/* CENTER — Two energies, one path */}
+                <div className="relative overflow-hidden rounded-[22px] border border-amber-400/35 bg-gradient-to-b from-amber-950/40 via-card/65 to-background/85 p-5 text-center">
+                  <div className="pointer-events-none absolute inset-0">
+                    <img
+                      src={intimacyWeatherMockup}
+                      alt=""
+                      className="h-full w-full object-cover opacity-30"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/40 to-background/85" />
+                  </div>
+                  <div className="relative flex h-full flex-col items-center justify-between gap-4">
+                    <div className="flex h-28 w-28 items-center justify-center rounded-full border border-amber-400/40 bg-amber-400/10 shadow-[inset_0_0_30px_rgba(255,173,70,0.25)]">
+                      <img src={shivaShaktiIcon} alt="Shiva Shakti" className="h-20 w-20 object-contain" />
+                    </div>
+                    <div>
+                      <p className="font-display text-lg uppercase tracking-[0.18em] text-amber-200">
+                        {lang === "fr" ? "Deux énergies. Un chemin." : lang === "cs" ? "Dvě energie. Jedna cesta." : "Two energies. One path."}
+                      </p>
+                      <p className="mt-2 text-sm leading-6 text-foreground/85">
+                        {lang === "fr"
+                          ? "Pause. Ressentez. Choisissez votre vérité, puis accueillez la météo de votre partenaire avec respect."
+                          : lang === "cs"
+                            ? "Zastavte se. Vnímejte. Zvolte svoji pravdu, pak přijměte počasí partnera s respektem."
+                            : "Pause. Feel. Choose your truth, then welcome your partner's weather with respect."}
+                      </p>
+                    </div>
+                    <div className="flex w-full flex-col gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setSwapSides((value) => !value)}
+                        className="inline-flex items-center justify-center gap-2 rounded-full border border-amber-400/30 bg-background/50 px-4 py-2 text-xs uppercase tracking-[0.16em] text-amber-200 transition-all hover:bg-amber-400/15"
+                      >
+                        ⇄ {lang === "fr" ? "Inverser Shiva ↔ Shakti" : lang === "cs" ? "Prohodit Shiva ↔ Shakti" : "Swap Shiva ↔ Shakti"}
+                      </button>
+                      <button
+                        type="button"
+                        disabled={!bothCheckedIn}
+                        onClick={() => setShowRituals((value) => !value)}
+                        className={`inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 font-display text-sm uppercase tracking-[0.18em] transition-all ${
+                          bothCheckedIn
+                            ? "bg-gradient-to-r from-amber-500 to-amber-300 text-background shadow-[0_14px_38px_-16px_rgba(255,173,70,0.7)] hover:from-amber-400 hover:to-amber-200"
+                            : "cursor-not-allowed border border-amber-400/20 bg-amber-400/8 text-amber-200/55"
+                        }`}
+                      >
+                        {showRituals
+                          ? (lang === "fr" ? "Masquer les rituels" : lang === "cs" ? "Skrýt rituály" : "Hide Rituals")
+                          : (lang === "fr" ? "Voir les rituels" : lang === "cs" ? "Zobrazit rituály" : "Show Rituals")}
+                      </button>
+                      {!bothCheckedIn && (
+                        <p className="text-[11px] leading-5 text-amber-200/70">{tonightPathStatus.waitingBody}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                {swapSides ? yourSide : belovedSide}
+              </>
+            );
+          })()}
+        </div>
+
+        {/* Optional join code for unconnected users */}
+        {!relationshipConnected && (
+          <div className="mt-5 rounded-[16px] border border-border/30 bg-background/35 p-4">
+            <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground/70">
+              {lang === "fr" ? "Vous avez un code ?" : lang === "cs" ? "Máte partnerský kód?" : "Have your partner's code?"}
+            </p>
+            <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center">
+              <input
+                value={joinCode}
+                onChange={(event) => setJoinCode(event.target.value.toUpperCase())}
+                placeholder="Enter code here"
+                className="h-10 flex-1 rounded-[10px] border border-border/35 bg-background/45 px-3 text-sm tracking-[0.15em] text-foreground outline-none transition-all placeholder:tracking-normal placeholder:text-muted-foreground/60 focus:border-amber-400/35"
+              />
+              <button
+                type="button"
+                onClick={() => void joinWithCodeOnHome()}
+                disabled={joiningCode || !joinCode.trim()}
+                className="inline-flex h-10 items-center justify-center rounded-[10px] border border-amber-400/30 bg-amber-400/10 px-4 text-sm text-amber-300 transition-all hover:bg-amber-400/20 disabled:opacity-50"
+              >
+                {joiningCode ? "Joining..." : "Connect partner"}
+              </button>
+            </div>
+            {joinError && <p className="mt-2 text-xs text-red-300/80">{joinError}</p>}
+            {joinSuccess && <p className="mt-2 text-xs text-emerald-300/80">{joinSuccess}</p>}
+          </div>
+        )}
+
+        {/* TONIGHT PATH RITUALS — only when both checked in AND user pressed Show Rituals */}
+        {showRituals && bothCheckedIn && tonightSixCards.length > 0 && (
+          <div className="mt-7 border-t border-amber-400/15 pt-6">
+            <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
+              <div>
+                <p className="text-[11px] uppercase tracking-[0.22em] text-amber-300/80">{weatherUi.tonightPath}</p>
+                <h3 className="mt-1 font-display text-2xl text-foreground">
+                  {sharedMainCardState.selectedDailyMainCard?.title ?? tonightRitualTitle}
+                </h3>
+              </div>
+              <Link
+                to="/app/tonight-paths"
+                className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-400/10 px-4 py-2 text-xs uppercase tracking-[0.16em] text-amber-200 transition-all hover:bg-amber-400/20"
+              >
+                {enterTonightPathLabel} →
+              </Link>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {tonightSixCards.map((card, index) => (
+                <article
+                  key={card.id}
+                  className={`rounded-[18px] border p-4 backdrop-blur-sm transition-all ${
+                    index === 0
+                      ? "border-amber-300/45 bg-gradient-to-br from-amber-500/15 via-card/70 to-card/45 shadow-[0_18px_44px_-26px_rgba(255,173,70,0.55)]"
+                      : "border-border/30 bg-card/55 hover:border-amber-300/30"
                   }`}
                 >
-                  <span className="text-lg">{mood.emoji}</span>
-                  <span className="text-[10px] leading-none text-muted-foreground">{mood.label}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          {shareMood && (
-            <div className="mt-4 rounded-[14px] border border-amber-400/20 bg-amber-950/20 p-3">
-              <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground/70">{weatherUi.yourWeather}</p>
-              <p className="mt-1 font-display text-lg text-foreground">{shareMood.emoji} {shareMood.label}</p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                <a
-                  href={weatherWhatsAppHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-[10px] border border-green-500/30 bg-green-950/25 px-3 py-1.5 text-xs text-green-300"
-                >
-                  Send via WhatsApp
-                </a>
-                <a href={weatherSmsHref} className="rounded-[10px] border border-blue-500/30 bg-blue-950/25 px-3 py-1.5 text-xs text-blue-300">
-                  Send via Message
-                </a>
-                <button
-                  type="button"
-                  onClick={() => void copyWeatherShare()}
-                  className="rounded-[10px] border border-border/30 bg-background/45 px-3 py-1.5 text-xs text-muted-foreground"
-                >
-                  {copiedWeather ? "Copied!" : "Copy weather text"}
-                </button>
-              </div>
-            </div>
-          )}
-
-          <div className="mt-4 grid gap-2 sm:grid-cols-2">
-            <div className="rounded-[12px] border border-border/30 bg-background/40 p-3">
-              <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{weatherUi.yourWeather}</p>
-              <p className="mt-1 font-display text-base">
-                {myMood
-                  ? `${myMood.emoji} ${myMood.label}`
-                  : (shareMood ? `${shareMood.emoji} ${shareMood.label}` : tonightPathStatus.userWeatherPlaceholder)}
-              </p>
-            </div>
-            <div className="rounded-[12px] border border-border/30 bg-background/40 p-3">
-              <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{weatherUi.belovedWeather}</p>
-              <p className="mt-1 font-display text-base">
-                {partnerMood ? `${partnerMood.emoji} ${partnerMood.label}` : tonightPathStatus.belovedWeatherPlaceholder}
-              </p>
+                  {index === 0 && (
+                    <p className="mb-1 text-[10px] uppercase tracking-[0.2em] text-amber-300/85">
+                      {lang === "fr" ? "Rituel principal" : lang === "cs" ? "Hlavní rituál" : "Main ritual"}
+                    </p>
+                  )}
+                  <h4 className="font-display text-lg leading-6 text-foreground">{card.title}</h4>
+                  <p className="mt-2 text-sm leading-5 text-muted-foreground line-clamp-3">{card.description}</p>
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    <span className="rounded-full border border-border/35 bg-background/45 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/85">
+                      {card.duration}
+                    </span>
+                    <span className="rounded-full border border-border/35 bg-background/45 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/85">
+                      {card.intimacyLevel}
+                    </span>
+                  </div>
+                </article>
+              ))}
             </div>
           </div>
-
-          {!relationshipConnected && (
-            <div className="mt-4 rounded-[14px] border border-border/30 bg-background/35 p-3">
-              <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground/70">
-                {lang === "fr" ? "Vous avez un code ?" : lang === "cs" ? "Máte partnerský kód?" : "Have your partner's code?"}
-              </p>
-              <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center">
-                <input
-                  value={joinCode}
-                  onChange={(event) => setJoinCode(event.target.value.toUpperCase())}
-                  placeholder="Enter code here"
-                  className="h-10 flex-1 rounded-[10px] border border-border/35 bg-background/45 px-3 text-sm tracking-[0.15em] text-foreground outline-none transition-all placeholder:tracking-normal placeholder:text-muted-foreground/60 focus:border-amber-400/35"
-                />
-                <button
-                  type="button"
-                  onClick={() => void joinWithCodeOnHome()}
-                  disabled={joiningCode || !joinCode.trim()}
-                  className="inline-flex h-10 items-center justify-center rounded-[10px] border border-amber-400/30 bg-amber-400/10 px-4 text-sm text-amber-300 transition-all hover:bg-amber-400/20 disabled:opacity-50"
-                >
-                  {joiningCode ? "Joining..." : "Connect partner"}
-                </button>
-              </div>
-              {joinError && <p className="mt-2 text-xs text-red-300/80">{joinError}</p>}
-              {joinSuccess && <p className="mt-2 text-xs text-emerald-300/80">{joinSuccess}</p>}
-            </div>
-          )}
-        </div>
-          <div className="hidden lg:block">{dailyQuoteCard}</div>
-        </div>
-
-        <div className="relative overflow-hidden rounded-[24px] border border-amber-400/20 bg-card/50 p-5">
-          <img src={shivaShaktiIcon} alt="" className="pointer-events-none absolute right-0 top-0 h-40 w-40 object-cover opacity-20" />
-          <div className="relative">
-            <p className="text-xs uppercase tracking-[0.2em] text-amber-400/75">{featuredPathLabel}</p>
-            <h3 className="mt-2 font-display text-2xl text-foreground">{featuredPathTitle}</h3>
-            <p className="mt-3 text-sm leading-6 text-muted-foreground">{featuredPathDescription}</p>
-            {tonightRitual ? (
-              <p className="mt-2 text-xs uppercase tracking-[0.14em] text-amber-200/90">
-                {weatherUi.tonightPath}: {tonightRitualTitle}
-              </p>
-            ) : null}
-            {tonightRitual ? (
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                <span className="rounded-full border border-border/35 bg-card/45 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/90">
-                  {tonightRitual.duration}
-                </span>
-                <span className="rounded-full border border-border/35 bg-card/45 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/90">
-                  {tonightRitual.intimacyLevel}
-                </span>
-                <span className="rounded-full border border-border/35 bg-card/45 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/90">
-                  {tonightRitual.primaryNeed}
-                </span>
-              </div>
-            ) : null}
-            {tonightRitualSteps.length ? (
-              <div className="mt-3 rounded-[12px] border border-border/30 bg-background/40 px-3 py-2.5">
-                <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground/75">Tonight ritual flow</p>
-                <ol className="mt-1.5 space-y-1 text-sm leading-6 text-foreground/90">
-                  {tonightRitualSteps.map((step, index) => (
-                    <li key={`${step}-${index}`}>{index + 1}. {step}</li>
-                  ))}
-                </ol>
-              </div>
-            ) : null}
-            <div className="mt-5">
-              {bothCheckedIn ? (
-                <Link
-                  to="/app/tonight-paths"
-                  className="inline-flex items-center gap-1.5 rounded-[12px] border border-amber-400/30 bg-amber-400/10 px-4 py-2.5 text-sm text-amber-300 transition-all hover:bg-amber-400/20"
-                >
-                  {enterTonightPathLabel} →
-                </Link>
-              ) : (
-                <p className="rounded-[12px] border border-amber-400/20 bg-amber-950/20 px-3 py-2 text-xs text-amber-200/85">
-                  {waitingPathCopy}
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
+        )}
       </section>
 
       {import.meta.env.DEV ? (
