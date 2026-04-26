@@ -1437,7 +1437,10 @@ const AppHome = () => {
         <div className="absolute -right-10 top-0 opacity-15">
           <img src={shivaShaktiIcon} alt="" className="h-40 w-40 rounded-[20px]" />
         </div>
-        <p className="text-xs uppercase tracking-[0.22em] text-amber-400/75">Sacred Path for Couples</p>
+        <div className="inline-flex items-center gap-2 rounded-full border border-amber-300/20 bg-background/30 px-3 py-1.5 shadow-[0_0_18px_rgba(251,191,36,0.08)] backdrop-blur">
+          <img src={shivaShaktiIcon} alt="" className="h-5 w-5 rounded-full object-cover opacity-90" />
+          <p className="text-[11px] uppercase tracking-[0.28em] text-amber-200/95">Sacred Path for Couples</p>
+        </div>
         <p className="mt-2 max-w-2xl text-sm italic text-muted-foreground/80">
           "The couple that practices together arrives at each other again and again."
         </p>
@@ -1529,9 +1532,10 @@ const AppHome = () => {
               <img
                 src={shivaShaktiIcon}
                 alt=""
-                className="pointer-events-none absolute -top-12 right-0 h-36 w-36 object-cover opacity-20"
+                className="pointer-events-none absolute -top-12 right-0 h-36 w-36 object-cover opacity-30"
               />
-              <p className="text-xs uppercase tracking-[0.18em] text-emerald-200/85">{connectedPanelUi.label}</p>
+              <p className="text-[11px] uppercase tracking-[0.24em] text-amber-200/90">Sacred Path for Couples</p>
+              <p className="mt-1 text-xs uppercase tracking-[0.18em] text-emerald-200/85">{connectedPanelUi.label}</p>
               <p className="mt-2 text-sm leading-6 text-foreground/90">
                 {connectedTogetherBody}
               </p>

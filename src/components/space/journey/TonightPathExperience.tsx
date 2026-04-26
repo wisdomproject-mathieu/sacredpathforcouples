@@ -37,6 +37,8 @@ type Props = {
   weatherStateMode: WeatherStateMode;
   myWeather: WeatherCardData | null;
   belovedWeather: WeatherCardData | null;
+  myName?: string | null;
+  belovedName?: string | null;
   tonightPathStatus: TonightPathStatusViewModel;
   coupleId?: string | null;
   selectedDailyMainCard: SelectedDailyMainCard | null;
@@ -186,6 +188,8 @@ const TonightPathExperience = ({
   weatherMatch,
   myWeather,
   belovedWeather,
+  myName,
+  belovedName,
   tonightPathStatus,
   coupleId,
   selectedDailyMainCard,
@@ -253,6 +257,26 @@ const TonightPathExperience = ({
         <p className="mt-2 max-w-4xl text-sm leading-7 text-muted-foreground">
           {ready ? copy.intro(pairLabel) : copy.waitingBody}
         </p>
+
+        {ready ? (
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <div className="rounded-[22px] border border-border/30 bg-card/55 p-4 shadow-[0_16px_45px_-34px_rgba(0,0,0,0.7)]">
+              <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70">{myName ?? "You"}</p>
+              <p className="mt-2 font-display text-2xl text-foreground">
+                {myWeather ? `${myWeather.label} ${myWeather.emoji}` : copy.waitingTitle}
+              </p>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">{myWeather?.hint ?? copy.waitingBody}</p>
+            </div>
+
+            <div className="rounded-[22px] border border-border/30 bg-card/55 p-4 shadow-[0_16px_45px_-34px_rgba(0,0,0,0.7)]">
+              <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70">{belovedName ?? "Partner"}</p>
+              <p className="mt-2 font-display text-2xl text-foreground">
+                {belovedWeather ? `${belovedWeather.label} ${belovedWeather.emoji}` : copy.waitingTitle}
+              </p>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">{belovedWeather?.hint ?? copy.waitingBody}</p>
+            </div>
+          </div>
+        ) : null}
 
         {ready ? (
           <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-3 py-1.5 text-xs text-foreground/90">

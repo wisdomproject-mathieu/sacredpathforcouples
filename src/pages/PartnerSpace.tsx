@@ -1885,7 +1885,14 @@ const PartnerSpace = () => {
                 />
               ) : null}
               {!activeToolUnlocked && premiumGateCard(activeMeta.title, activeMeta.subtitle)}
-              {activeToolUnlocked && activeTool === "weather" && <IntimacyWeather coupleId={coupleId ?? undefined} onNavigate={navigateTool} />}
+              {activeToolUnlocked && activeTool === "weather" && (
+                <IntimacyWeather
+                  coupleId={coupleId ?? undefined}
+                  onNavigate={navigateTool}
+                  myName={myDisplayName ?? null}
+                  partnerName={partnerDisplayName ?? null}
+                />
+              )}
               {activeToolUnlocked && activeTool === "rituals" && (
                 <RitualCards coupleId={coupleId ?? undefined} onNavigate={navigateTool} isPremium={hasPremiumAccess} />
               )}
@@ -1914,6 +1921,8 @@ const PartnerSpace = () => {
                   weatherStateMode={weatherStateMode}
                   myWeather={myWeatherCard}
                   belovedWeather={belovedWeatherCard}
+                  myName={myDisplayName ?? null}
+                  belovedName={partnerDisplayName ?? null}
                   tonightPathStatus={tonightPathStatus}
                   coupleId={coupleId}
                   selectedDailyMainCard={sharedMainCardState.selectedDailyMainCard}

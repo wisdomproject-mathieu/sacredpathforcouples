@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState, type Dispatch, type SetStateAction } from "react";
+import { Link } from "react-router-dom";
 import { Cloud, Heart, Snowflake, SunMedium, Zap } from "lucide-react";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 
@@ -11,6 +12,8 @@ import { cn } from "@/lib/utils";
 interface Props {
   coupleId?: string;
   onNavigate: (tab: string) => void;
+  myName?: string | null;
+  partnerName?: string | null;
 }
 
 type WeatherEntry = Pick<Tables<"weather_entries">, "state" | "created_at" | "user_id"> & { id?: string };
@@ -24,6 +27,17 @@ type WeatherStateDef = {
   iconClass: string;
   activeBorderClass: string;
   activeGlowClass: string;
+};
+
+type SideRole = "shiva" | "shakti";
+
+type PanelDescriptor = {
+  side: "left" | "right";
+  owner: "me" | "partner";
+  role: SideRole;
+  displayName: string;
+  selectedKey: string | null;
+  onSelect: Dispatch<SetStateAction<string | null>>;
 };
 
 const STATES: WeatherStateDef[] = [
@@ -124,18 +138,18 @@ type CopyDef = {
 
 const COPY: Record<Language, CopyDef> = {
   en: {
-    title: "Intimacy Weather",
-    subtitle: "Choose calmly. Sense honestly. Ask gently. Let your partner choose with respect.",
+    title: "Your shared intimacy weather",
+    subtitle: "Take a moment. Breathe. Share your current state, then welcome your partner's weather with love, respect, and curiosity.",
     youLabel: "YOU",
     partnerLabel: "PARTNER",
     shivaAspect: "Shiva Aspect",
     shaktiAspect: "Shakti Aspect",
     swapRoles: "Swap Shiva ↔ Shakti",
-    showRituals: "Show Rituals",
+    showRituals: "SACRED RITUALS FOR COUPLED PRESENCE",
     distantLabel: "Distant",
     bondedLabel: "Bonded",
     twoEnergies: "TWO ENERGIES.",
-    oneJourney: "ONE JOURNEY.",
+    oneJourney: "ONE PATH.",
     centerText: "Pause. Feel. Choose your truth, then welcome your partner's weather with respect.",
     sealWeather: "Seal my weather",
     saving: "Saving…",
@@ -143,18 +157,18 @@ const COPY: Record<Language, CopyDef> = {
     noCheckinYet: "No check-in yet today.",
   },
   fr: {
-    title: "Météo d'intimité",
-    subtitle: "Choisissez calmement. Ressentez honnêtement. Demandez doucement. Laissez votre partenaire choisir avec respect.",
+    title: "Votre météo d'intimité partagée",
+    subtitle: "Prenez un moment. Respirez. Partagez votre état actuel, puis accueillez la météo de votre partenaire avec amour, respect et curiosité.",
     youLabel: "VOUS",
     partnerLabel: "PARTENAIRE",
     shivaAspect: "Aspect Shiva",
     shaktiAspect: "Aspect Shakti",
     swapRoles: "Échanger Shiva ↔ Shakti",
-    showRituals: "Voir les rituels",
+    showRituals: "RITUELS SACRÉS POUR LA PRÉSENCE DU COUPLE",
     distantLabel: "Distant",
     bondedLabel: "Lié",
     twoEnergies: "DEUX ÉNERGIES.",
-    oneJourney: "UN SEUL VOYAGE.",
+    oneJourney: "UN SEUL CHEMIN.",
     centerText: "Pause. Ressens. Choisis ta vérité, puis accueille le climat de ton partenaire avec respect.",
     sealWeather: "Sceller ma météo",
     saving: "Enregistrement…",
@@ -162,14 +176,14 @@ const COPY: Record<Language, CopyDef> = {
     noCheckinYet: "Pas encore de check-in aujourd'hui.",
   },
   cs: {
-    title: "Počasí intimity",
-    subtitle: "Volte klidně. Cítěte upřímně. Ptejte se jemně. Nechte partnera vybrat s respektem.",
+    title: "Vaše sdílené počasí intimity",
+    subtitle: "Zastavte se. Nadechněte se. Sdílejte svůj aktuální stav a přivítejte partnerovo počasí s láskou, respektem a zvědavostí.",
     youLabel: "VY",
     partnerLabel: "PARTNER",
     shivaAspect: "Aspekt Šivy",
     shaktiAspect: "Aspekt Šakti",
     swapRoles: "Vyměnit Šiva ↔ Šakti",
-    showRituals: "Zobrazit rituály",
+    showRituals: "POSVÁTNÉ RITUÁLY PRO PÁROVOU PŘÍTOMNOST",
     distantLabel: "Vzdálené",
     bondedLabel: "Propojené",
     twoEnergies: "DVĚ ENERGIE.",
@@ -190,6 +204,8 @@ const getLocalDayRange = () => {
   return { startIso: start.toISOString(), endIso: end.toISOString() };
 };
 
+const resolveDisplayName = (value: string | null | undefined, fallback: string) => value?.trim() || fallback;
+
 /* ─── Ornate weather card ─────────────────────────────────────── */
 const WeatherCard = ({
   def,
@@ -209,7 +225,7 @@ const WeatherCard = ({
       onClick={onClick}
       disabled={!onClick}
       className={cn(
-        "relative rounded-xl border p-3 text-left transition-all w-full group",
+        "relative w-full rounded-xl border p-3 text-left transition-all group",
         selected
           ? cn("border-amber-400/60 bg-[#1a1035]", def.activeBorderClass, def.activeGlowClass)
           : "border-amber-400/20 bg-[#0f0a20] hover:border-amber-400/40",
@@ -254,15 +270,17 @@ const ChakraFigure = ({ label }: { label: string }) => (
 );
 
 /* ─── Main component ─────────────────────────────────────────── */
-const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
+const IntimacyWeather = ({ coupleId, onNavigate, myName, partnerName }: Props) => {
   const { user } = useAuth();
   const { lang } = useLanguage();
   const copy = COPY[lang];
 
   const [mySelected, setMySelected] = useState<string | null>(null);
   const [partnerState, setPartnerState] = useState<string | null>(null);
-  const [shivaIsMe, setShivaIsMe] = useState(true);
+  const [weatherSidesSwapped, setWeatherSidesSwapped] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [ownNameFallback, setOwnNameFallback] = useState<string>("You");
+  const [partnerNameFallback, setPartnerNameFallback] = useState<string>("Partner");
 
   useEffect(() => {
     if (!coupleId || !user) return;
@@ -293,6 +311,14 @@ const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
     return () => { supabase.removeChannel(ch); };
   }, [coupleId, user]);
 
+  useEffect(() => {
+    setOwnNameFallback(resolveDisplayName(myName, "You"));
+  }, [myName]);
+
+  useEffect(() => {
+    setPartnerNameFallback(resolveDisplayName(partnerName, "Partner"));
+  }, [partnerName]);
+
   const saveWeather = async () => {
     if (!user || !mySelected || !coupleId) return;
     setSaving(true);
@@ -303,31 +329,82 @@ const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
   const stateGroup = (key: string | null) =>
     key ? (STATES.find((s) => s.key === key)?.group ?? null) : null;
 
+  const selectedWeatherLabel = (key: string | null, displayName: string) => {
+    const def = key ? STATES.find((item) => item.key === key) : null;
+    if (!def) return copy.noCheckinYet;
+    return `${def.label[lang]} for ${displayName}`;
+  };
+
+  const panelDescriptors = useMemo(() => {
+    const left = weatherSidesSwapped
+      ? {
+          side: "left" as const,
+          owner: "partner" as const,
+          role: "shakti" as const,
+          displayName: partnerNameFallback,
+          selectedKey: partnerState,
+          onSelect: setPartnerState,
+        }
+      : {
+          side: "left" as const,
+          owner: "me" as const,
+          role: "shiva" as const,
+          displayName: ownNameFallback,
+          selectedKey: mySelected,
+          onSelect: setMySelected,
+        };
+
+    const right = weatherSidesSwapped
+      ? {
+          side: "right" as const,
+          owner: "me" as const,
+          role: "shiva" as const,
+          displayName: ownNameFallback,
+          selectedKey: mySelected,
+          onSelect: setMySelected,
+        }
+      : {
+          side: "right" as const,
+          owner: "partner" as const,
+          role: "shakti" as const,
+          displayName: partnerNameFallback,
+          selectedKey: partnerState,
+          onSelect: setPartnerState,
+        };
+
+    return [left, right];
+  }, [mySelected, ownNameFallback, partnerNameFallback, partnerState, weatherSidesSwapped]);
+
   /* ─── Side panel ────────────────────────────────────────────── */
-  const SidePanel = ({ isMe }: { isMe: boolean }) => {
-    const selectedKey = isMe ? mySelected : partnerState;
+  const SidePanel = ({ panel }: { panel: PanelDescriptor }) => {
+    const selectedKey = panel.selectedKey;
     const group = stateGroup(selectedKey);
-    const aspect = isMe
-      ? (shivaIsMe ? copy.shivaAspect : copy.shaktiAspect)
-      : (shivaIsMe ? copy.shaktiAspect : copy.shivaAspect);
-    const roleLabel = isMe ? copy.youLabel : copy.partnerLabel;
-    const figureLabel = isMe ? (shivaIsMe ? "Shiva" : "Shakti") : (shivaIsMe ? "Shakti" : "Shiva");
+    const aspect = panel.role === "shiva" ? copy.shivaAspect : copy.shaktiAspect;
+    const roleLabel = panel.owner === "me" ? copy.youLabel : copy.partnerLabel;
+    const figureLabel = panel.role === "shiva" ? "Shiva" : "Shakti";
+    const selectedWeatherText = selectedWeatherLabel(selectedKey, panel.displayName);
+    const selectedDef = selectedKey ? STATES.find((state) => state.key === selectedKey) ?? null : null;
 
     return (
       <div className="flex flex-col gap-3">
-        {/* Role header */}
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-foreground/70">
-            {roleLabel}{" "}
-            <span className="text-amber-400/70">[{aspect}]</span>
+        <div className="rounded-[18px] border border-border/30 bg-background/42 px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.22em] text-amber-300/75">{roleLabel}</p>
+              <p className="mt-0.5 font-display text-xl text-foreground">{panel.displayName}</p>
+            </div>
+            <span className="rounded-full border border-amber-400/25 bg-amber-400/10 px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] text-amber-200/90">
+              {aspect}
+            </span>
+          </div>
+          <p className="mt-1.5 text-sm leading-6 text-muted-foreground/80">
+            {selectedKey ? selectedWeatherText : copy.noCheckinYet}
           </p>
-          {selectedKey ? (
-            <p className={cn("mt-0.5 text-sm font-medium", group === "bonded" ? "text-amber-400" : "text-slate-400")}>
-              {group === "bonded" ? copy.bondedLabel : copy.distantLabel}
+          {selectedDef ? (
+            <p className={cn("mt-1 text-[11px] uppercase tracking-[0.18em]", group === "bonded" ? "text-amber-300/85" : "text-slate-300/75")}>
+              {selectedDef.group === "bonded" ? copy.bondedLabel : copy.distantLabel}
             </p>
-          ) : (
-            <p className="mt-0.5 text-xs text-muted-foreground/50">{copy.noCheckinYet}</p>
-          )}
+          ) : null}
         </div>
 
         {/* Distant row */}
@@ -342,15 +419,26 @@ const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
                 def={def}
                 lang={lang}
                 selected={selectedKey === def.key}
-                onClick={isMe ? () => setMySelected(def.key) : undefined}
+                onClick={() => panel.onSelect(def.key)}
               />
             ))}
           </div>
         </div>
 
         {/* Chakra figure */}
-        <div className="flex justify-center">
-          <ChakraFigure label={figureLabel} />
+        <div className="rounded-[22px] border border-amber-400/18 bg-gradient-to-b from-background/48 via-card/46 to-background/36 p-3 shadow-[0_20px_55px_-40px_rgba(0,0,0,0.7)]">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-amber-300/70">{panel.displayName}</p>
+          <div className="mt-2 flex justify-center">
+            <ChakraFigure label={figureLabel} />
+          </div>
+          {selectedKey ? (
+            <>
+              <p className="mt-2 text-center font-display text-xl text-foreground">{selectedWeatherText}</p>
+              <p className="mt-1 text-center text-sm leading-6 text-muted-foreground/80">
+                {selectedDef?.hint[lang] ?? copy.noCheckinYet}
+              </p>
+            </>
+          ) : null}
         </div>
 
         {/* Bonded row */}
@@ -365,14 +453,14 @@ const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
                 def={def}
                 lang={lang}
                 selected={selectedKey === def.key}
-                onClick={isMe ? () => setMySelected(def.key) : undefined}
+                onClick={() => panel.onSelect(def.key)}
               />
             ))}
           </div>
         </div>
 
         {/* Save – my side only */}
-        {isMe && (
+        {panel.owner === "me" && (
           <button
             type="button"
             onClick={saveWeather}
@@ -389,10 +477,22 @@ const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
   /* ─── Render ─────────────────────────────────────────────────── */
   return (
     <div className="space-y-4">
+      <div className="flex items-center justify-start">
+        <div className="inline-flex items-center gap-3 rounded-[22px] border border-amber-400/22 bg-card/58 px-3 py-2.5 shadow-[0_18px_45px_-30px_rgba(0,0,0,0.72)] backdrop-blur">
+          <div className="flex h-11 w-11 items-center justify-center rounded-[16px] border border-amber-400/20 bg-amber-400/10">
+            <img src={shivaShaktiIcon} alt="" className="h-7 w-7 object-contain" />
+          </div>
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.24em] text-amber-300/90">Sacred Path</p>
+            <p className="font-display text-lg text-foreground">for Couples</p>
+          </div>
+        </div>
+      </div>
+
       {/* Header */}
       <div className="text-center">
         <h2 className="font-display text-3xl text-foreground">{copy.title}</h2>
-        <p className="mt-1.5 text-sm text-muted-foreground">{copy.subtitle}</p>
+        <p className="mx-auto mt-1.5 max-w-3xl text-sm text-muted-foreground">{copy.subtitle}</p>
       </div>
 
       {/* Three-column grid — fixed at md+ */}
@@ -402,60 +502,53 @@ const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
         <div className="relative overflow-hidden rounded-2xl border border-amber-400/15 bg-[#0d0920]/80 p-4 backdrop-blur-sm shadow-[inset_0_1px_0_rgba(245,158,11,0.06)]">
           {/* Subtle inner glow */}
           <div className="pointer-events-none absolute -left-8 top-0 h-24 w-24 rounded-full bg-amber-400/5 blur-3xl" />
-          <SidePanel isMe={true} />
+          <SidePanel panel={panelDescriptors[0]} />
         </div>
 
         {/* CENTER */}
-        <div className="flex flex-col items-center justify-between gap-3 py-2">
-          {/* Couple image in arch frame */}
-          <div className="relative w-full overflow-hidden rounded-t-[50%] rounded-b-xl border border-amber-400/25 bg-[#0d0920] shadow-[0_0_50px_-10px_rgba(251,191,36,0.35)]" style={{ minHeight: 220 }}>
-            <img
-              src={shivaShaktiIcon}
-              alt="Two energies, one journey"
-              className="w-full h-full object-cover object-top opacity-95"
-              style={{ minHeight: 220 }}
-            />
-            <div className="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-[#0d0920] to-transparent" />
-            {/* Arch glow */}
-            <div className="pointer-events-none absolute inset-0 rounded-t-[50%] shadow-[inset_0_0_30px_rgba(251,191,36,0.08)]" />
-          </div>
+        <div className="flex flex-col items-center gap-3 py-2">
+          <button
+            type="button"
+            onClick={() => setWeatherSidesSwapped((p) => !p)}
+            className="w-full rounded-full border border-amber-400/35 bg-amber-400/12 px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.18em] text-amber-100 shadow-[0_10px_30px_-22px_rgba(251,191,36,0.45)] transition-all hover:border-amber-400/60 hover:bg-amber-400/18"
+          >
+            {copy.swapRoles}
+          </button>
 
-          {/* Tagline */}
-          <div className="text-center">
-            <p className="font-display text-sm font-bold uppercase tracking-wider text-amber-400">
-              {copy.twoEnergies}
-            </p>
-            <p className="font-display text-sm font-bold uppercase tracking-wider text-amber-400">
-              {copy.oneJourney}
-            </p>
-            <p className="mt-2 text-[10px] leading-[1.5] text-muted-foreground/70">
+          <button
+            type="button"
+            onClick={() => onNavigate("rituals")}
+            className="w-full rounded-[22px] border border-amber-300/35 bg-gradient-to-b from-amber-300/92 to-amber-500/78 px-4 py-4 text-[11px] font-semibold uppercase leading-5 tracking-[0.16em] text-[#201308] shadow-[0_18px_45px_-28px_rgba(251,191,36,0.8)] transition-all hover:scale-[1.01] hover:border-amber-200/60"
+          >
+            {copy.showRituals}
+          </button>
+
+          <div className="w-full rounded-[22px] border border-amber-400/18 bg-card/55 px-4 py-4 text-center shadow-[0_16px_45px_-32px_rgba(0,0,0,0.7)] backdrop-blur">
+            <p className="font-display text-sm font-bold uppercase tracking-[0.22em] text-amber-300">{copy.twoEnergies}</p>
+            <p className="font-display text-sm font-bold uppercase tracking-[0.22em] text-amber-300">{copy.oneJourney}</p>
+            <p className="mx-auto mt-3 max-w-[18ch] text-sm leading-7 text-muted-foreground/90">
               {copy.centerText}
             </p>
           </div>
 
-          {/* Buttons */}
-          <div className="flex w-full flex-col gap-2">
-            <button
-              type="button"
-              onClick={() => setShivaIsMe((p) => !p)}
-              className="w-full rounded-xl border border-amber-400/25 bg-[#0d0920] py-2 text-[10px] font-semibold uppercase tracking-widest text-foreground/70 transition-all hover:border-amber-400/50"
+          <div className="w-full rounded-[22px] border border-amber-400/20 bg-gradient-to-b from-amber-400/14 via-amber-300/10 to-background/45 px-4 py-4 text-center">
+            <p className="font-display text-sm font-bold uppercase tracking-[0.2em] text-foreground/95">
+              Explore premium for both of you
+            </p>
+            <p className="mt-2 text-sm text-muted-foreground/85">One subscription. One path for both of you.</p>
+            <Link
+              to="/pricing"
+              className="mt-3 inline-flex w-full items-center justify-center rounded-full border border-amber-300/35 bg-amber-400/14 px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.16em] text-amber-100 transition-all hover:border-amber-300/55 hover:bg-amber-400/20"
             >
-              {copy.swapRoles}
-            </button>
-            <button
-              type="button"
-              onClick={() => onNavigate("rituals")}
-              className="w-full rounded-xl border border-amber-400/35 bg-amber-500/10 py-2 text-[10px] font-semibold uppercase tracking-widest text-amber-300 transition-all hover:border-amber-400/60 hover:bg-amber-500/16"
-            >
-              {copy.showRituals}
-            </button>
+              Explore premium for both of you
+            </Link>
           </div>
         </div>
 
         {/* PARTNER */}
         <div className="relative overflow-hidden rounded-2xl border border-amber-400/15 bg-[#0d0920]/80 p-4 backdrop-blur-sm shadow-[inset_0_1px_0_rgba(245,158,11,0.06)]">
           <div className="pointer-events-none absolute -right-8 top-0 h-24 w-24 rounded-full bg-amber-400/5 blur-3xl" />
-          <SidePanel isMe={false} />
+          <SidePanel panel={panelDescriptors[1]} />
         </div>
       </div>
     </div>
