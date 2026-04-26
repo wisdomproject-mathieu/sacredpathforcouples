@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 
 import { useAuth } from "@/contexts/AuthContext";
+import { useCoupleId } from "@/hooks/useCoupleId";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import { supabase } from "@/integrations/supabase/client";
 import { SACRED_REPAIR_CHAPTERS, type SacredRepairChapter, type SacredRepairRitual } from "@/lib/sacredRepairData";
@@ -12,6 +13,7 @@ import LotusIcon from "@/components/tantra-icons/LotusIcon";
 import FlameIcon from "@/components/tantra-icons/FlameIcon";
 import ChakraIcon from "@/components/tantra-icons/ChakraIcon";
 import SacredGeometryIcon from "@/components/tantra-icons/SacredGeometryIcon";
+import RitualTimerButton from "@/components/ritual/RitualTimerButton";
 
 type SacredIconComponent = ComponentType<{ className?: string; size?: number }>;
 
@@ -163,12 +165,14 @@ const RitualCard = ({
   active,
   unlocked,
   isFreeRitual,
+  hidePremiumBadges,
   onClick,
 }: {
   ritual: SacredRepairRitual;
   active?: boolean;
   unlocked: boolean;
   isFreeRitual?: boolean;
+  hidePremiumBadges?: boolean;
   onClick?: () => void;
 }) => {
   const SacredIcon = pickRitualIcon(ritual.title);
@@ -196,17 +200,12 @@ const RitualCard = ({
                 <Lock className="h-3 w-3" />
                 Premium
               </span>
-            ) : isFreeRitual ? (
+            ) : !hidePremiumBadges && isFreeRitual ? (
               <span className="inline-flex items-center gap-1 rounded-full border border-emerald-300/40 bg-emerald-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-emerald-200">
                 <Sparkles className="h-3 w-3" />
                 Free Ritual
               </span>
-            ) : (
-              <span className="inline-flex items-center gap-1 rounded-full border border-amber-300/35 bg-amber-400/10 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-amber-200">
-                <Sparkles className="h-3 w-3" />
-                Unlocked
-              </span>
-            )}
+            ) : null}
             {ritual.duration ? (
               <span className="inline-flex rounded-full border border-amber-300/25 bg-amber-500/8 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-amber-200/85">
                 {ritual.duration.replace(/ or longer$/i, "+").replace("minutes", "min")}
