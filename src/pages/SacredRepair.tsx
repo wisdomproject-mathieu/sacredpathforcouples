@@ -248,11 +248,13 @@ const RitualCard = ({
 const RitualDetail = ({
   ritual,
   chapter,
+  coupleId,
   onBackToRituals,
   onBackToRepair,
 }: {
   ritual: SacredRepairRitual;
   chapter: SacredRepairChapter;
+  coupleId: string | null;
   onBackToRituals: () => void;
   onBackToRepair: () => void;
 }) => {
@@ -290,9 +292,16 @@ const RitualDetail = ({
           <div>
             <p className="text-sm uppercase tracking-[0.2em] text-primary/80">Ritual Detail</p>
             <h3 className="mt-2 font-display text-3xl leading-tight text-foreground md:text-4xl">{ritual.title}</h3>
-            <div className="mt-4 flex flex-wrap gap-2 text-sm text-foreground/90">
+            <div className="mt-4 flex flex-wrap items-center gap-2 text-sm text-foreground/90">
               <span className="rounded-full border border-border/35 bg-background/45 px-3 py-1.5">{ritual.lineage}</span>
-              <span className="rounded-full border border-border/35 bg-background/45 px-3 py-1.5">{ritual.duration}</span>
+              <RitualTimerButton
+                ritualTitle={ritual.title}
+                ritualSource="sacred-repair"
+                chapterId={chapter.id}
+                coupleId={coupleId}
+                suggestedDuration={ritual.duration}
+                label="Start practice timer"
+              />
             </div>
           </div>
 
