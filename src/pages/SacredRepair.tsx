@@ -112,20 +112,26 @@ const ChapterCard = ({
   const SacredIcon = visual.sacredIcon;
   const narrative = CHAPTER_NARRATIVE_BY_ID[chapter.id];
 
-  const className = `${sacredVisualSystem.overviewCardBase} ${compact ? "min-h-0 p-3 md:p-3.5" : "min-h-0 p-4 md:p-5"} ${
-    selected
-      ? `${sacredVisualSystem.overviewCardActive} border-emerald-300/45 bg-emerald-500/12`
-      : `${sacredVisualSystem.overviewCardIdle} border-emerald-300/30 bg-emerald-500/8`
-  }`;
+  const className = compact
+    ? `flex w-full items-center rounded-[18px] border p-3 text-left transition-all ${
+        selected
+          ? "border-emerald-300/45 bg-gradient-to-br from-emerald-500/12 via-card/55 to-card/30 shadow-[0_14px_40px_-32px_rgba(16,185,129,0.35)]"
+          : "border-emerald-300/30 bg-emerald-500/8 hover:border-emerald-300/50"
+      }`
+    : `${sacredVisualSystem.overviewCardBase} min-h-0 p-4 md:p-5 ${
+        selected
+          ? `${sacredVisualSystem.overviewCardActive} border-emerald-300/45 bg-emerald-500/12`
+          : `${sacredVisualSystem.overviewCardIdle} border-emerald-300/30 bg-emerald-500/8`
+      }`;
 
   const body = (
     <>
       <div className={`flex items-start ${compact ? "gap-3" : "gap-4"}`}>
         <div className={`shrink-0 rounded-2xl border border-amber-300/25 bg-gradient-to-br from-amber-500/10 via-card/40 to-transparent ${compact ? "p-2" : "p-3"} ${visual.accentClass}`}>
-          <SacredIcon className="opacity-90" size={compact ? 32 : 52} />
+          <SacredIcon className="opacity-90" size={compact ? 28 : 52} />
         </div>
         <div className="min-w-0 flex-1">
-          <h2 className={`min-w-0 font-display leading-[1.15] text-foreground ${compact ? "text-[1.35rem] md:text-[1.5rem]" : "text-[1.95rem]"}`}>
+          <h2 className={`min-w-0 font-display leading-[1.15] text-foreground ${compact ? "text-[1.2rem] md:text-[1.35rem]" : "text-[1.95rem]"}`}>
             {chapter.title}
           </h2>
           {compact ? (
