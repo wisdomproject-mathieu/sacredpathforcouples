@@ -112,7 +112,7 @@ const ChapterCard = ({
   const SacredIcon = visual.sacredIcon;
   const narrative = CHAPTER_NARRATIVE_BY_ID[chapter.id];
 
-  const className = `${sacredVisualSystem.overviewCardBase} min-h-0 p-4 md:p-5 ${
+  const className = `${sacredVisualSystem.overviewCardBase} ${compact ? "min-h-0 p-3 md:p-3.5" : "min-h-0 p-4 md:p-5"} ${
     selected
       ? `${sacredVisualSystem.overviewCardActive} border-emerald-300/45 bg-emerald-500/12`
       : `${sacredVisualSystem.overviewCardIdle} border-emerald-300/30 bg-emerald-500/8`
@@ -120,19 +120,26 @@ const ChapterCard = ({
 
   const body = (
     <>
-      <div className="flex items-start gap-4">
-        <div className={`shrink-0 rounded-2xl border border-amber-300/25 bg-gradient-to-br from-amber-500/10 via-card/40 to-transparent p-3 ${visual.accentClass}`}>
-          <SacredIcon className="opacity-90" size={compact ? 40 : 52} />
+      <div className={`flex items-start ${compact ? "gap-3" : "gap-4"}`}>
+        <div className={`shrink-0 rounded-2xl border border-amber-300/25 bg-gradient-to-br from-amber-500/10 via-card/40 to-transparent ${compact ? "p-2" : "p-3"} ${visual.accentClass}`}>
+          <SacredIcon className="opacity-90" size={compact ? 32 : 52} />
         </div>
         <div className="min-w-0 flex-1">
-          <h2 className={`min-w-0 font-display leading-[1.12] text-foreground ${compact ? "text-[1.75rem]" : "text-[1.95rem]"}`}>
+          <h2 className={`min-w-0 font-display leading-[1.15] text-foreground ${compact ? "text-[1.35rem] md:text-[1.5rem]" : "text-[1.95rem]"}`}>
             {chapter.title}
           </h2>
+          {compact ? (
+            <p className="mt-1 text-sm leading-6 text-primary/85">
+              {narrative?.subtitle ?? chapter.emotionalFrame}
+            </p>
+          ) : null}
         </div>
       </div>
-      <p className="mt-3 rounded-[12px] border border-emerald-300/25 bg-emerald-500/8 px-3 py-2.5 text-[1.05rem] leading-7 text-primary/90">
-        {narrative?.subtitle ?? chapter.emotionalFrame}
-      </p>
+      {!compact ? (
+        <p className="mt-3 rounded-[12px] border border-emerald-300/25 bg-emerald-500/8 px-3 py-2.5 text-[1.05rem] leading-7 text-primary/90">
+          {narrative?.subtitle ?? chapter.emotionalFrame}
+        </p>
+      ) : null}
       {!compact ? (
         <p className="mt-2 line-clamp-3 text-[0.98rem] leading-7 text-foreground/90">
           {narrative?.supportingCopy}
