@@ -4,15 +4,11 @@ import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 import {
   ArrowRight,
   BookOpen,
-  Cloud,
   Heart,
   Lock,
   MessageCircle,
-  Snowflake,
   Sparkles,
   Stars,
-  SunMedium,
-  Zap,
   type LucideIcon,
 } from "lucide-react";
 
@@ -139,12 +135,12 @@ const reconnectMoveSets: Record<Language, Array<{ id: string; title: string; des
 
 const connectedReminderSets: Record<Language, string[]> = {
   en: [
-    "Presence is the first form of touch.",
-    "A softer beginning often opens the deepest door.",
-    "When both partners feel seen, desire has space to return.",
-    "Repair starts when one person becomes gentle first.",
-    "Two people stay close when they choose each other again.",
-    "A loving ritual can begin with one steady breath.",
+    "Connection is built in small acts of presence.",
+    "Gratitude keeps love warm between the great moments.",
+    "Today, choose softness before speed.",
+    "The bond deepens when both hearts stay available.",
+    "Two people do not stay close by accident. They return on purpose.",
+    "A loving ritual can begin with one gentle message.",
   ],
   fr: [
     "La connexion se construit dans de petits gestes de présence.",
@@ -1368,7 +1364,7 @@ const AppHome = () => {
     ? "Entrer dans le chemin de ce soir"
     : lang === "cs"
       ? "Vstoupit do dnešní cesty"
-      : "Enter Tonight's Path";
+      : "Enter tonight path";
   const rotatingQuote = useMemo(
     () => pickBySeed(quotes, `${todayKey}:home-end-quote`),
     [quotes, todayKey],
@@ -1423,424 +1419,411 @@ const AppHome = () => {
     ? `${partnerName ?? "Votre partenaire"} est connecté(e). Restez ici et retrouvez-vous avec présence, patience et douceur. Que ce soir commence par l'écoute, le respect des émotions, et un premier pas tendre l'un vers l'autre.`
     : lang === "cs"
       ? `${partnerName ?? "Partner"} je propojený(á). Zůstaňte tady a setkejte se s přítomností, trpělivostí a péčí. Ať dnešní večer začne nasloucháním, respektem k pocitům a jedním jemným krokem k sobě.`
-      : "Your partner is here with you. Take a breath before choosing. Tonight is not about performing, it is about noticing, respecting, and meeting each other honestly.";
-
-  // ── New simplified weather chips for home-page card ──────────────
-  const homeWeatherChips = [
-    { key: "stormy",   group: "distant", label: "Stormy",   Icon: Zap,       iconClass: "text-slate-300"  },
-    { key: "foggy",    group: "distant", label: "Foggy",    Icon: Cloud,     iconClass: "text-slate-300"  },
-    { key: "frozen",   group: "distant", label: "Frozen",   Icon: Snowflake, iconClass: "text-sky-300"    },
-    { key: "warm",     group: "bonded",  label: "Warm",     Icon: Heart,     iconClass: "text-rose-400"   },
-    { key: "electric", group: "bonded",  label: "Electric", Icon: Zap,       iconClass: "text-violet-400" },
-    { key: "sunny",    group: "bonded",  label: "Sunny",    Icon: SunMedium, iconClass: "text-amber-400"  },
-  ] as const;
+      : `${partnerName ?? "Your partner"} is connected. Stay here and meet each other with presence, patience, and care. Let tonight begin with listening, respect for feelings, and one gentle step toward each other.`;
 
   return (
-    <div className="space-y-5">
-      {/* Connected toast */}
+    <div className="space-y-4 md:space-y-5">
       {showConnectedPopup && relationshipConnected && partnerName && (
         <div className="fixed left-1/2 top-4 z-50 w-[min(92vw,560px)] -translate-x-1/2 animate-in slide-in-from-top-4 fade-in duration-500">
           <div className="rounded-2xl border border-emerald-300/40 bg-emerald-950/85 px-4 py-3 shadow-[0_16px_45px_-28px_rgba(16,185,129,0.65)] backdrop-blur">
             <p className="text-sm text-emerald-100">
-              <span className="font-semibold">{partnerName}</span> is connected — start exploring rituals that bring you closer.
+              <span className="font-semibold">{partnerName}</span> is connected - start exploring together rituals that bring you closer.
             </p>
           </div>
         </div>
       )}
 
-      {/* ── HERO ──────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden rounded-[28px] border border-amber-400/20 bg-[#0d0920] px-5 pb-8 pt-8 text-center shadow-[0_28px_90px_-55px_rgba(251,191,36,0.45)]">
-        {/* Sacred geometry rings */}
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-15">
-          <div className="absolute h-64 w-64 rounded-full border border-amber-400/40" />
-          <div className="absolute h-48 w-48 rounded-full border border-amber-400/30" />
-          <div className="absolute h-32 w-32 rounded-full border border-amber-400/25" />
-          <div className="absolute h-96 w-96 rounded-full border border-amber-400/20" />
+      <section className="relative overflow-hidden rounded-[24px] border border-amber-400/20 bg-card/35 p-5">
+        <div className="absolute -right-10 top-0 opacity-15">
+          <img src={shivaShaktiIcon} alt="" className="h-40 w-40 rounded-[20px]" />
         </div>
-        {/* Glow halos */}
-        <div className="pointer-events-none absolute left-1/2 top-0 h-40 w-40 -translate-x-1/2 rounded-full bg-amber-400/15 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-8 left-1/4 h-32 w-32 rounded-full bg-violet-500/10 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-8 right-1/4 h-32 w-32 rounded-full bg-rose-500/10 blur-3xl" />
-
-        {/* Couple + energy glyph */}
-        <div className="relative mx-auto mb-4 flex flex-col items-center gap-2">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full border border-amber-400/30 bg-amber-400/10 shadow-[0_0_30px_rgba(251,191,36,0.3)]">
-            <img src={shivaShaktiIcon} alt="" className="h-10 w-10 object-contain" />
-          </div>
-          <img
-            src={shivaShaktiIcon}
-            alt="Sacred couple"
-            className="h-28 w-28 object-contain opacity-85 drop-shadow-[0_0_20px_rgba(251,191,36,0.35)]"
-          />
-        </div>
-
-        {/* Title */}
-        <h1 className="relative font-display text-2xl font-bold uppercase tracking-[0.08em] text-amber-400 md:text-3xl">
-          {lang === "fr"
-            ? "COMMENCEZ VOTRE VOYAGE SACRÉ ENSEMBLE"
-            : lang === "cs"
-              ? "ZAČNĚTE SVOU POSVÁTNOU CESTU SPOLU"
-              : "BEGIN YOUR SACRED JOURNEY TOGETHER"}
-        </h1>
-        <p className="relative mt-2 text-sm text-muted-foreground/80">
-          {lang === "fr"
-            ? "Un chemin conscient pour un amour plus profond & une connexion plus vraie."
-            : lang === "cs"
-              ? "Vědomá cesta k hlubší lásce & spojení."
-              : "A Conscious Path for Deeper Love & Connection."}
+        <p className="text-xs uppercase tracking-[0.22em] text-amber-400/75">Sacred Path for Couples</p>
+        <p className="mt-2 max-w-2xl text-sm italic text-muted-foreground/80">
+          "The couple that practices together arrives at each other again and again."
         </p>
-
-        {/* Name badge */}
-        {(myName || partnerName) && (
-          <div className="relative mt-4 inline-flex items-center gap-2 rounded-full border border-amber-400/25 bg-amber-500/8 px-4 py-1.5">
-            <span className="text-sm text-foreground/80">{myName}</span>
-            {relationshipConnected && partnerName && (
-              <>
-                <span className="text-amber-400/50">•</span>
-                <span className="text-sm text-foreground/80">{partnerName}</span>
-                <Heart className="h-3.5 w-3.5 fill-current text-rose-400" />
-              </>
-            )}
-          </div>
-        )}
-      </section>
-
-      {/* ── THREE FEATURE CARDS ───────────────────────────────────────── */}
-      <div className="grid gap-4 md:grid-cols-3">
-
-        {/* LEFT — Intimacy Weather */}
-        <Link to="/app/space" className="group block">
-          <div className="relative overflow-hidden rounded-2xl border border-amber-400/25 bg-[#0d0920] transition-all hover:border-amber-400/45 hover:shadow-[0_0_30px_-10px_rgba(251,191,36,0.35)]">
-            {/* Corner ornaments */}
-            <span className="pointer-events-none absolute left-2 top-2 z-10 h-3 w-3 border-l-2 border-t-2 border-amber-400/50" />
-            <span className="pointer-events-none absolute right-2 top-2 z-10 h-3 w-3 border-r-2 border-t-2 border-amber-400/50" />
-            <span className="pointer-events-none absolute bottom-2 left-2 z-10 h-3 w-3 border-b-2 border-l-2 border-amber-400/50" />
-            <span className="pointer-events-none absolute bottom-2 right-2 z-10 h-3 w-3 border-b-2 border-r-2 border-amber-400/50" />
-
-            {/* Card image */}
-            <div className="relative h-56 overflow-hidden rounded-t-2xl">
-              <img src={shivaShaktiIcon} alt="Intimacy Weather" className="h-full w-full object-cover opacity-90" />
-              <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#0d0920] to-transparent" />
-            </div>
-
-            {/* Card content */}
-            <div className="p-4 pb-5">
-              <h3 className="font-display text-xl text-foreground">
-                {lang === "fr" ? "Météo d'intimité" : lang === "cs" ? "Počasí intimity" : "Intimacy Weather"}
-              </h3>
-              <p className="mt-1 text-xs leading-5 text-muted-foreground/70">
-                {lang === "fr"
-                  ? "Vérifiez votre climat interne et la résonance de votre partenaire."
-                  : lang === "cs"
-                    ? "Zkontrolujte své vnitřní klima a rezonanci partnera."
-                    : "Check your internal climate and partner resonance."}
-              </p>
-
-              {/* Distant chips */}
-              <div className="mt-3 grid grid-cols-3 gap-1.5">
-                {homeWeatherChips.filter(c => c.group === "distant").map(chip => {
-                  const Icon = chip.Icon;
-                  return (
-                    <div key={chip.key} className="rounded-lg border border-white/10 bg-white/[0.04] p-2 text-center">
-                      <Icon className={`mx-auto mb-0.5 h-3 w-3 ${chip.iconClass} opacity-60`} />
-                      <p className="text-[9px] font-semibold text-foreground/60">{chip.label}</p>
-                    </div>
-                  );
-                })}
+        <div className="mt-4 grid gap-4 lg:grid-cols-[1.3fr_1fr]">
+          <div>
+            <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground/65">{todayLabel}</p>
+            <h1 className="mt-2 flex flex-wrap items-center gap-2 font-display text-3xl text-foreground">
+              <span>
+                {myName}
+                <span className="text-amber-400/65"> &amp; </span>
+                {partnerName ?? copy.partnerFallback}
+              </span>
+              {relationshipConnected ? (
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300/35 bg-emerald-500/10 px-2.5 py-1 text-emerald-200">
+                  <Heart className="h-4 w-4 fill-current" />
+                  <Sparkles className="h-4 w-4" />
+                </span>
+              ) : null}
+            </h1>
+            <p className="mt-2 text-sm text-muted-foreground/75">
+              {relationshipConnected ? connectedJourneyLine : copy.notConnectedLine}
+            </p>
+            {relationshipConnected ? (
+              <div className="mt-3 rounded-[12px] border border-emerald-300/25 bg-emerald-500/8 px-3 py-2.5">
+                <p className="text-[10px] uppercase tracking-[0.14em] text-emerald-200/80">{connectedReminderLabel}</p>
+                <p className="mt-1 text-sm leading-6 text-foreground/90">{connectedDailyReminder}</p>
               </div>
-              {/* Bonded chips */}
-              <div className="mt-1.5 grid grid-cols-3 gap-1.5">
-                {homeWeatherChips.filter(c => c.group === "bonded").map(chip => {
-                  const Icon = chip.Icon;
-                  return (
-                    <div key={chip.key} className="rounded-lg border border-amber-400/20 bg-amber-500/8 p-2 text-center">
-                      <Icon className={`mx-auto mb-0.5 h-3 w-3 ${chip.iconClass}`} />
-                      <p className="text-[9px] font-semibold text-amber-300/80">{chip.label}</p>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </Link>
-
-        {/* CENTER — Shared Rituals */}
-        <Link to="/app/rituals" className="group block">
-          <div className="relative overflow-hidden rounded-2xl border border-amber-400/25 bg-[#0d0920] transition-all hover:border-amber-400/45 hover:shadow-[0_0_30px_-10px_rgba(251,191,36,0.35)]">
-            <span className="pointer-events-none absolute left-2 top-2 z-10 h-3 w-3 border-l-2 border-t-2 border-amber-400/50" />
-            <span className="pointer-events-none absolute right-2 top-2 z-10 h-3 w-3 border-r-2 border-t-2 border-amber-400/50" />
-            <span className="pointer-events-none absolute bottom-2 left-2 z-10 h-3 w-3 border-b-2 border-l-2 border-amber-400/50" />
-            <span className="pointer-events-none absolute bottom-2 right-2 z-10 h-3 w-3 border-b-2 border-r-2 border-amber-400/50" />
-
-            {/* Ritual art header */}
-            <div className="relative flex h-36 items-center justify-center overflow-hidden rounded-t-2xl bg-gradient-to-b from-[#1a1035] to-[#0d0920]">
-              <div className="flex items-end gap-4 px-4">
-                <div className="flex h-14 w-8 flex-col items-center">
-                  <div className="h-10 w-1 rounded-full bg-gradient-to-t from-amber-500 to-amber-300 shadow-[0_0_10px_rgba(251,191,36,0.6)]" />
-                  <div className="h-4 w-4 rounded-full bg-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.8)]" />
+            ) : null}
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <span className={`rounded-full border px-3 py-1 text-xs ${
+                relationshipConnected
+                  ? "border-emerald-300/35 bg-emerald-500/10 text-emerald-200"
+                  : "border-amber-300/25 bg-amber-500/10 text-amber-200"
+              }`}>
+                {relationshipConnected ? copy.connected : copy.solo}
+              </span>
+              {relationshipConnected ? (
+                <button
+                  type="button"
+                  onClick={() => void disconnectPartnerOnHome()}
+                  disabled={disconnecting}
+                  className="rounded-full border border-rose-300/35 bg-rose-500/10 px-3 py-1 text-xs text-rose-200 transition-colors hover:bg-rose-500/18 disabled:opacity-60"
+                >
+                  {disconnecting ? "..." : connectedPanelUi.disconnect}
+                </button>
+              ) : null}
+              {!editingName ? (
+                <button
+                  type="button"
+                  onClick={() => setEditingName(true)}
+                  className="rounded-full border border-border/30 bg-background/35 px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-amber-400/35 hover:text-foreground"
+                >
+                  Edit your name
+                </button>
+              ) : (
+                <div className="flex flex-wrap items-center gap-2">
+                  <input
+                    value={nameDraft}
+                    onChange={(event) => setNameDraft(event.target.value)}
+                    maxLength={40}
+                    placeholder="Your name"
+                    className="h-8 rounded-lg border border-border/35 bg-background/45 px-2.5 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground/60 focus:border-amber-400/35"
+                  />
+                  <button
+                    type="button"
+                    onClick={saveNameOnHome}
+                    disabled={savingName || !nameDraft.trim()}
+                    className="rounded-lg border border-amber-400/30 bg-amber-400/10 px-2.5 py-1 text-xs text-amber-300 transition-all hover:bg-amber-400/20 disabled:opacity-50"
+                  >
+                    {savingName ? "Saving..." : "Save"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingName(false);
+                      setNameDraft(myName);
+                    }}
+                    className="rounded-lg border border-border/30 bg-background/40 px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    Cancel
+                  </button>
                 </div>
-                <div className="h-10 w-10 rounded-full border border-amber-400/30 bg-amber-400/10 shadow-[0_0_20px_rgba(251,191,36,0.2)] flex items-center justify-center">
-                  <div className="h-6 w-6 rounded-full border border-amber-400/40 bg-amber-400/5" />
-                </div>
-                <div className="flex h-12 w-9 items-end justify-center rounded-t-sm border-x border-t border-amber-400/20 bg-amber-500/5">
-                  <div className="mb-1 h-1 w-6 rounded bg-amber-400/30" />
-                </div>
-                <div className="h-5 w-5 rotate-45 border border-violet-400/50 bg-violet-500/15 shadow-[0_0_8px_rgba(167,139,250,0.4)]" />
-              </div>
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-[#0d0920] to-transparent" />
-            </div>
-
-            <div className="p-4 pb-5">
-              <h3 className="font-display text-xl text-foreground">
-                {lang === "fr" ? "Rituels partagés —" : lang === "cs" ? "Sdílené rituály —" : "Shared Rituals —"}
-              </h3>
-              <p className="mt-1 text-xs leading-5 text-muted-foreground/70">
-                {lang === "fr"
-                  ? "Créez des connexions significatives par la pratique commune."
-                  : lang === "cs"
-                    ? "Budujte smysluplné propojení sdílenou praxí."
-                    : "Design meaningful connections through shared practice."}
-              </p>
-
-              {/* Ritual chips */}
-              <div className="mt-3 grid grid-cols-2 gap-1.5">
-                {[
-                  { icon: "🕯️", label: lang === "fr" ? "Partage à la bougie" : lang === "cs" ? "Při svíčce" : "Candlelight Sharing" },
-                  { icon: "🎵", label: lang === "fr" ? "Son sacré" : lang === "cs" ? "Posvátný zvuk" : "Sacred Sound" },
-                  { icon: "🌿", label: lang === "fr" ? "Souffle sacré" : lang === "cs" ? "Posvátný dech" : "Sacred Breath" },
-                  { icon: "💎", label: lang === "fr" ? "Contact conscient" : lang === "cs" ? "Vědomý dotek" : "Conscious Touch" },
-                ].map(({ icon, label }) => (
-                  <div key={label} className="flex items-center gap-1.5 rounded-lg border border-amber-400/15 bg-amber-500/5 px-2 py-1.5">
-                    <span className="text-xs">{icon}</span>
-                    <p className="text-[9px] font-semibold text-foreground/60 leading-tight">{label}</p>
-                  </div>
-                ))}
-              </div>
-
-              {/* Tagline box */}
-              <div className="relative mt-3 rounded-xl border border-amber-400/25 bg-amber-500/6 px-3 py-3 text-center">
-                <span className="pointer-events-none absolute left-2 top-2 h-2 w-2 border-l border-t border-amber-400/60" />
-                <span className="pointer-events-none absolute right-2 top-2 h-2 w-2 border-r border-t border-amber-400/60" />
-                <span className="pointer-events-none absolute bottom-2 left-2 h-2 w-2 border-b border-l border-amber-400/60" />
-                <span className="pointer-events-none absolute bottom-2 right-2 h-2 w-2 border-b border-r border-amber-400/60" />
-                <p className="text-[9px] font-bold uppercase leading-[1.6] tracking-[0.12em] text-amber-300/90">
-                  {lang === "fr"
-                    ? "CHOISISSEZ CALMEMENT.\nSENTEZ HONNÊTEMENT.\nDEMANDEZ DOUCEMENT.\nLAISSEZ VOTRE PARTENAIRE CHOISIR AVEC RESPECT."
-                    : lang === "cs"
-                      ? "VOLTE KLIDNĚ.\nCÍŤTE UPŘÍMNĚ.\nPTEJTE SE JEMNĚ.\nNECHTE PARTNERA VYBRAT S RESPEKTEM."
-                      : "CHOOSE CALMLY.\nSENSE HONESTLY.\nASK GENTLY.\nLET YOUR PARTNER\nCHOOSE WITH RESPECT."}
-                </p>
-              </div>
-
-              <p className="mt-3 text-center font-display text-sm font-bold tracking-wide text-amber-400/80">
-                {lang === "fr" ? "DEUX ÉNERGIES. UN SEUL VOYAGE." : lang === "cs" ? "DVĚ ENERGIE. JEDNA CESTA." : "TWO ENERGIES. ONE JOURNEY."}
-              </p>
-              <p className="mt-1 text-center text-[10px] text-muted-foreground/55">
-                {lang === "fr" ? "Commencez la journée avec Présence Consciente." : lang === "cs" ? "Začněte den s vědomou přítomností." : "Start the Day with Conscious Presence."}
-              </p>
+              )}
             </div>
           </div>
-        </Link>
 
-        {/* RIGHT — Cosmic Connection */}
-        <Link to="/app/paths" className="group block">
-          <div className="relative overflow-hidden rounded-2xl border border-amber-400/25 bg-[#0d0920] transition-all hover:border-amber-400/45 hover:shadow-[0_0_30px_-10px_rgba(251,191,36,0.35)]">
-            <span className="pointer-events-none absolute left-2 top-2 z-10 h-3 w-3 border-l-2 border-t-2 border-amber-400/50" />
-            <span className="pointer-events-none absolute right-2 top-2 z-10 h-3 w-3 border-r-2 border-t-2 border-amber-400/50" />
-            <span className="pointer-events-none absolute bottom-2 left-2 z-10 h-3 w-3 border-b-2 border-l-2 border-amber-400/50" />
-            <span className="pointer-events-none absolute bottom-2 right-2 z-10 h-3 w-3 border-b-2 border-r-2 border-amber-400/50" />
-
-            {/* Sacred geometry mandala */}
-            <div className="relative flex h-56 items-center justify-center overflow-hidden rounded-t-2xl bg-gradient-to-b from-[#0a0520] to-[#0d0920]">
-              {/* Outer rings */}
-              {[64, 52, 40, 28, 18].map((size, i) => (
-                <div key={i} className="absolute rounded-full border border-amber-400/20" style={{ width: `${size * 4}px`, height: `${size * 4}px` }} />
-              ))}
-              {/* Chakra nodes */}
-              {[
-                { color: "bg-violet-500", x: 0, y: -88 },
-                { color: "bg-indigo-400", x: 76, y: -44 },
-                { color: "bg-sky-400", x: 76, y: 44 },
-                { color: "bg-emerald-400", x: 0, y: 88 },
-                { color: "bg-yellow-400", x: -76, y: 44 },
-                { color: "bg-orange-400", x: -76, y: -44 },
-                { color: "bg-rose-500", x: 0, y: 0 },
-              ].map(({ color, x, y }, i) => (
-                <div
-                  key={i}
-                  className={`absolute h-4 w-4 rounded-full ${color} shadow-[0_0_10px_currentColor]`}
-                  style={{ transform: `translate(${x}px, ${y}px)` }}
-                />
-              ))}
-              {/* Center diamond */}
-              <div className="relative z-10 h-8 w-8 rotate-45 border-2 border-amber-400/60 bg-amber-400/10 shadow-[0_0_20px_rgba(251,191,36,0.5)]" />
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-[#0d0920] to-transparent" />
-            </div>
-
-            <div className="p-4 pb-5">
-              <h3 className="font-display text-xl text-foreground">
-                {lang === "fr" ? "Connexion Cosmique" : lang === "cs" ? "Kosmické Propojení" : "Cosmic Connection"}
-              </h3>
-              <p className="mt-1 text-xs leading-5 text-muted-foreground/70">
-                {lang === "fr"
-                  ? "Découvrez des voies spirituelles et astrologiques sur mesure."
-                  : lang === "cs"
-                    ? "Objevte přizpůsobené duchovní a astrologické cesty."
-                    : "Discover tailored spiritual and astrological pathways."}
+          {relationshipConnected ? (
+            <div className="relative overflow-visible rounded-[18px] border border-emerald-300/25 bg-emerald-500/8 p-3">
+              <img
+                src={shivaShaktiIcon}
+                alt=""
+                className="pointer-events-none absolute -top-12 right-0 h-36 w-36 object-cover opacity-20"
+              />
+              <p className="text-xs uppercase tracking-[0.18em] text-emerald-200/85">{connectedPanelUi.label}</p>
+              <p className="mt-2 text-sm leading-6 text-foreground/90">
+                {connectedTogetherBody}
               </p>
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                {["Tantra", "Tao", "Polarity", "Kama", "Slow Sex"].map(path => (
-                  <span key={path} className="rounded-full border border-violet-400/20 bg-violet-500/8 px-2 py-0.5 text-[9px] text-violet-300/70">{path}</span>
-                ))}
-              </div>
             </div>
-          </div>
-        </Link>
-      </div>
-
-      {/* ── PARTNER CONNECTION (when not connected) ───────────────────── */}
-      {!relationshipConnected && !loading && (
-        <section className="rounded-2xl border border-amber-400/20 bg-[#0d0920] p-5">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-amber-400/70">
-            {lang === "fr" ? "CONNECTEZ-VOUS AVEC VOTRE PARTENAIRE" : lang === "cs" ? "PROPOJTE SE S PARTNEREM" : "CONNECT WITH YOUR BELOVED"}
-          </p>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            {/* Generate code */}
-            <div className="rounded-xl border border-border/25 bg-white/[0.03] p-4">
-              <p className="text-xs text-muted-foreground/70">
-                {lang === "fr" ? "Invitez votre partenaire" : lang === "cs" ? "Pozvěte partnera" : "Invite your partner"}
-              </p>
+          ) : (
+            <div className="rounded-[18px] border border-amber-400/20 bg-background/35 p-3">
+              <p className="text-xs uppercase tracking-[0.18em] text-amber-300/80">{connectedPanelUi.codeLabel}</p>
               <button
                 type="button"
                 onClick={() => void handlePrimaryConnectionAction()}
                 disabled={generatingCode || nudgeSending}
-                className="mt-3 w-full rounded-xl border border-amber-400/30 bg-amber-500/10 py-2.5 text-xs font-semibold uppercase tracking-widest text-amber-300 transition-all hover:border-amber-400/50 disabled:opacity-50"
+                className="mt-2 inline-flex h-10 w-full items-center justify-center rounded-[10px] border border-amber-400/30 bg-amber-400/12 px-4 text-sm text-amber-200 transition-all hover:bg-amber-400/20 disabled:opacity-50"
               >
-                {!inviteCode ? (generatingCode ? "..." : (lang === "fr" ? "Générer un code" : lang === "cs" ? "Vytvořit kód" : "Generate a code")) : (nudgeSending ? "..." : (lang === "fr" ? "Envoyer une relance" : lang === "cs" ? "Odeslat připomínku" : "Send a nudge"))}
+                {!inviteCode
+                  ? (generatingCode ? "Generating..." : "Send a code")
+                  : (nudgeSending ? "Sending..." : "Send a nudge")}
               </button>
+
               {inviteCode && (
-                <div className="mt-2 flex items-center gap-2 rounded-lg border border-border/25 bg-background/30 px-3 py-1.5">
-                  <span className="flex-1 font-display text-base tracking-[0.25em] text-foreground">{inviteCode}</span>
-                  <button type="button" onClick={handleCopyCode} className="text-[10px] text-amber-300/80">{copiedInvite ? "✓" : "Copy"}</button>
-                </div>
+                <>
+                  <div className="mt-3 flex items-center gap-2 rounded-[10px] border border-border/30 bg-background/45 px-3 py-2">
+                    <span className="flex-1 font-display text-lg tracking-[0.2em] text-foreground">{inviteCode}</span>
+                    <button type="button" onClick={handleCopyCode} className="text-xs text-amber-300/85">
+                      {copiedInvite ? "Copied!" : "Copy"}
+                    </button>
+                  </div>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <a
+                      href={inviteWhatsAppHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-[10px] border border-green-500/30 bg-green-950/25 px-3 py-1.5 text-xs text-green-300"
+                    >
+                      WhatsApp
+                    </a>
+                    <a href={inviteSmsHref} className="rounded-[10px] border border-blue-500/30 bg-blue-950/25 px-3 py-1.5 text-xs text-blue-300">
+                      Message
+                    </a>
+                    <button
+                      type="button"
+                      onClick={handleCopyInviteLink}
+                      className="rounded-[10px] border border-border/30 bg-background/45 px-3 py-1.5 text-xs text-muted-foreground"
+                    >
+                      Copy link
+                    </button>
+                  </div>
+                </>
+              )}
+              {nudgeSent && (
+                <p className="mt-2 text-xs text-emerald-300/85">
+                  {lang === "fr" ? "Nudge envoyé." : lang === "cs" ? "Postrčení odesláno." : "Nudge sent."}
+                </p>
               )}
             </div>
-            {/* Join code */}
-            <div className="rounded-xl border border-border/25 bg-white/[0.03] p-4">
-              <p className="text-xs text-muted-foreground/70">
+          )}
+        </div>
+      </section>
+
+      <section className="grid items-start gap-4 lg:grid-cols-[1.25fr_0.75fr]">
+        <div className="space-y-4">
+          <div className="rounded-[24px] border border-amber-400/20 bg-card/50 p-5">
+          <p className="text-xs uppercase tracking-[0.22em] text-amber-400/70">{weatherUi.sectionLabel}</p>
+          <h3 className="mt-2 font-display text-xl text-foreground">{weatherUi.sectionTitle}</h3>
+          <div className="mt-4 grid grid-cols-4 gap-2">
+            {weatherMoods.map((mood) => {
+              const active = relationshipConnected ? myWeatherSelected === mood.key : pendingMoodValue === mood.key;
+              return (
+                <button
+                  key={mood.key}
+                  type="button"
+                  disabled={savingWeather}
+                  onClick={() => {
+                    if (relationshipConnected) {
+                      void handleWeatherSelect(mood.key);
+                    } else {
+                      handleMoodSelect(mood.key, mood.emoji, mood.label);
+                    }
+                  }}
+                  className={`flex flex-col items-center gap-1 rounded-[12px] border p-2.5 transition-all disabled:opacity-50 ${
+                    active
+                      ? "border-amber-400/60 bg-amber-400/15 text-amber-300"
+                      : "border-border/30 bg-background/40 hover:border-amber-400/40 hover:bg-amber-400/10"
+                  }`}
+                >
+                  <span className="text-lg">{mood.emoji}</span>
+                  <span className="text-[10px] leading-none text-muted-foreground">{mood.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {shareMood && (
+            <div className="mt-4 rounded-[14px] border border-amber-400/20 bg-amber-950/20 p-3">
+              <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground/70">{weatherUi.yourWeather}</p>
+              <p className="mt-1 font-display text-lg text-foreground">{shareMood.emoji} {shareMood.label}</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <a
+                  href={weatherWhatsAppHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-[10px] border border-green-500/30 bg-green-950/25 px-3 py-1.5 text-xs text-green-300"
+                >
+                  Send via WhatsApp
+                </a>
+                <a href={weatherSmsHref} className="rounded-[10px] border border-blue-500/30 bg-blue-950/25 px-3 py-1.5 text-xs text-blue-300">
+                  Send via Message
+                </a>
+                <button
+                  type="button"
+                  onClick={() => void copyWeatherShare()}
+                  className="rounded-[10px] border border-border/30 bg-background/45 px-3 py-1.5 text-xs text-muted-foreground"
+                >
+                  {copiedWeather ? "Copied!" : "Copy weather text"}
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className="mt-4 grid gap-2 sm:grid-cols-2">
+            <div className="rounded-[12px] border border-border/30 bg-background/40 p-3">
+              <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{weatherUi.yourWeather}</p>
+              <p className="mt-1 font-display text-base">
+                {myMood
+                  ? `${myMood.emoji} ${myMood.label}`
+                  : (shareMood ? `${shareMood.emoji} ${shareMood.label}` : tonightPathStatus.userWeatherPlaceholder)}
+              </p>
+            </div>
+            <div className="rounded-[12px] border border-border/30 bg-background/40 p-3">
+              <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{weatherUi.belovedWeather}</p>
+              <p className="mt-1 font-display text-base">
+                {partnerMood ? `${partnerMood.emoji} ${partnerMood.label}` : tonightPathStatus.belovedWeatherPlaceholder}
+              </p>
+            </div>
+          </div>
+
+          {!relationshipConnected && (
+            <div className="mt-4 rounded-[14px] border border-border/30 bg-background/35 p-3">
+              <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground/70">
                 {lang === "fr" ? "Vous avez un code ?" : lang === "cs" ? "Máte partnerský kód?" : "Have your partner's code?"}
               </p>
-              <div className="mt-3 flex gap-2">
+              <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center">
                 <input
                   value={joinCode}
-                  onChange={e => setJoinCode(e.target.value.toUpperCase())}
-                  placeholder={lang === "fr" ? "Entrez le code" : lang === "cs" ? "Zadejte kód" : "Enter code"}
-                  className="h-10 flex-1 rounded-xl border border-border/35 bg-background/45 px-3 text-sm tracking-[0.15em] text-foreground outline-none focus:border-amber-400/35 placeholder:text-muted-foreground/50 placeholder:tracking-normal"
+                  onChange={(event) => setJoinCode(event.target.value.toUpperCase())}
+                  placeholder="Enter code here"
+                  className="h-10 flex-1 rounded-[10px] border border-border/35 bg-background/45 px-3 text-sm tracking-[0.15em] text-foreground outline-none transition-all placeholder:tracking-normal placeholder:text-muted-foreground/60 focus:border-amber-400/35"
                 />
                 <button
                   type="button"
                   onClick={() => void joinWithCodeOnHome()}
                   disabled={joiningCode || !joinCode.trim()}
-                  className="rounded-xl border border-amber-400/30 bg-amber-500/10 px-3 text-xs text-amber-300 transition-all hover:bg-amber-500/20 disabled:opacity-50"
+                  className="inline-flex h-10 items-center justify-center rounded-[10px] border border-amber-400/30 bg-amber-400/10 px-4 text-sm text-amber-300 transition-all hover:bg-amber-400/20 disabled:opacity-50"
                 >
-                  {joiningCode ? "..." : "→"}
+                  {joiningCode ? "Joining..." : "Connect partner"}
                 </button>
               </div>
-              {joinError && <p className="mt-1.5 text-[10px] text-red-300/80">{joinError}</p>}
-              {joinSuccess && <p className="mt-1.5 text-[10px] text-emerald-300/80">{joinSuccess}</p>}
+              {joinError && <p className="mt-2 text-xs text-red-300/80">{joinError}</p>}
+              {joinSuccess && <p className="mt-2 text-xs text-emerald-300/80">{joinSuccess}</p>}
             </div>
-          </div>
-        </section>
-      )}
-
-      {/* ── SHIVA / SHAKTI BALANCE ────────────────────────────────────── */}
-      <section className="rounded-2xl border border-amber-400/20 bg-[#0d0920] p-5">
-        <h2 className="mb-4 text-center text-xs font-bold uppercase tracking-[0.3em] text-amber-400/80">
-          {lang === "fr" ? "L'ÉQUILIBRE SHIVA / SHAKTI" : lang === "cs" ? "ROVNOVÁHA ŠIVA / ŠAKTI" : "THE SHIVA/SHAKTI BALANCE"}
-        </h2>
-        <div className="grid grid-cols-[1fr_auto_1fr] gap-3">
-          {/* Shiva */}
-          <div className="flex flex-col items-center gap-2 rounded-xl border border-amber-400/15 bg-white/[0.03] p-4 text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full border border-amber-400/25 bg-gradient-to-b from-[#241845] to-[#1a1035] shadow-[0_0_20px_rgba(251,191,36,0.15)]">
-              <span className="text-xl">🌙</span>
-            </div>
-            {!editingName ? (
-              <button type="button" onClick={() => setEditingName(true)} className="font-display text-base text-foreground hover:text-amber-300 transition-colors">
-                {myName}
-              </button>
-            ) : (
-              <div className="flex flex-col gap-1.5 w-full">
-                <input value={nameDraft} onChange={e => setNameDraft(e.target.value)} maxLength={40} className="h-7 w-full rounded-lg border border-border/35 bg-background/45 px-2 text-center text-sm text-foreground outline-none focus:border-amber-400/35" />
-                <div className="flex gap-1">
-                  <button type="button" onClick={saveNameOnHome} disabled={savingName || !nameDraft.trim()} className="flex-1 rounded-lg border border-amber-400/30 bg-amber-400/10 py-1 text-[10px] text-amber-300 disabled:opacity-50">{savingName ? "..." : "Save"}</button>
-                  <button type="button" onClick={() => { setEditingName(false); setNameDraft(myName); }} className="rounded-lg border border-border/30 px-2 py-1 text-[10px] text-muted-foreground">✕</button>
-                </div>
-              </div>
-            )}
-            <p className="text-[9px] uppercase tracking-[0.2em] text-amber-400/50">SHIVA · {lang === "fr" ? "Le Consort" : lang === "cs" ? "Consort" : "The Consort"}</p>
-          </div>
-
-          {/* Center pillar */}
-          <div className="flex flex-col items-center justify-center gap-1">
-            <div className="w-px flex-1 bg-gradient-to-b from-transparent via-amber-400/40 to-transparent" />
-            <div className="h-2 w-2 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)]" />
-            <div className="w-px flex-1 bg-gradient-to-b from-transparent via-amber-400/40 to-transparent" />
-          </div>
-
-          {/* Shakti */}
-          <div className="flex flex-col items-center gap-2 rounded-xl border border-amber-400/15 bg-white/[0.03] p-4 text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full border border-rose-400/25 bg-gradient-to-b from-[#2a1040] to-[#1a1035] shadow-[0_0_20px_rgba(251,113,133,0.15)]">
-              <span className="text-xl">☀️</span>
-            </div>
-            <p className="font-display text-base text-foreground">
-              {partnerName ?? (lang === "fr" ? "Votre Bien-aimé(e)" : lang === "cs" ? "Váš Milovaný" : "Your Beloved")}
-            </p>
-            {relationshipConnected && (
-              <span className="rounded-full border border-emerald-300/30 bg-emerald-500/10 px-2 py-0.5 text-[9px] text-emerald-300">
-                {lang === "fr" ? "Connecté(e)" : lang === "cs" ? "Propojeni" : "Connected"}
-              </span>
-            )}
-            <p className="text-[9px] uppercase tracking-[0.2em] text-rose-400/50">SHAKTI · {lang === "fr" ? "La Création" : lang === "cs" ? "Stvoření" : "The Creation"}</p>
-          </div>
+          )}
+        </div>
+          <div className="hidden lg:block">{dailyQuoteCard}</div>
         </div>
 
-        {/* Disconnect option */}
-        {relationshipConnected && (
-          <div className="mt-3 flex justify-center">
-            <button
-              type="button"
-              onClick={() => void disconnectPartnerOnHome()}
-              disabled={disconnecting}
-              className="text-[10px] text-muted-foreground/50 underline underline-offset-2 transition-colors hover:text-rose-300/70 disabled:opacity-50"
-            >
-              {disconnecting ? "..." : (lang === "fr" ? "Déconnecter" : lang === "cs" ? "Odpojit" : "Disconnect")}
-            </button>
+        <div className="relative overflow-hidden rounded-[24px] border border-amber-400/20 bg-card/50 p-5">
+          <img src={shivaShaktiIcon} alt="" className="pointer-events-none absolute right-0 top-0 h-40 w-40 object-cover opacity-20" />
+          <div className="relative">
+            <p className="text-xs uppercase tracking-[0.2em] text-amber-400/75">{featuredPathLabel}</p>
+            <h3 className="mt-2 font-display text-2xl text-foreground">{featuredPathTitle}</h3>
+            <p className="mt-3 text-sm leading-6 text-muted-foreground">{featuredPathDescription}</p>
+            {tonightRitual ? (
+              <p className="mt-2 text-xs uppercase tracking-[0.14em] text-amber-200/90">
+                {weatherUi.tonightPath}: {tonightRitualTitle}
+              </p>
+            ) : null}
+            {tonightRitual ? (
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                <span className="rounded-full border border-border/35 bg-card/45 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/90">
+                  {tonightRitual.duration}
+                </span>
+                <span className="rounded-full border border-border/35 bg-card/45 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/90">
+                  {tonightRitual.intimacyLevel}
+                </span>
+                <span className="rounded-full border border-border/35 bg-card/45 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/90">
+                  {tonightRitual.primaryNeed}
+                </span>
+              </div>
+            ) : null}
+            {tonightRitualSteps.length ? (
+              <div className="mt-3 rounded-[12px] border border-border/30 bg-background/40 px-3 py-2.5">
+                <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground/75">Tonight ritual flow</p>
+                <ol className="mt-1.5 space-y-1 text-sm leading-6 text-foreground/90">
+                  {tonightRitualSteps.map((step, index) => (
+                    <li key={`${step}-${index}`}>{index + 1}. {step}</li>
+                  ))}
+                </ol>
+              </div>
+            ) : null}
+            <div className="mt-5">
+              {bothCheckedIn ? (
+                <Link
+                  to="/app/tonight-paths"
+                  className="inline-flex items-center gap-1.5 rounded-[12px] border border-amber-400/30 bg-amber-400/10 px-4 py-2.5 text-sm text-amber-300 transition-all hover:bg-amber-400/20"
+                >
+                  {enterTonightPathLabel} →
+                </Link>
+              ) : (
+                <p className="rounded-[12px] border border-amber-400/20 bg-amber-950/20 px-3 py-2 text-xs text-amber-200/85">
+                  {waitingPathCopy}
+                </p>
+              )}
+            </div>
           </div>
-        )}
+        </div>
       </section>
 
-      {/* ── PREMIUM UPSELL ───────────────────────────────────────────── */}
+      {import.meta.env.DEV ? (
+        <section className="rounded-[16px] border border-cyan-300/20 bg-cyan-500/8 p-3">
+          <p className="text-[10px] uppercase tracking-[0.14em] text-cyan-200/80">Weather Engine Debug</p>
+          <pre className="mt-2 overflow-auto text-xs leading-5 text-cyan-100/90">
+{JSON.stringify(
+  {
+    partnerAWeather: sharedMainCardState.debug.partnerAWeather,
+    partnerBWeather: sharedMainCardState.debug.partnerBWeather,
+    normalizedKey: sharedMainCardState.debug.normalizedKey,
+    archetype: sharedMainCardState.debug.archetype,
+    selectedMainCard: sharedMainCardState.debug.selectedMainCardId,
+    alternates: sharedMainCardState.debug.alternateIds,
+    recentHistory: sharedMainCardState.debug.recentHistory,
+  },
+  null,
+  2,
+)}
+          </pre>
+        </section>
+      ) : null}
+
       {entitlementResolved && !hasPremiumAccess && (
-        <section className="rounded-2xl border border-amber-300/25 bg-gradient-to-br from-amber-500/10 via-card/65 to-rose-500/10 p-5 shadow-[0_24px_70px_-50px_rgba(251,191,36,0.5)]">
-          <div className="flex items-center gap-2 text-amber-200/90">
-            <Lock className="h-4 w-4" />
-            <span className="text-xs uppercase tracking-[0.16em]">Go deeper together</span>
+        <section className="rounded-[28px] bg-[rgba(255,255,255,0.02)] px-5 pb-6 pt-5">
+          <div className="grid gap-5 md:grid-cols-2">
+            {/* For Him */}
+            <div className="rounded-[24px] border border-indigo-300/25 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.18),transparent_58%),linear-gradient(135deg,rgba(79,70,229,0.14),rgba(15,23,42,0.12))] p-4 shadow-[0_24px_70px_-45px_rgba(99,102,241,0.4)]">
+              <div className="flex items-center gap-2 text-indigo-300">
+                <Lock className="h-4 w-4" />
+                <span className="text-xs uppercase tracking-[0.16em]">For Him</span>
+              </div>
+              <h3 className="mt-2 font-display text-xl text-foreground">Lead with presence</h3>
+              <p className="mt-3 text-sm leading-6 text-foreground/90">
+                The most powerful thing you can bring to your relationship is your full, unhurried attention. Premium opens the path to masculine depth — from polarity to sacred touch.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <span className="rounded-full border border-indigo-300/30 bg-indigo-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-indigo-100">Polarity</span>
+                <span className="rounded-full border border-indigo-300/30 bg-indigo-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-indigo-100">Presence</span>
+                <span className="rounded-full border border-indigo-300/30 bg-indigo-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-indigo-100">Sacred Touch</span>
+              </div>
+              <Link
+                to="/pricing"
+                className="mt-4 inline-flex items-center gap-2 rounded-xl border border-indigo-300/30 bg-indigo-500/14 px-3 py-2 text-sm text-foreground transition-all hover:border-indigo-300/45 hover:bg-indigo-500/20"
+              >
+                Explore the path
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+
+            {/* For Her */}
+            <div className="rounded-[24px] border border-rose-300/25 bg-[radial-gradient(circle_at_top_right,rgba(244,63,94,0.16),transparent_58%),linear-gradient(135deg,rgba(225,29,72,0.12),rgba(15,23,42,0.12))] p-4 shadow-[0_24px_70px_-45px_rgba(244,63,94,0.35)]">
+              <div className="flex items-center gap-2 text-rose-300">
+                <Lock className="h-4 w-4" />
+                <span className="text-xs uppercase tracking-[0.16em]">For Her</span>
+              </div>
+              <h3 className="mt-2 font-display text-xl text-foreground">Receive what you deserve</h3>
+              <p className="mt-3 text-sm leading-6 text-foreground/90">
+                Your nervous system is the altar of the relationship. Premium gives you the tools to open fully — from emotional safety to erotic confidence on your own terms.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <span className="rounded-full border border-rose-300/30 bg-rose-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-rose-100">Safety first</span>
+                <span className="rounded-full border border-rose-300/30 bg-rose-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-rose-100">Erotic confidence</span>
+                <span className="rounded-full border border-rose-300/30 bg-rose-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-rose-100">Feminine depth</span>
+              </div>
+              <Link
+                to="/pricing"
+                className="mt-4 inline-flex items-center gap-2 rounded-xl border border-rose-300/30 bg-rose-500/14 px-3 py-2 text-sm text-foreground transition-all hover:border-rose-300/45 hover:bg-rose-500/20"
+              >
+                Explore the path
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
           </div>
-          <h3 className="mt-2 font-display text-2xl text-foreground">One subscription, shared by both partners.</h3>
-          <p className="mt-3 text-sm leading-6 text-foreground/90">
-            Unlock longer rituals, sensual repair paths, and guided practices that help you reconnect with more tenderness, honesty, and desire.
-          </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Longer rituals</span>
-            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Repair pathways</span>
-            <span className="rounded-full border border-amber-300/30 bg-amber-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-100">Guided intimacy</span>
-          </div>
-          <Link to="/pricing" className="mt-4 inline-flex items-center gap-2 rounded-xl border border-amber-300/35 bg-amber-500/15 px-3 py-2 text-sm text-foreground transition-all hover:border-amber-300/55 hover:bg-amber-500/22">
-            Explore premium for both partners
-            <ArrowRight className="h-4 w-4" />
-          </Link>
         </section>
       )}
+
+      <div className="lg:hidden">{dailyQuoteCard}</div>
     </div>
   );
 };
