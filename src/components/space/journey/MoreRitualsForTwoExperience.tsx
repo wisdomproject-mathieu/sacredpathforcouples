@@ -368,7 +368,7 @@ const normalizeSteps = (input: unknown): string[] => {
   return [];
 };
 
-const MoreRitualsForTwoExperience = ({ lang, weatherMatch, isPremium, canSend, onSend }: Props) => {
+const MoreRitualsForTwoExperience = ({ lang, weatherMatch, isPremium, canSend, coupleId, onSend }: Props) => {
   const copy = copyByLang[lang];
   const [ritualRows, setRitualRows] = useState<RitualRow[]>([]);
   const [pathwayRows, setPathwayRows] = useState<PathwayRow[]>([]);
