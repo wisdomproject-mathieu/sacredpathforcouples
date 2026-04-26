@@ -27,6 +27,7 @@ import {
 } from "@/lib/weatherEngine";
 import type { TonightPathStatusViewModel } from "@/lib/tonightPathStatus";
 import type { WeatherCardData } from "@/components/space/journey/SharedWeatherCard";
+import RitualTimerButton from "@/components/ritual/RitualTimerButton";
 
 type WeatherStateMode = "none" | "mine_only" | "beloved_only" | "both";
 
@@ -328,9 +329,14 @@ const TonightPathExperience = ({
                   </button>
 
                   <div className="mt-3 flex flex-wrap gap-1.5">
-                    <span className="break-words rounded-lg border border-border/30 bg-background/55 px-2 py-1 text-[11px] text-foreground/85">
-                      {card.duration}
-                    </span>
+                    <RitualTimerButton
+                      ritualTitle={card.title}
+                      ritualSource="tonight-path"
+                      coupleId={coupleId ?? null}
+                      suggestedDuration={card.duration}
+                      variant="subtle"
+                      label={`Timer · ${card.duration}`}
+                    />
                     <span className="break-words rounded-lg border border-border/30 bg-background/55 px-2 py-1 text-[11px] text-foreground/85">
                       {card.intimacyLevel}
                     </span>
