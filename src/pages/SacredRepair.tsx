@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 
 import { useAuth } from "@/contexts/AuthContext";
+import { useCoupleId } from "@/hooks/useCoupleId";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import { supabase } from "@/integrations/supabase/client";
 import { SACRED_REPAIR_CHAPTERS, type SacredRepairChapter, type SacredRepairRitual } from "@/lib/sacredRepairData";
@@ -12,6 +13,7 @@ import LotusIcon from "@/components/tantra-icons/LotusIcon";
 import FlameIcon from "@/components/tantra-icons/FlameIcon";
 import ChakraIcon from "@/components/tantra-icons/ChakraIcon";
 import SacredGeometryIcon from "@/components/tantra-icons/SacredGeometryIcon";
+import RitualTimerButton from "@/components/ritual/RitualTimerButton";
 
 type SacredIconComponent = ComponentType<{ className?: string; size?: number }>;
 
@@ -110,27 +112,40 @@ const ChapterCard = ({
   const SacredIcon = visual.sacredIcon;
   const narrative = CHAPTER_NARRATIVE_BY_ID[chapter.id];
 
-  const className = `${sacredVisualSystem.overviewCardBase} min-h-0 p-4 md:p-5 ${
-    selected
-      ? `${sacredVisualSystem.overviewCardActive} border-emerald-300/45 bg-emerald-500/12`
-      : `${sacredVisualSystem.overviewCardIdle} border-emerald-300/30 bg-emerald-500/8`
-  }`;
+  const className = compact
+    ? `flex w-full items-center rounded-[18px] border p-3 text-left transition-all ${
+        selected
+          ? "border-emerald-300/45 bg-gradient-to-br from-emerald-500/12 via-card/55 to-card/30 shadow-[0_14px_40px_-32px_rgba(16,185,129,0.35)]"
+          : "border-emerald-300/30 bg-emerald-500/8 hover:border-emerald-300/50"
+      }`
+    : `${sacredVisualSystem.overviewCardBase} min-h-0 p-4 md:p-5 ${
+        selected
+          ? `${sacredVisualSystem.overviewCardActive} border-emerald-300/45 bg-emerald-500/12`
+          : `${sacredVisualSystem.overviewCardIdle} border-emerald-300/30 bg-emerald-500/8`
+      }`;
 
   const body = (
     <>
-      <div className="flex items-start gap-4">
-        <div className={`shrink-0 rounded-2xl border border-amber-300/25 bg-gradient-to-br from-amber-500/10 via-card/40 to-transparent p-3 ${visual.accentClass}`}>
-          <SacredIcon className="opacity-90" size={compact ? 40 : 52} />
+      <div className={`flex items-start ${compact ? "gap-3" : "gap-4"}`}>
+        <div className={`shrink-0 rounded-2xl border border-amber-300/25 bg-gradient-to-br from-amber-500/10 via-card/40 to-transparent ${compact ? "p-2" : "p-3"} ${visual.accentClass}`}>
+          <SacredIcon className="opacity-90" size={compact ? 28 : 52} />
         </div>
         <div className="min-w-0 flex-1">
-          <h2 className={`min-w-0 font-display leading-[1.12] text-foreground ${compact ? "text-[1.75rem]" : "text-[1.95rem]"}`}>
+          <h2 className={`min-w-0 font-display leading-[1.15] text-foreground ${compact ? "text-[1.2rem] md:text-[1.35rem]" : "text-[1.95rem]"}`}>
             {chapter.title}
           </h2>
+          {compact ? (
+            <p className="mt-1 text-sm leading-6 text-primary/85">
+              {narrative?.subtitle ?? chapter.emotionalFrame}
+            </p>
+          ) : null}
         </div>
       </div>
-      <p className="mt-3 rounded-[12px] border border-emerald-300/25 bg-emerald-500/8 px-3 py-2.5 text-[1.05rem] leading-7 text-primary/90">
-        {narrative?.subtitle ?? chapter.emotionalFrame}
-      </p>
+      {!compact ? (
+        <p className="mt-3 rounded-[12px] border border-emerald-300/25 bg-emerald-500/8 px-3 py-2.5 text-[1.05rem] leading-7 text-primary/90">
+          {narrative?.subtitle ?? chapter.emotionalFrame}
+        </p>
+      ) : null}
       {!compact ? (
         <p className="mt-2 line-clamp-3 text-[0.98rem] leading-7 text-foreground/90">
           {narrative?.supportingCopy}
@@ -163,12 +178,14 @@ const RitualCard = ({
   active,
   unlocked,
   isFreeRitual,
+  hidePremiumBadges,
   onClick,
 }: {
   ritual: SacredRepairRitual;
   active?: boolean;
   unlocked: boolean;
   isFreeRitual?: boolean;
+  hidePremiumBadges?: boolean;
   onClick?: () => void;
 }) => {
   const SacredIcon = pickRitualIcon(ritual.title);
@@ -196,17 +213,12 @@ const RitualCard = ({
                 <Lock className="h-3 w-3" />
                 Premium
               </span>
-            ) : isFreeRitual ? (
+            ) : !hidePremiumBadges && isFreeRitual ? (
               <span className="inline-flex items-center gap-1 rounded-full border border-emerald-300/40 bg-emerald-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-emerald-200">
                 <Sparkles className="h-3 w-3" />
                 Free Ritual
               </span>
-            ) : (
-              <span className="inline-flex items-center gap-1 rounded-full border border-amber-300/35 bg-amber-400/10 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-amber-200">
-                <Sparkles className="h-3 w-3" />
-                Unlocked
-              </span>
-            )}
+            ) : null}
             {ritual.duration ? (
               <span className="inline-flex rounded-full border border-amber-300/25 bg-amber-500/8 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-amber-200/85">
                 {ritual.duration.replace(/ or longer$/i, "+").replace("minutes", "min")}
@@ -242,11 +254,13 @@ const RitualCard = ({
 const RitualDetail = ({
   ritual,
   chapter,
+  coupleId,
   onBackToRituals,
   onBackToRepair,
 }: {
   ritual: SacredRepairRitual;
   chapter: SacredRepairChapter;
+  coupleId: string | null;
   onBackToRituals: () => void;
   onBackToRepair: () => void;
 }) => {
@@ -284,9 +298,16 @@ const RitualDetail = ({
           <div>
             <p className="text-sm uppercase tracking-[0.2em] text-primary/80">Ritual Detail</p>
             <h3 className="mt-2 font-display text-3xl leading-tight text-foreground md:text-4xl">{ritual.title}</h3>
-            <div className="mt-4 flex flex-wrap gap-2 text-sm text-foreground/90">
+            <div className="mt-4 flex flex-wrap items-center gap-2 text-sm text-foreground/90">
               <span className="rounded-full border border-border/35 bg-background/45 px-3 py-1.5">{ritual.lineage}</span>
-              <span className="rounded-full border border-border/35 bg-background/45 px-3 py-1.5">{ritual.duration}</span>
+              <RitualTimerButton
+                ritualTitle={ritual.title}
+                ritualSource="sacred-repair"
+                chapterId={chapter.id}
+                coupleId={coupleId}
+                suggestedDuration={ritual.duration}
+                label="Start practice timer"
+              />
             </div>
           </div>
 
@@ -324,6 +345,7 @@ const RitualDetail = ({
 const SacredRepair = () => {
   const { user } = useAuth();
   const { hasPremiumAccess } = usePremiumAccess();
+  const coupleId = useCoupleId();
   const [selectedChapterId, setSelectedChapterId] = useState<string | null>(null);
   const [selectedRitualTitle, setSelectedRitualTitle] = useState<string | null>(null);
   const [premiumHighlight, setPremiumHighlight] = useState(false);
@@ -568,6 +590,7 @@ const SacredRepair = () => {
                       ritual={ritual}
                       unlocked={isRitualUnlocked(selectedChapter.id, ritual.title)}
                       isFreeRitual={isFreeRitualForChapter(selectedChapter.id, ritual.title)}
+                      hidePremiumBadges={hasPremiumAccess}
                       onClick={() => handleRitualClick(selectedChapter, ritual)}
                     />
                   ))}
@@ -635,12 +658,13 @@ const SacredRepair = () => {
           ) : (
             <>
               <div className={sacredVisualSystem.contourCyan}>
-                <RitualCard ritual={selectedRitual} unlocked={true} active={true} isFreeRitual={isFreeRitualForChapter(selectedChapter.id, selectedRitual.title)} />
+                <RitualCard ritual={selectedRitual} unlocked={true} active={true} isFreeRitual={isFreeRitualForChapter(selectedChapter.id, selectedRitual.title)} hidePremiumBadges={hasPremiumAccess} />
               </div>
 
               <RitualDetail
                 ritual={selectedRitual}
                 chapter={selectedChapter}
+                coupleId={coupleId}
                 onBackToRituals={() => setSelectedRitualTitle(null)}
                 onBackToRepair={() => {
                   setSelectedRitualTitle(null);

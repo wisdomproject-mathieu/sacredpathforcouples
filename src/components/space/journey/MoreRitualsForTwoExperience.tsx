@@ -15,6 +15,7 @@ import {
 import type { Language } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import type { WeatherMatchResult, RitualRecommendation } from "@/lib/weatherMatch";
+import RitualTimerButton from "@/components/ritual/RitualTimerButton";
 
 type ThemeKey =
   | "breathing"
@@ -63,6 +64,7 @@ type Props = {
   weatherMatch: WeatherMatchResult | null;
   isPremium: boolean;
   canSend: boolean;
+  coupleId?: string | null;
   onSend?: (message: string) => Promise<boolean>;
 };
 
@@ -366,7 +368,7 @@ const normalizeSteps = (input: unknown): string[] => {
   return [];
 };
 
-const MoreRitualsForTwoExperience = ({ lang, weatherMatch, isPremium, canSend, onSend }: Props) => {
+const MoreRitualsForTwoExperience = ({ lang, weatherMatch, isPremium, canSend, coupleId, onSend }: Props) => {
   const copy = copyByLang[lang];
   const [ritualRows, setRitualRows] = useState<RitualRow[]>([]);
   const [pathwayRows, setPathwayRows] = useState<PathwayRow[]>([]);
@@ -745,6 +747,14 @@ const MoreRitualsForTwoExperience = ({ lang, weatherMatch, isPremium, canSend, o
               <p className="mt-3 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">{card.source}</p>
 
               <div className="mt-3 flex flex-wrap gap-2">
+                <RitualTimerButton
+                  ritualTitle={card.title}
+                  ritualSource="more-rituals"
+                  coupleId={coupleId ?? null}
+                  suggestedDuration={card.tags?.[0] ?? null}
+                  variant="default"
+                  label="Start timer"
+                />
                 <button
                   type="button"
                   onClick={() => void copyCard(card)}
