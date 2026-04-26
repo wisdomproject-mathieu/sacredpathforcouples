@@ -1,169 +1,271 @@
-import { useEffect, useMemo, useState } from "react";
-import { Cloud, Heart, MoonStar, Sparkles, SunMedium, Wind } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Cloud, Heart, Snowflake, SunMedium, Zap } from "lucide-react";
+import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
-import DoorwayShell from "@/components/space/DoorwayShell";
-import ShareCardButton from "@/components/space/ShareCardButton";
+import { cn } from "@/lib/utils";
 
 interface Props {
   coupleId?: string;
   onNavigate: (tab: string) => void;
 }
 
-type WeatherStateMeta = {
+type WeatherEntry = Pick<Tables<"weather_entries">, "state" | "created_at" | "user_id"> & { id?: string };
+
+type WeatherStateDef = {
   key: string;
-  label: string;
-  emoji: string;
-  hint: string;
-  icon: typeof SunMedium;
+  group: "distant" | "bonded";
+  label: Record<Language, string>;
+  hint: Record<Language, string>;
+  Icon: React.ComponentType<{ className?: string }>;
   iconClass: string;
+  activeBorderClass: string;
+  activeGlowClass: string;
 };
 
-type WeatherEntry = Pick<Tables<"weather_entries">, "state" | "created_at" | "user_id"> & {
-  id?: string;
+const STATES: WeatherStateDef[] = [
+  {
+    key: "stormy",
+    group: "distant",
+    label: { en: "Stormy", fr: "Orageux", cs: "Bouřlivé" },
+    hint: { en: "Tense, hurt, or charged with something unspoken.", fr: "Tendu, blessé, ou chargé d'un non-dit.", cs: "Napjatý, zraněný nebo nabitý nevyřčeným." },
+    Icon: Zap,
+    iconClass: "text-slate-300",
+    activeBorderClass: "border-slate-400/70",
+    activeGlowClass: "shadow-[0_0_18px_-4px_rgba(148,163,184,0.6)]",
+  },
+  {
+    key: "foggy",
+    group: "distant",
+    label: { en: "Foggy", fr: "Brumeux", cs: "Mlhavé" },
+    hint: { en: "Unclear, drifting, not quite here.", fr: "Flou, incertain, pas tout à fait là.", cs: "Nejasný, unášený, ne zcela přítomný." },
+    Icon: Cloud,
+    iconClass: "text-slate-300",
+    activeBorderClass: "border-slate-400/70",
+    activeGlowClass: "shadow-[0_0_18px_-4px_rgba(148,163,184,0.6)]",
+  },
+  {
+    key: "frozen",
+    group: "distant",
+    label: { en: "Frozen", fr: "Gelé", cs: "Zamrzlé" },
+    hint: { en: "Numb, tired, shut down in the body.", fr: "Engourdi, fatigué, fermé dans le corps.", cs: "Znecitlivělý, unavený, uzavřený v těle." },
+    Icon: Snowflake,
+    iconClass: "text-sky-300",
+    activeBorderClass: "border-sky-400/70",
+    activeGlowClass: "shadow-[0_0_18px_-4px_rgba(125,211,252,0.55)]",
+  },
+  {
+    key: "warm",
+    group: "bonded",
+    label: { en: "Warm", fr: "Chaleureux", cs: "Vřelé" },
+    hint: { en: "Soft, tender, or wanting closeness.", fr: "Doux, tendre, ou désireux de proximité.", cs: "Jemný, něžný nebo toužící po blízkosti." },
+    Icon: Heart,
+    iconClass: "text-rose-400",
+    activeBorderClass: "border-rose-400/70",
+    activeGlowClass: "shadow-[0_0_18px_-4px_rgba(251,113,133,0.6)]",
+  },
+  {
+    key: "electric",
+    group: "bonded",
+    label: { en: "Electric", fr: "Électrique", cs: "Elektrické" },
+    hint: { en: "Crackling, drawn, awake in the body.", fr: "Pétillant, attiré, éveillé dans le corps.", cs: "Třaskavý, přitahovaný, probuzený v těle." },
+    Icon: Zap,
+    iconClass: "text-violet-400",
+    activeBorderClass: "border-violet-400/70",
+    activeGlowClass: "shadow-[0_0_18px_-4px_rgba(167,139,250,0.6)]",
+  },
+  {
+    key: "sunny",
+    group: "bonded",
+    label: { en: "Sunny", fr: "Ensoleillé", cs: "Slunečné" },
+    hint: { en: "Clear, light, easy with my partner today.", fr: "Clair, léger, à l'aise avec mon partenaire.", cs: "Jasný, lehký, v pohodě s partnerem dnes." },
+    Icon: SunMedium,
+    iconClass: "text-amber-400",
+    activeBorderClass: "border-amber-400/70",
+    activeGlowClass: "shadow-[0_0_18px_-4px_rgba(251,191,36,0.6)]",
+  },
+];
+
+const DISTANT = STATES.filter((s) => s.group === "distant");
+const BONDED = STATES.filter((s) => s.group === "bonded");
+
+const CHAKRA_COLORS = [
+  "bg-violet-500 shadow-[0_0_8px_2px_rgba(139,92,246,0.7)]",   // crown
+  "bg-indigo-400 shadow-[0_0_8px_2px_rgba(99,102,241,0.7)]",   // third eye
+  "bg-sky-400 shadow-[0_0_8px_2px_rgba(56,189,248,0.7)]",      // throat
+  "bg-emerald-400 shadow-[0_0_8px_2px_rgba(52,211,153,0.7)]",  // heart
+  "bg-yellow-400 shadow-[0_0_8px_2px_rgba(250,204,21,0.7)]",   // solar
+  "bg-orange-400 shadow-[0_0_8px_2px_rgba(251,146,60,0.7)]",   // sacral
+  "bg-rose-500 shadow-[0_0_8px_2px_rgba(244,63,94,0.7)]",      // root
+];
+
+type CopyDef = {
+  title: string;
+  subtitle: string;
+  youLabel: string;
+  partnerLabel: string;
+  shivaAspect: string;
+  shaktiAspect: string;
+  swapRoles: string;
+  showRituals: string;
+  distantLabel: string;
+  bondedLabel: string;
+  twoEnergies: string;
+  oneJourney: string;
+  centerText: string;
+  sealWeather: string;
+  saving: string;
+  connectToSave: string;
+  noCheckinYet: string;
 };
 
-const getLocalDayRange = () => {
-  const dayStart = new Date();
-  dayStart.setHours(0, 0, 0, 0);
-  const dayEnd = new Date(dayStart);
-  dayEnd.setDate(dayEnd.getDate() + 1);
-  return {
-    startIso: dayStart.toISOString(),
-    endIso: dayEnd.toISOString(),
-  };
-};
-
-const weatherStatesByLanguage: Record<Language, WeatherStateMeta[]> = {
-  en: [
-    { key: "open", label: "Open", emoji: "☀️", hint: "Available, spacious, ready for closeness.", icon: SunMedium, iconClass: "text-amber-300" },
-    { key: "tender", label: "Tender", emoji: "💗", hint: "Soft, emotional, wanting warmth and care.", icon: Heart, iconClass: "text-rose-300" },
-    { key: "playful", label: "Playful", emoji: "✨", hint: "Light, curious, flirtatious, laughing energy.", icon: Sparkles, iconClass: "text-fuchsia-300" },
-    { key: "stressed", label: "Stressed", emoji: "☁️", hint: "Full mind, low capacity, needing gentleness.", icon: Cloud, iconClass: "text-sky-300" },
-    { key: "longing", label: "Longing", emoji: "🌙", hint: "Missing something, wanting depth or contact.", icon: MoonStar, iconClass: "text-violet-300" },
-    { key: "erotic", label: "Erotic", emoji: "🔥", hint: "Desire is present and wants direction.", icon: Sparkles, iconClass: "text-orange-300" },
-    { key: "tired", label: "Tired", emoji: "🫧", hint: "Low energy, low pressure, slow rhythm needed.", icon: Wind, iconClass: "text-cyan-300" },
-    { key: "reassurance", label: "Reassurance", emoji: "⚡", hint: "Needs safety, soothing, and emotional grounding.", icon: Heart, iconClass: "text-emerald-300" },
-  ],
-  fr: [
-    { key: "open", label: "Ouvert", emoji: "☀️", hint: "Disponible, spacieux, prêt pour la proximité.", icon: SunMedium, iconClass: "text-amber-300" },
-    { key: "tender", label: "Tendre", emoji: "💗", hint: "Doux et émotionnel, besoin de chaleur et de soin.", icon: Heart, iconClass: "text-rose-300" },
-    { key: "playful", label: "Joueur", emoji: "✨", hint: "Léger, curieux, flirtant, énergie joyeuse.", icon: Sparkles, iconClass: "text-fuchsia-300" },
-    { key: "stressed", label: "Stressé", emoji: "☁️", hint: "Mental chargé, faible capacité, besoin de douceur.", icon: Cloud, iconClass: "text-sky-300" },
-    { key: "longing", label: "En manque", emoji: "🌙", hint: "Manque de contact, envie de profondeur.", icon: MoonStar, iconClass: "text-violet-300" },
-    { key: "erotic", label: "Érotique", emoji: "🔥", hint: "Le désir est là et demande une direction.", icon: Sparkles, iconClass: "text-orange-300" },
-    { key: "tired", label: "Fatigué", emoji: "🫧", hint: "Énergie basse, pression basse, rythme lent nécessaire.", icon: Wind, iconClass: "text-cyan-300" },
-    { key: "reassurance", label: "Réassurance", emoji: "⚡", hint: "Besoin de sécurité, d'apaisement et d'ancrage émotionnel.", icon: Heart, iconClass: "text-emerald-300" },
-  ],
-  cs: [
-    { key: "open", label: "Otevřenost", emoji: "☀️", hint: "Dostupnost, prostor, připravenost na blízkost.", icon: SunMedium, iconClass: "text-amber-300" },
-    { key: "tender", label: "Něžnost", emoji: "💗", hint: "Jemný emoční stav, potřeba tepla a péče.", icon: Heart, iconClass: "text-rose-300" },
-    { key: "playful", label: "Hravost", emoji: "✨", hint: "Lehkost, zvědavost, flirt a radostná energie.", icon: Sparkles, iconClass: "text-fuchsia-300" },
-    { key: "stressed", label: "Stres", emoji: "☁️", hint: "Přehlcená mysl, menší kapacita, potřeba jemnosti.", icon: Cloud, iconClass: "text-sky-300" },
-    { key: "longing", label: "Touha", emoji: "🌙", hint: "Chybí kontakt, volání po hloubce.", icon: MoonStar, iconClass: "text-violet-300" },
-    { key: "erotic", label: "Erotično", emoji: "🔥", hint: "Touha je přítomná a chce jasný směr.", icon: Sparkles, iconClass: "text-orange-300" },
-    { key: "tired", label: "Únava", emoji: "🫧", hint: "Nízká energie, nízký tlak, potřeba pomalého rytmu.", icon: Wind, iconClass: "text-cyan-300" },
-    { key: "reassurance", label: "Ujištění", emoji: "⚡", hint: "Potřeba bezpečí, zklidnění a emočního ukotvení.", icon: Heart, iconClass: "text-emerald-300" },
-  ],
-};
-
-const weatherCopyByLanguage: Record<Language, Record<string, string>> = {
+const COPY: Record<Language, CopyDef> = {
   en: {
-    shellLabel: "Intimacy Weather",
-    shellTitle: "Name the climate before you touch the night",
-    shellDescription: "Check in first. When the truth is named, every next move lands with more tenderness and accuracy.",
-    shellActionLabel: "Enter rituals",
-    chooseState: "Choose your state",
-    arrivingTonight: "How is your weather tonight?",
-    suggestedNextStep: "Suggested next step",
-    stressedSuggestion: "Choose a short breathing or soft-touch ritual rather than intensity.",
-    eroticSuggestion: "Open Positions or a sensual ritual and keep the pace slow at first.",
-    playfulSuggestion: "Try a lighter reconnect tool before deeper emotional work.",
-    defaultSuggestion: "A gratitude or heart-opening ritual will likely open beautifully tonight.",
-    connectToSave: "Connect to save weather",
-    saving: "Saving...",
+    title: "Intimacy Weather",
+    subtitle: "Choose calmly. Sense honestly. Ask gently. Let your partner choose with respect.",
+    youLabel: "YOU",
+    partnerLabel: "PARTNER",
+    shivaAspect: "Shiva Aspect",
+    shaktiAspect: "Shakti Aspect",
+    swapRoles: "Swap Shiva ↔ Shakti",
+    showRituals: "Show Rituals",
+    distantLabel: "Distant",
+    bondedLabel: "Bonded",
+    twoEnergies: "TWO ENERGIES.",
+    oneJourney: "ONE JOURNEY.",
+    centerText: "Pause. Feel. Choose your truth, then welcome your partner's weather with respect.",
     sealWeather: "Seal my weather",
-    sendWhisperNext: "Send a whisper next",
-    shareCardLabel: "Offer this weather card",
-    shareCardText: "Weather card ✦ My weather tonight is {weather}. {hint}",
-    yourWeather: "Your weather",
-    belovedWeather: "Beloved weather",
-    connectBelovedHint: "Connect with your beloved to sync your shared weather here.",
-    updateHint: "You can update your weather whenever your inner climate shifts.",
+    saving: "Saving…",
+    connectToSave: "Connect to save",
     noCheckinYet: "No check-in yet today.",
   },
   fr: {
-    shellLabel: "Météo d'intimité",
-    shellTitle: "Nommez le climat avant de toucher la nuit",
-    shellDescription: "Commencez par un check-in. Quand la vérité est nommée, chaque pas suivant devient plus tendre et plus juste.",
-    shellActionLabel: "Entrer dans les rituels",
-    chooseState: "Choisissez votre état",
-    arrivingTonight: "Quelle est votre météo ce soir ?",
-    suggestedNextStep: "Étape suivante suggérée",
-    stressedSuggestion: "Choisissez un rituel court de respiration ou de toucher doux plutôt que l'intensité.",
-    eroticSuggestion: "Ouvrez Positions ou un rituel sensuel et gardez un rythme lent au début.",
-    playfulSuggestion: "Essayez d'abord un outil de reconnexion léger avant un travail émotionnel plus profond.",
-    defaultSuggestion: "Un rituel de gratitude ou d'ouverture du cœur devrait très bien fonctionner ce soir.",
-    connectToSave: "Connectez-vous pour enregistrer la météo",
-    saving: "Enregistrement...",
+    title: "Météo d'intimité",
+    subtitle: "Choisissez calmement. Ressentez honnêtement. Demandez doucement. Laissez votre partenaire choisir avec respect.",
+    youLabel: "VOUS",
+    partnerLabel: "PARTENAIRE",
+    shivaAspect: "Aspect Shiva",
+    shaktiAspect: "Aspect Shakti",
+    swapRoles: "Échanger Shiva ↔ Shakti",
+    showRituals: "Voir les rituels",
+    distantLabel: "Distant",
+    bondedLabel: "Lié",
+    twoEnergies: "DEUX ÉNERGIES.",
+    oneJourney: "UN SEUL VOYAGE.",
+    centerText: "Pause. Ressens. Choisis ta vérité, puis accueille le climat de ton partenaire avec respect.",
     sealWeather: "Sceller ma météo",
-    sendWhisperNext: "Envoyer un murmure ensuite",
-    shareCardLabel: "Partager cette carte météo",
-    shareCardText: "Carte météo ✦ Ma météo ce soir est {weather}. {hint}",
-    yourWeather: "Votre météo",
-    belovedWeather: "Météo de votre partenaire",
-    connectBelovedHint: "Connectez-vous avec votre partenaire pour synchroniser votre météo partagée ici.",
-    updateHint: "Vous pouvez mettre à jour votre météo dès que votre climat intérieur change.",
+    saving: "Enregistrement…",
+    connectToSave: "Connectez-vous pour sauvegarder",
     noCheckinYet: "Pas encore de check-in aujourd'hui.",
   },
   cs: {
-    shellLabel: "Počasí intimity",
-    shellTitle: "Pojmenujte klima dřív, než otevřete večer",
-    shellDescription: "Začněte check-inem. Když je pravda pojmenovaná, další kroky dopadají jemněji a přesněji.",
-    shellActionLabel: "Vstoupit do rituálů",
-    chooseState: "Vyberte svůj stav",
-    arrivingTonight: "Jaké je vaše počasí dnes večer?",
-    suggestedNextStep: "Doporučený další krok",
-    stressedSuggestion: "Zvolte krátký dechový nebo jemný dotekový rituál místo intenzity.",
-    eroticSuggestion: "Otevřete Pozice nebo smyslný rituál a na začátku držte pomalé tempo.",
-    playfulSuggestion: "Nejdřív zkuste lehčí nástroj znovupropojení, pak jděte do hlubších emocí.",
-    defaultSuggestion: "Rituál vděčnosti nebo otevření srdce dnes večer pravděpodobně funguje nejlépe.",
-    connectToSave: "Pro uložení počasí se propojte",
-    saving: "Ukládání...",
+    title: "Počasí intimity",
+    subtitle: "Volte klidně. Cítěte upřímně. Ptejte se jemně. Nechte partnera vybrat s respektem.",
+    youLabel: "VY",
+    partnerLabel: "PARTNER",
+    shivaAspect: "Aspekt Šivy",
+    shaktiAspect: "Aspekt Šakti",
+    swapRoles: "Vyměnit Šiva ↔ Šakti",
+    showRituals: "Zobrazit rituály",
+    distantLabel: "Vzdálené",
+    bondedLabel: "Propojené",
+    twoEnergies: "DVĚ ENERGIE.",
+    oneJourney: "JEDNA CESTA.",
+    centerText: "Zastavte se. Pocítěte. Zvolte svou pravdu a přivítejte partnerovo počasí s respektem.",
     sealWeather: "Uložit moje počasí",
-    sendWhisperNext: "Pak poslat vzkaz",
-    shareCardLabel: "Sdílet tuto kartu počasí",
-    shareCardText: "Karta počasí ✦ Moje dnešní počasí je {weather}. {hint}",
-    yourWeather: "Vaše počasí",
-    belovedWeather: "Počasí partnera",
-    connectBelovedHint: "Propojte se s partnerem a synchronizujte zde společné počasí.",
-    updateHint: "Počasí můžete kdykoli upravit, když se vnitřní klima změní.",
+    saving: "Ukládám…",
+    connectToSave: "Propojte se pro uložení",
     noCheckinYet: "Dnes ještě není check-in.",
   },
 };
 
+const getLocalDayRange = () => {
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  const end = new Date(start);
+  end.setDate(end.getDate() + 1);
+  return { startIso: start.toISOString(), endIso: end.toISOString() };
+};
+
+/* ─── Ornate weather card ─────────────────────────────────────── */
+const WeatherCard = ({
+  def,
+  lang,
+  selected,
+  onClick,
+}: {
+  def: WeatherStateDef;
+  lang: Language;
+  selected: boolean;
+  onClick?: () => void;
+}) => {
+  const Icon = def.Icon;
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={!onClick}
+      className={cn(
+        "relative rounded-xl border p-3 text-left transition-all w-full group",
+        selected
+          ? cn("border-amber-400/60 bg-[#1a1035]", def.activeBorderClass, def.activeGlowClass)
+          : "border-amber-400/20 bg-[#0f0a20] hover:border-amber-400/40",
+        onClick ? "cursor-pointer" : "cursor-default",
+      )}
+    >
+      {/* Corner ornaments */}
+      <span className="pointer-events-none absolute left-1.5 top-1.5 h-2 w-2 border-l border-t border-amber-400/50" />
+      <span className="pointer-events-none absolute right-1.5 top-1.5 h-2 w-2 border-r border-t border-amber-400/50" />
+      <span className="pointer-events-none absolute bottom-1.5 left-1.5 h-2 w-2 border-b border-l border-amber-400/50" />
+      <span className="pointer-events-none absolute bottom-1.5 right-1.5 h-2 w-2 border-b border-r border-amber-400/50" />
+
+      <Icon className={cn("mb-1.5 h-3.5 w-3.5", selected ? def.iconClass : "text-amber-400/40")} />
+      <p className={cn("text-xs font-bold leading-tight", selected ? "text-foreground" : "text-foreground/60")}>
+        {def.label[lang]}
+      </p>
+      <p className="mt-1 text-[10px] leading-[1.35] text-muted-foreground/60">
+        {def.hint[lang]}
+      </p>
+    </button>
+  );
+};
+
+/* ─── Chakra figure placeholder ──────────────────────────────── */
+const ChakraFigure = ({ label }: { label: string }) => (
+  <div className="relative flex flex-col items-center py-2 select-none">
+    {/* Head */}
+    <div className="mb-1.5 h-9 w-9 rounded-full bg-gradient-to-b from-[#2a1f4a] to-[#1a1035] border border-amber-400/20 shadow-[0_0_16px_rgba(251,191,36,0.1)]" />
+    {/* Body */}
+    <div className="relative flex w-14 flex-col items-center rounded-b-[2rem] bg-gradient-to-b from-[#241845] to-[#1a1035] border-x border-b border-amber-400/12" style={{ height: 120 }}>
+      {/* Chakra dots */}
+      {CHAKRA_COLORS.map((cls, i) => (
+        <div
+          key={i}
+          className={cn("absolute w-3 h-3 rounded-full", cls)}
+          style={{ top: `${i * 15 + 4}px` }}
+        />
+      ))}
+    </div>
+    <p className="mt-2 text-[9px] uppercase tracking-[0.2em] text-amber-400/50">{label}</p>
+  </div>
+);
+
+/* ─── Main component ─────────────────────────────────────────── */
 const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
   const { user } = useAuth();
   const { lang } = useLanguage();
-  const copy = weatherCopyByLanguage[lang];
-  const states = weatherStatesByLanguage[lang];
-  const isPreview = !coupleId;
-  const [selected, setSelected] = useState<string | null>(null);
-  const [myEntry, setMyEntry] = useState<WeatherEntry | null>(null);
-  const [partnerEntry, setPartnerEntry] = useState<WeatherEntry | null>(null);
-  const [saving, setSaving] = useState(false);
+  const copy = COPY[lang];
 
-  const selectedState = useMemo(
-    () => states.find((state) => state.key === selected) ?? null,
-    [selected, states]
-  );
+  const [mySelected, setMySelected] = useState<string | null>(null);
+  const [partnerState, setPartnerState] = useState<string | null>(null);
+  const [shivaIsMe, setShivaIsMe] = useState(true);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (!coupleId || !user) return;
-
     const load = async () => {
       const { startIso, endIso } = getLocalDayRange();
       const { data } = await supabase
@@ -175,170 +277,188 @@ const IntimacyWeather = ({ coupleId, onNavigate }: Props) => {
         .order("created_at", { ascending: false });
 
       if (data) {
-        const latestByUser = new Map<string, WeatherEntry>();
-        for (const item of data) {
-          if (!latestByUser.has(item.user_id)) {
-            latestByUser.set(item.user_id, item);
-          }
-        }
-        const mine = latestByUser.get(user.id) ?? null;
-        const partner = Array.from(latestByUser.values()).find((item) => item.user_id !== user.id) ?? null;
-        setMyEntry(mine ?? null);
-        setPartnerEntry(partner ?? null);
-        if (mine?.state) setSelected(mine.state);
+        const latest = new Map<string, WeatherEntry>();
+        for (const item of data) if (!latest.has(item.user_id)) latest.set(item.user_id, item);
+        const mine = latest.get(user.id) ?? null;
+        const partner = Array.from(latest.values()).find((e) => e.user_id !== user.id) ?? null;
+        if (mine?.state) setMySelected(mine.state);
+        if (partner?.state) setPartnerState(partner.state);
       }
     };
-
     load();
-
-    const channel = supabase
-      .channel(`weather_entries_${coupleId}`)
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "weather_entries", filter: `couple_id=eq.${coupleId}` },
-        () => load()
-      )
+    const ch = supabase
+      .channel(`weather_${coupleId}`)
+      .on("postgres_changes", { event: "*", schema: "public", table: "weather_entries", filter: `couple_id=eq.${coupleId}` }, load)
       .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return () => { supabase.removeChannel(ch); };
   }, [coupleId, user]);
 
   const saveWeather = async () => {
-    if (!user || !selected || !coupleId) return;
-
+    if (!user || !mySelected || !coupleId) return;
     setSaving(true);
-    const { error } = await supabase.from("weather_entries").insert({
-      couple_id: coupleId,
-      user_id: user.id,
-      state: selected,
-    });
-
-    if (!error) {
-      setMyEntry({ state: selected, user_id: user.id, created_at: new Date().toISOString() });
-    }
+    await supabase.from("weather_entries").insert({ couple_id: coupleId, user_id: user.id, state: mySelected });
     setSaving(false);
   };
 
-  const renderCard = (title: string, entry: WeatherEntry | null, mine = false) => {
-    const stateMeta = states.find((state) => state.key === entry?.state) ?? null;
+  const stateGroup = (key: string | null) =>
+    key ? (STATES.find((s) => s.key === key)?.group ?? null) : null;
+
+  /* ─── Side panel ────────────────────────────────────────────── */
+  const SidePanel = ({ isMe }: { isMe: boolean }) => {
+    const selectedKey = isMe ? mySelected : partnerState;
+    const group = stateGroup(selectedKey);
+    const aspect = isMe
+      ? (shivaIsMe ? copy.shivaAspect : copy.shaktiAspect)
+      : (shivaIsMe ? copy.shaktiAspect : copy.shivaAspect);
+    const roleLabel = isMe ? copy.youLabel : copy.partnerLabel;
+    const figureLabel = isMe ? (shivaIsMe ? "Shiva" : "Shakti") : (shivaIsMe ? "Shakti" : "Shiva");
+
     return (
-      <div className="rounded-[22px] border border-border/22 bg-background/50 p-4 backdrop-blur-sm">
-        <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{title}</div>
-        {stateMeta ? (
-          <>
-            <div className="mt-3 flex items-center gap-3">
-              <div className={`rounded-2xl border border-border/30 bg-card/45 p-3 ${stateMeta.iconClass}`}>
-                <stateMeta.icon className="h-5 w-5" />
-              </div>
-              <div>
-                <div className="font-display text-2xl text-foreground">{stateMeta.emoji} {stateMeta.label}</div>
-                <div className="text-sm text-muted-foreground">{stateMeta.hint}</div>
-              </div>
-            </div>
-            {mine && <div className="mt-4 text-xs text-muted-foreground">{copy.updateHint}</div>}
-          </>
-        ) : (
-          <div className="mt-3 text-sm text-muted-foreground">{copy.noCheckinYet}</div>
+      <div className="flex flex-col gap-3">
+        {/* Role header */}
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-foreground/70">
+            {roleLabel}{" "}
+            <span className="text-amber-400/70">[{aspect}]</span>
+          </p>
+          {selectedKey ? (
+            <p className={cn("mt-0.5 text-sm font-medium", group === "bonded" ? "text-amber-400" : "text-slate-400")}>
+              {group === "bonded" ? copy.bondedLabel : copy.distantLabel}
+            </p>
+          ) : (
+            <p className="mt-0.5 text-xs text-muted-foreground/50">{copy.noCheckinYet}</p>
+          )}
+        </div>
+
+        {/* Distant row */}
+        <div>
+          <p className="mb-1.5 text-[9px] font-semibold uppercase tracking-[0.22em] text-slate-500/80">
+            {copy.distantLabel}
+          </p>
+          <div className="grid grid-cols-3 gap-1.5">
+            {DISTANT.map((def) => (
+              <WeatherCard
+                key={def.key}
+                def={def}
+                lang={lang}
+                selected={selectedKey === def.key}
+                onClick={isMe ? () => setMySelected(def.key) : undefined}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Chakra figure */}
+        <div className="flex justify-center">
+          <ChakraFigure label={figureLabel} />
+        </div>
+
+        {/* Bonded row */}
+        <div>
+          <p className="mb-1.5 text-[9px] font-semibold uppercase tracking-[0.22em] text-amber-500/80">
+            {copy.bondedLabel}
+          </p>
+          <div className="grid grid-cols-3 gap-1.5">
+            {BONDED.map((def) => (
+              <WeatherCard
+                key={def.key}
+                def={def}
+                lang={lang}
+                selected={selectedKey === def.key}
+                onClick={isMe ? () => setMySelected(def.key) : undefined}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Save – my side only */}
+        {isMe && (
+          <button
+            type="button"
+            onClick={saveWeather}
+            disabled={!mySelected || saving || !coupleId}
+            className="mt-1 w-full rounded-xl border border-amber-400/25 bg-amber-500/8 py-2.5 text-xs font-semibold uppercase tracking-widest text-foreground/80 transition-all hover:border-amber-400/50 hover:bg-amber-500/14 disabled:opacity-40"
+          >
+            {!coupleId ? copy.connectToSave : saving ? copy.saving : copy.sealWeather}
+          </button>
         )}
       </div>
     );
   };
 
+  /* ─── Render ─────────────────────────────────────────────────── */
   return (
-    <DoorwayShell
-      label={copy.shellLabel}
-      title={copy.shellTitle}
-      description={copy.shellDescription}
-    >
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="text-center">
+        <h2 className="font-display text-3xl text-foreground">{copy.title}</h2>
+        <p className="mt-1.5 text-sm text-muted-foreground">{copy.subtitle}</p>
+      </div>
 
-      <section className="rounded-[26px] border border-border/25 bg-card/55 p-5 backdrop-blur-sm md:p-6">
-        <div className="mb-4">
-          <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">{copy.chooseState}</p>
-          <h3 className="mt-2 font-display text-2xl text-foreground">{copy.arrivingTonight}</h3>
+      {/* Three-column grid — fixed at md+ */}
+      <div className="grid gap-3 md:grid-cols-[1fr_220px_1fr]">
+
+        {/* YOU */}
+        <div className="relative overflow-hidden rounded-2xl border border-amber-400/15 bg-[#0d0920]/80 p-4 backdrop-blur-sm shadow-[inset_0_1px_0_rgba(245,158,11,0.06)]">
+          {/* Subtle inner glow */}
+          <div className="pointer-events-none absolute -left-8 top-0 h-24 w-24 rounded-full bg-amber-400/5 blur-3xl" />
+          <SidePanel isMe={true} />
         </div>
 
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-          {states.map((state) => {
-            const Icon = state.icon;
-            const active = selected === state.key;
-            return (
-              <button
-                key={state.key}
-                type="button"
-                onClick={() => setSelected(state.key)}
-                className={`rounded-[24px] border p-4 text-left transition-all ${
-                  active
-                    ? "border-primary/30 bg-primary/10 shadow-[0_18px_50px_-36px_rgba(255,173,70,0.42)]"
-                    : "border-border/25 bg-background/35 hover:border-border/45 hover:bg-background/55"
-                }`}
-              >
-                <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-3 ${state.iconClass}`}>
-                  <Icon className="h-5 w-5" />
-                </div>
-                <div className="mt-4 font-display text-xl text-foreground">{state.emoji} {state.label}</div>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">{state.hint}</p>
-              </button>
-            );
-          })}
-        </div>
-
-        {selectedState && (
-          <p className="mt-3 text-xs leading-5 text-muted-foreground/70">
-            {selectedState.key === "stressed" || selectedState.key === "tired"
-              ? copy.stressedSuggestion
-              : selectedState.key === "erotic"
-              ? copy.eroticSuggestion
-              : selectedState.key === "playful"
-              ? copy.playfulSuggestion
-              : copy.defaultSuggestion}
-          </p>
-        )}
-
-        <div className="mt-4 flex flex-wrap gap-3">
-          <button
-            type="button"
-            disabled={!selected || saving || isPreview}
-            onClick={saveWeather}
-            className="rounded-2xl border border-primary/25 bg-primary/12 px-5 py-3 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/16 disabled:opacity-60"
-          >
-            {isPreview ? copy.connectToSave : saving ? copy.saving : copy.sealWeather}
-          </button>
-          <button
-            type="button"
-            onClick={() => onNavigate("messages")}
-            className="rounded-2xl border border-border/35 bg-card/45 px-5 py-3 text-sm text-foreground transition-all hover:border-border/55 hover:bg-card/60"
-          >
-            {copy.sendWhisperNext}
-          </button>
-          {selectedState && (
-            <ShareCardButton
-              coupleId={coupleId}
-              messageType="weather_share"
-              content={copy.shareCardText
-                .replace("{weather}", `${selectedState.label} ${selectedState.emoji}`)
-                .replace("{hint}", selectedState.hint)}
-              label={copy.shareCardLabel}
+        {/* CENTER */}
+        <div className="flex flex-col items-center justify-between gap-3 py-2">
+          {/* Couple image in arch frame */}
+          <div className="relative w-full overflow-hidden rounded-t-[50%] rounded-b-xl border border-amber-400/25 bg-[#0d0920] shadow-[0_0_50px_-10px_rgba(251,191,36,0.35)]" style={{ minHeight: 220 }}>
+            <img
+              src={shivaShaktiIcon}
+              alt="Two energies, one journey"
+              className="w-full h-full object-cover object-top opacity-95"
+              style={{ minHeight: 220 }}
             />
-          )}
-        </div>
-      </section>
-
-      <section className="grid gap-3 lg:grid-cols-2">
-        {renderCard(copy.yourWeather, myEntry, true)}
-        {isPreview && !partnerEntry ? (
-          <div className="rounded-[24px] border border-border/30 bg-background/45 p-5">
-            <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{copy.belovedWeather}</div>
-            <div className="mt-3 text-sm text-muted-foreground">
-              {copy.connectBelovedHint}
-            </div>
+            <div className="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-[#0d0920] to-transparent" />
+            {/* Arch glow */}
+            <div className="pointer-events-none absolute inset-0 rounded-t-[50%] shadow-[inset_0_0_30px_rgba(251,191,36,0.08)]" />
           </div>
-        ) : (
-          renderCard(copy.belovedWeather, partnerEntry)
-        )}
-      </section>
-    </DoorwayShell>
+
+          {/* Tagline */}
+          <div className="text-center">
+            <p className="font-display text-sm font-bold uppercase tracking-wider text-amber-400">
+              {copy.twoEnergies}
+            </p>
+            <p className="font-display text-sm font-bold uppercase tracking-wider text-amber-400">
+              {copy.oneJourney}
+            </p>
+            <p className="mt-2 text-[10px] leading-[1.5] text-muted-foreground/70">
+              {copy.centerText}
+            </p>
+          </div>
+
+          {/* Buttons */}
+          <div className="flex w-full flex-col gap-2">
+            <button
+              type="button"
+              onClick={() => setShivaIsMe((p) => !p)}
+              className="w-full rounded-xl border border-amber-400/25 bg-[#0d0920] py-2 text-[10px] font-semibold uppercase tracking-widest text-foreground/70 transition-all hover:border-amber-400/50"
+            >
+              {copy.swapRoles}
+            </button>
+            <button
+              type="button"
+              onClick={() => onNavigate("rituals")}
+              className="w-full rounded-xl border border-amber-400/35 bg-amber-500/10 py-2 text-[10px] font-semibold uppercase tracking-widest text-amber-300 transition-all hover:border-amber-400/60 hover:bg-amber-500/16"
+            >
+              {copy.showRituals}
+            </button>
+          </div>
+        </div>
+
+        {/* PARTNER */}
+        <div className="relative overflow-hidden rounded-2xl border border-amber-400/15 bg-[#0d0920]/80 p-4 backdrop-blur-sm shadow-[inset_0_1px_0_rgba(245,158,11,0.06)]">
+          <div className="pointer-events-none absolute -right-8 top-0 h-24 w-24 rounded-full bg-amber-400/5 blur-3xl" />
+          <SidePanel isMe={false} />
+        </div>
+      </div>
+    </div>
   );
 };
 

@@ -4,6 +4,10 @@ import { ArrowRight, Mic, Pause, Play, RefreshCcw, Sparkles, Square } from "luci
 
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 import { sacredVisualSystem } from "@/lib/sacredVisualSystem";
+import ChakraIcon from "@/components/tantra-icons/ChakraIcon";
+import FlameIcon from "@/components/tantra-icons/FlameIcon";
+import LotusIcon from "@/components/tantra-icons/LotusIcon";
+import SacredGeometryIcon from "@/components/tantra-icons/SacredGeometryIcon";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import {
   SACRED_VOICE_DURATIONS,
@@ -41,6 +45,13 @@ const optionCardClass = (active: boolean) =>
 
 const optionLabelClass = (active: boolean) =>
   `font-display text-lg leading-snug md:text-xl ${active ? "text-foreground" : "text-foreground/95"}`;
+
+const intentionVisuals: Record<string, { icon: React.FC<{ size?: number; className?: string }>; iconClass: string }> = {
+  breathe_together: { icon: ChakraIcon, iconClass: "text-rose-300/70" },
+  guide_us: { icon: LotusIcon, iconClass: "text-amber-300/70" },
+  deepen_intimacy: { icon: FlameIcon, iconClass: "text-orange-300/70" },
+  repair_us: { icon: SacredGeometryIcon, iconClass: "text-cyan-300/70" },
+};
 
 const SacredPathVoice = () => {
   const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
@@ -173,6 +184,8 @@ const SacredPathVoice = () => {
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               {SACRED_VOICE_INTENTIONS.map((item) => {
                 const active = selection.intention === item.id;
+                const visual = intentionVisuals[item.id];
+                const IconComponent = visual?.icon;
                 return (
                   <button
                     key={item.id}
@@ -180,7 +193,12 @@ const SacredPathVoice = () => {
                     onClick={() => setSelection((prev) => ({ ...prev, intention: item.id }))}
                     className={optionCardClass(active)}
                   >
-                    <p className={optionLabelClass(active)}>{item.label}</p>
+                    <div className="flex flex-col items-center gap-2">
+                      {IconComponent && (
+                        <IconComponent size={32} className={visual.iconClass} />
+                      )}
+                      <p className={optionLabelClass(active)}>{item.label}</p>
+                    </div>
                   </button>
                 );
               })}
