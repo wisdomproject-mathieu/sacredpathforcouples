@@ -339,6 +339,7 @@ const RitualDetail = ({
 const SacredRepair = () => {
   const { user } = useAuth();
   const { hasPremiumAccess } = usePremiumAccess();
+  const coupleId = useCoupleId();
   const [selectedChapterId, setSelectedChapterId] = useState<string | null>(null);
   const [selectedRitualTitle, setSelectedRitualTitle] = useState<string | null>(null);
   const [premiumHighlight, setPremiumHighlight] = useState(false);
@@ -583,6 +584,7 @@ const SacredRepair = () => {
                       ritual={ritual}
                       unlocked={isRitualUnlocked(selectedChapter.id, ritual.title)}
                       isFreeRitual={isFreeRitualForChapter(selectedChapter.id, ritual.title)}
+                      hidePremiumBadges={hasPremiumAccess}
                       onClick={() => handleRitualClick(selectedChapter, ritual)}
                     />
                   ))}
@@ -650,12 +652,13 @@ const SacredRepair = () => {
           ) : (
             <>
               <div className={sacredVisualSystem.contourCyan}>
-                <RitualCard ritual={selectedRitual} unlocked={true} active={true} isFreeRitual={isFreeRitualForChapter(selectedChapter.id, selectedRitual.title)} />
+                <RitualCard ritual={selectedRitual} unlocked={true} active={true} isFreeRitual={isFreeRitualForChapter(selectedChapter.id, selectedRitual.title)} hidePremiumBadges={hasPremiumAccess} />
               </div>
 
               <RitualDetail
                 ritual={selectedRitual}
                 chapter={selectedChapter}
+                coupleId={coupleId}
                 onBackToRituals={() => setSelectedRitualTitle(null)}
                 onBackToRepair={() => {
                   setSelectedRitualTitle(null);
