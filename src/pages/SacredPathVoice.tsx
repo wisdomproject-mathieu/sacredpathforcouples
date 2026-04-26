@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ComponentType } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Mic, Pause, Play, RefreshCcw, Sparkles, Square } from "lucide-react";
 
@@ -46,7 +46,7 @@ const optionCardClass = (active: boolean) =>
 const optionLabelClass = (active: boolean) =>
   `font-display text-lg leading-snug md:text-xl ${active ? "text-foreground" : "text-foreground/95"}`;
 
-const intentionVisuals: Record<string, { icon: React.FC<{ size?: number; className?: string }>; iconClass: string }> = {
+const intentionVisuals: Record<string, { icon: ComponentType<{ size?: number; className?: string }>; iconClass: string }> = {
   breathe_together: { icon: ChakraIcon, iconClass: "text-rose-300/70" },
   guide_us: { icon: LotusIcon, iconClass: "text-amber-300/70" },
   deepen_intimacy: { icon: FlameIcon, iconClass: "text-orange-300/70" },
