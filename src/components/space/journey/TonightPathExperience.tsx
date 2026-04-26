@@ -187,6 +187,7 @@ const TonightPathExperience = ({
   myWeather,
   belovedWeather,
   tonightPathStatus,
+  coupleId,
   selectedDailyMainCard,
   alternateCards,
   weatherEngineDebug,
