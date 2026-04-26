@@ -747,6 +747,14 @@ const MoreRitualsForTwoExperience = ({ lang, weatherMatch, isPremium, canSend, c
               <p className="mt-3 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">{card.source}</p>
 
               <div className="mt-3 flex flex-wrap gap-2">
+                <RitualTimerButton
+                  ritualTitle={card.title}
+                  ritualSource="more-rituals"
+                  coupleId={coupleId ?? null}
+                  suggestedDuration={card.tags?.[0] ?? null}
+                  variant="default"
+                  label="Start timer"
+                />
                 <button
                   type="button"
                   onClick={() => void copyCard(card)}

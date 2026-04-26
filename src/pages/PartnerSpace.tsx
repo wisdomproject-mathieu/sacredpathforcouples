@@ -1971,6 +1971,7 @@ const PartnerSpace = () => {
                   weatherMatch={weatherMatch}
                   isPremium={hasPremiumAccess}
                   canSend={Boolean(coupleId && user)}
+                  coupleId={coupleId}
                   onSend={async (message) => sendSacredMessage("ritual_share", message)}
                 />
               ) : (
