@@ -15,6 +15,7 @@ import {
 import type { Language } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import type { WeatherMatchResult, RitualRecommendation } from "@/lib/weatherMatch";
+import RitualTimerButton from "@/components/ritual/RitualTimerButton";
 
 type ThemeKey =
   | "breathing"
@@ -63,6 +64,7 @@ type Props = {
   weatherMatch: WeatherMatchResult | null;
   isPremium: boolean;
   canSend: boolean;
+  coupleId?: string | null;
   onSend?: (message: string) => Promise<boolean>;
 };
 
