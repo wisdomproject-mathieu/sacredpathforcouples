@@ -1,13 +1,12 @@
 import { useEffect, useMemo, useState, type Dispatch, type SetStateAction } from "react";
-import { Link } from "react-router-dom";
 import { Cloud, Heart, Snowflake, SunMedium, Zap } from "lucide-react";
-import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import { cn } from "@/lib/utils";
+import SacredPathBrand from "@/components/SacredPathBrand";
 
 interface Props {
   coupleId?: string;
@@ -123,8 +122,8 @@ type CopyDef = {
   partnerLabel: string;
   shivaAspect: string;
   shaktiAspect: string;
-  swapRoles: string;
   showRituals: string;
+  premiumForTwo: string;
   distantLabel: string;
   bondedLabel: string;
   twoEnergies: string;
@@ -144,13 +143,14 @@ const COPY: Record<Language, CopyDef> = {
     partnerLabel: "PARTNER",
     shivaAspect: "Shiva Aspect",
     shaktiAspect: "Shakti Aspect",
-    swapRoles: "Swap Shiva ↔ Shakti",
-    showRituals: "SACRED RITUALS FOR COUPLED PRESENCE",
+    showRituals: "Show Ritual",
+    premiumForTwo: "Premium for 2",
     distantLabel: "Distant",
     bondedLabel: "Bonded",
     twoEnergies: "TWO ENERGIES.",
     oneJourney: "ONE PATH.",
-    centerText: "Pause. Feel. Choose your truth, then welcome your partner's weather with respect.",
+    centerText:
+      "The secret to these rituals is not perfection. It is the intention you bring. If you feel rushed, pause, breathe, and reset. Intimacy is a garden - water it daily, and watch it bloom.",
     sealWeather: "Seal my weather",
     saving: "Saving…",
     connectToSave: "Connect to save",
@@ -163,13 +163,14 @@ const COPY: Record<Language, CopyDef> = {
     partnerLabel: "PARTENAIRE",
     shivaAspect: "Aspect Shiva",
     shaktiAspect: "Aspect Shakti",
-    swapRoles: "Échanger Shiva ↔ Shakti",
-    showRituals: "RITUELS SACRÉS POUR LA PRÉSENCE DU COUPLE",
+    showRituals: "Voir le rituel",
+    premiumForTwo: "Premium pour 2",
     distantLabel: "Distant",
     bondedLabel: "Lié",
     twoEnergies: "DEUX ÉNERGIES.",
     oneJourney: "UN SEUL CHEMIN.",
-    centerText: "Pause. Ressens. Choisis ta vérité, puis accueille le climat de ton partenaire avec respect.",
+    centerText:
+      "Le secret de ces pratiques n'est pas la perfection. C'est l'intention que vous apportez. Si vous vous sentez pressés, arrêtez-vous, respirez et réinitialisez. L'intimité est un jardin - arrosez-la chaque jour et regardez-la fleurir.",
     sealWeather: "Sceller ma météo",
     saving: "Enregistrement…",
     connectToSave: "Connectez-vous pour sauvegarder",
@@ -182,13 +183,14 @@ const COPY: Record<Language, CopyDef> = {
     partnerLabel: "PARTNER",
     shivaAspect: "Aspekt Šivy",
     shaktiAspect: "Aspekt Šakti",
-    swapRoles: "Vyměnit Šiva ↔ Šakti",
-    showRituals: "POSVÁTNÉ RITUÁLY PRO PÁROVOU PŘÍTOMNOST",
+    showRituals: "Zobrazit rituál",
+    premiumForTwo: "Premium pro 2",
     distantLabel: "Vzdálené",
     bondedLabel: "Propojené",
     twoEnergies: "DVĚ ENERGIE.",
     oneJourney: "JEDNA CESTA.",
-    centerText: "Zastavte se. Pocítěte. Zvolte svou pravdu a přivítejte partnerovo počasí s respektem.",
+    centerText:
+      "Tajemství těchto praktik není dokonalost. Je to záměr, který přinášíte. Když spěcháte, zastavte se, nadechněte se a začněte znovu. Intimita je zahrada - zalévejte ji každý den a sledujte, jak rozkvétá.",
     sealWeather: "Uložit moje počasí",
     saving: "Ukládám…",
     connectToSave: "Propojte se pro uložení",
@@ -277,7 +279,6 @@ const IntimacyWeather = ({ coupleId, onNavigate, myName, partnerName }: Props) =
 
   const [mySelected, setMySelected] = useState<string | null>(null);
   const [partnerState, setPartnerState] = useState<string | null>(null);
-  const [weatherSidesSwapped, setWeatherSidesSwapped] = useState(false);
   const [saving, setSaving] = useState(false);
   const [ownNameFallback, setOwnNameFallback] = useState<string>("You");
   const [partnerNameFallback, setPartnerNameFallback] = useState<string>("Partner");
@@ -336,44 +337,26 @@ const IntimacyWeather = ({ coupleId, onNavigate, myName, partnerName }: Props) =
   };
 
   const panelDescriptors = useMemo(() => {
-    const left = weatherSidesSwapped
-      ? {
-          side: "left" as const,
-          owner: "partner" as const,
-          role: "shakti" as const,
-          displayName: partnerNameFallback,
-          selectedKey: partnerState,
-          onSelect: setPartnerState,
-        }
-      : {
-          side: "left" as const,
-          owner: "me" as const,
-          role: "shiva" as const,
-          displayName: ownNameFallback,
-          selectedKey: mySelected,
-          onSelect: setMySelected,
-        };
+    const left = {
+      side: "left" as const,
+      owner: "me" as const,
+      role: "shiva" as const,
+      displayName: ownNameFallback,
+      selectedKey: mySelected,
+      onSelect: setMySelected,
+    };
 
-    const right = weatherSidesSwapped
-      ? {
-          side: "right" as const,
-          owner: "me" as const,
-          role: "shiva" as const,
-          displayName: ownNameFallback,
-          selectedKey: mySelected,
-          onSelect: setMySelected,
-        }
-      : {
-          side: "right" as const,
-          owner: "partner" as const,
-          role: "shakti" as const,
-          displayName: partnerNameFallback,
-          selectedKey: partnerState,
-          onSelect: setPartnerState,
-        };
+    const right = {
+      side: "right" as const,
+      owner: "partner" as const,
+      role: "shakti" as const,
+      displayName: partnerNameFallback,
+      selectedKey: partnerState,
+      onSelect: setPartnerState,
+    };
 
     return [left, right];
-  }, [mySelected, ownNameFallback, partnerNameFallback, partnerState, weatherSidesSwapped]);
+  }, [mySelected, ownNameFallback, partnerNameFallback, partnerState]);
 
   /* ─── Side panel ────────────────────────────────────────────── */
   const SidePanel = ({ panel }: { panel: PanelDescriptor }) => {
@@ -478,15 +461,7 @@ const IntimacyWeather = ({ coupleId, onNavigate, myName, partnerName }: Props) =
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-start">
-        <div className="inline-flex items-center gap-3 rounded-[22px] border border-amber-400/22 bg-card/58 px-3 py-2.5 shadow-[0_18px_45px_-30px_rgba(0,0,0,0.72)] backdrop-blur">
-          <div className="flex h-11 w-11 items-center justify-center rounded-[16px] border border-amber-400/20 bg-amber-400/10">
-            <img src={shivaShaktiIcon} alt="" className="h-7 w-7 object-contain" />
-          </div>
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.24em] text-amber-300/90">Sacred Path</p>
-            <p className="font-display text-lg text-foreground">for Couples</p>
-          </div>
-        </div>
+        <SacredPathBrand />
       </div>
 
       {/* Header */}
@@ -509,40 +484,28 @@ const IntimacyWeather = ({ coupleId, onNavigate, myName, partnerName }: Props) =
         <div className="flex flex-col items-center gap-3 py-2">
           <button
             type="button"
-            onClick={() => setWeatherSidesSwapped((p) => !p)}
-            className="w-full rounded-full border border-amber-400/35 bg-amber-400/12 px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.18em] text-amber-100 shadow-[0_10px_30px_-22px_rgba(251,191,36,0.45)] transition-all hover:border-amber-400/60 hover:bg-amber-400/18"
+            onClick={() => onNavigate("rituals")}
+            className="w-full rounded-[22px] border border-amber-300/35 bg-gradient-to-b from-amber-300/92 to-amber-500/78 px-4 py-4 text-sm font-semibold leading-5 tracking-[0.03em] text-[#201308] shadow-[0_18px_45px_-28px_rgba(251,191,36,0.8)] transition-all hover:scale-[1.01] hover:border-amber-200/60"
           >
-            {copy.swapRoles}
+            {copy.showRituals}
           </button>
 
           <button
             type="button"
-            onClick={() => onNavigate("rituals")}
-            className="w-full rounded-[22px] border border-amber-300/35 bg-gradient-to-b from-amber-300/92 to-amber-500/78 px-4 py-4 text-[11px] font-semibold uppercase leading-5 tracking-[0.16em] text-[#201308] shadow-[0_18px_45px_-28px_rgba(251,191,36,0.8)] transition-all hover:scale-[1.01] hover:border-amber-200/60"
+            onClick={() => onNavigate("pricing")}
+            className="w-full rounded-[22px] border border-amber-400/18 bg-gradient-to-b from-amber-400/16 via-amber-300/10 to-background/45 px-4 py-4 text-sm font-semibold leading-5 tracking-[0.03em] text-foreground/95 shadow-[0_16px_45px_-32px_rgba(0,0,0,0.7)] transition-all hover:border-amber-300/40 hover:bg-amber-400/18"
           >
-            {copy.showRituals}
+            {copy.premiumForTwo}
           </button>
 
           <div className="w-full rounded-[22px] border border-amber-400/18 bg-card/55 px-4 py-4 text-center shadow-[0_16px_45px_-32px_rgba(0,0,0,0.7)] backdrop-blur">
             <p className="font-display text-sm font-bold uppercase tracking-[0.22em] text-amber-300">{copy.twoEnergies}</p>
             <p className="font-display text-sm font-bold uppercase tracking-[0.22em] text-amber-300">{copy.oneJourney}</p>
-            <p className="mx-auto mt-3 max-w-[18ch] text-sm leading-7 text-muted-foreground/90">
+            <p className="mx-auto mt-3 max-w-[22ch] text-base leading-8 text-muted-foreground/90">
               {copy.centerText}
             </p>
           </div>
 
-          <div className="w-full rounded-[22px] border border-amber-400/20 bg-gradient-to-b from-amber-400/14 via-amber-300/10 to-background/45 px-4 py-4 text-center">
-            <p className="font-display text-sm font-bold uppercase tracking-[0.2em] text-foreground/95">
-              Explore premium for both of you
-            </p>
-            <p className="mt-2 text-sm text-muted-foreground/85">One subscription. One path for both of you.</p>
-            <Link
-              to="/pricing"
-              className="mt-3 inline-flex w-full items-center justify-center rounded-full border border-amber-300/35 bg-amber-400/14 px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.16em] text-amber-100 transition-all hover:border-amber-300/55 hover:bg-amber-400/20"
-            >
-              Explore premium for both of you
-            </Link>
-          </div>
         </div>
 
         {/* PARTNER */}

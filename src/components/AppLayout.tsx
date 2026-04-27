@@ -6,8 +6,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 import SacredSectionShell from "@/components/SacredSectionShell";
+import SacredPathBrand from "@/components/SacredPathBrand";
 
 const AppLayout = () => {
   const { signOut } = useAuth();
@@ -45,15 +45,7 @@ const AppLayout = () => {
         <aside className="lg:w-[290px] lg:shrink-0">
           <div className="rounded-[28px] border border-border/30 bg-card/45 p-4 shadow-[0_20px_60px_-35px_rgba(0,0,0,0.65)] backdrop-blur-md lg:sticky lg:top-6">
             <div className="rounded-[24px] border border-primary/15 bg-gradient-to-br from-primary/10 via-background to-background p-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10">
-                  <img src={shivaShaktiIcon} alt="Sacred Path" className="h-10 w-10 object-contain" />
-                </div>
-                <div>
-                  <p className="text-[11px] uppercase tracking-[0.28em] text-primary/80">Sacred Path</p>
-                  <h1 className="font-display text-xl text-foreground">for Couples</h1>
-                </div>
-              </div>
+              <SacredPathBrand className="w-full" />
 
               <p className="mt-4 text-sm leading-6 text-muted-foreground">
                 {t("app.sidebar_desc")}

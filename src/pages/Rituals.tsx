@@ -3,6 +3,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Lock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import SacredPathBrand from "@/components/SacredPathBrand";
 import BreathIcon from "@/components/tantra-icons/BreathIcon";
 import FlameIcon from "@/components/tantra-icons/FlameIcon";
 import LotusIcon from "@/components/tantra-icons/LotusIcon";
@@ -21,9 +22,14 @@ const Rituals = () => {
   return (
     <div className="px-4 py-8 pb-24">
       <div className="container max-w-4xl">
-        <div className="text-center mb-10">
-          <h1 className="font-heading text-3xl font-semibold text-foreground mb-2">{t("rituals.title")}</h1>
-          <p className="text-muted-foreground font-body max-w-xl mx-auto text-sm">{t("rituals.desc")}</p>
+        <div className="mb-10 flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-6">
+          <SacredPathBrand className="w-full max-w-[430px]" />
+          <div className="flex-1 text-center">
+            <h1 className="font-display text-4xl font-semibold text-foreground md:text-5xl">{t("rituals.title")}</h1>
+            <p className="mx-auto mt-2 max-w-2xl text-sm leading-7 text-muted-foreground">
+              {t("rituals.desc")}
+            </p>
+          </div>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
