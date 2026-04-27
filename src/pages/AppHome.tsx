@@ -1349,16 +1349,12 @@ const AppHome = () => {
     : "#";
 
   const featuredPathTitle = bothCheckedIn
-    ? sharedMainCardState.selectedDailyMainCard?.title ?? "No mapped ritual"
+    ? weatherMatch?.archetype.title ?? "No mapped ritual"
     : dailyCards[0]?.title ?? copy.selecting;
   const featuredPathDescription = bothCheckedIn
-    ? sharedMainCardState.selectedDailyMainCard?.description ?? "No mapped weather ritual for this pair."
+    ? weatherMatch?.summary ?? "No mapped weather ritual for this pair."
     : dailyCards[0]?.description ?? copy.calibrating;
   const featuredPathLabel = weatherUi.tonightPath;
-  const tonightRitual = sharedMainCardState.selectedDailyMainCard;
-  const tonightRitualTitle = tonightRitual?.title ?? (bothCheckedIn ? "No mapped ritual" : dailyCards[0]?.title ?? copy.selecting);
-  const tonightRitualDescription = tonightRitual?.description ?? featuredPathDescription;
-  const tonightRitualSteps = tonightRitual?.ritualSteps?.slice(0, 3) ?? (bothCheckedIn ? [] : dailyCards[0]?.steps?.slice(0, 3) ?? []);
   const waitingPathCopy = tonightPathStatus.waitingBody;
   const enterTonightPathLabel = lang === "fr"
     ? "Entrer dans le chemin de ce soir"
@@ -1706,32 +1702,14 @@ const AppHome = () => {
             <p className="text-xs uppercase tracking-[0.2em] text-amber-400/75">{featuredPathLabel}</p>
             <h3 className="mt-2 font-display text-2xl text-foreground">{featuredPathTitle}</h3>
             <p className="mt-3 text-sm leading-6 text-muted-foreground">{featuredPathDescription}</p>
-            {tonightRitual ? (
-              <p className="mt-2 text-xs uppercase tracking-[0.14em] text-amber-200/90">
-                {weatherUi.tonightPath}: {tonightRitualTitle}
-              </p>
-            ) : null}
-            {tonightRitual ? (
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                <span className="rounded-full border border-border/35 bg-card/45 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/90">
-                  {tonightRitual.duration}
-                </span>
-                <span className="rounded-full border border-border/35 bg-card/45 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/90">
-                  {tonightRitual.intimacyLevel}
-                </span>
-                <span className="rounded-full border border-border/35 bg-card/45 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-foreground/90">
-                  {tonightRitual.primaryNeed}
-                </span>
-              </div>
-            ) : null}
-            {tonightRitualSteps.length ? (
-              <div className="mt-3 rounded-[12px] border border-border/30 bg-background/40 px-3 py-2.5">
-                <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground/75">Tonight ritual flow</p>
-                <ol className="mt-1.5 space-y-1 text-sm leading-6 text-foreground/90">
-                  {tonightRitualSteps.map((step, index) => (
-                    <li key={`${step}-${index}`}>{index + 1}. {step}</li>
-                  ))}
-                </ol>
+            {bothCheckedIn ? (
+              <div className="mt-4 rounded-[14px] border border-amber-400/20 bg-amber-950/15 px-3 py-2.5">
+                <p className="text-[10px] uppercase tracking-[0.16em] text-amber-200/80">
+                  {weatherUi.tonightPath}
+                </p>
+                <p className="mt-1 text-sm leading-6 text-foreground/90">
+                  One simple ritual, one shared path. Open the tonight page for the fuller flow.
+                </p>
               </div>
             ) : null}
             <div className="mt-5">

@@ -2,6 +2,12 @@ import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 import type { Language } from "@/contexts/LanguageContext";
 
 export type WeatherKey =
+  | "stormy"
+  | "frozen"
+  | "foggy"
+  | "warm"
+  | "electric"
+  | "sunny"
   | "open"
   | "tender"
   | "playful"
@@ -159,6 +165,78 @@ const lz = (en: string, fr?: string, cs?: string): Localized => ({
 const t = (value: Localized, lang: Language) => (lang === "fr" ? value.fr : lang === "cs" ? value.cs : value.en);
 
 const weatherMeta: Record<WeatherKey, WeatherMeta> = {
+  stormy: {
+    label: lz("Stormy", "Orageux", "Bouřlivé"),
+    hint: lz("Tense, hurt, or charged with something unspoken.", "Tendu, blessé, ou chargé d'un non-dit.", "Napjatý, zraněný nebo nabitý nevyřčeným."),
+    meaning: lz(
+      "Stormy weather asks for repair, grounding, and emotional safety before anything else.",
+      "Le climat orageux demande d'abord réparation, ancrage et sécurité émotionnelle.",
+      "Bouřlivé počasí si nejprve žádá opravu, ukotvení a emoční bezpečí.",
+    ),
+    emoji: "⛈️",
+    energy: 2,
+    intimacy: 2,
+  },
+  frozen: {
+    label: lz("Frozen", "Gelé", "Zamrzlé"),
+    hint: lz("Numb, tired, shut down in the body.", "Engourdi, fatigué, fermé dans le corps.", "Znecitlivělý, unavený, uzavřený v těle."),
+    meaning: lz(
+      "Frozen weather asks for safety, breath, stillness, and no-pressure reconnection.",
+      "Le climat gelé demande sécurité, souffle, immobilité et reconnexion sans pression.",
+      "Zamrzlé počasí volá po bezpečí, dechu, klidu a beznátlakovém znovuspojení.",
+    ),
+    emoji: "🧊",
+    energy: 1,
+    intimacy: 2,
+  },
+  foggy: {
+    label: lz("Foggy", "Brumeux", "Mlhavé"),
+    hint: lz("Unclear, drifting, not quite here.", "Flou, incertain, pas tout à fait là.", "Nejasný, unášený, ne zcela přítomný."),
+    meaning: lz(
+      "Foggy weather asks for clarity, gentle choice, and simple grounding.",
+      "Le climat brumeux demande clarté, choix doux et ancrage simple.",
+      "Mlhavé počasí volá po jasnosti, jemné volbě a jednoduchém ukotvení.",
+    ),
+    emoji: "🌫️",
+    energy: 2,
+    intimacy: 3,
+  },
+  warm: {
+    label: lz("Warm", "Chaleureux", "Vřelé"),
+    hint: lz("Soft, tender, or wanting closeness.", "Doux, tendre, ou désireux de proximité.", "Jemný, něžný nebo toužící po blízkosti."),
+    meaning: lz(
+      "Warm weather welcomes touch, devotion, appreciation, and slow desire.",
+      "Le climat chaud accueille le toucher, la dévotion, l'appréciation et le désir lent.",
+      "Vřelé počasí vítá dotek, oddanost, ocenění a pomalou touhu.",
+    ),
+    emoji: "🔥",
+    energy: 3,
+    intimacy: 4,
+  },
+  electric: {
+    label: lz("Electric", "Électrique", "Elektrické"),
+    hint: lz("Crackling, drawn, awake in the body.", "Pétillant, attiré, éveillé dans le corps.", "Třaskavý, přitahovaný, probuzený v těle."),
+    meaning: lz(
+      "Electric weather carries high desire, polarity, play, and explicit consent.",
+      "Le climat électrique porte un désir élevé, de la polarité, du jeu et un consentement explicite.",
+      "Elektrické počasí nese silnou touhu, polaritu, hru a výslovný souhlas.",
+    ),
+    emoji: "⚡",
+    energy: 5,
+    intimacy: 4,
+  },
+  sunny: {
+    label: lz("Sunny", "Ensoleillé", "Slunečné"),
+    hint: lz("Clear, light, easy with my partner today.", "Clair, léger, à l'aise avec mon partenaire.", "Jasný, lehký, v pohodě s partnerem dnes."),
+    meaning: lz(
+      "Sunny weather welcomes joy, play, devotion, and affectionate sensuality.",
+      "Le climat ensoleillé accueille la joie, le jeu, la dévotion et une sensualité affectueuse.",
+      "Slunečné počasí vítá radost, hru, oddanost a laskavou smyslnost.",
+    ),
+    emoji: "☀️",
+    energy: 4,
+    intimacy: 4,
+  },
   open: {
     label: lz("Open", "Ouvert", "Otevřenost"),
     hint: lz("Available, spacious, ready for closeness.", "Disponible et prêt pour la proximité.", "Dostupnost a připravenost na blízkost."),
@@ -255,6 +333,15 @@ const weatherMeta: Record<WeatherKey, WeatherMeta> = {
     energy: 2,
     intimacy: 3,
   },
+};
+
+const weatherLegacyAlias: Partial<Record<WeatherKey, WeatherKey>> = {
+  stormy: "stressed",
+  frozen: "tired",
+  foggy: "reassurance",
+  warm: "tender",
+  electric: "erotic",
+  sunny: "playful",
 };
 
 const heroImageByKey: Record<string, { src: string; alt: Localized }> = {
@@ -708,8 +795,14 @@ const archetypeTemplates: Record<string, ArchetypeTemplate> = {
 };
 
 const stateOrFallback = (value: string): WeatherKey => {
-  if (value in weatherMeta) return value as WeatherKey;
+  const key = value.toLowerCase() as WeatherKey;
+  if (key in weatherMeta) return key;
   return "open";
+};
+
+const legacyStateOrFallback = (value: string): WeatherKey => {
+  const normalized = stateOrFallback(value);
+  return weatherLegacyAlias[normalized] ?? normalized;
 };
 
 const resolveArchetypeKey = (first: WeatherKey, second: WeatherKey) => {
@@ -886,10 +979,12 @@ export const buildWeatherMatchResult = (
   secondRaw: string,
   lang: Language,
 ): WeatherMatchResult => {
-  const first = stateOrFallback(firstRaw);
-  const second = stateOrFallback(secondRaw);
-  const firstMeta = getWeatherPresentation(first, lang);
-  const secondMeta = getWeatherPresentation(second, lang);
+  const firstDisplay = stateOrFallback(firstRaw);
+  const secondDisplay = stateOrFallback(secondRaw);
+  const first = legacyStateOrFallback(firstRaw);
+  const second = legacyStateOrFallback(secondRaw);
+  const firstMeta = getWeatherPresentation(firstDisplay, lang);
+  const secondMeta = getWeatherPresentation(secondDisplay, lang);
   const matchKey = canonicalPair(first, second);
   const archetypeKey = resolveArchetypeKey(first, second);
   const archetypeTemplate = archetypeTemplates[archetypeKey] ?? fallbackArchetype(first, second);
