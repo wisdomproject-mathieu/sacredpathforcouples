@@ -327,13 +327,10 @@ const IntimacyWeather = ({ coupleId, onNavigate, myName, partnerName }: Props) =
     setSaving(false);
   };
 
-  const stateGroup = (key: string | null) =>
-    key ? (STATES.find((s) => s.key === key)?.group ?? null) : null;
-
-  const selectedWeatherLabel = (key: string | null, displayName: string) => {
+  const selectedWeatherLabel = (key: string | null) => {
     const def = key ? STATES.find((item) => item.key === key) : null;
     if (!def) return copy.noCheckinYet;
-    return `${def.label[lang]} for ${displayName}`;
+    return def.label[lang];
   };
 
   const panelDescriptors = useMemo(() => {
@@ -361,42 +358,19 @@ const IntimacyWeather = ({ coupleId, onNavigate, myName, partnerName }: Props) =
   /* ─── Side panel ────────────────────────────────────────────── */
   const SidePanel = ({ panel }: { panel: PanelDescriptor }) => {
     const selectedKey = panel.selectedKey;
-    const group = stateGroup(selectedKey);
-    const aspect = panel.role === "shiva" ? copy.shivaAspect : copy.shaktiAspect;
-    const roleLabel = panel.owner === "me" ? copy.youLabel : copy.partnerLabel;
     const figureLabel = panel.role === "shiva" ? "Shiva" : "Shakti";
-    const selectedWeatherText = selectedWeatherLabel(selectedKey, panel.displayName);
+    const selectedWeatherText = selectedWeatherLabel(selectedKey);
     const selectedDef = selectedKey ? STATES.find((state) => state.key === selectedKey) ?? null : null;
 
     return (
       <div className="flex flex-col gap-3">
-        <div className="rounded-[18px] border border-border/30 bg-background/42 px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-[10px] uppercase tracking-[0.22em] text-amber-300/75">{roleLabel}</p>
-              <p className="mt-0.5 font-display text-xl text-foreground">{panel.displayName}</p>
-            </div>
-            <span className="rounded-full border border-amber-400/25 bg-amber-400/10 px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] text-amber-200/90">
-              {aspect}
-            </span>
-          </div>
-          <p className="mt-1.5 text-sm leading-6 text-muted-foreground/80">
-            {selectedKey ? selectedWeatherText : copy.noCheckinYet}
-          </p>
-          {selectedDef ? (
-            <p className={cn("mt-1 text-[11px] uppercase tracking-[0.18em]", group === "bonded" ? "text-amber-300/85" : "text-slate-300/75")}>
-              {selectedDef.group === "bonded" ? copy.bondedLabel : copy.distantLabel}
-            </p>
-          ) : null}
-        </div>
-
-        {/* Distant row */}
+        {/* Bonded row */}
         <div>
-          <p className="mb-1.5 text-[9px] font-semibold uppercase tracking-[0.22em] text-slate-500/80">
-            {copy.distantLabel}
+          <p className="mb-1.5 text-[9px] font-semibold uppercase tracking-[0.22em] text-amber-500/80">
+            {copy.bondedLabel}
           </p>
           <div className="grid grid-cols-3 gap-1.5">
-            {DISTANT.map((def) => (
+            {BONDED.map((def) => (
               <WeatherCard
                 key={def.key}
                 def={def}
@@ -410,7 +384,7 @@ const IntimacyWeather = ({ coupleId, onNavigate, myName, partnerName }: Props) =
 
         {/* Chakra figure */}
         <div className="rounded-[22px] border border-amber-400/18 bg-gradient-to-b from-background/48 via-card/46 to-background/36 p-3 shadow-[0_20px_55px_-40px_rgba(0,0,0,0.7)]">
-          <p className="text-[10px] uppercase tracking-[0.2em] text-amber-300/70">{panel.displayName}</p>
+          <p className="text-center text-[10px] uppercase tracking-[0.2em] text-amber-300/70">{panel.displayName}</p>
           <div className="mt-2 flex justify-center">
             <ChakraFigure label={figureLabel} />
           </div>
@@ -424,13 +398,13 @@ const IntimacyWeather = ({ coupleId, onNavigate, myName, partnerName }: Props) =
           ) : null}
         </div>
 
-        {/* Bonded row */}
+        {/* Distant row */}
         <div>
-          <p className="mb-1.5 text-[9px] font-semibold uppercase tracking-[0.22em] text-amber-500/80">
-            {copy.bondedLabel}
+          <p className="mb-1.5 text-[9px] font-semibold uppercase tracking-[0.22em] text-slate-500/80">
+            {copy.distantLabel}
           </p>
           <div className="grid grid-cols-3 gap-1.5">
-            {BONDED.map((def) => (
+            {DISTANT.map((def) => (
               <WeatherCard
                 key={def.key}
                 def={def}

@@ -6,12 +6,6 @@ import {
 } from "@/lib/masterRitualRegistry";
 
 type AppWeather =
-  | "stormy"
-  | "frozen"
-  | "foggy"
-  | "warm"
-  | "electric"
-  | "sunny"
   | "open"
   | "tender"
   | "playful"
@@ -19,7 +13,13 @@ type AppWeather =
   | "longing"
   | "erotic"
   | "tired"
-  | "reassurance";
+  | "reassurance"
+  | "stormy"
+  | "frozen"
+  | "foggy"
+  | "warm"
+  | "electric"
+  | "sunny";
 
 type MatrixWeather = "stormy" | "cloudy" | "warm" | "electric" | "radiant";
 
@@ -64,12 +64,6 @@ type ResolveInput = {
 };
 
 const WEATHER_TO_MATRIX: Record<AppWeather, MatrixWeather> = {
-  stormy: "stormy",
-  frozen: "cloudy",
-  foggy: "cloudy",
-  warm: "warm",
-  electric: "electric",
-  sunny: "radiant",
   stressed: "stormy",
   tired: "cloudy",
   tender: "warm",
@@ -78,15 +72,15 @@ const WEATHER_TO_MATRIX: Record<AppWeather, MatrixWeather> = {
   open: "radiant",
   longing: "radiant",
   erotic: "radiant",
+  stormy: "stormy",
+  frozen: "cloudy",
+  foggy: "cloudy",
+  warm: "warm",
+  electric: "electric",
+  sunny: "radiant",
 };
 
 const WEATHER_VARIANCE_INDEX: Record<AppWeather, number> = {
-  stormy: 0,
-  frozen: 1,
-  foggy: 2,
-  warm: 3,
-  electric: 4,
-  sunny: 5,
   open: 0,
   tender: 1,
   playful: 2,
@@ -95,26 +89,16 @@ const WEATHER_VARIANCE_INDEX: Record<AppWeather, number> = {
   erotic: 5,
   tired: 6,
   reassurance: 7,
+  stormy: 8,
+  frozen: 9,
+  foggy: 10,
+  warm: 11,
+  electric: 12,
+  sunny: 13,
 };
 
 const isRadiantSet = (value: string | null | undefined) =>
-  value === "open" || value === "longing" || value === "erotic";
-
-const WEATHER_ALIAS: Record<string, AppWeather> = {
-  stormy: "stressed",
-  frozen: "tired",
-  foggy: "reassurance",
-  warm: "tender",
-  electric: "erotic",
-  sunny: "playful",
-};
-
-const normalizeWeather = (value: string | null | undefined): AppWeather | null => {
-  if (!value) return null;
-  const lower = value.toLowerCase();
-  if (lower in WEATHER_TO_MATRIX) return lower as AppWeather;
-  return WEATHER_ALIAS[lower] ?? null;
-};
+  value === "open" || value === "longing" || value === "erotic" || value === "sunny";
 
 const libraryById = new Map<string, RitualLibraryCard>(MASTER_RITUAL_REGISTRY.map((card) => [card.id, card]));
 
@@ -292,9 +276,7 @@ const defaultState: SelectedDailyMainCardState = {
 export const resolveSelectedDailyMainCard = (input: ResolveInput): SelectedDailyMainCardState => {
   const partnerAWeather = input.partnerAWeather ?? null;
   const partnerBWeather = input.partnerBWeather ?? null;
-  const normalizedPartnerAWeather = normalizeWeather(partnerAWeather);
-  const normalizedPartnerBWeather = normalizeWeather(partnerBWeather);
-  const ready = Boolean(normalizedPartnerAWeather && normalizedPartnerBWeather);
+  const ready = Boolean(partnerAWeather && partnerBWeather);
   const recentHistory = readHistory(input.coupleId);
 
   if (!ready) {
@@ -309,11 +291,11 @@ export const resolveSelectedDailyMainCard = (input: ResolveInput): SelectedDaily
     };
   }
 
-  const radiantRichCase = isRadiantSet(normalizedPartnerAWeather) && isRadiantSet(normalizedPartnerBWeather);
+  const radiantRichCase = isRadiantSet(partnerAWeather) && isRadiantSet(partnerBWeather);
   const weatherPairKey = `${partnerAWeather}|${partnerBWeather}`;
   const normalizedKey = radiantRichCase
     ? "radiant|radiant"
-    : `${WEATHER_TO_MATRIX[normalizedPartnerAWeather as AppWeather]}|${WEATHER_TO_MATRIX[normalizedPartnerBWeather as AppWeather]}`;
+    : `${WEATHER_TO_MATRIX[partnerAWeather as AppWeather]}|${WEATHER_TO_MATRIX[partnerBWeather as AppWeather]}`;
   const matrixEntry: MatrixEntry | undefined = WEATHER_MATRIX_25[normalizedKey as keyof typeof WEATHER_MATRIX_25];
   if (!matrixEntry) {
     return {
@@ -349,8 +331,8 @@ export const resolveSelectedDailyMainCard = (input: ResolveInput): SelectedDaily
   );
   const pairSpecificOffset = (() => {
     if (!candidates.length || radiantRichCase) return 0;
-    const a = WEATHER_VARIANCE_INDEX[normalizedPartnerAWeather as AppWeather] ?? 0;
-    const b = WEATHER_VARIANCE_INDEX[normalizedPartnerBWeather as AppWeather] ?? 0;
+    const a = WEATHER_VARIANCE_INDEX[partnerAWeather as AppWeather] ?? 0;
+    const b = WEATHER_VARIANCE_INDEX[partnerBWeather as AppWeather] ?? 0;
     // Keep normalized matrix behavior but preserve nuance from the exact pair.
     return (a * 11 + b * 17 + hashString(normalizedKey)) % candidates.length;
   })();
