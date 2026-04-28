@@ -25,7 +25,7 @@ import {
   readEverConnected,
   storeConnectedCoupleId,
 } from "@/lib/couples";
-import { deriveActiveTonightExperience, getWeatherPresentation, type WeatherKey } from "@/lib/weatherMatch";
+import { getWeatherPresentation, type WeatherKey } from "@/lib/weatherMatch";
 import { getLocalDayRange, pickLatestWeatherForCouple } from "@/lib/weatherEntries";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import { useSelectedDailyMainCard } from "@/lib/weatherEngine";
@@ -1266,10 +1266,6 @@ const AppHome = () => {
 
   const myMood = myWeatherEntry ? getWeatherPresentation(myWeatherEntry.state, lang) : null;
   const partnerMood = partnerWeatherEntry ? getWeatherPresentation(partnerWeatherEntry.state, lang) : null;
-  const activeTonightExperience = useMemo(
-    () => deriveActiveTonightExperience(myWeatherEntry?.state, partnerWeatherEntry?.state, lang),
-    [lang, myWeatherEntry?.state, partnerWeatherEntry?.state],
-  );
   const sharedMainCardState = useSelectedDailyMainCard({
     partnerAWeather: myWeatherEntry?.state,
     partnerBWeather: partnerWeatherEntry?.state,
@@ -1287,7 +1283,6 @@ const AppHome = () => {
     [lang, myWeatherEntry, partnerName, partnerWeatherEntry, relationshipConnected],
   );
   const bothCheckedIn = tonightPathStatus.isTonightPathReady;
-  const weatherMatch = activeTonightExperience.weatherMatch;
 
   const weatherCardState: "picker" | "mine_only" | "both" =
     weatherPickerVisible || !myWeatherEntry
@@ -1349,10 +1344,14 @@ const AppHome = () => {
     : "#";
 
   const featuredPathTitle = bothCheckedIn
-    ? weatherMatch?.archetype.title ?? "No mapped ritual"
+    ? copy.todayFlowTitle
     : dailyCards[0]?.title ?? copy.selecting;
   const featuredPathDescription = bothCheckedIn
-    ? weatherMatch?.summary ?? "No mapped weather ritual for this pair."
+    ? (lang === "fr"
+        ? "Votre météo partagée est prête. Ouvrez la page du chemin de ce soir pour découvrir le rituel complet."
+        : lang === "cs"
+          ? "Vaše sdílené počasí je připravené. Otevřete stránku dnešní cesty a objevte celý rituál."
+          : "Your shared weather is ready. Open tonight's path page to discover the full ritual flow.")
     : dailyCards[0]?.description ?? copy.calibrating;
   const featuredPathLabel = weatherUi.tonightPath;
   const waitingPathCopy = tonightPathStatus.waitingBody;

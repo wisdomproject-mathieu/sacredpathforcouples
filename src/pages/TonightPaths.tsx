@@ -534,8 +534,11 @@ const TonightPaths = () => {
     [selectedMainCardState.selectedDailyMainCard?.id, selectedMainCardState.normalizedKey, selectedMainCardState.alternates],
   );
 
-  // Determine which of the three states we are in
-  const bothCheckedIn = selectedMainCardState.ready && weatherCards.length > 0;
+  // Determine which of the three states we are in.
+  // bothCheckedIn requires BOTH weather entries to be present — a single entry
+  // can make selectedMainCardState.ready = true, which would wrongly skip State B.
+  const bothCheckedIn =
+    !!myWeatherEntry && !!partnerWeatherEntry && selectedMainCardState.ready && weatherCards.length > 0;
   const oneCheckedIn = connected && (!!myWeatherEntry || !!partnerWeatherEntry) && !bothCheckedIn;
 
   const tonightState: TonightState = bothCheckedIn
