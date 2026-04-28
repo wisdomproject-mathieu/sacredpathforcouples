@@ -384,7 +384,7 @@ const IntimacyWeather = ({ coupleId, onNavigate, myName, partnerName }: Props) =
 
         {/* Chakra figure */}
         <div className="rounded-[22px] border border-amber-400/18 bg-gradient-to-b from-background/48 via-card/46 to-background/36 p-3 shadow-[0_20px_55px_-40px_rgba(0,0,0,0.7)]">
-          <p className="text-center text-[10px] uppercase tracking-[0.2em] text-amber-300/70">{panel.displayName}</p>
+          <p className="text-center font-display text-lg text-foreground/92">{panel.displayName}</p>
           <div className="mt-2 flex justify-center">
             <ChakraFigure label={figureLabel} />
           </div>

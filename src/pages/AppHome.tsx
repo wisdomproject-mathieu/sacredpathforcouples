@@ -1349,16 +1349,12 @@ const AppHome = () => {
     : "#";
 
   const featuredPathTitle = bothCheckedIn
-    ? sharedMainCardState.selectedDailyMainCard?.title ?? "No mapped ritual"
+    ? weatherMatch?.archetype.title ?? "No mapped ritual"
     : dailyCards[0]?.title ?? copy.selecting;
   const featuredPathDescription = bothCheckedIn
-    ? sharedMainCardState.selectedDailyMainCard?.description ?? "No mapped weather ritual for this pair."
+    ? weatherMatch?.summary ?? "No mapped weather ritual for this pair."
     : dailyCards[0]?.description ?? copy.calibrating;
   const featuredPathLabel = weatherUi.tonightPath;
-  const tonightRitual = sharedMainCardState.selectedDailyMainCard;
-  const tonightRitualTitle = tonightRitual?.title ?? (bothCheckedIn ? "No mapped ritual" : dailyCards[0]?.title ?? copy.selecting);
-  const tonightRitualDescription = tonightRitual?.description ?? featuredPathDescription;
-  const tonightRitualSteps = tonightRitual?.ritualSteps?.slice(0, 3) ?? (bothCheckedIn ? [] : dailyCards[0]?.steps?.slice(0, 2) ?? []);
   const waitingPathCopy = tonightPathStatus.waitingBody;
   const enterTonightPathLabel = lang === "fr"
     ? "Entrer dans le chemin de ce soir"
@@ -1706,22 +1702,14 @@ const AppHome = () => {
             <p className="text-xs uppercase tracking-[0.2em] text-amber-400/75">{featuredPathLabel}</p>
             <h3 className="mt-2 font-display text-2xl text-foreground">{featuredPathTitle}</h3>
             <p className="mt-3 text-sm leading-6 text-muted-foreground">{featuredPathDescription}</p>
-            {tonightRitual ? (
-              <div className="mt-4 rounded-[16px] border border-amber-400/16 bg-background/35 px-4 py-3">
-                <p className="text-[10px] uppercase tracking-[0.16em] text-amber-200/85">Tonight ritual</p>
-                <p className="mt-1 font-display text-lg text-foreground">{tonightRitualTitle}</p>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground/85">{tonightRitualDescription}</p>
-                {tonightRitualSteps.length ? (
-                  <ol className="mt-3 space-y-1 text-xs leading-5 text-foreground/88">
-                    {tonightRitualSteps.map((step, index) => (
-                      <li key={`${step}-${index}`}>
-                        {index + 1}. {step}
-                      </li>
-                    ))}
-                  </ol>
-                ) : null}
-              </div>
-            ) : null}
+            <div className="mt-4 rounded-[16px] border border-amber-400/14 bg-background/28 px-4 py-3">
+              <p className="text-[10px] uppercase tracking-[0.16em] text-amber-200/85">Tonight's path</p>
+              <p className="mt-1 text-sm leading-6 text-muted-foreground/90">
+                {bothCheckedIn
+                  ? "Your matching weather has been resolved. Open the path page for the full ritual flow."
+                  : "Share both weather states to reveal tonight's path."}
+              </p>
+            </div>
             <div className="mt-5">
               {bothCheckedIn ? (
                 <Link

@@ -259,8 +259,8 @@ const TonightPathExperience = ({
         </p>
 
         {ready ? (
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            <div className="rounded-[22px] border border-border/30 bg-card/55 p-4 shadow-[0_16px_45px_-34px_rgba(0,0,0,0.7)]">
+          <div className="mt-4 grid items-stretch gap-3 sm:grid-cols-2">
+            <div className="h-full rounded-[22px] border border-border/30 bg-card/55 p-4 shadow-[0_16px_45px_-34px_rgba(0,0,0,0.7)]">
               <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70">{myName ?? "You"}</p>
               <p className="mt-2 font-display text-2xl text-foreground">
                 {myWeather ? `${myWeather.label} ${myWeather.emoji}` : copy.waitingTitle}
@@ -268,7 +268,7 @@ const TonightPathExperience = ({
               <p className="mt-2 text-sm leading-6 text-muted-foreground">{myWeather?.hint ?? copy.waitingBody}</p>
             </div>
 
-            <div className="rounded-[22px] border border-border/30 bg-card/55 p-4 shadow-[0_16px_45px_-34px_rgba(0,0,0,0.7)]">
+            <div className="h-full rounded-[22px] border border-border/30 bg-card/55 p-4 shadow-[0_16px_45px_-34px_rgba(0,0,0,0.7)]">
               <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70">{belovedName ?? "Partner"}</p>
               <p className="mt-2 font-display text-2xl text-foreground">
                 {belovedWeather ? `${belovedWeather.label} ${belovedWeather.emoji}` : copy.waitingTitle}
@@ -297,7 +297,7 @@ const TonightPathExperience = ({
               return (
                 <article
                   key={card.id}
-                  className={`rounded-2xl border p-4 transition-all ${visual.toneClass} ${
+                  className={`h-full rounded-2xl border p-4 transition-all ${visual.toneClass} ${
                     isMain ? "ring-1 ring-amber-300/40 shadow-[0_14px_35px_-24px_rgba(255,173,70,0.5)]" : ""
                   } ${isExpanded ? "lg:col-span-2" : ""}`}
                 >
