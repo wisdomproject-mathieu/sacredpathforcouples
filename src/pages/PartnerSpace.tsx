@@ -1202,6 +1202,10 @@ const PartnerSpace = () => {
   };
 
   const navigateTool = (tab: string) => {
+    if (tab === "show_ritual") {
+      openJourneyScreen("tonight_path");
+      return;
+    }
     if (!isToolKey(tab)) return;
     activateTool(tab);
   };

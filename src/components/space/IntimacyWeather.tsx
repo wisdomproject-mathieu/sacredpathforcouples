@@ -457,7 +457,7 @@ const IntimacyWeather = ({ coupleId, onNavigate, myName, partnerName }: Props) =
         <div className="flex flex-col items-center gap-3 py-2">
           <button
             type="button"
-            onClick={() => onNavigate("rituals")}
+            onClick={() => onNavigate("show_ritual")}
             className="w-full rounded-[22px] border border-amber-300/35 bg-gradient-to-b from-amber-300/92 to-amber-500/78 px-4 py-4 text-sm font-semibold leading-5 tracking-[0.03em] text-[#201308] shadow-[0_18px_45px_-28px_rgba(251,191,36,0.8)] transition-all hover:scale-[1.01] hover:border-amber-200/60"
           >
             {copy.showRituals}

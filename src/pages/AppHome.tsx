@@ -25,7 +25,7 @@ import {
   readEverConnected,
   storeConnectedCoupleId,
 } from "@/lib/couples";
-import { getWeatherPresentation, type WeatherKey } from "@/lib/weatherMatch";
+import { getWeatherPresentation } from "@/lib/weatherMatch";
 import { getLocalDayRange, pickLatestWeatherForCouple } from "@/lib/weatherEntries";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import { deriveTonightPathStatus } from "@/lib/tonightPathStatus";
@@ -461,7 +461,7 @@ const parseRitualSteps = (steps: RitualItem["steps"]): string[] => {
 };
 
 const fallbackBelovedValues = new Set(Object.values(homeCopy).map((copySet) => copySet.beloved));
-const WEATHER_KEYS: WeatherKey[] = ["open", "tender", "playful", "stressed", "longing", "erotic", "tired", "reassurance"];
+const WEATHER_KEYS = ["stormy", "frozen", "foggy", "warm", "electric", "sunny"] as const;
 
 const AppHome = () => {
   const { user } = useAuth();
