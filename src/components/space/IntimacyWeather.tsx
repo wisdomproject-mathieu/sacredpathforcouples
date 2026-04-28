@@ -207,6 +207,7 @@ const getLocalDayRange = () => {
 };
 
 const resolveDisplayName = (value: string | null | undefined, fallback: string) => value?.trim() || fallback;
+const weatherPreviewKey = (coupleId?: string) => `sacred_path_weather_preview_${coupleId ?? "global"}`;
 
 /* ─── Ornate weather card ─────────────────────────────────────── */
 const WeatherCard = ({
@@ -319,6 +320,22 @@ const IntimacyWeather = ({ coupleId, onNavigate, myName, partnerName }: Props) =
   useEffect(() => {
     setPartnerNameFallback(resolveDisplayName(partnerName, "Partner"));
   }, [partnerName]);
+
+  useEffect(() => {
+    if (!coupleId) return;
+    try {
+      localStorage.setItem(
+        weatherPreviewKey(coupleId),
+        JSON.stringify({
+          myWeather: mySelected ?? null,
+          partnerWeather: partnerState ?? null,
+          updatedAt: new Date().toISOString(),
+        }),
+      );
+    } catch {
+      // ignore storage errors
+    }
+  }, [coupleId, mySelected, partnerState]);
 
   const saveWeather = async () => {
     if (!user || !mySelected || !coupleId) return;

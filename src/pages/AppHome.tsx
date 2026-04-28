@@ -29,6 +29,7 @@ import { getWeatherPresentation } from "@/lib/weatherMatch";
 import { getLocalDayRange, pickLatestWeatherForCouple } from "@/lib/weatherEntries";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import { deriveTonightPathStatus } from "@/lib/tonightPathStatus";
+import { useSelectedDailyMainCard } from "@/lib/weatherEngine";
 
 type RitualItem = Tables<"ritual_items">;
 type Pathway = Tables<"pathways">;
@@ -1265,6 +1266,28 @@ const AppHome = () => {
 
   const myMood = myWeatherEntry ? getWeatherPresentation(myWeatherEntry.state, lang) : null;
   const partnerMood = partnerWeatherEntry ? getWeatherPresentation(partnerWeatherEntry.state, lang) : null;
+  const homeWeatherPreview = useMemo(() => {
+    if (!coupleId || typeof window === "undefined") return null;
+    try {
+      const raw = window.localStorage.getItem(`sacred_path_weather_preview_${coupleId}`);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw) as { myWeather?: string | null; partnerWeather?: string | null };
+      return {
+        myWeather: parsed?.myWeather ?? null,
+        partnerWeather: parsed?.partnerWeather ?? null,
+      };
+    } catch {
+      return null;
+    }
+  }, [coupleId, myWeatherEntry?.state, partnerWeatherEntry?.state]);
+
+  const effectiveMyHomeWeather = homeWeatherPreview?.myWeather ?? myWeatherEntry?.state ?? null;
+  const effectivePartnerHomeWeather = homeWeatherPreview?.partnerWeather ?? partnerWeatherEntry?.state ?? null;
+  const selectedHomeMainCardState = useSelectedDailyMainCard({
+    partnerAWeather: effectiveMyHomeWeather,
+    partnerBWeather: effectivePartnerHomeWeather,
+    coupleId,
+  });
   const tonightPathStatus = useMemo(
     () =>
       deriveTonightPathStatus({
@@ -1276,7 +1299,7 @@ const AppHome = () => {
       }),
     [lang, myWeatherEntry, partnerName, partnerWeatherEntry, relationshipConnected],
   );
-  const bothCheckedIn = tonightPathStatus.isTonightPathReady;
+  const bothCheckedIn = tonightPathStatus.isTonightPathReady || Boolean(effectiveMyHomeWeather && effectivePartnerHomeWeather);
 
   const weatherCardState: "picker" | "mine_only" | "both" =
     weatherPickerVisible || !myWeatherEntry
@@ -1338,14 +1361,16 @@ const AppHome = () => {
     : "#";
 
   const featuredPathTitle = bothCheckedIn
-    ? copy.todayFlowTitle
+    ? selectedHomeMainCardState.selectedDailyMainCard?.title ?? copy.todayFlowTitle
     : dailyCards[0]?.title ?? copy.selecting;
   const featuredPathDescription = bothCheckedIn
-    ? (lang === "fr"
-        ? "Votre météo partagée est prête. Ouvrez la page du chemin de ce soir pour découvrir le rituel complet."
-        : lang === "cs"
-          ? "Vaše sdílené počasí je připravené. Otevřete stránku dnešní cesty a objevte celý rituál."
-          : "Your shared weather is ready. Open tonight's path page to discover the full ritual flow.")
+    ? (selectedHomeMainCardState.selectedDailyMainCard?.description
+        || selectedHomeMainCardState.selectedDailyMainCard?.subtitle
+        || (lang === "fr"
+          ? "Votre météo partagée est prête. Ouvrez la page du chemin de ce soir pour découvrir le rituel complet."
+          : lang === "cs"
+            ? "Vaše sdílené počasí je připravené. Otevřete stránku dnešní cesty a objevte celý rituál."
+            : "Your shared weather is ready. Open tonight's path page to discover the full ritual flow."))
     : dailyCards[0]?.description ?? copy.calibrating;
   const featuredPathLabel = weatherUi.tonightPath;
   const waitingPathCopy = tonightPathStatus.waitingBody;

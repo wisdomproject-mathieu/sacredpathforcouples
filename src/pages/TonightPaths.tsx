@@ -422,6 +422,22 @@ const TonightPaths = () => {
   const [connected, setConnected] = useState(false);
   const [myWeatherEntry, setMyWeatherEntry] = useState<WeatherEntry | null>(null);
   const [partnerWeatherEntry, setPartnerWeatherEntry] = useState<WeatherEntry | null>(null);
+  const [weatherPreviewOverride, setWeatherPreviewOverride] = useState<{ myWeather: string | null; partnerWeather: string | null } | null>(null);
+
+  const readWeatherPreviewOverride = (activeCoupleId: string | null) => {
+    if (!activeCoupleId || typeof window === "undefined") return null;
+    try {
+      const raw = window.localStorage.getItem(`sacred_path_weather_preview_${activeCoupleId}`);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw) as { myWeather?: string | null; partnerWeather?: string | null };
+      return {
+        myWeather: parsed?.myWeather ?? null,
+        partnerWeather: parsed?.partnerWeather ?? null,
+      };
+    } catch {
+      return null;
+    }
+  };
 
   useEffect(() => {
     if (!user) {
@@ -473,6 +489,7 @@ const TonightPaths = () => {
       }
 
       await syncWeather(coupleState.activeCouple.id, coupleState.partnerId ?? null);
+      setWeatherPreviewOverride(readWeatherPreviewOverride(coupleState.activeCouple.id));
       setLoading(false);
     };
 
@@ -514,6 +531,7 @@ const TonightPaths = () => {
     };
 
     void syncWeather();
+    setWeatherPreviewOverride(readWeatherPreviewOverride(coupleId));
 
     const weatherChannel = supabase
       .channel(`tonight_paths_weather_${coupleId}`)
@@ -523,9 +541,12 @@ const TonightPaths = () => {
     return () => { supabase.removeChannel(weatherChannel); };
   }, [coupleId, partnerUserId, user]);
 
+  const effectiveMyWeather = weatherPreviewOverride?.myWeather ?? myWeatherEntry?.state ?? null;
+  const effectivePartnerWeather = weatherPreviewOverride?.partnerWeather ?? partnerWeatherEntry?.state ?? null;
+
   const selectedMainCardState = useSelectedDailyMainCard({
-    partnerAWeather: myWeatherEntry?.state ?? null,
-    partnerBWeather: partnerWeatherEntry?.state ?? null,
+    partnerAWeather: effectiveMyWeather,
+    partnerBWeather: effectivePartnerWeather,
     coupleId,
   });
 
@@ -538,8 +559,8 @@ const TonightPaths = () => {
   // bothCheckedIn requires BOTH weather entries to be present — a single entry
   // can make selectedMainCardState.ready = true, which would wrongly skip State B.
   const bothCheckedIn =
-    !!myWeatherEntry && !!partnerWeatherEntry && selectedMainCardState.ready && weatherCards.length > 0;
-  const oneCheckedIn = connected && (!!myWeatherEntry || !!partnerWeatherEntry) && !bothCheckedIn;
+    !!effectiveMyWeather && !!effectivePartnerWeather && selectedMainCardState.ready && weatherCards.length > 0;
+  const oneCheckedIn = connected && (!!effectiveMyWeather || !!effectivePartnerWeather) && !bothCheckedIn;
 
   const tonightState: TonightState = bothCheckedIn
     ? "both_checked_in"
@@ -547,7 +568,7 @@ const TonightPaths = () => {
       ? "waiting_for_partner"
       : "solo";
 
-  const pairLabel = formatPair(myWeatherEntry?.state, partnerWeatherEntry?.state);
+  const pairLabel = formatPair(effectiveMyWeather, effectivePartnerWeather);
   const effectivePartnerName = partnerName ?? (lang === "fr" ? "votre partenaire" : lang === "cs" ? "vašeho partnera" : "your partner");
 
   const headerTitle =
