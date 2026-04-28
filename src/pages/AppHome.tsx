@@ -28,7 +28,6 @@ import {
 import { getWeatherPresentation, type WeatherKey } from "@/lib/weatherMatch";
 import { getLocalDayRange, pickLatestWeatherForCouple } from "@/lib/weatherEntries";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
-import { useSelectedDailyMainCard } from "@/lib/weatherEngine";
 import { deriveTonightPathStatus } from "@/lib/tonightPathStatus";
 
 type RitualItem = Tables<"ritual_items">;
@@ -1266,11 +1265,6 @@ const AppHome = () => {
 
   const myMood = myWeatherEntry ? getWeatherPresentation(myWeatherEntry.state, lang) : null;
   const partnerMood = partnerWeatherEntry ? getWeatherPresentation(partnerWeatherEntry.state, lang) : null;
-  const sharedMainCardState = useSelectedDailyMainCard({
-    partnerAWeather: myWeatherEntry?.state,
-    partnerBWeather: partnerWeatherEntry?.state,
-    coupleId,
-  });
   const tonightPathStatus = useMemo(
     () =>
       deriveTonightPathStatus({
@@ -1710,43 +1704,16 @@ const AppHome = () => {
               </p>
             </div>
             <div className="mt-5">
-              {bothCheckedIn ? (
-                <Link
-                  to="/app/tonight-paths"
-                  className="inline-flex items-center gap-1.5 rounded-[12px] border border-amber-400/30 bg-amber-400/10 px-4 py-2.5 text-sm text-amber-300 transition-all hover:bg-amber-400/20"
-                >
-                  {enterTonightPathLabel} →
-                </Link>
-              ) : (
-                <p className="rounded-[12px] border border-amber-400/20 bg-amber-950/20 px-3 py-2 text-xs text-amber-200/85">
-                  {waitingPathCopy}
-                </p>
-              )}
+              <Link
+                to="/app/tonight-paths"
+                className="inline-flex items-center gap-1.5 rounded-[12px] border border-amber-400/30 bg-amber-400/10 px-4 py-2.5 text-sm text-amber-300 transition-all hover:bg-amber-400/20"
+              >
+                {enterTonightPathLabel} →
+              </Link>
             </div>
           </div>
         </div>
       </section>
-
-      {import.meta.env.DEV ? (
-        <section className="rounded-[16px] border border-cyan-300/20 bg-cyan-500/8 p-3">
-          <p className="text-[10px] uppercase tracking-[0.14em] text-cyan-200/80">Weather Engine Debug</p>
-          <pre className="mt-2 overflow-auto text-xs leading-5 text-cyan-100/90">
-{JSON.stringify(
-  {
-    partnerAWeather: sharedMainCardState.debug.partnerAWeather,
-    partnerBWeather: sharedMainCardState.debug.partnerBWeather,
-    normalizedKey: sharedMainCardState.debug.normalizedKey,
-    archetype: sharedMainCardState.debug.archetype,
-    selectedMainCard: sharedMainCardState.debug.selectedMainCardId,
-    alternates: sharedMainCardState.debug.alternateIds,
-    recentHistory: sharedMainCardState.debug.recentHistory,
-  },
-  null,
-  2,
-)}
-          </pre>
-        </section>
-      ) : null}
 
       {entitlementResolved && !hasPremiumAccess && (
         <section className="rounded-[28px] bg-[rgba(255,255,255,0.02)] px-5 pb-6 pt-5">
