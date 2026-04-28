@@ -707,8 +707,19 @@ const archetypeTemplates: Record<string, ArchetypeTemplate> = {
   },
 };
 
+const SIX_WEATHER_TO_LEGACY: Record<string, WeatherKey> = {
+  stormy: "stressed",
+  frozen: "tired",
+  foggy: "reassurance",
+  warm: "tender",
+  electric: "erotic",
+  sunny: "open",
+};
+
 const stateOrFallback = (value: string): WeatherKey => {
-  if (value in weatherMeta) return value as WeatherKey;
+  const normalized = String(value ?? "").toLowerCase().trim();
+  if (normalized in weatherMeta) return normalized as WeatherKey;
+  if (normalized in SIX_WEATHER_TO_LEGACY) return SIX_WEATHER_TO_LEGACY[normalized];
   return "open";
 };
 

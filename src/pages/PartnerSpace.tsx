@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import TonightPaths from "@/pages/TonightPaths";
 import { Link, useSearchParams } from "react-router-dom";
 import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 import { toast } from "sonner";
@@ -1914,64 +1915,7 @@ const PartnerSpace = () => {
         {viewMode === "journey" && (
           <section className="space-y-5">
             {journeyScreen === "tonight_path" ? (
-              hasPremiumAccess ? (
-                <TonightPathExperience
-                  lang={lang}
-                  weatherMatch={weatherMatch}
-                  weatherStateMode={weatherStateMode}
-                  myWeather={myWeatherCard}
-                  belovedWeather={belovedWeatherCard}
-                  myName={myDisplayName ?? null}
-                  belovedName={partnerDisplayName ?? null}
-                  tonightPathStatus={tonightPathStatus}
-                  coupleId={coupleId}
-                  selectedDailyMainCard={sharedMainCardState.selectedDailyMainCard}
-                  alternateCards={sharedMainCardState.alternates}
-                  weatherEngineDebug={sharedMainCardState.debug}
-                />
-              ) : (
-                <section className="space-y-4">
-                  {premiumPreviewBanner(
-                    l("Tonight Path Premium", "Chemin de ce soir Premium", "Dnešní cesta Premium"),
-                    l(
-                      "Unlock the complete Tonight Path flow",
-                      "Débloquez le flow complet du chemin de ce soir",
-                      "Odemkněte kompletní flow dnešní cesty",
-                    ),
-                    l(
-                      "Get the full guided ritual sequence based on your shared weather, with richer steps, pacing, and emotional guidance.",
-                      "Accédez à la séquence rituelle complète basée sur votre météo partagée, avec plus d'étapes, de rythme et de guidance émotionnelle.",
-                      "Získejte plnou vedenou rituální sekvenci podle sdíleného počasí s hlubšími kroky, tempem a emočním vedením.",
-                    ),
-                    [
-                      l("Full ritual flow", "Flow rituel complet", "Plný rituální flow"),
-                      l("Couple pacing", "Rythme de couple", "Párové tempo"),
-                      l("Deep emotional guidance", "Guidage émotionnel profond", "Hlubší emoční vedení"),
-                    ],
-                  )}
-                  <div className="rounded-[22px] border border-border/30 bg-card/45 p-4">
-                    <p className="text-xs uppercase tracking-[0.18em] text-primary/80">
-                      {l("Free preview", "Aperçu gratuit", "Ukázka zdarma")}
-                    </p>
-                    <p className="mt-2 text-sm leading-6 text-foreground/90">
-                      {weatherMatch
-                        ? `${weatherMatch.archetype.title}: ${weatherMatch.summary}`
-                        : l(
-                            "Share both weather states to preview tonight's direction.",
-                            "Partagez les deux météos pour prévisualiser la direction de ce soir.",
-                            "Sdílejte obě počasí pro náhled dnešního směru.",
-                          )}
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => activateTool("weather")}
-                      className="mt-3 rounded-xl border border-border/35 bg-background/45 px-3 py-2 text-xs text-foreground transition-all hover:border-border/55 hover:bg-background/60"
-                    >
-                      {l("Update shared weather", "Mettre à jour la météo partagée", "Aktualizovat sdílené počasí")}
-                    </button>
-                  </div>
-                </section>
-              )
+              <TonightPaths />
             ) : null}
             {journeyScreen === "more_rituals" ? (
               hasPremiumAccess ? (

@@ -168,6 +168,12 @@ const writeDailySelection = (coupleId: string | null | undefined, value: Persist
 const hashString = (value: string) =>
   Array.from(value).reduce((acc, char) => (acc * 31 + char.charCodeAt(0)) >>> 0, 19);
 
+const normalizeAppWeather = (value: string | null | undefined): AppWeather | null => {
+  if (!value) return null;
+  const normalized = String(value).toLowerCase().trim() as AppWeather;
+  return normalized in WEATHER_TO_MATRIX ? normalized : null;
+};
+
 const rotateBy = <T,>(items: T[], index: number): T[] => {
   if (!items.length) return [];
   const offset = ((index % items.length) + items.length) % items.length;
@@ -274,8 +280,8 @@ const defaultState: SelectedDailyMainCardState = {
 };
 
 export const resolveSelectedDailyMainCard = (input: ResolveInput): SelectedDailyMainCardState => {
-  const partnerAWeather = input.partnerAWeather ?? null;
-  const partnerBWeather = input.partnerBWeather ?? null;
+  const partnerAWeather = normalizeAppWeather(input.partnerAWeather);
+  const partnerBWeather = normalizeAppWeather(input.partnerBWeather);
   const ready = Boolean(partnerAWeather && partnerBWeather);
   const recentHistory = readHistory(input.coupleId);
 
