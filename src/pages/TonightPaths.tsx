@@ -207,71 +207,67 @@ const copyByLang: Record<
   Language,
   {
     eyebrow: string;
-    titleBoth: string;
-    titleWaiting: (partnerName: string) => string;
-    titleSolo: string;
-    bodyWaiting: string;
-    bodySolo: string;
-    connect: string;
-    waiting: string;
+    // State A
+    tonight_state_a_title: string;
+    tonight_state_a_subtitle: string;
+    // State B
+    tonight_state_b_title: (partnerName: string) => string;
+    tonight_state_b_subtitle: string;
+    // State C
+    tonight_state_c_title: string;
+    tonight_state_c_subtitle: string;
+    // Shared UI
     mainTag: string;
     stepsLabel: string;
     copy: string;
     copied: string;
     weatherCombo: string;
-    forCombo: (pair: string) => string;
     forTonightLabel: string;
   }
 > = {
   en: {
     eyebrow: "Tonight Path",
-    titleBoth: "Tonight, for the two of you",
-    titleWaiting: (name) => `While you wait for ${name}…`,
-    titleSolo: "Tonight",
-    bodyWaiting: "Something to soften into. The full evening practice will unlock when they check in.",
-    bodySolo: "A few of the most beautiful evening practices in the Sacred Path. No partner needed yet. Choose one.",
-    connect: "Connect your partner to unlock tonight paths.",
-    waiting: "Waiting for both weather check-ins to build tonight paths.",
+    tonight_state_a_title: "Tonight, for the two of you",
+    tonight_state_a_subtitle: "Your weather combined. A practice chosen for where you both are.",
+    tonight_state_b_title: (name) => `While you wait for ${name}`,
+    tonight_state_b_subtitle: "Something to soften into. Your shared evening practice will open when they check in.",
+    tonight_state_c_title: "Tonight",
+    tonight_state_c_subtitle: "A few of the most beautiful evening practices in the Sacred Path. No partner needed yet — choose one.",
     mainTag: "Main ritual",
     stepsLabel: "What to do",
     copy: "Copy practice",
     copied: "Copied",
     weatherCombo: "Weather combination",
-    forCombo: (pair) => `Selected for: ${pair}`,
     forTonightLabel: "For tonight",
   },
   fr: {
     eyebrow: "Chemin de ce soir",
-    titleBoth: "Ce soir, pour vous deux",
-    titleWaiting: (name) => `En attendant ${name}…`,
-    titleSolo: "Ce soir",
-    bodyWaiting: "Quelque chose pour vous détendre. La pratique complète du soir se débloquera quand il/elle aura fait son check-in.",
-    bodySolo: "Quelques-unes des plus belles pratiques du soir dans le Chemin Sacré. Pas encore besoin d'un partenaire. Choisissez-en une.",
-    connect: "Connectez votre partenaire pour débloquer les chemins de ce soir.",
-    waiting: "En attente des deux check-ins météo pour créer les chemins de ce soir.",
+    tonight_state_a_title: "Ce soir, pour vous deux",
+    tonight_state_a_subtitle: "Vos météos réunies. Une pratique choisie pour là où vous êtes tous les deux.",
+    tonight_state_b_title: (name) => `En attendant ${name}`,
+    tonight_state_b_subtitle: "Quelque chose pour s'adoucir. Votre pratique du soir s'ouvrira quand iel se connectera.",
+    tonight_state_c_title: "Ce soir",
+    tonight_state_c_subtitle: "Quelques-unes des plus belles pratiques du soir du Sacred Path. Pas besoin de partenaire — choisissez-en une.",
     mainTag: "Rituel principal",
     stepsLabel: "Que faire",
     copy: "Copier la pratique",
     copied: "Copié",
     weatherCombo: "Combinaison météo",
-    forCombo: (pair) => `Sélectionné pour : ${pair}`,
     forTonightLabel: "Pour ce soir",
   },
   cs: {
     eyebrow: "Dnešní cesta",
-    titleBoth: "Dnes večer, pro vás oba",
-    titleWaiting: (name) => `Zatímco čekáte na ${name}…`,
-    titleSolo: "Dnes večer",
-    bodyWaiting: "Něco pro zklidnění. Plná večerní praxe se odemkne, jakmile udělají check-in.",
-    bodySolo: "Několik z nejkrásnějších večerních praxí na Posvátné cestě. Partner zatím není potřeba. Vyberte si jednu.",
-    connect: "Pro odemčení dnešních cest propojte partnera.",
-    waiting: "Čekáme na oba check-iny počasí, abychom vytvořili dnešní cesty.",
+    tonight_state_a_title: "Dnes večer, pro vás dva",
+    tonight_state_a_subtitle: "Vaše počasí spojené. Praxe vybraná pro to, kde jste oba.",
+    tonight_state_b_title: (name) => `Než se ${name} přidá`,
+    tonight_state_b_subtitle: "Něco, do čeho se uvolnit. Vaše společná večerní praxe se otevře, jakmile se přihlásí.",
+    tonight_state_c_title: "Dnes večer",
+    tonight_state_c_subtitle: "Několik nejkrásnějších večerních praxí Sacred Path. Partner zatím není potřeba — vyberte si jednu.",
     mainTag: "Hlavní rituál",
     stepsLabel: "Co dělat",
     copy: "Kopírovat praxi",
     copied: "Zkopírováno",
     weatherCombo: "Kombinace počasí",
-    forCombo: (pair) => `Vybráno pro: ${pair}`,
     forTonightLabel: "Pro dnešní večer",
   },
 };
@@ -553,17 +549,17 @@ const TonightPaths = () => {
 
   const headerTitle =
     tonightState === "both_checked_in"
-      ? copy.titleBoth
+      ? copy.tonight_state_a_title
       : tonightState === "waiting_for_partner"
-        ? copy.titleWaiting(effectivePartnerName)
-        : copy.titleSolo;
+        ? copy.tonight_state_b_title(effectivePartnerName)
+        : copy.tonight_state_c_title;
 
   const headerBody =
     tonightState === "both_checked_in"
-      ? null
+      ? copy.tonight_state_a_subtitle
       : tonightState === "waiting_for_partner"
-        ? copy.bodyWaiting
-        : copy.bodySolo;
+        ? copy.tonight_state_b_subtitle
+        : copy.tonight_state_c_subtitle;
 
   const displayCards: SelectedDailyMainCard[] =
     tonightState === "both_checked_in" ? weatherCards : STANDALONE_RITUALS;
@@ -592,6 +588,7 @@ const TonightPaths = () => {
               {headerBody ? (
                 <p className="mt-2 max-w-2xl text-sm leading-7 text-muted-foreground">{headerBody}</p>
               ) : null}
+
 
               {/* Weather combo badge — State A only */}
               {tonightState === "both_checked_in" ? (
