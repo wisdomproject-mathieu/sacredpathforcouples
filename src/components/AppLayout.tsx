@@ -114,6 +114,24 @@ const AppLayout = () => {
         <main
           className={`relative min-w-0 flex-1 py-2 ${usesSacredSectionShell ? "lg:py-4" : "lg:py-0"}`}
         >
+          {/* Mobile top bar */}
+          <div className="mb-4 flex items-center justify-between lg:hidden">
+            <SacredPathBrand className="h-9 w-auto" />
+            <div className="flex items-center gap-2">
+              <LanguageSwitcher />
+              <Link
+                to="/app/settings"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-border/30 bg-card/45 text-foreground"
+                aria-label={t("nav.settings")}
+              >
+                <Settings className="h-4 w-4" />
+              </Link>
+              <Button variant="ghost" size="icon" onClick={signOut} className="rounded-xl border border-border/30 bg-card/45">
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+
           {usesSacredSectionShell ? (
             <SacredSectionShell>
               <Outlet />
@@ -123,6 +141,7 @@ const AppLayout = () => {
           )}
         </main>
       </div>
+      <MobileBottomNav />
     </div>
   );
 };
