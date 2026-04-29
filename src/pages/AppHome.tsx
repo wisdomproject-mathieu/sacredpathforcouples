@@ -170,14 +170,59 @@ function PartnerConnectCard() {
     setBusy(false);
   };
 
-  const copyInvite = async () => {
-    if (!inviteCode) return;
+  const fallbackCopy = (text: string) => {
     try {
-      await navigator.clipboard.writeText(inviteCode);
-      toast.success("Invite copied.");
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      const ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return ok;
     } catch {
-      toast.error("Copy failed. Please copy manually.");
+      return false;
     }
+  };
+
+  const copyInvite = async () => {
+    if (!inviteCode) {
+      toast.error("No code yet. Tap 'Create invite code' first.");
+      return;
+    }
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(inviteCode);
+        toast.success(`Code ${inviteCode} copied.`);
+        return;
+      }
+      throw new Error("no clipboard");
+    } catch {
+      if (fallbackCopy(inviteCode)) {
+        toast.success(`Code ${inviteCode} copied.`);
+      } else {
+        toast.error("Copy failed. Long-press the code to copy it.");
+      }
+    }
+  };
+
+  const shareInvite = async () => {
+    if (!inviteCode) {
+      toast.error("No code yet. Tap 'Create invite code' first.");
+      return;
+    }
+    const message = `Join me on Sacred Path for Couples. Use my invite code: ${inviteCode}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: "Sacred Path invite", text: message });
+        return;
+      }
+    } catch (err: any) {
+      if (err?.name === "AbortError") return;
+    }
+    await copyInvite();
   };
 
   if (loading) {
@@ -188,7 +233,7 @@ function PartnerConnectCard() {
 
   if (isConnected) {
     return (
-      <div className="rounded-3xl border border-emerald-400/30 bg-gradient-to-br from-emerald-500/10 via-card/90 to-card/90 p-5 md:p-6">
+      <div className="rounded-3xl border border-emerald-400/30 bg-gradient-to-br from-emerald-500/10 via-card/90 to-card/90 p-5 md:p-6 space-y-4">
         <div className="flex items-center gap-3">
           <div className="rounded-2xl border border-emerald-400/30 bg-background/40 p-3 text-emerald-300">
             <HeartHandshake className="h-5 w-5" />
@@ -198,9 +243,25 @@ function PartnerConnectCard() {
             <h2 className="font-display text-2xl text-foreground">Your temple is shared</h2>
           </div>
         </div>
-        <p className="mt-3 text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground">
           You and your partner are linked. Rituals, weather, and gratitude flow between you.
         </p>
+        {inviteCode && (
+          <div className="rounded-2xl border border-border/60 bg-background/50 p-4">
+            <p className="text-xs uppercase tracking-wider text-muted-foreground">Your couple code</p>
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <code className="flex-1 min-w-[140px] font-mono text-2xl tracking-[0.3em] text-foreground select-all">
+                {inviteCode}
+              </code>
+              <Button size="sm" variant="outline" onClick={copyInvite}>
+                <Copy className="h-4 w-4 mr-1" /> Copy
+              </Button>
+              <Button size="sm" onClick={shareInvite}>
+                <Sparkles className="h-4 w-4 mr-1" /> Share
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
