@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import SacredSectionShell from "@/components/SacredSectionShell";
 import SacredPathBrand from "@/components/SacredPathBrand";
+import MobileBottomNav from "@/components/MobileBottomNav";
 
 const AppLayout = () => {
   const { signOut } = useAuth();
@@ -40,9 +41,9 @@ const AppLayout = () => {
     location.pathname.startsWith("/app/voice");
 
   return (
-    <div className="sacred-app relative min-h-screen bg-background text-foreground">
+    <div className="sacred-app relative min-h-screen bg-background text-foreground pb-[88px] lg:pb-0">
       <div className="mx-auto flex min-h-screen max-w-7xl flex-col px-4 py-4 md:px-6 lg:flex-row lg:gap-6 lg:py-6">
-        <aside className="lg:w-[290px] lg:shrink-0">
+        <aside className="hidden lg:block lg:w-[290px] lg:shrink-0">
           <div className="rounded-[28px] border border-border/30 bg-card/45 p-4 shadow-[0_20px_60px_-35px_rgba(0,0,0,0.65)] backdrop-blur-md lg:sticky lg:top-6">
             <div className="rounded-[24px] border border-primary/15 bg-gradient-to-br from-primary/10 via-background to-background p-4">
               <SacredPathBrand className="w-full" />
@@ -113,6 +114,24 @@ const AppLayout = () => {
         <main
           className={`relative min-w-0 flex-1 py-2 ${usesSacredSectionShell ? "lg:py-4" : "lg:py-0"}`}
         >
+          {/* Mobile top bar */}
+          <div className="mb-4 flex items-center justify-between lg:hidden">
+            <SacredPathBrand className="h-9 w-auto" />
+            <div className="flex items-center gap-2">
+              <LanguageSwitcher />
+              <Link
+                to="/app/settings"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-border/30 bg-card/45 text-foreground"
+                aria-label={t("nav.settings")}
+              >
+                <Settings className="h-4 w-4" />
+              </Link>
+              <Button variant="ghost" size="icon" onClick={signOut} className="rounded-xl border border-border/30 bg-card/45">
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+
           {usesSacredSectionShell ? (
             <SacredSectionShell>
               <Outlet />
@@ -122,6 +141,7 @@ const AppLayout = () => {
           )}
         </main>
       </div>
+      <MobileBottomNav />
     </div>
   );
 };
