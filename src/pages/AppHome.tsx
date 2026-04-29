@@ -281,10 +281,15 @@ function PartnerConnectCard() {
       {inviteCode ? (
         <div className="rounded-2xl border border-border/60 bg-background/50 p-4">
           <p className="text-xs uppercase tracking-wider text-muted-foreground">Your invite code</p>
-          <div className="mt-2 flex items-center gap-2">
-            <code className="flex-1 font-mono text-2xl tracking-[0.3em] text-foreground">{inviteCode}</code>
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            <code className="flex-1 min-w-[140px] font-mono text-2xl tracking-[0.3em] text-foreground select-all">
+              {inviteCode}
+            </code>
             <Button size="sm" variant="outline" onClick={copyInvite}>
               <Copy className="h-4 w-4 mr-1" /> Copy
+            </Button>
+            <Button size="sm" onClick={shareInvite}>
+              <Sparkles className="h-4 w-4 mr-1" /> Share
             </Button>
           </div>
           <p className="mt-2 text-xs text-muted-foreground">
