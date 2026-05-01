@@ -30,7 +30,7 @@ export default function Rituals() {
           <div className="flex-1 text-center">
             <h1 className="font-display text-4xl md:text-5xl font-semibold">A complete intimacy library for the two of you.</h1>
             <p className="mt-2 text-muted-foreground">
-              One daily practice is free. Unlock 300+ rituals, guided voice, oracle prompts, and shared journey tools for both partners.
+              One daily practice is free, and every premium practice is crafted to keep your connection growing with fresh rituals added regularly.
             </p>
           </div>
         </div>
@@ -124,14 +124,6 @@ export default function Rituals() {
           </aside>
         </section>
 
-        {!hasPremiumAccess && (
-          <section className="rounded-2xl border border-primary/40 bg-primary/10 p-5">
-            <p className="text-sm">
-              Unlock the full library for both of you - $29/year. One subscription gives both connected partners access to 300+ rituals, guided voice, oracle prompts, and shared journey tools.
-            </p>
-            <Button className="mt-3">Unlock for both of us</Button>
-          </section>
-        )}
       </div>
     </div>
   );

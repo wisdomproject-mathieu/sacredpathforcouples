@@ -355,6 +355,20 @@ export default function AppHome() {
 
         {/* Gratitude card */}
         <Link
+          to="/app/tools"
+          className="block rounded-3xl border border-cyan-400/30 bg-gradient-to-br from-cyan-500/10 via-card/90 to-card/90 p-5 md:p-6 transition hover:border-cyan-300/50"
+        >
+          <p className="text-xs uppercase tracking-[0.2em] text-cyan-200/80">Calm reset</p>
+          <h2 className="mt-2 font-display text-2xl md:text-3xl text-foreground">
+            Timer & Breathing
+          </h2>
+          <p className="mt-2 text-muted-foreground">
+            Use a focused timer or guided breathing patterns: Box and 4-7-8 at 3, 5, or 10 minutes.
+          </p>
+        </Link>
+
+        {/* Gratitude card */}
+        <Link
           to="/app/space?tab=messages&kind=gratitude"
           className="block rounded-3xl border border-primary/30 bg-gradient-to-br from-primary/15 via-card/90 to-card/90 p-5 md:p-6 transition hover:border-primary/50"
         >

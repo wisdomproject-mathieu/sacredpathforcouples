@@ -24,6 +24,8 @@ import SacredRepair from "./pages/SacredRepair";
 import SacredPathVoice from "./pages/SacredPathVoice";
 import ShareWisdom from "./pages/ShareWisdom";
 import Settings from "./pages/Settings";
+import Tools from "./pages/Tools";
+import BreatheTimer from "./pages/BreatheTimer";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -165,6 +167,8 @@ const App = () => (
                 <Route path="repair" element={<SacredRepair />} />
                 <Route path="sacred-repair" element={<Navigate to="/app/repair" replace />} />
                 <Route path="voice" element={<SacredPathVoice />} />
+                <Route path="tools" element={<Tools />} />
+                <Route path="breathe" element={<BreatheTimer />} />
                 <Route path="wisdom" element={<ShareWisdom />} />
                 <Route path="settings" element={<Settings />} />
               </Route>

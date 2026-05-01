@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { BookOpen, Home, Mic, Shield, Sparkles } from "lucide-react";
+import { BookOpen, Home, Mic, Shield, Sparkles, Timer } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const MobileBottomNav = () => {
@@ -9,6 +9,7 @@ const MobileBottomNav = () => {
   const items = [
     { to: "/app", icon: Home, label: t("nav.home") },
     { to: "/app/space", icon: Sparkles, label: t("nav.temple") },
+    { to: "/app/tools", icon: Timer, label: t("nav.tools") },
     { to: "/app/repair", icon: Shield, label: t("nav.repair") },
     { to: "/app/paths", icon: BookOpen, label: t("nav.library") },
     { to: "/app/voice", icon: Mic, label: t("nav.voice") },

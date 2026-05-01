@@ -37,6 +37,7 @@ const translations: Record<string, Record<Language, string>> = {
   "nav.library": { en: "Sacred Library", fr: "Bibliothèque sacrée", cs: "Posvátná knihovna" },
   "nav.voice": { en: "Sacred Voice", fr: "Voix Sacrée", cs: "Posvátný Hlas" },
   "nav.temple": { en: "Sacred Temple", fr: "Chrám intimity", cs: "Posvátný chrám" },
+  "nav.tools": { en: "Tools", fr: "Outils", cs: "Nástroje" },
   "nav.repair": { en: "Sacred Repair", fr: "Réparation sacrée", cs: "Posvátná obnova" },
 
   // Shared actions

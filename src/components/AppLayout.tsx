@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { BookOpen, Home, LogOut, Mic, Settings, Shield, Sparkles } from "lucide-react";
+import { BookOpen, Home, LogOut, Mic, Settings, Shield, Sparkles, Timer } from "lucide-react";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -19,6 +19,7 @@ const AppLayout = () => {
     () => [
       { to: "/app", icon: Home, label: t("nav.home"), iconClass: "text-amber-300" },
       { to: "/app/space", icon: Sparkles, label: t("nav.temple"), iconClass: "text-fuchsia-300" },
+      { to: "/app/tools", icon: Timer, label: t("nav.tools"), iconClass: "text-teal-300" },
       { to: "/app/repair", icon: Shield, label: t("nav.repair"), iconClass: "text-cyan-300" },
       { to: "/app/paths", icon: BookOpen, label: t("nav.library"), iconClass: "text-violet-300" },
       { to: "/app/voice", icon: Mic, label: t("nav.voice"), iconClass: "text-emerald-300" },
