@@ -795,60 +795,46 @@ const AppHome = () => {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-[28px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-6 shadow-[0_24px_80px_-40px_rgba(255,170,70,0.35)] md:p-8">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-          <div className="max-w-4xl">
-            <p className="text-xs uppercase tracking-[0.28em] text-primary/80">{todayLabel}</p>
-            <h1 className="mt-3 font-display text-4xl leading-tight text-foreground md:text-5xl">{copy.heroTitle}</h1>
-            <p className="mt-4 max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
-              {copy.heroDesc}
-            </p>
-          </div>
+      <section className="rounded-[30px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-6 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] md:p-7">
+        <p className="text-xs uppercase tracking-[0.28em] text-primary/80">{todayLabel}</p>
+        <h1 className="mt-3 font-display text-3xl leading-tight text-foreground md:text-5xl">{copy.heroTitle}</h1>
+        <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">{copy.heroDesc}</p>
 
-          <aside className="lg:w-[360px] lg:shrink-0">
-            <div className="rounded-[22px] border border-border/30 bg-card/45 p-4">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                  <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">{copy.relationship}</p>
-                  <h2 className="mt-2 font-display text-2xl text-foreground">
-                    {relationshipConnected ? `${myName} & ${partnerName ?? copy.partnerFallback}` : myName}
-                  </h2>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    {loading
-                      ? copy.syncingLine
-                      : relationshipConnected
-                        ? copy.journeyLine
-                        : copy.notConnectedLine}
-                  </p>
-                </div>
-                <div className={`inline-flex rounded-2xl border p-3 ${relationshipConnected ? "border-emerald-300/30 bg-emerald-500/10 text-emerald-200" : "border-amber-300/35 bg-amber-500/10 text-amber-200"}`}>
-                  <HeartHandshake className="h-5 w-5" />
-                </div>
-              </div>
-              <div className="mt-4 inline-flex rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.14em] text-foreground/90">
-                {loading ? copy.syncing : relationshipConnected ? copy.connected : copy.solo}
-              </div>
+        <div className="mt-6 rounded-[24px] border border-border/30 bg-card/45 p-4">
+          <div className="text-xs uppercase tracking-[0.22em] text-primary/80">{copy.relationship}</div>
+          <div className="mt-3 flex items-start justify-between gap-4">
+            <div>
+              <h2 className="font-display text-2xl text-foreground">
+                {relationshipConnected ? `${myName} & ${partnerName ?? copy.partnerFallback}` : myName}
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                {loading ? copy.syncingLine : relationshipConnected ? copy.journeyLine : copy.notConnectedLine}
+              </p>
             </div>
-          </aside>
-        </div>
-
-        <div className="mt-6 rounded-[22px] border border-border/30 bg-card/40 p-4">
-          <div className="flex items-center gap-2 text-violet-300">
-            <MessageCircle className="h-4 w-4" />
-            <span className="text-xs uppercase tracking-[0.18em]">{signal.title}</span>
+            <div className={`inline-flex shrink-0 rounded-2xl border p-3 ${relationshipConnected ? "border-emerald-300/30 bg-emerald-500/10 text-emerald-200" : "border-amber-300/35 bg-amber-500/10 text-amber-200"}`}>
+              <HeartHandshake className="h-5 w-5" />
+            </div>
+          </div>
+          <div className="mt-4 flex items-center gap-3">
+            <div className="inline-flex rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.14em] text-foreground/90">
+              {loading ? copy.syncing : relationshipConnected ? copy.connected : copy.solo}
+            </div>
+            <div className="flex items-center gap-2 text-violet-300">
+              <MessageCircle className="h-3.5 w-3.5" />
+              <span className="text-xs uppercase tracking-[0.16em]">{signal.title}</span>
+            </div>
           </div>
           <p className="mt-3 text-sm leading-6 text-foreground/90">{loading ? copy.signalPreparing : signal.detail}</p>
         </div>
-
       </section>
 
       {relationshipConnected && (
-        <section className="rounded-[28px] border border-border/30 bg-card/45 p-5">
-          <div className="mb-4">
-            <p className="text-xs uppercase tracking-[0.22em] text-amber-400/70">INTIMACY WEATHER</p>
-            <h2 className="mt-2 font-display text-2xl text-foreground">How are you arriving tonight?</h2>
-          </div>
+        <section className="rounded-[30px] border border-border/30 bg-card/45 p-6">
+          <p className="text-xs uppercase tracking-[0.22em] text-primary/80">INTIMACY WEATHER</p>
+          <h2 className="mt-3 font-display text-3xl text-foreground">How are you arriving tonight?</h2>
+          <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground">Name your emotional state before touch. When both partners share, a practice unlocks.</p>
 
+          <div className="mt-5">
           {(() => {
             const moods = [
               { value: "open", emoji: "🌞", label: "Open" },
@@ -950,7 +936,8 @@ const AppHome = () => {
             );
           })()}
 
-          <div className="mt-4 pt-4 border-t border-border/20">
+          </div>
+          <div className="mt-5 border-t border-border/20 pt-4">
             <Link
               to="/app/reconnect"
               className="text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"
