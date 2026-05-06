@@ -1,23 +1,47 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ComponentType } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 import {
   ArrowRight,
   Crown,
   Flame,
   Heart,
   Lock,
-  LockOpen,
   Shield,
   Sparkles,
   Waves,
   type LucideIcon,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import { useSeoMetadata } from "@/lib/seo";
-import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
-import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
 import { PATH_LONGFORM_BY_SLUG } from "@/lib/libraryLongform";
+import LibraryDetailBody from "@/components/library/LibraryDetailBody";
+import LibraryDetailSplitLayout from "@/components/library/LibraryDetailSplitLayout";
+import { sacredVisualSystem } from "@/lib/sacredVisualSystem";
+import LotusIcon from "@/components/tantra-icons/LotusIcon";
+import ChakraIcon from "@/components/tantra-icons/ChakraIcon";
+import FlameIcon from "@/components/tantra-icons/FlameIcon";
+import SacredGeometryIcon from "@/components/tantra-icons/SacredGeometryIcon";
+import YinYangIcon from "@/components/tantra-icons/YinYangIcon";
+import BreathIcon from "@/components/tantra-icons/BreathIcon";
+
+type SacredIconComponent = ComponentType<{ className?: string; size?: number }>;
+const PATH_SACRED_ICONS: SacredIconComponent[] = [LotusIcon, FlameIcon, ChakraIcon, SacredGeometryIcon, YinYangIcon, BreathIcon];
+const pickPathSacredIcon = (key: string): SacredIconComponent => {
+  let hash = 0;
+  for (let i = 0; i < key.length; i += 1) hash = (hash * 31 + key.charCodeAt(i)) >>> 0;
+  return PATH_SACRED_ICONS[hash % PATH_SACRED_ICONS.length];
+};
+const PATH_ACCENT_BY_INDEX = [
+  "text-amber-300/85",
+  "text-rose-300/85",
+  "text-fuchsia-300/85",
+  "text-cyan-300/85",
+  "text-emerald-300/85",
+  "text-violet-300/85",
+];
 
 type Tier = "free" | "premium";
 
@@ -119,13 +143,6 @@ const libraryPages = [
     subtitleKey: "pageAuthorsSubtitle",
     icon: Heart,
     iconClass: "text-rose-300",
-  },
-  {
-    to: "/app/reconnect",
-    labelKey: "pageReconnect",
-    subtitleKey: "pageReconnectSubtitle",
-    icon: Flame,
-    iconClass: "text-amber-300",
   },
 ];
 
@@ -1733,7 +1750,7 @@ const pathUpgradeCopy: Record<
 };
 
 const shellCardClass =
-  "rounded-[28px] border border-border/30 bg-card/45 p-5 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.46)]";
+  sacredVisualSystem.sectionFrame;
 
 const pathsUiCopy: Record<Language, Record<string, string>> = {
   en: {
@@ -1747,7 +1764,7 @@ const pathsUiCopy: Record<Language, Record<string, string>> = {
     lockedInPremium: "Locked in premium",
     openAccess: "Open access",
     relatedPaths: "Related Paths",
-    heroEyebrow: "Sacred Library · Paths",
+    heroEyebrow: "Sacred Library",
     heroTitle: "Ancient pathways translated for modern couples",
     heroDesc:
       "Start with a quick insight you can use immediately, then go deeper as a couple when you have space. Each path helps you move from information to real closeness.",
@@ -1822,7 +1839,7 @@ const pathsUiCopy: Record<Language, Record<string, string>> = {
     lockedInPremium: "Verrouillé en premium",
     openAccess: "Accès libre",
     relatedPaths: "Parcours liés",
-    heroEyebrow: "Bibliothèque sacrée · Parcours",
+    heroEyebrow: "Bibliothèque sacrée",
     heroTitle: "Des parcours anciens adaptés aux couples modernes",
     heroDesc:
       "Commencez avec un insight rapide utilisable immédiatement, puis allez plus loin en couple quand vous avez de l'espace. Chaque parcours transforme la connaissance en vraie proximité.",
@@ -1897,7 +1914,7 @@ const pathsUiCopy: Record<Language, Record<string, string>> = {
     lockedInPremium: "Uzamčeno v premium",
     openAccess: "Volný přístup",
     relatedPaths: "Související cesty",
-    heroEyebrow: "Posvátná knihovna · Cesty",
+    heroEyebrow: "Posvátná knihovna",
     heroTitle: "Starověké cesty přeložené pro moderní páry",
     heroDesc:
       "Začni rychlým vhledem, který můžeš použít hned, a pak jděte v páru do větší hloubky. Každá cesta převádí informace do skutečné blízkosti.",
@@ -1968,19 +1985,16 @@ const tierBadgeClass: Record<Tier, string> = {
   premium: "border-amber-400/30 bg-amber-500/12 text-amber-200",
 };
 
-const usePremiumAccess = () => {
-  const { user } = useAuth();
-  return isPremiumTier(getEffectiveMembershipTier(user));
-};
-
 const TierBadge = ({ tier }: { tier: Tier }) => {
-  const hasPremiumAccess = usePremiumAccess();
-  const locked = tier === "premium" && !hasPremiumAccess;
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
+  const locked = entitlementResolved && tier === "premium" && !hasPremiumAccess;
+
+  if (hasPremiumAccess || !entitlementResolved) return null;
 
   return (
-  <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] ${tierBadgeClass[tier]}`}>
-    {locked ? <Lock className="h-3.5 w-3.5" aria-label="Locked" /> : <LockOpen className="h-3.5 w-3.5" aria-label="Open access" />}
-  </span>
+    <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] ${tierBadgeClass[tier]}`}>
+      {locked ? <Lock className="h-3.5 w-3.5" aria-label="Locked" /> : "Free"}
+    </span>
   );
 };
 
@@ -1988,8 +2002,8 @@ const PathHeroCard = ({ path }: { path: PathDetail }) => {
   const { lang } = useLanguage();
   const ui = pathsUiCopy[lang];
   const Icon = path.icon;
-  const hasPremiumAccess = usePremiumAccess();
-  const isLocked = path.tier === "premium" && !hasPremiumAccess;
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
+  const isLocked = entitlementResolved && path.tier === "premium" && !hasPremiumAccess;
   return (
     <section className={shellCardClass}>
       <div className="flex items-start justify-between gap-3">
@@ -2017,7 +2031,8 @@ const PathHeroCard = ({ path }: { path: PathDetail }) => {
 const PremiumMiniCard = ({ path }: { path: PathDetail }) => {
   const { lang } = useLanguage();
   const ui = pathsUiCopy[lang];
-  const hasPremiumAccess = usePremiumAccess();
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
+  if (hasPremiumAccess || !entitlementResolved) return null;
   const upgradeCopy = pathUpgradeCopy[path.slug] ?? {
     benefit: "Add guided depth, clearer progression, and stronger partner integration.",
   };
@@ -2029,8 +2044,8 @@ const PremiumMiniCard = ({ path }: { path: PathDetail }) => {
   return (
   <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.24),transparent_55%),linear-gradient(135deg,rgba(245,158,11,0.18),rgba(15,23,42,0.15))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.62)]">
     <div className="flex items-center gap-2 text-amber-200">
-      {hasPremiumAccess ? <LockOpen className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
-      <span className="text-xs uppercase tracking-[0.16em]">{hasPremiumAccess ? ui.premiumActive : ui.locked}</span>
+      <Lock className="h-4 w-4" />
+      <span className="text-xs uppercase tracking-[0.16em]">{ui.locked}</span>
     </div>
     <p className="mt-3 text-sm leading-6 text-foreground/90">
       {miniLine}
@@ -2054,24 +2069,22 @@ const PremiumMiniCard = ({ path }: { path: PathDetail }) => {
 };
 
 const PathPremiumBlock = ({ path }: { path: PathDetail }) => {
-  const { lang } = useLanguage();
-  const ui = pathsUiCopy[lang];
-  const hasPremiumAccess = usePremiumAccess();
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
+
+  if (hasPremiumAccess || !entitlementResolved) return null;
 
   return (
     <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
       <p className="text-xs uppercase tracking-[0.2em] text-amber-300">TAKE THIS PATH FURTHER</p>
       <h4 className="mt-2 font-display text-2xl text-foreground">Let this become a lived experience.</h4>
       <p className="mt-3 text-sm leading-7 text-foreground/90">Go beyond understanding. Premium helps you practice, reconnect, and embody these teachings together so your relationship becomes more conscious, intimate, and alive.</p>
-      {hasPremiumAccess ? null : (
-        <Link
-          to="/pricing"
-          className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
-        >
-          Walk the deeper path
-          <ArrowRight className="h-4 w-4" />
-        </Link>
-      )}
+      <Link
+        to="/pricing"
+        className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
+      >
+        Walk the deeper path
+        <ArrowRight className="h-4 w-4" />
+      </Link>
     </section>
   );
 };
@@ -2079,12 +2092,32 @@ const PathPremiumBlock = ({ path }: { path: PathDetail }) => {
 const FreePathContent = ({ path }: { path: PathDetail }) => {
   const { lang } = useLanguage();
   const ui = pathsUiCopy[lang];
-  if (!path.content) return null;
+  if (!path.content) {
+    return (
+      <LibraryDetailBody>
+        <section className={shellCardClass}>
+          <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{ui.whatThisPathIs}</p>
+          <h3 className="mt-2 font-display text-3xl text-foreground">{path.name}</h3>
+          <p className="mt-4 text-sm leading-7 text-foreground/90">{path.oneLine}</p>
+          <p className="mt-2 text-sm leading-7 text-muted-foreground">{path.overviewLine}</p>
+        </section>
+        <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.whyItMattersForCouples}</p>
+          <div className="mt-3 space-y-2 text-sm leading-7 text-foreground/90">
+            <p>{path.overviewLine}</p>
+            <p>{path.oneLine}</p>
+          </div>
+        </section>
+      </LibraryDetailBody>
+    );
+  }
 
   const data = path.content;
+  const longform = PATH_LONGFORM_BY_SLUG[path.slug];
+  const longformParagraphs = longform?.fullDescription.split("\n\n") ?? [];
 
   return (
-    <main className="space-y-5">
+    <LibraryDetailBody>
       <section className={shellCardClass}>
         <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{ui.whatThisPathIs}</p>
         <h3 className="mt-2 font-display text-3xl text-foreground">{path.name}</h3>
@@ -2098,6 +2131,27 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
           <footer className="mt-2 text-xs uppercase tracking-[0.14em] text-primary/80">{data.quote.source}</footer>
         </blockquote>
       </section>
+
+      {longformParagraphs.length ? (
+        <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+            {lang === "fr" ? "Contexte de tradition" : lang === "cs" ? "Kontext tradice" : "Lineage Context"}
+          </p>
+          {longform.subtitle ? (
+            <p className="mt-2 text-xs uppercase tracking-[0.12em] text-primary/80">{longform.subtitle}</p>
+          ) : null}
+          <div className="mt-3 space-y-3 text-sm leading-7 text-foreground/90">
+            {longformParagraphs.map((line) => (
+              <p key={line}>{line}</p>
+            ))}
+          </div>
+          {longform.forCouples ? (
+            <p className="mt-3 rounded-2xl border border-primary/20 bg-primary/8 p-3 text-sm leading-6 text-primary/90">
+              {longform.forCouples}
+            </p>
+          ) : null}
+        </section>
+      ) : null}
 
       {data.whyMatters?.length ? (
         <section className="rounded-[24px] border border-primary/20 bg-primary/8 p-5">
@@ -2284,19 +2338,25 @@ const FreePathContent = ({ path }: { path: PathDetail }) => {
       </section>
 
       <PathPremiumBlock path={path} />
-    </main>
+    </LibraryDetailBody>
   );
 };
 
 const PremiumPathContent = ({ path }: { path: PathDetail }) => {
   const { lang } = useLanguage();
   const ui = pathsUiCopy[lang];
-  const hasPremiumAccess = usePremiumAccess();
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
   const longform = PATH_LONGFORM_BY_SLUG[path.slug];
   const longformParagraphs = longform?.fullDescription.split("\n\n") ?? [];
+  const upgradeFallback = pathUpgradeCopy[path.slug];
+  const narrativeParagraphs = longformParagraphs.length
+    ? longformParagraphs
+    : path.teaser?.length
+      ? path.teaser
+      : [path.overviewLine, upgradeFallback?.benefit ?? ui.premiumOrientationBody];
 
   return (
-  <main className="space-y-5">
+  <LibraryDetailBody>
     <section className="rounded-[28px] border border-amber-400/20 bg-gradient-to-br from-amber-500/12 via-background to-background p-5 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.5)]">
       <div className="flex items-center gap-2">
         <TierBadge tier="premium" />
@@ -2312,11 +2372,11 @@ const PremiumPathContent = ({ path }: { path: PathDetail }) => {
         <p className="mt-2 text-xs uppercase tracking-[0.12em] text-primary/80">{longform.subtitle}</p>
       ) : null}
       <div className="mt-4 space-y-3 text-sm leading-7 text-muted-foreground">
-        {(longformParagraphs.length ? longformParagraphs : path.teaser ?? []).map((line) => (
+        {narrativeParagraphs.map((line) => (
           <p key={line}>{line}</p>
         ))}
       </div>
-      {hasPremiumAccess ? null : (
+      {entitlementResolved && !hasPremiumAccess ? (
         <Link
           to="/pricing"
           className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-2 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/18"
@@ -2324,14 +2384,14 @@ const PremiumPathContent = ({ path }: { path: PathDetail }) => {
           <Lock className="h-4 w-4" />
           {ui.unlockThisPathJourney}
         </Link>
-      )}
+      ) : null}
     </section>
 
     <section className="rounded-[24px] border border-primary/20 bg-primary/8 p-5">
       <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{ui.whyItMattersForCouples}</p>
       <div className="mt-4 space-y-2">
         {(longform?.forCouples
-          ? [longform.forCouples, ...longformParagraphs.slice(0, 2)]
+          ? [longform.forCouples, ...narrativeParagraphs.slice(0, 2)]
           : [ui.premiumWhy1, ui.premiumWhy2, ui.premiumWhy3]
         ).map((line) => (
           <div key={line} className="flex items-start gap-3 text-sm leading-6 text-foreground/90">
@@ -2429,7 +2489,7 @@ const PremiumPathContent = ({ path }: { path: PathDetail }) => {
     </section>
 
     <PathPremiumBlock path={path} />
-  </main>
+  </LibraryDetailBody>
   );
 };
 
@@ -2444,8 +2504,8 @@ const MobileDetailHeader = ({
 }) => {
   const { lang } = useLanguage();
   const ui = pathsUiCopy[lang];
-  const hasPremiumAccess = usePremiumAccess();
-  const isLocked = tier === "premium" && !hasPremiumAccess;
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
+  const isLocked = entitlementResolved && tier === "premium" && !hasPremiumAccess;
 
   return (
   <div className="sticky top-2 z-30 rounded-2xl border border-border/40 bg-background/95 p-3 shadow-[0_16px_40px_-32px_rgba(0,0,0,0.7)] backdrop-blur">
@@ -2510,6 +2570,7 @@ const Paths = () => {
   const { lang } = useLanguage();
   const ui = pathsUiCopy[lang];
   const isMobile = useIsMobile();
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
   const [searchParams, setSearchParams] = useSearchParams();
   const localizedPathDetails = useMemo(
     () => pathDetails.map((path) => applyPathLocalization(path, lang)),
@@ -2525,6 +2586,9 @@ const Paths = () => {
   );
   const [selectedSlug, setSelectedSlug] = useState(defaultSelectedSlug);
   const [mobileDetailMode, setMobileDetailMode] = useState(false);
+  const [detailOnlyMode, setDetailOnlyMode] = useState(Boolean(focusSlug));
+  const detailPaneRef = useRef<HTMLDivElement | null>(null);
+  const sidePaneRef = useRef<HTMLDivElement | null>(null);
   const selected = useMemo(
     () => localizedPathDetails.find((path) => path.slug === selectedSlug) ?? localizedPathDetails[0],
     [localizedPathDetails, selectedSlug],
@@ -2533,8 +2597,9 @@ const Paths = () => {
   const freeCount = localizedPathDetails.filter((path) => path.tier === "free").length;
   const premiumCount = localizedPathDetails.filter((path) => path.tier === "premium").length;
   const relatedPaths = localizedPathDetails.filter((path) => path.slug !== selectedSlug).slice(0, 6);
-  const showBrowse = !isMobile || !mobileDetailMode;
-  const showDetail = !isMobile || mobileDetailMode;
+  const showBrowse = isMobile ? !mobileDetailMode : !detailOnlyMode;
+  const showDetail = isMobile ? mobileDetailMode : true;
+  const desktopFocusedDetail = !isMobile && detailOnlyMode;
 
   useSeoMetadata({
     title: `Paths Library - ${selected.name}`,
@@ -2566,8 +2631,17 @@ const Paths = () => {
     }
   }, [focusSlug, isMobile, localizedPathDetails]);
 
+  useEffect(() => {
+    if (isMobile) return;
+    detailPaneRef.current?.scrollTo({ top: 0, behavior: "auto" });
+    sidePaneRef.current?.scrollTo({ top: 0, behavior: "auto" });
+  }, [isMobile, selectedSlug]);
+
   const handleSelectPath = (slug: string) => {
     setSelectedSlug(slug);
+    if (!isMobile) {
+      setDetailOnlyMode(true);
+    }
     const next = new URLSearchParams(searchParams);
     next.set("focus", slug);
     setSearchParams(next, { replace: true });
@@ -2576,22 +2650,30 @@ const Paths = () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
+  const openCardHint = lang === "fr"
+    ? "Ouvrir ce parcours"
+    : lang === "cs"
+      ? "Otevřít tuto cestu"
+      : "Open this path";
 
   return (
     <div className="space-y-4 md:space-y-6">
       {showBrowse ? (
-      <section className="rounded-[30px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-5 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] md:p-8">
+      <section className={sacredVisualSystem.heroFrame}>
+        <div className="absolute -right-10 top-0 opacity-15">
+          <img src={shivaShaktiIcon} alt="" className="h-40 w-40 rounded-[20px]" />
+        </div>
         <div className="max-w-4xl">
           <p className="text-xs uppercase tracking-[0.28em] text-primary/80">{ui.heroEyebrow}</p>
-          <h1 className="mt-3 font-display text-3xl text-foreground md:text-5xl">{ui.heroTitle}</h1>
-          <p className="mt-4 text-sm leading-7 text-muted-foreground md:text-base">
+          <h1 className="mt-2 font-display text-3xl text-foreground">{ui.heroTitle}</h1>
+          <p className="mt-3 text-sm leading-7 text-muted-foreground">
             {ui.heroDesc}
           </p>
         </div>
 
-        <div className="mt-6 w-full rounded-[24px] border border-border/30 bg-card/45 p-4">
+        <div className={sacredVisualSystem.contourEmerald}>
           <div className="text-xs uppercase tracking-[0.22em] text-primary/80">{ui.sacredPages}</div>
-          <div className="mt-3 grid gap-3 md:grid-cols-3">
+          <div className="mt-3 grid gap-3 md:grid-cols-2">
             {libraryPages.map((page) => {
               const Icon = page.icon;
               const active = page.to === "/app/paths";
@@ -2618,84 +2700,133 @@ const Paths = () => {
       </section>
       ) : null}
 
-      {showBrowse ? (
-      <section className="rounded-[28px] border border-amber-300/25 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.14),transparent_60%),linear-gradient(135deg,rgba(245,158,11,0.10),rgba(15,23,42,0.06))] p-6">
-        <p className="text-xs uppercase tracking-[0.28em] text-amber-300">Daily Practice</p>
-        <h2 className="mt-3 font-display text-3xl text-foreground">Reconnect</h2>
-        <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
-          Seven ancient practices for returning to each other. From three breaths to twenty minutes — always available, always enough.
-        </p>
-        <Link
-          to="/app/reconnect"
-          className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-amber-400/30 bg-amber-400/12 px-4 py-2.5 text-sm text-foreground transition-all hover:border-amber-400/50 hover:bg-amber-400/18"
-        >
-          Open practices →
-        </Link>
-      </section>
-      ) : null}
 
       {showBrowse ? (
       <section className={shellCardClass}>
         <p className="text-xs uppercase tracking-[0.22em] text-primary/80">{ui.overviewEyebrow}</p>
         <h2 className="mt-2 font-display text-3xl text-foreground">{ui.overviewTitle}</h2>
 
-        <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+        <div className={`mt-5 ${sacredVisualSystem.contourCyan}`}>
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-2">
           {localizedPathDetails.map((path, idx) => {
-            const Icon = path.icon;
+            const SacredIcon = pickPathSacredIcon(path.slug);
             const isSelected = selectedSlug === path.slug;
-            const isLastAlone = idx === localizedPathDetails.length - 1 && localizedPathDetails.length % 4 !== 0;
+            const accent = PATH_ACCENT_BY_INDEX[idx % PATH_ACCENT_BY_INDEX.length];
+            const isPremium = path.tier === "premium";
+            const previewText = isPremium
+              ? `${ui.premiumPreview}: ${PATH_LONGFORM_BY_SLUG[path.slug]?.shortDescription ?? path.teaser?.[0] ?? ui.premiumPreviewFallback}`
+              : (PATH_LONGFORM_BY_SLUG[path.slug]?.shortDescription ?? path.oneLine);
+            const cardClass = `group relative flex min-h-[206px] flex-col overflow-hidden rounded-[20px] border p-4 text-left transition-all md:p-5 ${
+              isSelected
+                ? "border-amber-300/45 bg-gradient-to-br from-amber-500/12 via-card/60 to-card/30 shadow-[0_18px_50px_-36px_rgba(245,158,11,0.4)]"
+                : isPremium
+                  ? "border-amber-300/25 bg-gradient-to-br from-amber-500/6 via-card/55 to-card/30 hover:border-amber-300/45"
+                  : "border-emerald-300/30 bg-gradient-to-br from-emerald-500/8 via-card/55 to-card/30 hover:border-emerald-300/50"
+            }`;
             return (
-              <button
-                key={path.slug}
-                type="button"
-                onClick={() => handleSelectPath(path.slug)}
-                className={`rounded-[24px] border p-4 text-left transition-all ${
-                  isSelected
-                    ? "border-primary/30 bg-primary/10 shadow-[0_16px_50px_-40px_rgba(255,173,70,0.45)]"
-                    : "border-border/30 bg-background/45 hover:border-primary/20 hover:bg-card/55"
-                } ${isLastAlone ? "xl:col-span-4 xl:max-w-none" : ""}`}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-3 ${path.iconClass}`}>
-                    <Icon className="h-4 w-4" />
+              <button key={path.slug} type="button" onClick={() => handleSelectPath(path.slug)} className={cardClass}>
+                <div className="flex items-start gap-4">
+                  <div className={`shrink-0 rounded-2xl border border-amber-300/25 bg-gradient-to-br from-amber-500/10 via-card/40 to-transparent p-2.5 ${accent}`}>
+                    <SacredIcon size={42} className="opacity-90" />
                   </div>
-                  <TierBadge tier={path.tier} />
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-display text-[1.4rem] leading-[1.2] text-foreground md:text-[1.55rem]">{path.name}</h3>
+                    <div className="mt-2 flex flex-wrap items-center gap-2">
+                      {isPremium ? (
+                        <span className="inline-flex items-center gap-1 rounded-full border border-amber-400/45 bg-amber-400/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-amber-300">
+                          <Lock className="h-3 w-3" />
+                          Premium
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 rounded-full border border-emerald-300/40 bg-emerald-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-emerald-200">
+                          <Sparkles className="h-3 w-3" />
+                          Free Path
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <h3 className="mt-3 font-display text-2xl text-foreground">{path.name}</h3>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  {PATH_LONGFORM_BY_SLUG[path.slug]?.shortDescription ?? path.oneLine}
-                </p>
-                <p className="mt-2 text-xs leading-5 text-foreground/80">
-                  {path.tier === "free"
-                    ? `${ui.practicePreview}: ${path.content?.practices[0]?.title ?? ui.practicePreviewFallback}`
-                    : `${ui.premiumPreview}: ${PATH_LONGFORM_BY_SLUG[path.slug]?.shortDescription ?? path.teaser?.[0] ?? ui.premiumPreviewFallback}`}
+                <p className="mt-3 line-clamp-3 text-sm leading-6 text-muted-foreground/95">{previewText}</p>
+                <p className="mt-auto pt-3 text-xs uppercase tracking-[0.14em] text-emerald-200/85 group-hover:text-emerald-100">
+                  {openCardHint}
                 </p>
               </button>
             );
           })}
+
+          {entitlementResolved && !hasPremiumAccess ? (
+            <div className="md:col-span-2 xl:col-span-2 flex flex-col justify-between rounded-[24px] border border-amber-400/25 bg-gradient-to-br from-amber-950/60 via-card/50 to-card/30 p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-xs uppercase tracking-[0.22em] text-amber-400/70">SACRED PATH PREMIUM</span>
+              </div>
+              <h3 className="font-display text-xl text-foreground">
+                One subscription.<br />Two lives transformed.
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                Subscribe, send your code to your partner, and begin a completely new intimate life together — tonight.
+              </p>
+              <ul className="mt-3 space-y-1.5">
+                {[
+                  "All 6 wisdom paths unlocked",
+                  "12 sacred teachers, full depth",
+                  "Sacred Temple — all doorways open",
+                  "Daily rituals matched to your weather",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2 text-xs text-muted-foreground">
+                    <span className="mt-0.5 text-amber-400/60">✦</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <button className="mt-4 w-full rounded-[12px] border border-amber-400/40 bg-amber-400/15 px-4 py-3 text-sm font-medium text-amber-300 transition-all hover:bg-amber-400/25">
+                Unlock for both of us →
+              </button>
+              <p className="mt-2 text-center text-[10px] text-muted-foreground/50">
+                $4.99/month · 7-day free trial · One couple, one subscription
+              </p>
+            </div>
+          ) : null}
+          </div>
         </div>
 
-        <div className="mt-4 rounded-2xl border border-amber-400/20 bg-amber-500/6 p-4">
-          <p className="text-xs uppercase tracking-[0.14em] text-amber-200">WHY GO DEEPER</p>
-          <p className="mt-2 text-sm leading-6 text-foreground/90">Some wisdom can inspire in a moment. Deeper guidance helps you live it together, especially when love needs renewal, courage, and care.</p>
-        </div>
+        {entitlementResolved && !hasPremiumAccess ? (
+          <div className="mt-4 rounded-2xl border border-amber-400/20 bg-amber-500/6 p-4">
+            <p className="text-xs uppercase tracking-[0.14em] text-amber-200">WHY GO DEEPER</p>
+            <p className="mt-2 text-sm leading-6 text-foreground/90">Some wisdom can inspire in a moment. Deeper guidance helps you live it together, especially when love needs renewal, courage, and care.</p>
+          </div>
+        ) : null}
       </section>
       ) : null}
 
       {showDetail ? (
-      <section className={`${isMobile ? "space-y-4" : "grid items-start gap-6 lg:grid-cols-[minmax(280px,360px)_minmax(0,1fr)]"}`}>
-        {isMobile ? <MobileDetailHeader title={selected.name} tier={selected.tier} onBack={() => setMobileDetailMode(false)} /> : null}
-
-        <aside className="space-y-4 lg:sticky lg:top-24">
-          <PathHeroCard path={selected} />
-          <PremiumMiniCard path={selected} />
-        </aside>
-
-        <div className="space-y-4">
-          {selected.tier === "free" ? <FreePathContent path={selected} /> : <PremiumPathContent path={selected} />}
-          {isMobile ? <RelatedPathCarousel items={relatedPaths} onSelect={handleSelectPath} /> : null}
-        </div>
-      </section>
+      <LibraryDetailSplitLayout
+        isMobile={isMobile}
+        focusedDetail={desktopFocusedDetail}
+        showDesktopBack={true}
+        backLabel={ui.backToLibrary}
+        onBack={() => setDetailOnlyMode(false)}
+        mobileHeader={
+          <MobileDetailHeader
+            title={selected.name}
+            tier={selected.tier}
+            onBack={() => setMobileDetailMode(false)}
+          />
+        }
+        sidePaneRef={sidePaneRef}
+        detailPaneRef={detailPaneRef}
+        sidePane={(
+          <>
+            <PathHeroCard path={selected} />
+            {entitlementResolved && !hasPremiumAccess ? <PremiumMiniCard path={selected} /> : null}
+          </>
+        )}
+        detailPane={(
+          <>
+            {selected.tier === "free" ? <FreePathContent path={selected} /> : <PremiumPathContent path={selected} />}
+            {isMobile ? <RelatedPathCarousel items={relatedPaths} onSelect={handleSelectPath} /> : null}
+          </>
+        )}
+      />
       ) : null}
     </div>
   );

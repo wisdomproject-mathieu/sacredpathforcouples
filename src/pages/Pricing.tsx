@@ -332,49 +332,69 @@ const Pricing = () => {
           </section>
         ) : null}
 
-        <section className="grid gap-4 xl:grid-cols-3">
-          {pricingTiers.map((tier) => {
-            const Icon = tier.icon;
-            return (
-              <div
-                key={tier.plan}
-                className={`rounded-[30px] border p-6 ${
-                  tier.featured
-                    ? "border-primary/25 bg-primary/8 shadow-[0_28px_90px_-50px_rgba(255,173,70,0.52)]"
-                    : "border-border/30 bg-card/45"
-                }`}
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className={`inline-flex rounded-2xl border border-border/30 bg-background/45 p-3 ${tier.iconClass}`}>
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <div className="rounded-full border border-border/30 bg-background/55 px-3 py-1 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-                    {copy.plans[tier.plan].highlight}
-                  </div>
-                </div>
-
-                <h2 className="mt-5 font-display text-2xl text-foreground">{copy.plans[tier.plan].name}</h2>
-                <div className="mt-3 flex items-end gap-2">
-                  <div className="font-display text-5xl text-foreground">{tier.price}</div>
-                  <div className="pb-1 text-sm text-muted-foreground">{copy.plans[tier.plan].subline}</div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => handleCheckout(tier.plan)}
-                  disabled={activePlan === tier.plan}
-                  className={`mt-6 w-full rounded-2xl px-4 py-3 text-sm transition-all ${
+        {!hasPremiumAccess ? (
+          <section className="grid gap-4 xl:grid-cols-3">
+            {pricingTiers.map((tier) => {
+              const Icon = tier.icon;
+              return (
+                <div
+                  key={tier.plan}
+                  className={`rounded-[30px] border p-6 ${
                     tier.featured
-                      ? "border border-primary/30 bg-primary/12 text-foreground hover:border-primary/40 hover:bg-primary/16"
-                      : "border border-border/35 bg-card/45 text-foreground hover:border-border/55 hover:bg-card/60"
-                  } disabled:cursor-not-allowed disabled:opacity-65`}
+                      ? "border-primary/25 bg-primary/8 shadow-[0_28px_90px_-50px_rgba(255,173,70,0.52)]"
+                      : "border-border/30 bg-card/45"
+                  }`}
                 >
-                  {activePlan === tier.plan ? copy.redirecting : copy.plans[tier.plan].cta}
-                </button>
-              </div>
-            );
-          })}
-        </section>
+                  <div className="flex items-start justify-between gap-4">
+                    <div className={`inline-flex rounded-2xl border border-border/30 bg-background/45 p-3 ${tier.iconClass}`}>
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <div className="rounded-full border border-border/30 bg-background/55 px-3 py-1 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                      {copy.plans[tier.plan].highlight}
+                    </div>
+                  </div>
+
+                  <h2 className="mt-5 font-display text-2xl text-foreground">{copy.plans[tier.plan].name}</h2>
+                  <div className="mt-3 flex items-end gap-2">
+                    <div className="font-display text-5xl text-foreground">{tier.price}</div>
+                    <div className="pb-1 text-sm text-muted-foreground">{copy.plans[tier.plan].subline}</div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => handleCheckout(tier.plan)}
+                    disabled={activePlan === tier.plan}
+                    className={`mt-6 w-full rounded-2xl px-4 py-3 text-sm transition-all ${
+                      tier.featured
+                        ? "border border-primary/30 bg-primary/12 text-foreground hover:border-primary/40 hover:bg-primary/16"
+                        : "border border-border/35 bg-card/45 text-foreground hover:border-border/55 hover:bg-card/60"
+                    } disabled:cursor-not-allowed disabled:opacity-65`}
+                  >
+                    {activePlan === tier.plan ? copy.redirecting : copy.plans[tier.plan].cta}
+                  </button>
+                </div>
+              );
+            })}
+          </section>
+        ) : (
+          <section className="rounded-[28px] border border-emerald-300/35 bg-emerald-500/10 p-6">
+            <p className="text-xs uppercase tracking-[0.2em] text-emerald-200">{copy.premiumActive}</p>
+            <h2 className="mt-2 font-display text-2xl text-foreground">
+              {lang === "fr"
+                ? "Votre accès premium est déjà actif."
+                : lang === "cs"
+                  ? "Váš premium přístup je už aktivní."
+                  : "Your premium access is already active."}
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-foreground/90">
+              {lang === "fr"
+                ? "Gérez votre abonnement si vous souhaitez mettre à jour le plan ou la facturation."
+                : lang === "cs"
+                  ? "Spravujte předplatné, pokud chcete upravit plán nebo fakturaci."
+                  : "Use manage subscription if you want to update plan or billing details."}
+            </p>
+          </section>
+        )}
 
         <section className="grid gap-4 lg:grid-cols-2">
           <div className="rounded-[28px] border border-border/30 bg-card/45 p-6">

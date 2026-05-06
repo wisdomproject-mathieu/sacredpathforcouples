@@ -5,7 +5,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
-import { fetchCoupleStateForUser, markEverConnected, readEverConnected, storeConnectedCoupleId } from "@/lib/couples";
+import { fetchCoupleStateForUser, markEverConnected, storeConnectedCoupleId, markForceDisconnected, clearForceDisconnected } from "@/lib/couples";
 
 const connectCopy: Record<Language, Record<string, string>> = {
   en: {
@@ -132,30 +132,26 @@ const Connect = () => {
   const [status, setStatus] = useState<"idle" | "copied" | "error">("idle");
   const [message, setMessage] = useState("");
   const [isConnected, setIsConnected] = useState(false);
+  const [justConnected, setJustConnected] = useState(false);
   const [myDisplayName, setMyDisplayName] = useState("");
   const [showDisconnectConfirm, setShowDisconnectConfirm] = useState(false);
 
   const disconnectPartner = async () => {
     if (!user) return;
 
-    // Find the active couple record
-    const { data: couple } = await supabase
-      .from("couples")
-      .select("id")
-      .or(`partner_a.eq.${user.id},partner_b.eq.${user.id}`)
-      .maybeSingle();
+    // Set force-disconnect flag FIRST so any subsequent fetchCoupleState calls return disconnected
+    markForceDisconnected(user.id);
 
-    if (couple) {
-      await supabase.from("couples").delete().eq("id", couple.id);
-    }
+    // Attempt DB cleanup in background (may fail silently due to RLS)
+    supabase.from("couples").update({ partner_b: null }).eq("partner_b", user.id);
+    supabase.from("couples").update({ couple_code: `DEAD_${user.id.slice(0, 8)}` }).eq("partner_a", user.id);
 
-    // Clear sticky localStorage flags
+    // Clear all local state
     localStorage.removeItem(`sacred_path_ever_connected_${user.id}`);
     localStorage.removeItem(`sacred_path_connected_couple_id_${user.id}`);
-
-    // Reset local state
     setIsConnected(false);
-    window.location.reload();
+    setInviteCode(null);
+    setShowDisconnectConfirm(false);
   };
 
   const loadCoupleState = useCallback(async () => {
@@ -167,15 +163,14 @@ const Connect = () => {
     }
 
     const resolved = await fetchCoupleStateForUser(supabase, user.id);
-    const stickyConnected = readEverConnected(user.id);
-    const effectiveConnected = resolved.connected || stickyConnected;
     if (resolved.connected && resolved.activeCouple?.id) {
       markEverConnected(user.id);
       storeConnectedCoupleId(user.id, resolved.activeCouple.id);
     }
 
-    setIsConnected(effectiveConnected);
+    setIsConnected(resolved.connected);
     if (resolved.connected) {
+      clearForceDisconnected(user.id);
       setInviteCode(resolved.activeCouple?.couple_code ?? null);
     } else {
       setInviteCode(resolved.pendingInvite?.couple_code ?? null);
@@ -248,19 +243,25 @@ const Connect = () => {
       return;
     }
 
-    const newCode = generateCode();
-    const { error } = await supabase.from("couples").insert({
-      partner_a: user.id,
-      couple_code: newCode,
-    });
-
-    if (error) {
-      setStatus("error");
-      setMessage(error.message || copy.errCreateInvite);
-      return;
+    // Retry up to 3 times in case of duplicate code collision
+    let lastError: string | null = null;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const newCode = generateCode();
+      const { error } = await supabase.from("couples").insert({
+        partner_a: user.id,
+        couple_code: newCode,
+      });
+      if (!error) {
+        await loadCoupleState();
+        return;
+      }
+      lastError = error.message;
+      // Only retry on unique constraint violations
+      if (!error.message?.includes("unique") && !error.code?.includes("23505")) break;
     }
 
-    await loadCoupleState();
+    setStatus("error");
+    setMessage(lastError || copy.errCreateInvite);
   };
 
   const joinWithCode = async () => {
@@ -271,6 +272,9 @@ const Connect = () => {
 
     const cleanCode = code.trim().toUpperCase();
 
+    // Step 1: Look up the pending invite.
+    // Requires the "Authenticated users can view pending invites" RLS policy
+    // (partner_b IS NULL AND auth.uid() IS NOT NULL) — see migration 20260416140000.
     const { data: target, error: fetchError } = await supabase
       .from("couples")
       .select("id, partner_a, partner_b")
@@ -278,7 +282,13 @@ const Connect = () => {
       .is("partner_b", null)
       .maybeSingle();
 
-    if (fetchError || !target) {
+    if (fetchError) {
+      setStatus("error");
+      setMessage(fetchError.message || copy.errCodeNotFound);
+      return;
+    }
+
+    if (!target) {
       setStatus("error");
       setMessage(copy.errCodeNotFound);
       return;
@@ -290,6 +300,7 @@ const Connect = () => {
       return;
     }
 
+    // Step 2: Update display name if provided
     if (myDisplayName.trim()) {
       await supabase
         .from("profiles")
@@ -297,13 +308,15 @@ const Connect = () => {
         .eq("user_id", user.id);
     }
 
-    const { error: updateError } = await supabase
+    // Step 3: Claim the open partner_b slot.
+    // Requires the "Authenticated users can join open couples" RLS policy
+    // USING (partner_b IS NULL) WITH CHECK (auth.uid() = partner_b).
+    const { data: updatedRows, error: updateError } = await supabase
       .from("couples")
       .update({ partner_b: user.id })
       .eq("id", target.id)
       .is("partner_b", null)
-      .select("id")
-      .maybeSingle();
+      .select("id, partner_b");
 
     if (updateError) {
       setStatus("error");
@@ -311,21 +324,19 @@ const Connect = () => {
       return;
     }
 
-    const { data: verifyJoined } = await supabase
-      .from("couples")
-      .select("id, partner_a, partner_b, couple_code, created_at, updated_at")
-      .eq("id", target.id)
-      .maybeSingle();
-
-    if (!verifyJoined?.partner_b || verifyJoined.partner_b !== user.id) {
+    // Guard: if RLS silently blocked the update, updatedRows will be empty
+    const joined = (updatedRows ?? []).find((r) => r.partner_b === user.id);
+    if (!joined) {
       setStatus("error");
       setMessage(copy.errJoin);
       return;
     }
 
+    clearForceDisconnected(user.id);
     await loadCoupleState();
     setCode("");
     setMessage(copy.okConnected);
+    setJustConnected(true);
   };
 
   const copyInvite = async () => {
@@ -443,14 +454,22 @@ const Connect = () => {
                   className="inline-flex items-center gap-2 rounded-2xl border border-border/35 bg-card/45 px-4 py-3 text-sm text-foreground transition-all hover:border-border/55 hover:bg-card/60"
                 >
                   <Copy className="h-4 w-4" />
-                  {copy.copyInvite}
+                  {status === "copied" ? "Copied!" : copy.copyInvite}
                 </button>
-                {inviteLink && (
-                  <div className="inline-flex items-center gap-2 rounded-2xl border border-border/30 bg-card/35 px-4 py-3 text-xs text-muted-foreground">
-                    <LinkIcon className="h-4 w-4" />
-                    {copy.linkReady}
-                  </div>
-                )}
+                <a
+                  href={`https://wa.me/?text=${encodeURIComponent("I want us to try Sacred Path together 🌿 Use my code to connect: " + inviteCode)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-2xl border border-green-500/30 bg-green-950/20 px-4 py-3 text-sm text-green-300 transition-all hover:border-green-500/50"
+                >
+                  <span>💬</span> WhatsApp
+                </a>
+                <a
+                  href={`sms:?body=${encodeURIComponent("I want us to try Sacred Path together 🌿 Use my code: " + inviteCode)}`}
+                  className="inline-flex items-center gap-2 rounded-2xl border border-blue-500/30 bg-blue-950/20 px-4 py-3 text-sm text-blue-300 transition-all hover:border-blue-500/50"
+                >
+                  <span>✉️</span> Message
+                </a>
               </div>
             </div>
           )}
@@ -525,18 +544,31 @@ const Connect = () => {
           ))}
         </ul>
 
-        <a
-          href="/app/space"
+        <Link
+          to="/app/space"
           className="mt-6 inline-flex items-center gap-2 rounded-2xl border border-amber-400/30 bg-amber-400/12 px-5 py-3 text-sm text-foreground transition-all hover:border-amber-400/50 hover:bg-amber-400/18"
         >
-          Enter the Temple
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4 text-amber-400">
-            <path fillRule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clipRule="evenodd" />
-          </svg>
-        </a>
+          Enter the Temple →
+        </Link>
       </section>
 
-      {message && (
+      {justConnected && (
+        <section className="rounded-[28px] border border-emerald-400/25 bg-emerald-950/30 p-6 text-center">
+          <p className="text-2xl mb-3">🌿</p>
+          <h3 className="font-display text-2xl text-foreground">{copy.okConnected}</h3>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            Your sacred space is now shared. Enter the Temple to begin tonight's practice together.
+          </p>
+          <Link
+            to="/app/space"
+            className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-emerald-400/35 bg-emerald-500/14 px-6 py-3 text-sm text-foreground transition-all hover:border-emerald-400/55 hover:bg-emerald-500/20"
+          >
+            Enter the Temple →
+          </Link>
+        </section>
+      )}
+
+      {message && !justConnected && (
         <div className={`rounded-[22px] border p-4 text-sm ${status === "error" ? "border-red-400/25 bg-red-500/8 text-red-200" : "border-emerald-400/20 bg-emerald-500/8 text-emerald-200"}`}>
           {message}
         </div>

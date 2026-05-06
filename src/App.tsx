@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -12,19 +12,35 @@ import AppLayout from "@/components/AppLayout";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import AppHome from "./pages/AppHome";
-import Connect from "./pages/Connect";
-import ConnectLanding from "./pages/ConnectLanding";
 import Reconnect from "./pages/Reconnect";
 import Rituals from "./pages/Rituals";
 import Paths from "./pages/Paths";
 import Authors from "./pages/Authors";
 import Pricing from "./pages/Pricing";
 import Privacy from "./pages/Privacy";
-import TempleEntry from "./pages/TempleEntry";
 import PartnerSpace from "./pages/PartnerSpace";
+import TonightPaths from "./pages/TonightPaths";
+import SacredRepair from "./pages/SacredRepair";
+import SacredPathVoice from "./pages/SacredPathVoice";
+import ShareWisdom from "./pages/ShareWisdom";
+import Settings from "./pages/Settings";
+import Tools from "./pages/Tools";
+import BreatheTimer from "./pages/BreatheTimer";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
+
+const LegacyConnectRedirect = () => {
+  const location = useLocation();
+  const invite = new URLSearchParams(location.search).get("invite");
+  const returnTo = invite ? `/app?invite=${encodeURIComponent(invite)}` : "/app";
+  return <Navigate to="/auth" replace state={{ returnTo }} />;
+};
+
+const AppConnectRedirect = () => {
+  const location = useLocation();
+  return <Navigate to={`/app${location.search || ""}`} replace />;
+};
 
 const RouteSeoDefaults = () => {
   const location = useLocation();
@@ -73,9 +89,9 @@ const RouteSeoDefaults = () => {
 
     if (location.pathname === "/connect") {
       return {
-        title: "Connect with Partner",
-        description: "Create a shared code and activate your couple experience in Sacred Path for Couples.",
-        path: "/connect",
+        title: "Login",
+        description: "Access your Sacred Path account and continue your relationship journey.",
+        path: "/auth",
         surface: "marketing" as const,
         noIndex: false,
       };
@@ -121,14 +137,14 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+      <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, "")}>
         <LanguageProvider>
           <AuthProvider>
             <RouteSeoDefaults />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
-              <Route path="/connect" element={<ConnectLanding />} />
+              <Route path="/connect" element={<LegacyConnectRedirect />} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route
@@ -140,13 +156,21 @@ const App = () => (
                 }
               >
                 <Route index element={<AppHome />} />
-                <Route path="connect" element={<Connect />} />
+                <Route path="connect" element={<AppConnectRedirect />} />
                 <Route path="reconnect" element={<Reconnect />} />
                 <Route path="rituals" element={<Rituals />} />
                 <Route path="paths" element={<Paths />} />
                 <Route path="authors" element={<Authors />} />
-                <Route path="temple" element={<TempleEntry />} />
+                <Route path="temple" element={<Navigate to="/app/space" replace />} />
                 <Route path="space" element={<PartnerSpace />} />
+                <Route path="tonight-paths" element={<TonightPaths />} />
+                <Route path="repair" element={<SacredRepair />} />
+                <Route path="sacred-repair" element={<Navigate to="/app/repair" replace />} />
+                <Route path="voice" element={<SacredPathVoice />} />
+                <Route path="tools" element={<Tools />} />
+                <Route path="breathe" element={<BreatheTimer />} />
+                <Route path="wisdom" element={<ShareWisdom />} />
+                <Route path="settings" element={<Settings />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>

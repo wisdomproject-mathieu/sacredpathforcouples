@@ -193,13 +193,12 @@ const WeatherMatchCard = ({
 
           <div className="flex flex-wrap gap-2">
             {(hasPremiumAccess ? result.libraryLinks.slice(0, 3) : result.libraryLinks.slice(0, 1)).map((link) => (
-              <Link
+              <span
                 key={`${link.to}-${link.label}`}
-                to={link.to}
-                className="rounded-lg border border-border/35 bg-card/45 px-3 py-1.5 text-xs text-foreground transition-all hover:border-border/55 hover:bg-card/60"
+                className="rounded-lg border border-border/35 bg-card/45 px-3 py-1.5 text-xs text-foreground/85"
               >
                 {sourceCtaLabel}: {link.label}
-              </Link>
+              </span>
             ))}
           </div>
         </div>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
@@ -15,14 +15,18 @@ const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const { t } = useLanguage();
+  const returnTo = (location.state as { returnTo?: string } | null)?.returnTo;
+  const safeReturnTo = typeof returnTo === "string" && returnTo.startsWith("/") ? returnTo : "/app";
 
   if (user) {
-    navigate("/app");
+    navigate(safeReturnTo);
     return null;
   }
 
@@ -38,17 +42,36 @@ const Auth = () => {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         toast.success("Welcome back!");
-        navigate("/app");
+        navigate(safeReturnTo);
       } else {
-        const { error } = await supabase.auth.signUp({
-          email, password,
-          options: { emailRedirectTo: window.location.origin },
+        if (!fullName.trim()) {
+          toast.error("Please enter your name so your partner can recognize you.");
+          setLoading(false);
+          return;
+        }
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: window.location.origin,
+            data: { full_name: fullName.trim() },
+          },
         });
         if (error) throw error;
+        // Best-effort: ensure profile.display_name is set immediately
+        if (data.user) {
+          await supabase
+            .from("profiles")
+            .upsert(
+              { id: data.user.id, user_id: data.user.id, display_name: fullName.trim() },
+              { onConflict: "user_id" },
+            );
+        }
         toast.success(t("auth.check_email"));
       }
-    } catch (error: any) {
-      toast.error(error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Authentication failed.";
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -56,7 +79,16 @@ const Auth = () => {
 
   const handleGoogleLogin = async () => {
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: `${window.location.origin}/app`,
+      redirect_uri: `${window.location.origin}${safeReturnTo}`,
+    });
+    if (result && "error" in result && result.error) {
+      toast.error(String(result.error));
+    }
+  };
+
+  const handleAppleLogin = async () => {
+    const result = await lovable.auth.signInWithOAuth("apple", {
+      redirect_uri: `${window.location.origin}${safeReturnTo}`,
     });
     if (result && "error" in result && result.error) {
       toast.error(String(result.error));
@@ -78,6 +110,16 @@ const Auth = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {!isLogin && (
+            <Input
+              type="text"
+              placeholder="Your name (so your partner sees it)"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              maxLength={60}
+              className="bg-card border-border text-foreground placeholder:text-muted-foreground"
+            />
+          )}
           <Input
             type="email"
             placeholder={t("auth.email")}
@@ -115,6 +157,10 @@ const Auth = () => {
         <Button variant="outline" className="w-full font-body" onClick={handleGoogleLogin}>
           <Mail className="mr-2 h-4 w-4" />
           {t("auth.google")}
+        </Button>
+
+        <Button variant="outline" className="w-full font-body" onClick={handleAppleLogin}>
+          Continue with Apple
         </Button>
 
         <p className="text-center text-sm text-muted-foreground">

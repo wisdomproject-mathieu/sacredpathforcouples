@@ -14,7 +14,7 @@ const AppAccessFallback = () => {
           <p className="mt-4 max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">{t("app_fallback.desc")}</p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
-              to="/connect"
+              to="/auth"
               className="inline-flex items-center gap-2 rounded-2xl border border-primary/30 bg-primary/15 px-5 py-3 text-sm text-foreground transition-all hover:border-primary/45 hover:bg-primary/20"
             >
               <HeartHandshake className="h-4 w-4" />

@@ -1,24 +1,15 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 import {
   ArrowRight,
-  Compass,
-  Feather,
-  Flame,
-  Heart,
   Lock,
-  LockOpen,
-  Sparkles,
-  Star,
-  SunMoon,
-  Waves,
   type LucideIcon,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import { useSeoMetadata } from "@/lib/seo";
-import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
-import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
 import { AUTHOR_LONGFORM_BY_SLUG } from "@/lib/libraryLongform";
 import {
   dianaRichardsonContent,
@@ -31,6 +22,32 @@ import {
   maxBushContent,
   victorGoldContent,
 } from "@/lib/authorsRichContent";
+import LibraryDetailBody from "@/components/library/LibraryDetailBody";
+import LibraryDetailSplitLayout from "@/components/library/LibraryDetailSplitLayout";
+import { sacredVisualSystem } from "@/lib/sacredVisualSystem";
+import LotusIcon from "@/components/tantra-icons/LotusIcon";
+import ChakraIcon from "@/components/tantra-icons/ChakraIcon";
+import FlameIcon from "@/components/tantra-icons/FlameIcon";
+import SacredGeometryIcon from "@/components/tantra-icons/SacredGeometryIcon";
+import YinYangIcon from "@/components/tantra-icons/YinYangIcon";
+import BreathIcon from "@/components/tantra-icons/BreathIcon";
+
+type AuthorIcon = LucideIcon | React.ComponentType<{ className?: string; size?: number }>;
+type SacredIconComponent = React.ComponentType<{ className?: string; size?: number }>;
+const AUTHOR_SACRED_ICONS: SacredIconComponent[] = [LotusIcon, FlameIcon, ChakraIcon, SacredGeometryIcon, YinYangIcon, BreathIcon];
+const pickAuthorSacredIcon = (key: string): SacredIconComponent => {
+  let hash = 0;
+  for (let i = 0; i < key.length; i += 1) hash = (hash * 31 + key.charCodeAt(i)) >>> 0;
+  return AUTHOR_SACRED_ICONS[hash % AUTHOR_SACRED_ICONS.length];
+};
+const AUTHOR_ACCENT_BY_INDEX = [
+  "text-amber-300/85",
+  "text-rose-300/85",
+  "text-fuchsia-300/85",
+  "text-cyan-300/85",
+  "text-emerald-300/85",
+  "text-violet-300/85",
+];
 
 type Tier = "free" | "premium";
 
@@ -93,7 +110,7 @@ type Author = {
   tradition?: string;
   oneLiner: string;
   overviewLine: string;
-  icon: LucideIcon;
+  icon: AuthorIcon;
   iconClass: string;
   teaser?: string[];
   content?: FreeAuthorContent;
@@ -108,22 +125,15 @@ const libraryPages = [
     to: "/app/paths",
     labelKey: "pagePaths",
     subtitleKey: "pagePathsSubtitle",
-    icon: Sparkles,
+    icon: LotusIcon,
     iconClass: "text-violet-300",
   },
   {
     to: "/app/authors",
     labelKey: "pageAuthors",
     subtitleKey: "pageAuthorsSubtitle",
-    icon: Feather,
+    icon: ChakraIcon,
     iconClass: "text-rose-300",
-  },
-  {
-    to: "/app/reconnect",
-    labelKey: "pageReconnect",
-    subtitleKey: "pageReconnectSubtitle",
-    icon: Heart,
-    iconClass: "text-amber-300",
   },
 ];
 
@@ -136,7 +146,7 @@ const authors: Author[] = [
     tradition: "Sacred Masculinity & Conscious Polarity",
     oneLiner: "The edge of love, presence, and polarity",
     overviewLine: "Use now for erotic clarity and devotion, then go deeper as a couple over time.",
-    icon: Flame,
+    icon: FlameIcon,
     iconClass: "text-amber-300",
     content: {
       heroIntro: [
@@ -326,7 +336,7 @@ const authors: Author[] = [
     tradition: "Tantric Meditation & Sacred Presence",
     oneLiner: "Meditation as the deepest form of love",
     overviewLine: "Awareness-based intimacy tools you can apply now and deepen over time together.",
-    icon: SunMoon,
+    icon: YinYangIcon,
     iconClass: "text-fuchsia-300",
     content: {
       heroIntro: [
@@ -515,7 +525,7 @@ const authors: Author[] = [
     tradition: "Taoist Sexual Alchemy",
     oneLiner: "Life force as the true currency of love",
     overviewLine: "Ancient Taoist mechanics for modern couples who want lasting erotic energy.",
-    icon: Waves,
+    icon: BreathIcon,
     iconClass: "text-cyan-300",
     content: {
       heroIntro: [
@@ -694,7 +704,7 @@ const authors: Author[] = [
     tradition: "SkyDancing Tantra",
     oneLiner: "Ecstasy as a path, not a peak",
     overviewLine: "Ceremonial Tantra for partners growing closer through beauty and intention.",
-    icon: Sparkles,
+    icon: SacredGeometryIcon,
     iconClass: "text-rose-300",
     content: {
       heroIntro: [
@@ -869,7 +879,7 @@ const authors: Author[] = [
     tradition: "Slow Sex & Meditative Intimacy",
     oneLiner: "The body knows — when the mind gets out of the way",
     overviewLine: "Stillness-based intimacy for couples ready to trade performance for genuine presence.",
-    icon: Heart,
+    icon: ChakraIcon,
     iconClass: "text-pink-300",
     content: dianaRichardsonContent,
   },
@@ -881,7 +891,7 @@ const authors: Author[] = [
     tradition: "Non-Dual Kashmir Shaivism Tantra",
     oneLiner: "Desire itself as the doorway to the absolute",
     overviewLine: "Contemplative intimacy for partners who value depth over performance pressure.",
-    icon: Star,
+    icon: SacredGeometryIcon,
     iconClass: "text-violet-300",
     content: danielOdierContent,
   },
@@ -893,7 +903,7 @@ const authors: Author[] = [
     tradition: "Somatic Tantra & Nervous System Intimacy",
     oneLiner: "The wild somatic intelligence of love",
     overviewLine: "Somatic relational skills for attraction, regulation, and honest connection.",
-    icon: Heart,
+    icon: FlameIcon,
     iconClass: "text-orange-300",
     content: michaelaBoehmContent,
   },
@@ -905,7 +915,7 @@ const authors: Author[] = [
     tradition: "Sacred Love & Conscious Union",
     oneLiner: "Lovemaking as the most direct return to God",
     overviewLine: "Presence-led relational integrity for modern couples seeking grounded sacred love.",
-    icon: Feather,
+    icon: BreathIcon,
     iconClass: "text-emerald-300",
     content: barryLongContent,
   },
@@ -917,7 +927,7 @@ const authors: Author[] = [
     tradition: "Conscious Relating & Tantric Embodiment",
     oneLiner: "Emotional truth as the foundation of erotic depth",
     overviewLine: "Embodied intimacy repair with practical exercises for deeper connection.",
-    icon: Compass,
+    icon: YinYangIcon,
     iconClass: "text-violet-300",
     content: janDayContent,
   },
@@ -929,7 +939,7 @@ const authors: Author[] = [
     tradition: "Embodied Masculine Eros",
     oneLiner: "Erotic confidence grounded in relational integrity",
     overviewLine: "Practical erotic craft with confidence-building progression for long-term love.",
-    icon: Flame,
+    icon: FlameIcon,
     iconClass: "text-amber-300",
     content: maxBushContent,
   },
@@ -941,7 +951,7 @@ const authors: Author[] = [
     tradition: "Sacred Erotic Craftsmanship",
     oneLiner: "The refined art of conscious erotic form",
     overviewLine: "Advanced relational erotics with structure, depth, and sacred intentionality.",
-    icon: Star,
+    icon: LotusIcon,
     iconClass: "text-rose-300",
     content: victorGoldContent,
   },
@@ -953,7 +963,7 @@ const authors: Author[] = [
     tradition: "Heart Tantra & Sacred Healing",
     oneLiner: "Healing the heart through sacred sexual union",
     overviewLine: "Applied Neo-Tantra sequencing that turns insight into embodied closeness.",
-    icon: Waves,
+    icon: ChakraIcon,
     iconClass: "text-cyan-300",
     content: charlesMuirContent,
   },
@@ -965,7 +975,7 @@ const authors: Author[] = [
     tradition: "Kashmir Shaivism & Tantric Meditation",
     oneLiner: "Shakti: the living power that moves through all love",
     overviewLine: "Kashmir Shaivism depth translated for modern couples seeking sacred love.",
-    icon: SunMoon,
+    icon: SacredGeometryIcon,
     iconClass: "text-violet-300",
     content: sallyKemptonContent,
   },
@@ -1486,7 +1496,7 @@ const authorUpgradeCopy: Record<
 };
 
 const shellCardClass =
-  "rounded-[28px] border border-border/30 bg-card/45 p-5 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.46)]";
+  sacredVisualSystem.sectionFrame;
 
 const authorsUiCopy: Record<Language, Record<string, string>> = {
   en: {
@@ -1727,19 +1737,16 @@ const badgeByTier: Record<Tier, string> = {
   premium: "border-amber-400/30 bg-amber-500/12 text-amber-200",
 };
 
-const usePremiumAccess = () => {
-  const { user } = useAuth();
-  return isPremiumTier(getEffectiveMembershipTier(user));
-};
-
 const TierBadge = ({ tier }: { tier: Tier }) => {
-  const hasPremiumAccess = usePremiumAccess();
-  const locked = tier === "premium" && !hasPremiumAccess;
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
+  const locked = entitlementResolved && tier === "premium" && !hasPremiumAccess;
+
+  if (hasPremiumAccess || !entitlementResolved) return null;
 
   return (
-  <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] ${badgeByTier[tier]}`}>
-    {locked ? <Lock className="h-3.5 w-3.5" aria-label="Locked" /> : <LockOpen className="h-3.5 w-3.5" aria-label="Open access" />}
-  </span>
+    <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] ${badgeByTier[tier]}`}>
+      {locked ? <Lock className="h-3.5 w-3.5" aria-label="Locked" /> : "Free"}
+    </span>
   );
 };
 
@@ -1747,8 +1754,8 @@ const AuthorHeroCard = ({ author }: { author: Author }) => {
   const { lang } = useLanguage();
   const ui = authorsUiCopy[lang];
   const Icon = author.icon;
-  const hasPremiumAccess = usePremiumAccess();
-  const isLocked = author.tier === "premium" && !hasPremiumAccess;
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
+  const isLocked = entitlementResolved && author.tier === "premium" && !hasPremiumAccess;
 
   return (
     <section className={shellCardClass}>
@@ -1782,7 +1789,8 @@ const AuthorHeroCard = ({ author }: { author: Author }) => {
 const PremiumMiniCard = ({ author }: { author: Author }) => {
   const { lang } = useLanguage();
   const ui = authorsUiCopy[lang];
-  const hasPremiumAccess = usePremiumAccess();
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
+  if (hasPremiumAccess || !entitlementResolved) return null;
   const upgradeCopy = authorUpgradeCopy[author.slug] ?? {
     benefit: "Turn insight into guided couple practice with structure that lasts.",
   };
@@ -1793,8 +1801,8 @@ const PremiumMiniCard = ({ author }: { author: Author }) => {
   return (
   <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.24),transparent_55%),linear-gradient(135deg,rgba(245,158,11,0.18),rgba(15,23,42,0.15))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.62)]">
     <div className="flex items-center gap-2 text-amber-200">
-      {hasPremiumAccess ? <LockOpen className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
-      <span className="text-xs uppercase tracking-[0.16em]">{hasPremiumAccess ? ui.premiumActive : ui.locked}</span>
+      <Lock className="h-4 w-4" />
+      <span className="text-xs uppercase tracking-[0.16em]">{ui.locked}</span>
     </div>
     <p className="mt-3 text-sm leading-6 text-foreground/90">
       {miniLine}
@@ -1819,23 +1827,22 @@ const PremiumMiniCard = ({ author }: { author: Author }) => {
 
 const AuthorPremiumBlock = ({ author }: { author: Author }) => {
   const { lang } = useLanguage();
-  const ui = authorsUiCopy[lang];
-  const hasPremiumAccess = usePremiumAccess();
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
+
+  if (hasPremiumAccess || !entitlementResolved) return null;
 
   return (
     <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
       <p className="text-xs uppercase tracking-[0.2em] text-amber-300">READY TO GO DEEPER</p>
       <h4 className="mt-2 font-display text-2xl text-foreground">Bring this wisdom into your relationship.</h4>
       <p className="mt-3 text-sm leading-7 text-foreground/90">Reading can open the heart. Premium helps you turn insight into lived intimacy through guided exploration, deeper teachings, and shared practices that nourish love.</p>
-      {hasPremiumAccess ? null : (
-        <Link
-          to="/pricing"
-          className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
-        >
-          Continue the journey together
-          <ArrowRight className="h-4 w-4" />
-        </Link>
-      )}
+      <Link
+        to="/pricing"
+        className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
+      >
+        Continue the journey together
+        <ArrowRight className="h-4 w-4" />
+      </Link>
     </section>
   );
 };
@@ -1843,12 +1850,32 @@ const AuthorPremiumBlock = ({ author }: { author: Author }) => {
 const FreeAuthorContent = ({ author }: { author: Author }) => {
   const { lang } = useLanguage();
   const ui = authorsUiCopy[lang];
-  if (!author.content) return null;
+  if (!author.content) {
+    return (
+      <LibraryDetailBody>
+        <section className={shellCardClass}>
+          <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{ui.whatThisAuthorIsAbout}</p>
+          <h3 className="mt-2 font-display text-3xl text-foreground">{author.name}</h3>
+          <p className="mt-4 text-sm leading-7 text-foreground/90">{author.descriptor}</p>
+          <p className="mt-2 text-sm leading-7 text-muted-foreground">{author.oneLiner}</p>
+        </section>
+        <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.whyThisAuthorMatters}</p>
+          <div className="mt-3 space-y-2 text-sm leading-7 text-foreground/90">
+            <p>{author.descriptor}</p>
+            <p>{author.overviewLine}</p>
+          </div>
+        </section>
+      </LibraryDetailBody>
+    );
+  }
 
   const data = author.content;
+  const longform = AUTHOR_LONGFORM_BY_SLUG[author.slug];
+  const longformParagraphs = longform?.fullDescription.split("\n\n") ?? [];
 
   return (
-    <main className="space-y-5">
+    <LibraryDetailBody>
       <section className={shellCardClass}>
         <p className="text-xs uppercase tracking-[0.2em] text-primary/80">{ui.whatThisAuthorIsAbout}</p>
         <h3 className="mt-2 font-display text-3xl text-foreground">{author.name}</h3>
@@ -1862,6 +1889,37 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
           <footer className="mt-2 text-xs uppercase tracking-[0.14em] text-primary/80">{data.quote.source}</footer>
         </blockquote>
       </section>
+
+      {longformParagraphs.length ? (
+        <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+            {lang === "fr" ? "Contexte de tradition" : lang === "cs" ? "Kontext tradice" : "Lineage Context"}
+          </p>
+          {longform.tradition ? (
+            <p className="mt-2 text-xs uppercase tracking-[0.12em] text-primary/80">{longform.tradition}</p>
+          ) : null}
+          <div className="mt-3 space-y-3 text-sm leading-7 text-foreground/90">
+            {longformParagraphs.map((line) => (
+              <p key={line}>{line}</p>
+            ))}
+          </div>
+          {longform.keyWorks.length ? (
+            <div className="mt-4">
+              <p className="text-[11px] uppercase tracking-[0.14em] text-primary/80">{ui.keyWorksLabel}</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {longform.keyWorks.map((work) => (
+                  <span
+                    key={work}
+                    className="rounded-full border border-primary/25 bg-primary/10 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-primary/85"
+                  >
+                    {work}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ) : null}
+        </section>
+      ) : null}
 
       {data.whoItsFor?.length ? (
         <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
@@ -2021,21 +2079,27 @@ const FreeAuthorContent = ({ author }: { author: Author }) => {
       </section>
 
       <AuthorPremiumBlock author={author} />
-    </main>
+    </LibraryDetailBody>
   );
 };
 
 const PremiumAuthorContent = ({ author }: { author: Author }) => {
   const { lang } = useLanguage();
   const ui = authorsUiCopy[lang];
-  const hasPremiumAccess = usePremiumAccess();
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
   const longform = AUTHOR_LONGFORM_BY_SLUG[author.slug];
   const longformParagraphs = longform?.fullDescription.split("\n\n") ?? [];
+  const upgradeFallback = authorUpgradeCopy[author.slug];
+  const narrativeParagraphs = longformParagraphs.length
+    ? longformParagraphs
+    : author.teaser?.length
+      ? author.teaser
+      : [author.overviewLine, upgradeFallback?.benefit ?? ui.premiumPracticeBody];
   const topThemes = longform?.coreThemes.slice(0, 6) ?? [];
   const works = longform?.keyWorks.slice(0, 6) ?? [];
 
   return (
-  <main className="space-y-5">
+  <LibraryDetailBody>
     <section className="rounded-[28px] border border-amber-400/20 bg-gradient-to-br from-amber-500/12 via-background to-background p-5 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.5)]">
       <div className="flex flex-wrap items-center gap-2">
         <TierBadge tier="premium" />
@@ -2051,11 +2115,11 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => {
         <p className="mt-2 text-xs uppercase tracking-[0.12em] text-primary/80">{longform.tradition}</p>
       ) : null}
       <div className="mt-4 space-y-3 text-sm leading-7 text-muted-foreground">
-        {(longformParagraphs.length ? longformParagraphs : author.teaser ?? []).map((line) => (
+        {narrativeParagraphs.map((line) => (
           <p key={line}>{line}</p>
         ))}
       </div>
-      {hasPremiumAccess ? null : (
+      {entitlementResolved && !hasPremiumAccess ? (
         <Link
           to="/pricing"
           className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-2 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/18"
@@ -2063,13 +2127,13 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => {
           <Lock className="h-4 w-4" />
           {ui.unlockThisAuthorJourney}
         </Link>
-      )}
+      ) : null}
     </section>
 
     <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
       <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{ui.whyThisAuthorMatters}</p>
       <div className="mt-4 space-y-3 text-sm leading-7 text-foreground/90">
-        {(longformParagraphs.length ? longformParagraphs : author.teaser ?? []).map((line) => (
+        {narrativeParagraphs.map((line) => (
           <p key={line}>{line}</p>
         ))}
       </div>
@@ -2116,7 +2180,7 @@ const PremiumAuthorContent = ({ author }: { author: Author }) => {
     </section>
 
     <AuthorPremiumBlock author={author} />
-  </main>
+  </LibraryDetailBody>
   );
 };
 
@@ -2131,8 +2195,8 @@ const MobileDetailHeader = ({
 }) => {
   const { lang } = useLanguage();
   const ui = authorsUiCopy[lang];
-  const hasPremiumAccess = usePremiumAccess();
-  const isLocked = tier === "premium" && !hasPremiumAccess;
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
+  const isLocked = entitlementResolved && tier === "premium" && !hasPremiumAccess;
 
   return (
   <div className="sticky top-2 z-30 rounded-2xl border border-border/40 bg-background/95 p-3 shadow-[0_16px_40px_-32px_rgba(0,0,0,0.7)] backdrop-blur">
@@ -2198,6 +2262,7 @@ const Authors = () => {
   const ui = authorsUiCopy[lang];
   const authorJoinWord = lang === "fr" ? " et " : lang === "cs" ? " a " : " and ";
   const isMobile = useIsMobile();
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
   const [searchParams, setSearchParams] = useSearchParams();
   const localizedAuthors = useMemo(
     () => authors.map((author) => applyAuthorLocalization(author, lang)),
@@ -2213,6 +2278,9 @@ const Authors = () => {
   );
   const [selectedSlug, setSelectedSlug] = useState(defaultSelectedSlug);
   const [mobileDetailMode, setMobileDetailMode] = useState(false);
+  const [detailOnlyMode, setDetailOnlyMode] = useState(Boolean(focusSlug));
+  const detailPaneRef = useRef<HTMLDivElement | null>(null);
+  const sidePaneRef = useRef<HTMLDivElement | null>(null);
   const selected = useMemo(
     () => localizedAuthors.find((author) => author.slug === selectedSlug) ?? localizedAuthors[0],
     [localizedAuthors, selectedSlug],
@@ -2221,8 +2289,9 @@ const Authors = () => {
   const freeAuthors = localizedAuthors.filter((author) => author.tier === "free");
   const premiumAuthors = localizedAuthors.filter((author) => author.tier === "premium");
   const relatedAuthors = localizedAuthors.filter((author) => author.slug !== selectedSlug).slice(0, 6);
-  const showBrowse = !isMobile || !mobileDetailMode;
-  const showDetail = !isMobile || mobileDetailMode;
+  const showBrowse = isMobile ? !mobileDetailMode : !detailOnlyMode;
+  const showDetail = isMobile ? mobileDetailMode : true;
+  const desktopFocusedDetail = !isMobile && detailOnlyMode;
 
   useSeoMetadata({
     title: `Authors Library - ${selected.name}`,
@@ -2254,8 +2323,17 @@ const Authors = () => {
     }
   }, [focusSlug, isMobile, localizedAuthors]);
 
+  useEffect(() => {
+    if (isMobile) return;
+    detailPaneRef.current?.scrollTo({ top: 0, behavior: "auto" });
+    sidePaneRef.current?.scrollTo({ top: 0, behavior: "auto" });
+  }, [isMobile, selectedSlug]);
+
   const handleSelectAuthor = (slug: string) => {
     setSelectedSlug(slug);
+    if (!isMobile) {
+      setDetailOnlyMode(true);
+    }
     const next = new URLSearchParams(searchParams);
     next.set("focus", slug);
     setSearchParams(next, { replace: true });
@@ -2264,22 +2342,30 @@ const Authors = () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
+  const openCardHint = lang === "fr"
+    ? "Ouvrir cet auteur"
+    : lang === "cs"
+      ? "Otevřít tohoto autora"
+      : "Open this author";
 
   return (
     <div className="space-y-4 md:space-y-6">
       {showBrowse ? (
-      <section className="rounded-[30px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-5 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] md:p-8">
+      <section className={sacredVisualSystem.heroFrame}>
+        <div className="absolute -right-10 top-0 opacity-15">
+          <img src={shivaShaktiIcon} alt="" className="h-40 w-40 rounded-[20px]" />
+        </div>
         <div className="max-w-4xl">
           <p className="text-xs uppercase tracking-[0.28em] text-primary/80">{ui.heroEyebrow}</p>
-          <h1 className="mt-3 font-display text-3xl text-foreground md:text-5xl">{ui.heroTitle}</h1>
-          <p className="mt-4 text-sm leading-7 text-muted-foreground md:text-base">
+          <h1 className="mt-2 font-display text-3xl text-foreground">{ui.heroTitle}</h1>
+          <p className="mt-3 text-sm leading-7 text-muted-foreground">
             {ui.heroDesc}
           </p>
         </div>
 
-        <div className="mt-6 w-full rounded-[24px] border border-border/30 bg-card/45 p-4">
+        <div className={sacredVisualSystem.contourEmerald}>
           <div className="text-xs uppercase tracking-[0.22em] text-primary/80">{ui.sacredPages}</div>
-          <div className="mt-3 grid gap-3 md:grid-cols-3">
+          <div className="mt-3 grid gap-3 md:grid-cols-2">
             {libraryPages.map((page) => {
               const Icon = page.icon;
               const active = page.to === "/app/authors";
@@ -2311,104 +2397,141 @@ const Authors = () => {
         <p className="text-xs uppercase tracking-[0.22em] text-primary/80">{ui.overviewEyebrow}</p>
         <h2 className="mt-2 font-display text-3xl text-foreground">{ui.overviewTitle}</h2>
 
-        <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-          {localizedAuthors.map((author) => {
-            const Icon = author.icon;
+        <div className={`mt-5 ${sacredVisualSystem.contourCyan}`}>
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-2">
+          {localizedAuthors.map((author, idx) => {
+            const SacredIcon = pickAuthorSacredIcon(author.slug);
             const isSelected = selectedSlug === author.slug;
+            const accent = AUTHOR_ACCENT_BY_INDEX[idx % AUTHOR_ACCENT_BY_INDEX.length];
+            const isPremium = author.tier === "premium";
+            const previewText = isPremium
+              ? `${ui.premiumPreview}: ${AUTHOR_LONGFORM_BY_SLUG[author.slug]?.tagline ?? author.oneLiner ?? ui.premiumPreviewFallback}`
+              : (AUTHOR_LONGFORM_BY_SLUG[author.slug]?.shortDescription ?? author.descriptor);
+            const cardClass = `group relative flex min-h-[206px] flex-col overflow-hidden rounded-[20px] border p-4 text-left transition-all md:p-5 ${
+              isSelected
+                ? "border-amber-300/45 bg-gradient-to-br from-amber-500/12 via-card/60 to-card/30 shadow-[0_18px_50px_-36px_rgba(245,158,11,0.4)]"
+                : isPremium
+                  ? "border-amber-300/25 bg-gradient-to-br from-amber-500/6 via-card/55 to-card/30 hover:border-amber-300/45"
+                  : "border-emerald-300/30 bg-gradient-to-br from-emerald-500/8 via-card/55 to-card/30 hover:border-emerald-300/50"
+            }`;
             return (
-              <button
-                key={author.slug}
-                type="button"
-                onClick={() => handleSelectAuthor(author.slug)}
-                className={`rounded-[24px] border p-4 text-left transition-all ${
-                  isSelected
-                    ? "border-primary/30 bg-primary/10 shadow-[0_16px_50px_-40px_rgba(255,173,70,0.45)]"
-                    : "border-border/30 bg-background/45 hover:border-primary/20 hover:bg-card/55"
-                }`}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className={`inline-flex rounded-2xl border border-border/30 bg-card/45 p-3 ${author.iconClass}`}>
-                    <Icon className="h-4 w-4" />
+              <button key={author.slug} type="button" onClick={() => handleSelectAuthor(author.slug)} className={cardClass}>
+                <div className="flex items-start gap-4">
+                  <div className={`shrink-0 rounded-2xl border border-amber-300/25 bg-gradient-to-br from-amber-500/10 via-card/40 to-transparent p-2.5 ${accent}`}>
+                    <SacredIcon size={42} className="opacity-90" />
                   </div>
-                  <TierBadge tier={author.tier} />
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-display text-[1.4rem] leading-[1.2] text-foreground md:text-[1.55rem]">{author.name}</h3>
+                    <div className="mt-2 flex flex-wrap items-center gap-2">
+                      {isPremium ? (
+                        <span className="inline-flex items-center gap-1 rounded-full border border-amber-400/45 bg-amber-400/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-amber-300">
+                          <Lock className="h-3 w-3" />
+                          Premium
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 rounded-full border border-emerald-300/40 bg-emerald-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-emerald-200">
+                          <ArrowRight className="h-3 w-3" />
+                          Free Author
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <h3 className="mt-3 font-display text-2xl text-foreground">{author.name}</h3>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  {AUTHOR_LONGFORM_BY_SLUG[author.slug]?.shortDescription ?? author.descriptor}
-                </p>
-                <p className="mt-2 text-xs leading-5 text-foreground/80">
-                  {author.tier === "free"
-                    ? `${ui.practicePreview}: ${author.content?.exercises[0]?.title ?? ui.practicePreviewFallback}`
-                    : `${ui.premiumPreview}: ${AUTHOR_LONGFORM_BY_SLUG[author.slug]?.tagline ?? author.oneLiner ?? ui.premiumPreviewFallback}`}
+                <p className="mt-3 line-clamp-3 text-sm leading-6 text-muted-foreground/95">{previewText}</p>
+                {author.tradition ? (
+                  <p className="mt-3 text-xs leading-5 text-foreground/72">Lineage: {author.tradition}</p>
+                ) : null}
+                <p className="mt-auto pt-3 text-xs uppercase tracking-[0.14em] text-emerald-200/85 group-hover:text-emerald-100">
+                  {openCardHint}
                 </p>
               </button>
             );
           })}
-          <Link
-            to="/pricing"
-            className="xl:col-span-3 rounded-[24px] border border-amber-400/20 bg-gradient-to-br from-amber-950/40 via-card/60 to-card/40 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)] transition-all hover:border-amber-400/35 hover:shadow-[0_24px_70px_-40px_rgba(255,173,70,0.68)]"
-          >
-            <div className="flex h-full flex-col justify-between p-6">
-              <div>
-                <span className="text-xs uppercase tracking-[0.22em] text-amber-400/80">
-                  DEEPER PATH FOR TWO
-                </span>
-                <h3 className="mt-2 font-display text-2xl text-foreground">
-                  Open the door to deeper intimacy.
-                </h3>
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                  Premium is for couples who want more than inspiration. It helps you reconnect when distance appears, repair what feels fragile, explore new rituals together, and build a love life that feels more alive, loving, and fulfilling.
+          {entitlementResolved && !hasPremiumAccess ? (
+            <Link
+              to="/pricing"
+              className="md:col-span-2 xl:col-span-2 rounded-[24px] border border-amber-400/20 bg-gradient-to-br from-amber-950/40 via-card/60 to-card/40 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)] transition-all hover:border-amber-400/35 hover:shadow-[0_24px_70px_-40px_rgba(255,173,70,0.68)]"
+            >
+              <div className="flex h-full flex-col justify-between p-6">
+                <div>
+                  <span className="text-xs uppercase tracking-[0.22em] text-amber-400/80">
+                    DEEPER PATH FOR TWO
+                  </span>
+                  <h3 className="mt-2 font-display text-2xl text-foreground">
+                    Open the door to deeper intimacy.
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                    Premium is for couples who want more than inspiration. It helps you reconnect when distance appears, repair what feels fragile, explore new rituals together, and build a love life that feels more alive, loving, and fulfilling.
+                  </p>
+                </div>
+
+                <div className="mt-4 space-y-2">
+                  {[
+                    "Reconnect what feels distant",
+                    "Repair what has been strained",
+                    "Try new rituals that bring joy",
+                  ].map((item) => (
+                    <div key={item} className="flex items-start gap-2 text-xs text-muted-foreground">
+                      <span className="mt-0.5 text-amber-400/70">◆</span>
+                      {item}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-4 h-px w-full bg-border/20" />
+
+                <button className="mt-4 flex w-full items-center justify-center gap-2 rounded-[14px] border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm font-medium text-amber-300 transition-colors hover:bg-amber-400/20">
+                  Deepen intimacy together
+                  <span>→</span>
+                </button>
+
+                <p className="mt-2 text-center text-[10px] text-muted-foreground/60">
+                  One shared path for both hearts.
                 </p>
               </div>
-
-              <div className="mt-4 space-y-2">
-                {[
-                  "Reconnect what feels distant",
-                  "Repair what has been strained",
-                  "Try new rituals that bring joy",
-                ].map((item) => (
-                  <div key={item} className="flex items-start gap-2 text-xs text-muted-foreground">
-                    <span className="mt-0.5 text-amber-400/70">◆</span>
-                    {item}
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-4 h-px w-full bg-border/20" />
-
-              <button className="mt-4 flex w-full items-center justify-center gap-2 rounded-[14px] border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm font-medium text-amber-300 transition-colors hover:bg-amber-400/20">
-                Deepen intimacy together
-                <span>→</span>
-              </button>
-
-              <p className="mt-2 text-center text-[10px] text-muted-foreground/60">
-                One shared path for both hearts.
-              </p>
-            </div>
-          </Link>
+            </Link>
+          ) : null}
+          </div>
         </div>
 
-        <div className="mt-4 rounded-2xl border border-amber-400/20 bg-amber-500/6 p-4">
-          <p className="text-xs uppercase tracking-[0.14em] text-amber-200">WHY GO DEEPER</p>
-          <p className="mt-2 text-sm leading-6 text-foreground/90">Some wisdom can inspire in a moment. Deeper guidance helps you live it together, especially when love needs renewal, courage, and care.</p>
-        </div>
+        {entitlementResolved && !hasPremiumAccess ? (
+          <div className="mt-4 rounded-2xl border border-amber-400/20 bg-amber-500/6 p-4">
+            <p className="text-xs uppercase tracking-[0.14em] text-amber-200">WHY GO DEEPER</p>
+            <p className="mt-2 text-sm leading-6 text-foreground/90">Some wisdom can inspire in a moment. Deeper guidance helps you live it together, especially when love needs renewal, courage, and care.</p>
+          </div>
+        ) : null}
       </section>
       ) : null}
 
       {showDetail ? (
-      <section className={`${isMobile ? "space-y-4" : "grid items-start gap-6 lg:grid-cols-[minmax(280px,360px)_minmax(0,1fr)]"}`}>
-        {isMobile ? <MobileDetailHeader title={selected.name} tier={selected.tier} onBack={() => setMobileDetailMode(false)} /> : null}
-
-        <aside className="space-y-4 lg:sticky lg:top-24">
-          <AuthorHeroCard author={selected} />
-          <PremiumMiniCard author={selected} />
-        </aside>
-
-        <div className="space-y-4">
-          {selected.tier === "free" ? <FreeAuthorContent author={selected} /> : <PremiumAuthorContent author={selected} />}
-          {isMobile ? <RelatedAuthorCarousel items={relatedAuthors} onSelect={handleSelectAuthor} /> : null}
-        </div>
-      </section>
+      <LibraryDetailSplitLayout
+        isMobile={isMobile}
+        focusedDetail={desktopFocusedDetail}
+        showDesktopBack={true}
+        backLabel={ui.backToLibrary}
+        onBack={() => setDetailOnlyMode(false)}
+        mobileHeader={
+          <MobileDetailHeader
+            title={selected.name}
+            tier={selected.tier}
+            onBack={() => setMobileDetailMode(false)}
+          />
+        }
+        sidePaneRef={sidePaneRef}
+        detailPaneRef={detailPaneRef}
+        sidePane={(
+          <>
+            <AuthorHeroCard author={selected} />
+            {entitlementResolved && !hasPremiumAccess ? <PremiumMiniCard author={selected} /> : null}
+          </>
+        )}
+        detailPane={(
+          <>
+            {selected.tier === "free" ? <FreeAuthorContent author={selected} /> : <PremiumAuthorContent author={selected} />}
+            {isMobile ? <RelatedAuthorCarousel items={relatedAuthors} onSelect={handleSelectAuthor} /> : null}
+          </>
+        )}
+      />
       ) : null}
     </div>
   );

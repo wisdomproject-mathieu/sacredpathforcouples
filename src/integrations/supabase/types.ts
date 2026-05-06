@@ -302,6 +302,45 @@ export type Database = {
         }
         Relationships: []
       }
+      ritual_sessions: {
+        Row: {
+          chapter_id: string | null
+          completed_at: string
+          couple_id: string
+          created_at: string
+          id: string
+          minutes_spent: number
+          note: string | null
+          ritual_source: string
+          ritual_title: string
+          user_id: string
+        }
+        Insert: {
+          chapter_id?: string | null
+          completed_at?: string
+          couple_id: string
+          created_at?: string
+          id?: string
+          minutes_spent: number
+          note?: string | null
+          ritual_source?: string
+          ritual_title: string
+          user_id: string
+        }
+        Update: {
+          chapter_id?: string | null
+          completed_at?: string
+          couple_id?: string
+          created_at?: string
+          id?: string
+          minutes_spent?: number
+          note?: string | null
+          ritual_source?: string
+          ritual_title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       weather_entries: {
         Row: {
           couple_id: string

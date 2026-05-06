@@ -3,6 +3,11 @@
 // Complete replacement. All 13 authors + 6 paths.
 // ─────────────────────────────────────────────────────────────────────────────
 
+import {
+  AUTHOR_COMPENDIUM_FULL_DESCRIPTION_BY_SLUG,
+  PATH_COMPENDIUM_FULL_DESCRIPTION_BY_SLUG,
+} from "@/lib/compendiumOverrides";
+
 export interface LongformPracticePreview {
   title: string;
   durationMinutes?: number;
@@ -524,9 +529,10 @@ export const PATH_LONGFORM_BY_SLUG: Record<string, LongformPath> = {
       { id: "samskara", label: "SAṂSKĀRA", title: "The Closing Ritual", body: "How a couple closes an intimate encounter is as important as how they enter it. Couples who close with care — a held stillness, a breath taken together, a whispered truth, or a moment of silent gratitude — create a different quality of shared history. The closing ritual is where the experience settles as a genuine resource." },
     ],
     premiumFeatures: [
-      { id: "guided_tracks", label: "GUIDED TRACKS", description: "Full audio-guided Tantric journeys for couples, from 10-minute presence practices to 60-minute conscious lovemaking rituals." },
-      { id: "energy_maps", label: "ENERGY MAPS", description: "Visual guides to the subtle body: chakra systems, prāṇa channels, and the energetic anatomy of conscious union." },
-      { id: "sacred_love_library", label: "SACRED LOVE LIBRARY", description: "The complete Tantric Wisdom teaching library: practices by Osho, Margot Anand, Daniel Odier, Sally Kempton, and Charles Muir." },
+      { id: "tantra_preview_1", label: "SOUL GAZING (7 min)", description: "Face each other, soften your eyes, and breathe without fixing. Let seeing come before touch." },
+      { id: "tantra_preview_2", label: "HEART SALUTATION (6 min)", description: "A reverent opening ritual that turns intention into embodied presence before intimacy." },
+      { id: "tantra_preview_3", label: "YAB-YUM EMBRACE (8 min)", description: "Seated union with synchronized breath to rebuild coherence, safety, and devotional charge." },
+      { id: "tantra_preview_4", label: "SLOW SEX (9 min)", description: "Presence-led contact that favors depth and attunement over speed and performance." },
     ],
   },
 
@@ -558,9 +564,10 @@ export const PATH_LONGFORM_BY_SLUG: Record<string, LongformPath> = {
       { id: "healing_love", label: "HEALING LOVE", title: "Lovemaking as Medicine", body: "The ancient Taoist physicians documented what modern endocrinology confirms: that conscious, loving sexual practice has measurable effects on hormonal balance, immune function, and longevity — transforming lovemaking from a recreational act into a genuine and renewable health practice." },
     ],
     premiumFeatures: [
-      { id: "chi_cultivation", label: "CHI CULTIVATION TRACKS", description: "Audio-guided Taoist energy practices for couples: from the Microcosmic Orbit to the full Healing Love sequence." },
-      { id: "body_maps", label: "MERIDIAN MAPS", description: "Visual guides to the Taoist subtle body: chī channels, organ energy systems, and the energetic anatomy of Taoist lovemaking." },
-      { id: "chia_library", label: "MANTAK CHIA LIBRARY", description: "The complete Taoist Alchemy teaching library, drawn from Mantak Chia's forty-year body of work." },
+      { id: "tao_preview_1", label: "MICROCOSMIC ORBIT IN DUAL CULTIVATION (9 min)", description: "Circulate shared energy through breath and attention so intimacy leaves both partners nourished." },
+      { id: "tao_preview_2", label: "THE BIG DRAW (8 min)", description: "Refine arousal upward through spinal awareness instead of discharging into depletion." },
+      { id: "tao_preview_3", label: "INNER SMILE WITH PARTNER (6 min)", description: "A gentle Taoist softening ritual that brings warmth back into stressed connection." },
+      { id: "tao_preview_4", label: "FIRE AND WATER DUAL CULTIVATION (10 min)", description: "Balance intensity and calm so desire stays alive without overwhelm." },
     ],
   },
 
@@ -591,9 +598,10 @@ export const PATH_LONGFORM_BY_SLUG: Record<string, LongformPath> = {
       { id: "surrender", label: "SURRENDER", title: "The Practice of Opening", body: "Surrender is the conscious choice to trust a partner's genuine presence enough to release the management that keeps a person safe and slightly contracted. For the feminine-identified partner, surrender to authentic masculine presence is one of the most profound spiritual practices available." },
     ],
     premiumFeatures: [
-      { id: "polarity_practices", label: "POLARITY PRACTICES", description: "Partner practices specifically designed to restore energetic distinction and the living charge between two people." },
-      { id: "deida_library", label: "DEIDA & LONG LIBRARY", description: "The complete Sacred Polarity teaching library drawn from David Deida and Barry Long's full bodies of work." },
-      { id: "polarity_maps", label: "POLARITY MAPS", description: "Visual frameworks for understanding, diagnosing, and restoring energetic polarity in long-term relationships." },
+      { id: "polarity_preview_1", label: "TEASE, GAZE, TOUCH (7 min)", description: "Rebuild magnetic contrast through playful pacing, eye contact, and consent-led touch." },
+      { id: "polarity_preview_2", label: "ONE HEART GAZING (6 min)", description: "Train directed presence and radiant openness through still eye-based attunement." },
+      { id: "polarity_preview_3", label: "DEVOTIONAL HOLD (6 min)", description: "A structured hold practice for restoring masculine steadiness and feminine trust." },
+      { id: "polarity_preview_4", label: "DESIRE MAP ROUND (8 min)", description: "Name edge, need, and invitation so charge grows without confusion or pressure." },
     ],
   },
 
@@ -624,9 +632,10 @@ export const PATH_LONGFORM_BY_SLUG: Record<string, LongformPath> = {
       { id: "repair", label: "REPAIR", title: "Rupture as Doorway", body: "Couples who learn to repair well develop something more valuable than the absence of conflict: a trust in the relationship's resilience that creates the safety in which genuine vulnerability — and therefore genuine eros — becomes available." },
     ],
     premiumFeatures: [
-      { id: "somatic_practices", label: "SOMATIC PRACTICES", description: "Body-centered partner practices for nervous system regulation, somatic disclosure, and the cultivation of genuine felt safety." },
-      { id: "boehm_day_library", label: "BOEHM & DAY LIBRARY", description: "The complete Embodied Heart teaching library drawn from Michaela Boehm and Jan Day's full bodies of work." },
-      { id: "repair_tools", label: "REPAIR TOOLKIT", description: "Guided repair practices for couples: body-led reconnection after conflict, somatic forgiveness, and rebuilding genuine erotic trust." },
+      { id: "embodied_preview_1", label: "THE YES / NO EXERCISE (7 min)", description: "Rebuild consent clarity and trust through direct, body-honest boundary language." },
+      { id: "embodied_preview_2", label: "PARTS WORK DIALOGUE (10 min)", description: "Name protective parts without blame so truth can land safely between partners." },
+      { id: "embodied_preview_3", label: "APPRECIATION & WITNESS (7 min)", description: "Pair emotional repair with clear witnessing and relational warmth." },
+      { id: "embodied_preview_4", label: "THE UNSAID VOICE (6 min)", description: "Release held truth in a structured format that protects safety and connection." },
     ],
   },
 
@@ -657,9 +666,10 @@ export const PATH_LONGFORM_BY_SLUG: Record<string, LongformPath> = {
       { id: "time", label: "TIME", title: "Inhabiting Duration", body: "One of the most immediate and transformative practices of Slow Love is simply more time: unhurried, without destination, given to the experience of being genuinely present with another person's body. When couples treat intimate time as worthy of genuine spaciousness, something changes fundamentally in what is available there." },
     ],
     premiumFeatures: [
-      { id: "slow_practices", label: "SLOW LOVE PRACTICES", description: "Guided partner practices in stillness, inner touch, and non-goal lovemaking — from brief daily encounters to extended evening rituals." },
-      { id: "richardson_library", label: "DIANA RICHARDSON LIBRARY", description: "The complete Slow Love teaching library drawn from Diana Richardson's thirty years of couples work." },
-      { id: "integration_practices", label: "INTEGRATION PRACTICES", description: "Daily micro-practices that bring Slow Love awareness into ordinary moments of physical contact." },
+      { id: "slowlove_preview_1", label: "SYNCHRONIZED HEART BREATHING (5 min)", description: "Use coherent breath to settle both nervous systems before deeper contact." },
+      { id: "slowlove_preview_2", label: "THE SOFT EYE (6 min)", description: "Reduce pressure and increase tenderness by softening visual focus and pace." },
+      { id: "slowlove_preview_3", label: "BLISSFUL STILLNESS AFTER LOVE (8 min)", description: "Integrate intimacy in stillness so connection accumulates instead of fading." },
+      { id: "slowlove_preview_4", label: "VALLEY ORGASM RESTING (9 min)", description: "Train sustained pleasure without urgency, force, or performance goals." },
     ],
   },
 
@@ -690,9 +700,214 @@ export const PATH_LONGFORM_BY_SLUG: Record<string, LongformPath> = {
       { id: "sacred_silence", label: "SACRED SILENCE", title: "Being Together Without Filling", body: "Shared silence — the specific quality of two people genuinely at ease in each other's presence — reveals dimensions of connection that speech cannot reach. In it, something very quiet and very deep has room to move. Cultivating this silence as a conscious practice is one of the most intimate acts available to a couple." },
     ],
     premiumFeatures: [
-      { id: "union_practices", label: "UNION PRACTICES", description: "Daily partner practices for full presence, recognition, and genuine conscious contact in ordinary life." },
-      { id: "ceremony_library", label: "CEREMONY LIBRARY", description: "Complete ritual frameworks: honoring practices, closing rituals, morning unions, and the sacred marking of relationship milestones." },
-      { id: "long_muir_library", label: "LONG & MUIR LIBRARY", description: "The complete Conscious Union teaching library drawn from Barry Long and Charles Muir's full bodies of work." },
+      { id: "union_preview_1", label: "DAILY HOMECOMING RITUAL (6 min)", description: "A repeatable arrival practice that turns ordinary evenings into conscious reunion." },
+      { id: "union_preview_2", label: "CONSCIOUS LOVEMAKING — THE BARRY LONG WAY (9 min)", description: "Presence-led union that favors truth, stillness, and complete relational contact." },
+      { id: "union_preview_3", label: "THE EIGHT EMBRACES & MUTUAL MASSAGE (12 min)", description: "A ceremonial sequence for reverence, attunement, and body-level trust." },
+      { id: "union_preview_4", label: "SACRED INTENTION SETTING (5 min)", description: "Open with one shared vow so intimacy aligns with your deepest relationship values." },
+    ],
+  },
+
+  "kama-sutra": {
+    tagline: "Cultivated desire as art, atmosphere, and relational intelligence",
+    subtitle: "Through preparation, playful polarity, and refined sensual communication",
+    shortDescription: "The Kāma Śāstra tradition is not a list of positions but a complete art of cultivating desire, timing, and devotion in daily couple life.",
+    fullDescription:
+      "The Kāma Sūtra belongs to the broader Indian Kāma Śāstra tradition: a civilizational art of love, aesthetics, timing, and refined sensual presence. Its original intent was never technical acrobatics. It was to teach couples how to prepare mind, body, atmosphere, and relational tone so intimacy becomes elegant, embodied, and emotionally intelligent.\n\nIn modern life, this path helps couples move from rushed intimacy to prepared intimacy. You do not begin with pressure or performance. You begin with refinement: mood, anticipation, touch literacy, playful language, and mutual consent. As refinement grows, desire becomes less fragile and more available.\n\nThe core gift of this path is relational craftsmanship. Small details — pacing, fragrance, quality of gaze, rhythm of approach, how you ask, how you pause, how you close — create the difference between mechanical contact and memorable intimacy. The Kama path trains those details as a devotional art.",
+    forCouples: "For couples who want desire to feel beautiful, intelligent, and emotionally connected — not rushed or performative.",
+    sacredInvitation: {
+      title: "Who This Path Calls",
+      body: "This path calls couples who already love each other but want to bring more elegance and intentionality into their erotic life. It is for partners who feel that chemistry alone is not enough and who want a repeatable craft of anticipation, communication, and sensual refinement.",
+      resonances: [
+        "You want to create atmosphere before intensity.",
+        "You want playful erotic connection without emotional chaos.",
+        "You value beauty, timing, and quality over pressure and speed.",
+        "You want both partners to feel invited, not managed.",
+        "You want intimacy to feel lived, not improvised.",
+      ],
+    },
+    pillars: [
+      { id: "alankara", label: "ALANKĀRA", title: "Beauty as Preparation", body: "In the Kama tradition, adornment and atmosphere are not superficial; they regulate nervous-system openness and anticipation. Beauty prepares the body to receive." },
+      { id: "vilasa", label: "VILĀSA", title: "Playful Artfulness", body: "Erotic play is structured through teasing, pacing, and curiosity. Skillful play keeps desire alive without tipping into coercion or emotional confusion." },
+      { id: "sambhoga", label: "SAMBHOGA", title: "Union as Craft", body: "Physical union is approached as cultivated practice: tempo, consent, breath, and response shape quality far more than novelty." },
+      { id: "samyama", label: "SAMYAMA", title: "Attention and Timing", body: "The right rhythm matters. Sensual timing trains couples to pause, ask, and modulate intensity so both bodies remain included." },
+      { id: "rasa", label: "RASA", title: "Emotional Flavor", body: "Kama wisdom includes emotional tone. Desire deepens when affection, admiration, and playful warmth are consciously included." },
+      { id: "samskara_close", label: "COMPLETION", title: "Closing with Care", body: "How intimacy ends shapes memory and trust. Deliberate closure helps erotic confidence grow from encounter to encounter." },
+    ],
+    premiumFeatures: [
+      { id: "kama_preview_1", label: "THE TWINING CREEPER (8 min)", description: "A closeness position that builds charge through entwined bodies and shared pacing." },
+      { id: "kama_preview_2", label: "THE EIGHT EMBRACES & MUTUAL MASSAGE (12 min)", description: "Classical embrace progression that develops trust, touch literacy, and sensual anticipation." },
+      { id: "kama_preview_3", label: "TEASE, GAZE, TOUCH (7 min)", description: "A playful ignition ritual for couples who want lightness before deeper intimacy." },
+      { id: "kama_preview_4", label: "ONE SONG CURRENT (5 min)", description: "Use one shared song to regulate pace, polarity, and emotional connection before touch escalates." },
+    ],
+  },
+
+  "qigong-neidan": {
+    tagline: "Internal alchemy for vitality, longevity, and calm erotic power",
+    subtitle: "Through qi cultivation, circulation, and partner-aware energetic discipline",
+    shortDescription: "Qigong and Neidan train couples to build, store, and circulate life-force so intimacy becomes energizing, clear, and sustainable.",
+    fullDescription:
+      "Qigong and Neidan (internal alchemy) come from Taoist cultivation lineages focused on breath, posture, intent, and the refinement of life-force. Applied to relationship, these methods help couples move from intensity spikes and exhaustion to continuity, vitality, and embodied coherence.\n\nThe practical shift is profound: arousal is no longer a pressure event to discharge. It becomes a resource to circulate. Through breath and body alignment, couples learn to transform charge into warmth, presence, and emotional steadiness.\n\nThis path is especially valuable for modern couples under chronic stress. Rather than asking for more willpower, it builds energetic capacity. Over time, both partners feel more resilient, more connected, and less depleted by intimacy.",
+    forCouples: "For couples who want intimacy to support health, focus, and long-term devotion — not short-lived peaks followed by collapse.",
+    sacredInvitation: {
+      title: "Who This Path Calls",
+      body: "This path calls couples who feel the cost of modern overstimulation and want a grounded, trainable method for conserving and circulating energy together. It supports partners who value structure, consistency, and measurable progress in intimacy.",
+      resonances: [
+        "You want sustained vitality after intimacy.",
+        "You are drawn to body-based energetic practice.",
+        "You want structure, not random experimentation.",
+        "You want to reduce stress reactivity in your love life.",
+        "You want long-term erotic resilience.",
+      ],
+    },
+    pillars: [
+      { id: "qi_cultivation", label: "QI", title: "Energy Cultivation", body: "The first discipline is generating and sensing qi in the body through breath and posture before sharing it with a partner." },
+      { id: "dantian", label: "DANTIAN", title: "Lower Belly Root", body: "Stable intimacy begins in grounding. Lower-belly awareness prevents high-charge states from becoming anxious or scattered." },
+      { id: "orbit", label: "ORBIT", title: "Circulation Over Discharge", body: "Conscious circulation allows energy to distribute through the whole system, replacing post-intimacy depletion with sustained warmth." },
+      { id: "song", label: "SONG", title: "Relaxed Power", body: "Neidan emphasizes relaxed structure: soft tissue, aligned spine, clear intent. This produces deep sensitivity without collapse." },
+      { id: "he", label: "HARMONY", title: "Partner Coherence", body: "When two nervous systems entrain through breath and pacing, emotional safety and attraction can rise together." },
+      { id: "jing_shen", label: "JING TO SHEN", title: "Refinement Path", body: "Over time, raw drive is refined into vitality, clarity, and devotional presence available in ordinary daily life." },
+    ],
+    premiumFeatures: [
+      { id: "qigong_preview_1", label: "MICROCOSMIC ORBIT IN DUAL CULTIVATION (9 min)", description: "Partner-based orbit practice to circulate shared charge through spine and front channel." },
+      { id: "qigong_preview_2", label: "THE BIG DRAW (8 min)", description: "A controlled alchemy drill for upward refinement of sexual energy." },
+      { id: "qigong_preview_3", label: "CHAKRA BREATHING FOR TWO (8 min)", description: "A structured channel-opening sequence for full-body energetic coherence." },
+      { id: "qigong_preview_4", label: "INNER FLUTE BREATH (6 min)", description: "Subtle breath-and-tone practice for settling and sensitizing the shared field." },
+    ],
+  },
+
+  "kundalini-kriya-yoga": {
+    tagline: "Disciplined awakening of latent energy with grounded couple integration",
+    subtitle: "Through breath ratios, bandha, spinal ascent, and careful regulation",
+    shortDescription: "Kundalini and Kriya methods cultivate ascending life-force while preserving safety, clarity, and relational responsibility.",
+    fullDescription:
+      "Kundalini and Kriya Yoga lineages developed precise energetic technologies: breath ratios, locks (bandha), concentration points, and spinal attention designed to awaken dormant potential gradually and safely. In couple context, this path requires mature pacing and explicit consent because energetic intensity can amplify everything already present.\n\nIts modern value is not spectacle but discipline. Partners learn how to prepare body and mind before activation, how to track overload signals early, and how to integrate after high-charge practice so connection deepens rather than destabilizes.\n\nWhen practiced responsibly, this path can increase vitality, emotional clarity, and devotional focus. It turns intensity into transformation through method, containment, and regular integration.",
+    forCouples: "For couples called to energetic depth who are willing to prioritize safety, pacing, and integration over intensity chasing.",
+    sacredInvitation: {
+      title: "Who This Path Calls",
+      body: "This path calls couples with sincere spiritual intention who want a structured energetic discipline. It is for partners ready to train consistency, not chase peak experiences, and who understand that safety is part of sacredness.",
+      resonances: [
+        "You want energetic awakening with clear structure.",
+        "You value consent and regulation in high-intensity practice.",
+        "You are willing to move slowly and integrate fully.",
+        "You want intensity to make love kinder, not harsher.",
+        "You are committed to long-term practice.",
+      ],
+    },
+    pillars: [
+      { id: "purification", label: "ŚODHANA", title: "Preparation and Purification", body: "Activation without preparation destabilizes. Foundational regulation and breath capacity come first." },
+      { id: "prana_control", label: "PRĀṆĀYĀMA", title: "Directed Breath", body: "Breath ratios and pauses shape energetic ascent; precision matters more than force." },
+      { id: "bandha", label: "BANDHA", title: "Energetic Locks", body: "Subtle muscular locks guide and protect energetic flow when arousal and activation increase." },
+      { id: "sushumna", label: "SUṢUMNĀ", title: "Spinal Channel Awareness", body: "Attention through the central channel supports coherent ascent rather than scattered reactivity." },
+      { id: "integration", label: "INTEGRATION", title: "Downregulation and Grounding", body: "Every high-charge practice needs closure: grounding touch, orientation, hydration, and emotional check-in." },
+      { id: "relational_ethics", label: "ETHICS", title: "Consent and Stewardship", body: "Energetic power without relational ethics damages trust. Consent and care remain primary at every stage." },
+    ],
+    premiumFeatures: [
+      { id: "kriya_preview_1", label: "THREE FIRES / TAN TIEN ACTIVATION (8 min)", description: "Build lower-body energetic stability before deeper activation rounds." },
+      { id: "kriya_preview_2", label: "CIRCULAR BREATH OF LOVE (8 min)", description: "A partner-safe breath loop to direct intensity into coherence rather than urgency." },
+      { id: "kriya_preview_3", label: "CHAKRA BREATHING FOR TWO (8 min)", description: "Structured ascent through shared breath and attention with pacing safeguards." },
+      { id: "kriya_preview_4", label: "THE SPACE BETWEEN BREATHS (6 min)", description: "Use inter-breath stillness to stabilize and integrate energetic arousal." },
+    ],
+  },
+
+  "sufism": {
+    tagline: "Heart remembrance as a living relationship practice",
+    subtitle: "Through dhikr, witnessing, tenderness, and devotional presence",
+    shortDescription: "Sufi relational practice teaches couples to remember the heart in real time — especially inside ordinary moments.",
+    fullDescription:
+      "Sufism centers remembrance (dhikr): returning awareness from distraction to the living heart. In intimacy, this means the beloved is met not as a role or projection, but as a sacred trust to be witnessed, honored, and received.\n\nSufi-informed couple practice values softness, listening, and the refinement of intention. Love is not proven by intensity alone; it is proven by steadiness of heart under stress, by the willingness to repair quickly, and by the discipline of appreciation.\n\nFor modern couples, this path offers a devotional language that remains practical: short remembrance practices, listening rituals, gratitude rounds, and breath-based stillness that restores connection when distance appears.",
+    forCouples: "For couples who want a heart-centered path that unites tenderness, truth, and daily remembrance.",
+    sacredInvitation: {
+      title: "Who This Path Calls",
+      body: "This path calls couples who want spirituality to feel relational, warm, and embodied — not abstract. It serves partners who value tenderness and truth equally and who want to practice love as remembrance, not assumption.",
+      resonances: [
+        "You want devotion expressed through daily behavior.",
+        "You want to reconnect quickly after emotional distance.",
+        "You value gratitude and witnessing as core intimacy skills.",
+        "You want soft strength instead of emotional shutdown.",
+        "You want love to feel sacred and practical at once.",
+      ],
+    },
+    pillars: [
+      { id: "dhikr", label: "DHIKR", title: "Remembrance", body: "Return attention to the heart repeatedly during conflict, touch, and conversation." },
+      { id: "adab", label: "ADAB", title: "Relational Conduct", body: "Sufi adab emphasizes dignity, kindness, and timing in speech; this protects trust under stress." },
+      { id: "sama", label: "SAMĀ", title: "Listening as Practice", body: "True listening softens defensiveness and allows emotional truth to land without escalation." },
+      { id: "muraqabah", label: "MURĀQABA", title: "Witnessing Presence", body: "Quiet, shared witnessing helps partners feel held beyond performance or argument." },
+      { id: "shukr", label: "SHUKR", title: "Gratitude", body: "Spoken gratitude restores emotional safety and keeps affection visible in daily life." },
+      { id: "service", label: "KHIDMA", title: "Love Through Service", body: "Small acts of care become devotional acts that rebuild trust and relational warmth." },
+    ],
+    premiumFeatures: [
+      { id: "sufi_preview_1", label: "MURAQABAH PRESENCE (7 min)", description: "A shared witnessing practice to calm reactivity and restore soft relational contact." },
+      { id: "sufi_preview_2", label: "ONE HEART GAZING (6 min)", description: "Heart-led eye practice that deepens tenderness and devotional attention." },
+      { id: "sufi_preview_3", label: "APPRECIATION & WITNESS (7 min)", description: "Speak gratitude and mirror truth to renew trust in ordinary moments." },
+      { id: "sufi_preview_4", label: "SACRED INTENTION SETTING (5 min)", description: "Open the evening with one shared heart intention before any deeper ritual." },
+    ],
+  },
+
+  "buddhism-forum": {
+    tagline: "Mindful intimacy through compassion, clarity, and ethical presence",
+    subtitle: "Through awareness, non-reactivity, and deliberate relational practice",
+    shortDescription: "Buddhist relational practice helps couples reduce reactivity, increase compassion, and make intimacy an ethical path of awakening.",
+    fullDescription:
+      "Buddhist traditions place attention on direct experience, non-harming, and the transformation of reactivity through awareness. In couple life, this translates into mindful speech, emotional regulation, and compassionate presence during moments that normally trigger withdrawal or conflict.\n\nThis path does not bypass desire; it clarifies it. By practicing pause, breath, and honest reflection, couples learn to meet craving, fear, and attachment without collapsing into blame or avoidance.\n\nFor modern relationships, Buddhism offers a practical map: less automatic reaction, more conscious response; less story, more contact; less righteousness, more humility and care.",
+    forCouples: "For couples who want to turn conflict, attachment, and everyday stress into a disciplined path of compassion and intimacy.",
+    sacredInvitation: {
+      title: "Who This Path Calls",
+      body: "This path calls couples who want emotional maturity as much as chemistry. It supports partners willing to practice awareness under pressure and to choose repair over reactivity.",
+      resonances: [
+        "You want fewer escalation loops and more calm clarity.",
+        "You want to keep compassion present during difficult talks.",
+        "You want intimacy rooted in ethical conduct and mutual respect.",
+        "You value reflection and mindful speech.",
+        "You want practical tools for attachment-trigger moments.",
+      ],
+    },
+    pillars: [
+      { id: "sati", label: "SATI", title: "Mindful Presence", body: "Mindfulness interrupts automatic reaction and opens room for conscious relational choice." },
+      { id: "karuna", label: "KARUṆĀ", title: "Compassion", body: "Compassion does not erase boundaries; it humanizes the moment so repair stays possible." },
+      { id: "upekkha", label: "UPEKKHĀ", title: "Equanimity", body: "Equanimity helps couples remain steady during emotional weather changes." },
+      { id: "samyag_vac", label: "RIGHT SPEECH", title: "Ethical Communication", body: "Truthful, timely, and non-harming speech protects trust in high-stakes conversations." },
+      { id: "anicca", label: "IMPERMANENCE", title: "State Awareness", body: "Recognizing that states pass reduces panic and softens rigid partner narratives." },
+      { id: "sangha", label: "PRACTICE COMMUNITY", title: "Shared Discipline", body: "Consistent shared practice builds resilience more reliably than occasional insight moments." },
+    ],
+    premiumFeatures: [
+      { id: "buddhist_preview_1", label: "WITNESSING BREATH (7 min)", description: "A mindful co-regulation practice for calming conflict activation before dialogue." },
+      { id: "buddhist_preview_2", label: "THE YES / NO EXERCISE (7 min)", description: "Train clear boundaries and compassionate consent language under relational stress." },
+      { id: "buddhist_preview_3", label: "PARTS WORK DIALOGUE (10 min)", description: "Unblend from reactive parts and speak from awareness instead of defense." },
+      { id: "buddhist_preview_4", label: "THE SOFT EYE — A LOVE KEY (6 min)", description: "Use non-grasping visual attention to restore calm intimacy and mutual regard." },
+    ],
+  },
+
+  "shamanism": {
+    tagline: "Ritual intensity grounded in safety, embodiment, and integration",
+    subtitle: "Through release, movement, breath, and ceremonial repair",
+    shortDescription: "Shamanic-inspired couple practice uses rhythm, release, and intentional ceremony to clear stagnant emotional charge and reopen connection.",
+    fullDescription:
+      "Shamanic traditions understand that unresolved emotional intensity often lives in the body before it becomes language. Ritualized movement, breath, sound, and symbolic action can help couples discharge accumulated stress and recover relational aliveness.\n\nIn modern relationship work, the value of this path is not altered-state novelty; it is safe discharge plus clear integration. Partners learn to release activation without blaming each other, then return to eye contact, truth, and consent-led touch.\n\nWhen grounded properly, shamanic practice becomes a powerful repair ally: less frozen resentment, less suppressed charge, and more capacity for authentic intimacy.",
+    forCouples: "For couples carrying stored tension, emotional backlog, or shutdown patterns who want embodied release followed by clear reconnection.",
+    sacredInvitation: {
+      title: "Who This Path Calls",
+      body: "This path calls couples who feel that talking alone is no longer enough. It supports partners who need safe, embodied release before they can reconnect through words and touch.",
+      resonances: [
+        "You need to move energy before discussing it.",
+        "You want rituals that clear tension quickly and safely.",
+        "You want to prevent emotional backlog from hardening into distance.",
+        "You want intensity with clear containment and consent.",
+        "You want reliable integration after release.",
+      ],
+    },
+    pillars: [
+      { id: "ritual_container", label: "CONTAINER", title: "Safety First", body: "Clear start, stop, and check-in rules keep high-energy practice relationally safe." },
+      { id: "somatic_release", label: "RELEASE", title: "Body Before Story", body: "Movement and breath can discharge activation faster than analysis when stress is high." },
+      { id: "voice", label: "VOICE", title: "Sound as Clearing", body: "Intentional sound releases held charge and restores emotional contact." },
+      { id: "reorientation", label: "RETURN", title: "Back to Presence", body: "After release, couples return to gaze, breath, and touch so connection consolidates." },
+      { id: "meaning", label: "MEANING", title: "Ritual Intention", body: "Ritual without intention becomes noise; intention gives emotional transformation direction." },
+      { id: "integration", label: "INTEGRATION", title: "Close with Care", body: "A grounded closing sequence prevents post-ritual fragmentation and protects trust." },
+    ],
+    premiumFeatures: [
+      { id: "shamanic_preview_1", label: "SHAKTI SHAKING — A COUPLES PRACTICE (7 min)", description: "Structured shaking to release stress load before attempting deeper intimacy." },
+      { id: "shamanic_preview_2", label: "CHAOTIC BREATHING — DYNAMIC STAGE ONE (6 min)", description: "A controlled activation drill for discharge and nervous-system reset." },
+      { id: "shamanic_preview_3", label: "GIBBERISH RELEASE (6 min)", description: "Voice-based clearing to empty emotional pressure without story escalation." },
+      { id: "shamanic_preview_4", label: "VIGYAN BHAIRAVA EMOTIONAL YOGA (8 min)", description: "Bridge release to integration through truth, breath, and conscious reconnection." },
     ],
   },
 
@@ -729,3 +944,15 @@ export const PATH_LONGFORM_BY_SLUG: Record<string, LongformPath> = {
     ],
   },
 };
+
+for (const [slug, chapterText] of Object.entries(PATH_COMPENDIUM_FULL_DESCRIPTION_BY_SLUG)) {
+  if (PATH_LONGFORM_BY_SLUG[slug]) {
+    PATH_LONGFORM_BY_SLUG[slug].fullDescription = chapterText;
+  }
+}
+
+for (const [slug, chapterText] of Object.entries(AUTHOR_COMPENDIUM_FULL_DESCRIPTION_BY_SLUG)) {
+  if (AUTHOR_LONGFORM_BY_SLUG[slug]) {
+    AUTHOR_LONGFORM_BY_SLUG[slug].fullDescription = chapterText;
+  }
+}

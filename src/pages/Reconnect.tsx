@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import shivaShaktiIcon from "@/assets/shiva-shakti-icon.png";
 import {
   ArrowRight,
   Flame,
   Heart,
   Lock,
-  LockOpen,
   MessageCircleHeart,
   MoonStar,
   PlayCircle,
@@ -13,10 +13,9 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import { useSeoMetadata } from "@/lib/seo";
-import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
-import { getEffectiveMembershipTier, isPremiumTier } from "@/lib/Premium";
 
 type Tier = "free" | "premium";
 
@@ -97,13 +96,6 @@ const libraryPages = [
     subtitleKey: "pageAuthorsSubtitle",
     icon: Heart,
     iconClass: "text-rose-300",
-  },
-  {
-    to: "/app/reconnect",
-    labelKey: "pageReconnect",
-    subtitleKey: "pageReconnectSubtitle",
-    icon: MessageCircleHeart,
-    iconClass: "text-amber-300",
   },
 ];
 
@@ -1324,19 +1316,16 @@ const tierBadgeClass: Record<Tier, string> = {
   premium: "border-amber-400/30 bg-amber-500/12 text-amber-200",
 };
 
-const usePremiumAccess = () => {
-  const { user } = useAuth();
-  return isPremiumTier(getEffectiveMembershipTier(user));
-};
-
 const TierBadge = ({ tier }: { tier: Tier }) => {
-  const hasPremiumAccess = usePremiumAccess();
-  const locked = tier === "premium" && !hasPremiumAccess;
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
+  const locked = entitlementResolved && tier === "premium" && !hasPremiumAccess;
+
+  if (hasPremiumAccess || !entitlementResolved) return null;
 
   return (
-  <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] ${tierBadgeClass[tier]}`}>
-    {locked ? <Lock className="h-3.5 w-3.5" aria-label="Locked" /> : <LockOpen className="h-3.5 w-3.5" aria-label="Open access" />}
-  </span>
+    <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] ${tierBadgeClass[tier]}`}>
+      {locked ? <Lock className="h-3.5 w-3.5" aria-label="Locked" /> : "Free"}
+    </span>
   );
 };
 
@@ -1344,8 +1333,8 @@ const ReconnectHeroCard = ({ tool }: { tool: ReconnectTool }) => {
   const { lang } = useLanguage();
   const ui = reconnectUiCopy[lang];
   const Icon = tool.icon;
-  const hasPremiumAccess = usePremiumAccess();
-  const isLocked = tool.tier === "premium" && !hasPremiumAccess;
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
+  const isLocked = entitlementResolved && tool.tier === "premium" && !hasPremiumAccess;
 
   if (isLocked) {
     return (
@@ -1398,7 +1387,8 @@ const ReconnectHeroCard = ({ tool }: { tool: ReconnectTool }) => {
 const PremiumMiniCard = ({ tool }: { tool: ReconnectTool }) => {
   const { lang } = useLanguage();
   const ui = reconnectUiCopy[lang];
-  const hasPremiumAccess = usePremiumAccess();
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
+  if (hasPremiumAccess || !entitlementResolved) return null;
   const upgradeCopy = reconnectUpgradeCopy[tool.slug] ?? {
     benefit: "Use premium reconnect tracks to move from friction to closeness with clear, repeatable structure.",
   };
@@ -1409,8 +1399,8 @@ const PremiumMiniCard = ({ tool }: { tool: ReconnectTool }) => {
   return (
   <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.24),transparent_55%),linear-gradient(135deg,rgba(245,158,11,0.18),rgba(15,23,42,0.15))] p-4 shadow-[0_24px_70px_-45px_rgba(255,173,70,0.62)]">
     <div className="flex items-center gap-2 text-amber-200">
-      {hasPremiumAccess ? <LockOpen className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
-      <span className="text-xs uppercase tracking-[0.16em]">{hasPremiumAccess ? ui.premiumActive : ui.locked}</span>
+      <Lock className="h-4 w-4" />
+      <span className="text-xs uppercase tracking-[0.16em]">{ui.locked}</span>
     </div>
     <p className="mt-3 text-sm leading-6 text-foreground/90">
       {miniLine}
@@ -1434,24 +1424,22 @@ const PremiumMiniCard = ({ tool }: { tool: ReconnectTool }) => {
 };
 
 const ReconnectPremiumBlock = ({ tool }: { tool: ReconnectTool }) => {
-  const { lang } = useLanguage();
-  const ui = reconnectUiCopy[lang];
-  const hasPremiumAccess = usePremiumAccess();
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
+
+  if (hasPremiumAccess || !entitlementResolved) return null;
 
   return (
   <section className="rounded-[24px] border border-amber-300/30 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_58%),linear-gradient(135deg,rgba(245,158,11,0.16),rgba(15,23,42,0.08))] p-5 shadow-[0_20px_60px_-42px_rgba(255,173,70,0.58)]">
     <p className="text-xs uppercase tracking-[0.2em] text-amber-300">DEEPER TANTRIC JOURNEY</p>
     <h4 className="mt-2 font-display text-2xl text-foreground">Turn sacred insight into shared experience.</h4>
     <p className="mt-3 text-sm leading-7 text-foreground/90">Premium supports couples who want to move from beautiful ideas into real intimacy — through practices, reflection, repair, and new ways of meeting each other with presence and desire.</p>
-    {hasPremiumAccess ? null : (
-      <Link
-        to="/pricing"
-        className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
-      >
-        Enter the deeper journey
-        <ArrowRight className="h-4 w-4" />
-      </Link>
-    )}
+    <Link
+      to="/pricing"
+      className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-amber-300/30 bg-amber-500/14 px-4 py-2 text-sm text-foreground transition-all hover:border-amber-300/45 hover:bg-amber-500/20"
+    >
+      Enter the deeper journey
+      <ArrowRight className="h-4 w-4" />
+    </Link>
   </section>
   );
 };
@@ -1613,7 +1601,7 @@ const FreeReconnectContent = ({ tool }: { tool: ReconnectTool }) => {
 const PremiumReconnectContent = ({ tool }: { tool: ReconnectTool }) => {
   const { lang } = useLanguage();
   const ui = reconnectUiCopy[lang];
-  const hasPremiumAccess = usePremiumAccess();
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
 
   return (
   <main className="space-y-5">
@@ -1631,7 +1619,7 @@ const PremiumReconnectContent = ({ tool }: { tool: ReconnectTool }) => {
           <p key={line}>{line}</p>
         ))}
       </div>
-      {hasPremiumAccess ? null : (
+      {entitlementResolved && !hasPremiumAccess ? (
         <Link
           to="/pricing"
           className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/12 px-4 py-2 text-sm text-foreground transition-all hover:border-primary/40 hover:bg-primary/18"
@@ -1639,7 +1627,7 @@ const PremiumReconnectContent = ({ tool }: { tool: ReconnectTool }) => {
           <Lock className="h-4 w-4" />
           {ui.unlockReconnectTrack}
         </Link>
-      )}
+      ) : null}
     </section>
 
     <section className="rounded-[24px] border border-border/30 bg-background/45 p-5">
@@ -1682,8 +1670,8 @@ const MobileDetailHeader = ({
 }) => {
   const { lang } = useLanguage();
   const ui = reconnectUiCopy[lang];
-  const hasPremiumAccess = usePremiumAccess();
-  const isLocked = tier === "premium" && !hasPremiumAccess;
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
+  const isLocked = entitlementResolved && tier === "premium" && !hasPremiumAccess;
 
   return (
   <div className="sticky top-2 z-30 rounded-2xl border border-border/40 bg-background/95 p-3 shadow-[0_16px_40px_-32px_rgba(0,0,0,0.7)] backdrop-blur">
@@ -1765,6 +1753,8 @@ const Reconnect = () => {
   const showBrowse = !isMobile || !mobileDetailMode;
   const showDetail = !isMobile || mobileDetailMode;
 
+  const { hasPremiumAccess, entitlementResolved } = usePremiumAccess();
+
   useSeoMetadata({
     title: `Reconnect Library - ${selected.title}`,
     description: selected.overviewLine,
@@ -1790,7 +1780,10 @@ const Reconnect = () => {
   return (
     <div className="space-y-4 md:space-y-6">
       {showBrowse ? (
-      <section className="rounded-[30px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-5 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] md:p-8">
+      <section className="relative overflow-hidden rounded-[30px] border border-primary/15 bg-gradient-to-br from-primary/12 via-background to-background p-5 shadow-[0_28px_90px_-46px_rgba(255,173,70,0.45)] md:p-8">
+        <div className="absolute top-4 right-4 opacity-20 hover:opacity-40 transition-opacity">
+          <img src={shivaShaktiIcon} alt="" className="h-12 w-12 rounded-[10px]" />
+        </div>
         <div className="max-w-4xl">
           <p className="text-xs uppercase tracking-[0.28em] text-primary/80">{ui.heroEyebrow}</p>
           <h1 className="mt-3 font-display text-3xl text-foreground md:text-5xl">{ui.heroTitle}</h1>
@@ -1801,7 +1794,7 @@ const Reconnect = () => {
 
         <div className="mt-6 w-full rounded-[24px] border border-border/30 bg-card/45 p-4">
           <div className="text-xs uppercase tracking-[0.22em] text-primary/80">{ui.sacredPages}</div>
-          <div className="mt-3 grid gap-3 md:grid-cols-3">
+          <div className="mt-3 grid gap-3 md:grid-cols-2">
             {libraryPages.map((page) => {
               const Icon = page.icon;
               const active = page.to === "/app/reconnect";
@@ -1823,6 +1816,18 @@ const Reconnect = () => {
                 </Link>
               );
             })}
+          </div>
+          <div className="mt-3 rounded-2xl border border-border/25 bg-background/40 px-3 py-2">
+            <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+              {lang === "fr" ? "Reconnect intégré" : lang === "cs" ? "Reconnect integrován" : "Reconnect integrated"}
+            </p>
+            <p className="mt-1 text-xs leading-5 text-foreground/85">
+              {lang === "fr"
+                ? "Les pratiques Reconnect nourrissent aussi Tonight Path, les recommandations météo et More Rituals for Two."
+                : lang === "cs"
+                  ? "Reconnect praxe napájí také Dnešní cestu, doporučení podle počasí a Více rituálů pro dva."
+                  : "Reconnect practices also feed Tonight Path, weather-based recommendations, and More Rituals for Two."}
+            </p>
           </div>
         </div>
       </section>
@@ -1864,12 +1869,32 @@ const Reconnect = () => {
               </button>
             );
           })}
+
+          {!hasPremiumAccess && entitlementResolved ? (
+            <div className="relative overflow-hidden flex flex-col items-center justify-center rounded-[24px] border border-amber-400/25 bg-gradient-to-br from-amber-950/60 via-card/50 to-card/30 p-5 text-center">
+              <div className="absolute inset-0 flex items-center justify-center opacity-5">
+                <img src={shivaShaktiIcon} alt="" className="h-48 w-48 object-contain" />
+              </div>
+              <p className="relative z-10 text-xs uppercase tracking-[0.22em] text-amber-400/70">FOR HIM</p>
+              <h3 className="relative z-10 mt-2 font-display text-xl text-foreground">
+                Presence is the most erotic thing a man can offer.
+              </h3>
+              <p className="relative z-10 mt-3 text-sm leading-6 text-muted-foreground">
+                David Deida, Barry Long, and Mantak Chia show you exactly how. Full access with Sacred Path Premium.
+              </p>
+              <Link to="/pricing" className="relative z-10 mt-4 rounded-[12px] border border-amber-400/40 bg-amber-400/15 px-5 py-2.5 text-sm text-amber-300 transition-all hover:bg-amber-400/25">
+                Explore the masculine path →
+              </Link>
+            </div>
+          ) : null}
         </div>
 
-        <div className="mt-4 rounded-2xl border border-amber-400/20 bg-amber-500/6 p-4">
-          <p className="text-xs uppercase tracking-[0.14em] text-amber-200">WHY GO DEEPER</p>
-          <p className="mt-2 text-sm leading-6 text-foreground/90">Some wisdom can inspire in a moment. Deeper guidance helps you live it together, especially when love needs renewal, courage, and care.</p>
-        </div>
+        {!hasPremiumAccess && entitlementResolved ? (
+          <div className="mt-4 rounded-2xl border border-amber-400/20 bg-amber-500/6 p-4">
+            <p className="text-xs uppercase tracking-[0.14em] text-amber-200">WHY GO DEEPER</p>
+            <p className="mt-2 text-sm leading-6 text-foreground/90">Some wisdom can inspire in a moment. Deeper guidance helps you live it together, especially when love needs renewal, courage, and care.</p>
+          </div>
+        ) : null}
       </section>
       ) : null}
 
@@ -1879,7 +1904,7 @@ const Reconnect = () => {
 
         <aside className="space-y-4 lg:sticky lg:top-24">
           <ReconnectHeroCard tool={selected} />
-          <PremiumMiniCard tool={selected} />
+          {!hasPremiumAccess && entitlementResolved ? <PremiumMiniCard tool={selected} /> : null}
         </aside>
 
         <div className="space-y-4">

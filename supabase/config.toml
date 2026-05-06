@@ -1,1 +1,4 @@
-project_id = "nswufyaihwgglyzmxacf"
+project_id = "yjjwpvsutnllzhpjtaol"
+
+[functions.sacred-voice-tts]
+verify_jwt = false

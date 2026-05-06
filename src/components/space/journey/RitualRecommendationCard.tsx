@@ -98,13 +98,12 @@ const RitualRecommendationCard = ({
         </button>
       ) : null}
       {!locked ? libraryLinks.slice(0, 2).map((link) => (
-        <Link
+        <span
           key={`${link.label}-${link.to}`}
-          to={link.to}
-          className="rounded-lg border border-border/35 bg-card/45 px-3 py-1.5 text-xs text-foreground transition-all hover:border-border/55 hover:bg-card/60"
+          className="rounded-lg border border-border/35 bg-card/45 px-3 py-1.5 text-xs text-foreground/85"
         >
           {sourceCtaLabel}: {link.label}
-        </Link>
+        </span>
       )) : null}
     </div>
   </article>

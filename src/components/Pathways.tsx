@@ -1,20 +1,36 @@
-import { useEffect, useMemo, useState } from "react";
-import { Compass, Crown, Footprints, Lock, Sparkles, Stars } from "lucide-react";
+import { useEffect, useMemo, useState, type ComponentType } from "react";
+import { Lock } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
+import LotusIcon from "@/components/tantra-icons/LotusIcon";
+import ChakraIcon from "@/components/tantra-icons/ChakraIcon";
+import FlameIcon from "@/components/tantra-icons/FlameIcon";
+import SacredGeometryIcon from "@/components/tantra-icons/SacredGeometryIcon";
+import YinYangIcon from "@/components/tantra-icons/YinYangIcon";
+import BreathIcon from "@/components/tantra-icons/BreathIcon";
+
+type SacredIcon = ComponentType<{ className?: string; size?: number }>;
 
 interface Props {
   coupleId: string;
 }
 
-const defaultPaths = [
+const defaultPaths: Array<{
+  id: string;
+  title: string;
+  summary: string;
+  ritual: string;
+  premium: boolean;
+  icon: SacredIcon;
+  iconClass: string;
+}> = [
   {
     id: "tantra",
     title: "Tantra",
     summary: "Presence, polarity, breath, stillness, and embodied intimacy.",
     ritual: "Begin with three minutes of eye contact and synchronized breathing before any touch.",
     premium: false,
-    icon: Sparkles,
+    icon: LotusIcon,
     iconClass: "text-fuchsia-300",
   },
   {
@@ -23,7 +39,7 @@ const defaultPaths = [
     summary: "Flow, energy conservation, softness, and deep rhythmic attunement.",
     ritual: "Move slower than you think you need to. Let the breath lead the body.",
     premium: false,
-    icon: Compass,
+    icon: YinYangIcon,
     iconClass: "text-cyan-300",
   },
   {
@@ -32,7 +48,7 @@ const defaultPaths = [
     summary: "Gratitude, reassurance, tenderness, and loving repair.",
     ritual: "Each partner names one fear and one appreciation while touching hearts.",
     premium: true,
-    icon: Crown,
+    icon: ChakraIcon,
     iconClass: "text-amber-300",
   },
   {
@@ -41,7 +57,7 @@ const defaultPaths = [
     summary: "Advanced touch, pacing, anticipation, and pleasure through slowness.",
     ritual: "Touch without rushing toward climax or outcome. Build sensation in layers.",
     premium: true,
-    icon: Stars,
+    icon: FlameIcon,
     iconClass: "text-rose-300",
   },
 ];
@@ -112,8 +128,8 @@ const Pathways = ({ coupleId }: Props) => {
                 className="w-full p-6 text-left"
               >
                 <div className="flex items-start justify-between gap-4">
-                  <div className={`inline-flex rounded-2xl border border-border/30 bg-background/45 p-3 ${card.iconClass}`}>
-                    <Icon className="h-5 w-5" />
+                  <div className={`inline-flex rounded-2xl border border-amber-300/25 bg-gradient-to-br from-amber-500/10 via-card/40 to-transparent p-3 ${card.iconClass}`}>
+                    <Icon size={42} className="opacity-90" />
                   </div>
                   <div className="flex items-center gap-2">
                     {card.premium && (
@@ -123,7 +139,6 @@ const Pathways = ({ coupleId }: Props) => {
                       </div>
                     )}
                     <div className="inline-flex items-center gap-1 rounded-full border border-border/30 bg-background/55 px-3 py-1 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-                      <Footprints className="h-3 w-3" />
                       {progressValue}%
                     </div>
                   </div>

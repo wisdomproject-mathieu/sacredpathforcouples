@@ -1,102 +1,130 @@
-import { useState } from "react";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { Lock } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useMemo, useState } from "react";
+import SacredPathBrand from "@/components/SacredPathBrand";
 import { Button } from "@/components/ui/button";
-import BreathIcon from "@/components/tantra-icons/BreathIcon";
-import FlameIcon from "@/components/tantra-icons/FlameIcon";
-import LotusIcon from "@/components/tantra-icons/LotusIcon";
-import ChakraIcon from "@/components/tantra-icons/ChakraIcon";
-import SacredGeometryIcon from "@/components/tantra-icons/SacredGeometryIcon";
-import YinYangIcon from "@/components/tantra-icons/YinYangIcon";
+import { usePremiumAccess } from "@/hooks/usePremiumAccess";
+import { getDailyFreeRitual, getPremiumRituals, type RitualCategory, type WeatherState } from "@/data/ritualLibrary";
 
-const ritualIcons = [BreathIcon, FlameIcon, LotusIcon, ChakraIcon, SacredGeometryIcon, YinYangIcon];
-const ritualDurations = ["5 min", "10 min", "7 min", "15 min", "10 min", "12 min"];
-const freeRituals = [0, 1];
+type DurationFilter = 3 | 5 | 8 | 12 | 20 | "all";
+type IntensityFilter = "gentle" | "medium" | "deep" | "all";
 
-const Rituals = () => {
-  const { t } = useLanguage();
-  const [expandedRitual, setExpandedRitual] = useState<number | null>(null);
+export default function Rituals() {
+  const { hasPremiumAccess } = usePremiumAccess();
+  const [weather, setWeather] = useState<WeatherState | "all">("all");
+  const [duration, setDuration] = useState<DurationFilter>("all");
+  const [intensity, setIntensity] = useState<IntensityFilter>("all");
+  const [category, setCategory] = useState<RitualCategory | "all">("all");
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const freeToday = useMemo(() => getDailyFreeRitual(new Date(), "warm", "sunny"), []);
+  const rituals = useMemo(
+    () => getPremiumRituals({ weather, duration, intensity, category }),
+    [weather, duration, intensity, category],
+  );
+  const selected = useMemo(() => rituals.find((item) => item.id === selectedId) ?? freeToday, [rituals, selectedId, freeToday]);
 
   return (
     <div className="px-4 py-8 pb-24">
-      <div className="container max-w-4xl">
-        <div className="text-center mb-10">
-          <h1 className="font-heading text-3xl font-semibold text-foreground mb-2">{t("rituals.title")}</h1>
-          <p className="text-muted-foreground font-body max-w-xl mx-auto text-sm">{t("rituals.desc")}</p>
+      <div className="container max-w-6xl space-y-6">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
+          <SacredPathBrand className="w-full max-w-[420px]" />
+          <div className="flex-1 text-center">
+            <h1 className="font-display text-4xl md:text-5xl font-semibold">A complete intimacy library for the two of you.</h1>
+            <p className="mt-2 text-muted-foreground">
+              One daily practice is free, and every premium practice is crafted to keep your connection growing with fresh rituals added regularly.
+            </p>
+          </div>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          {ritualIcons.map((Icon, index) => {
-            const isFree = freeRituals.includes(index);
-            return (
-              <div
-                key={index}
-                className={`group rounded-xl border bg-card p-5 transition-all ${
-                  isFree ? "cursor-pointer" : ""
-                } ${
-                  expandedRitual === index ? "border-primary/60 shadow-lg shadow-primary/10" :
-                  isFree ? "border-border hover:border-primary/30" : "border-border/50"
-                }`}
-                onClick={() => isFree && setExpandedRitual(expandedRitual === index ? null : index)}
-              >
-                <div className="flex items-start gap-3">
-                  <div className={`flex-shrink-0 mt-1 ${isFree ? "text-primary" : "text-muted-foreground/50"}`}>
-                    <Icon size={36} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-1.5">
-                      <h3 className={`font-heading text-base font-semibold ${isFree ? "text-foreground" : "text-muted-foreground/70"}`}>
-                        {t(`ritual.${index}.title`)}
-                      </h3>
-                      <div className="flex items-center gap-1.5 flex-shrink-0 ml-2">
-                        {!isFree && (
-                          <span className="flex items-center gap-1 text-[10px] text-primary font-body bg-primary/10 px-2 py-0.5 rounded-full">
-                            <Lock size={10} /> {t("teachings.premium")}
-                          </span>
-                        )}
-                        <span className="text-[10px] text-primary font-body bg-primary/10 px-2 py-0.5 rounded-full">
-                          {ritualDurations[index]}
-                        </span>
-                      </div>
+        <section className="rounded-3xl border border-primary/30 bg-primary/10 p-5">
+          <p className="text-xs uppercase tracking-[0.2em] text-primary/80">Free today</p>
+          <h2 className="text-2xl font-semibold mt-2">{freeToday.title}</h2>
+          <p className="text-muted-foreground">{freeToday.subtitle}</p>
+          <p className="mt-2 text-sm">{freeToday.intro}</p>
+        </section>
+
+        <section className="grid gap-3 md:grid-cols-4 rounded-2xl border border-border bg-card/70 p-4">
+          <select className="rounded-xl bg-background border border-border p-2" value={weather} onChange={(e) => setWeather(e.target.value as WeatherState | "all")}>
+            <option value="all">All weather</option>
+            <option value="sunny">Sunny</option>
+            <option value="warm">Warm</option>
+            <option value="electric">Electric</option>
+            <option value="foggy">Foggy</option>
+            <option value="frozen">Frozen</option>
+            <option value="stormy">Stormy</option>
+          </select>
+          <select className="rounded-xl bg-background border border-border p-2" value={duration} onChange={(e) => setDuration((e.target.value === "all" ? "all" : Number(e.target.value)) as DurationFilter)}>
+            <option value="all">All duration</option>
+            <option value="3">3 min</option>
+            <option value="5">5 min</option>
+            <option value="8">8 min</option>
+            <option value="12">12 min</option>
+            <option value="20">20 min</option>
+          </select>
+          <select className="rounded-xl bg-background border border-border p-2" value={intensity} onChange={(e) => setIntensity(e.target.value as IntensityFilter)}>
+            <option value="all">All intensity</option>
+            <option value="gentle">Gentle</option>
+            <option value="medium">Medium</option>
+            <option value="deep">Deep</option>
+          </select>
+          <select className="rounded-xl bg-background border border-border p-2" value={category} onChange={(e) => setCategory(e.target.value as RitualCategory | "all")}>
+            <option value="all">All goals</option>
+            <option value="connection">Connection</option>
+            <option value="repair">Repair</option>
+            <option value="desire">Desire</option>
+            <option value="touch">Touch</option>
+            <option value="conversation">Conversation</option>
+          </select>
+        </section>
+
+        <section className="grid gap-4 lg:grid-cols-[1.5fr_1fr]">
+          <div className="grid gap-3 sm:grid-cols-2">
+            {rituals.map((ritual) => {
+              const locked = !hasPremiumAccess && ritual.id !== freeToday.id && ritual.tier !== "free-daily";
+              return (
+                <button
+                  key={ritual.id}
+                  type="button"
+                  onClick={() => setSelectedId(ritual.id)}
+                  className={`relative rounded-3xl border text-left p-4 transition ${
+                    selected?.id === ritual.id ? "border-primary bg-primary/10" : "border-border bg-card/70 hover:bg-card"
+                  }`}
+                >
+                  <p className="text-xs uppercase tracking-[0.16em] text-primary/80">{ritual.imageMood}</p>
+                  <h3 className="mt-2 text-lg font-semibold">{ritual.title}</h3>
+                  <p className="text-sm text-muted-foreground mt-1">{ritual.subtitle}</p>
+                  <p className="text-xs mt-2 text-muted-foreground">{ritual.durationMinutes} min · {ritual.category}</p>
+                  {locked && (
+                    <div className="absolute inset-0 rounded-3xl bg-background/75 grid place-items-center">
+                      <span className="text-sm font-semibold text-foreground">Premium</span>
                     </div>
-                    <p className={`text-xs font-body leading-relaxed ${isFree ? "text-muted-foreground" : "text-muted-foreground/50"}`}>
-                      {t(`ritual.${index}.desc`)}
-                    </p>
-                    {!isFree && (
-                      <p className="text-xs text-muted-foreground font-body italic mt-2">{t("teachings.unlock_hint")}</p>
-                    )}
-                    {expandedRitual === index && isFree && (
-                      <div className="mt-4 space-y-2 animate-fade-in">
-                        <h4 className="text-xs font-heading uppercase tracking-widest text-primary">{t("rituals.step_guide")}</h4>
-                        <ol className="space-y-1.5">
-                          {[0, 1, 2, 3, 4, 5].map((si) => (
-                            <li key={si} className="flex items-start gap-2 text-xs text-muted-foreground font-body">
-                              <span className="text-primary font-semibold mt-px">{si + 1}.</span>
-                              {t(`ritual.${index}.step.${si}`)}
-                            </li>
-                          ))}
-                        </ol>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
 
-        <div className="mt-8 rounded-xl border border-primary/30 bg-primary/5 p-6 text-center">
-          <span className="text-2xl block mb-3">✦</span>
-          <h3 className="font-heading text-lg font-semibold text-foreground mb-2">{t("rituals.unlock")}</h3>
-          <p className="text-xs text-muted-foreground font-body mb-4">{t("rituals.unlock_desc")}</p>
-          <Link to="/pricing">
-            <Button className="font-body" size="sm">{t("teachings.view_plans")}</Button>
-          </Link>
-        </div>
+          <aside className="rounded-3xl border border-border bg-card p-5">
+            <h3 className="text-2xl font-semibold">{selected.title}</h3>
+            <p className="text-muted-foreground mt-1">{selected.subtitle}</p>
+            <p className="text-sm mt-3">{selected.intro}</p>
+            <ol className="space-y-2 mt-4">
+              {selected.steps.map((step, index) => (
+                <li key={index} className="text-sm">
+                  <span className="font-semibold text-primary mr-2">{index + 1}.</span>
+                  {step}
+                </li>
+              ))}
+            </ol>
+            <p className="text-sm mt-4 text-muted-foreground">{selected.closing}</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Button variant="secondary">Play Sacred Voice</Button>
+              <Button variant="secondary">Save to Journey</Button>
+              <Button>Send to Partner</Button>
+            </div>
+          </aside>
+        </section>
+
       </div>
     </div>
   );
-};
-
-export default Rituals;
+}
